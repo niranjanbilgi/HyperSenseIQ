@@ -1860,7 +1860,12 @@ function runMineAnalysis(){
       </div>`;
 
     btn.textContent='Run HyperSenseIQ Mining Analysis';
-    btn.disabled=false;btn.style.opacity='1';
+    btn.disabled=false; btn.style.opacity='1';
+    btn.style.background='linear-gradient(135deg,#854F0B,#EF9F27)';
+    // Scroll to results
+    setTimeout(()=>{
+      document.getElementById('mine-inp-results').scrollIntoView({behavior:'smooth',block:'start'});
+    },100);
   },1200);
 }
 
