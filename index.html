@@ -2247,7 +2247,8 @@ function renderLasSampleBtns() {
 
 /* ── LAS FILE UPLOAD MODULE ── */
 const BACKEND_URL = 'http://localhost:8000';  // Change to Render URL for production
-let lasParams = null;  // Stores parsed LAS parameters
+const AV_KEY = 'SOY9YWB9J6KFQG92';
+let lasParams = null;  // Stores parsed LAS psarameters
 
 function setLasStatus(msg, type='') {
   const el = document.getElementById('las-status');
