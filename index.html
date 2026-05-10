@@ -908,17 +908,25 @@ async function fetchLive(){
   // REE/Monazite: ~$800/t
   const reeINR = Math.round(800 * fx);
 
-  // Update MINES live prices
+  // Update MINES live prices — ensure all values are floats
   const livePrices = {
-    'Jharia Coalfield':    {base:coalINR,    lo:Math.round(coalINR*0.75),    hi:Math.round(coalINR*1.3)},
-    'Bailadila Iron Ore':  {base:ironINR,    lo:Math.round(ironINR*0.75),    hi:Math.round(ironINR*1.3)},
-    'Hutti Gold Mine':     {base:goldINRgram,lo:Math.round(goldINRgram*0.85),hi:Math.round(goldINRgram*1.2)},
-    'Malanjkhand Copper':  {base:copperINR,  lo:Math.round(copperINR*0.75),  hi:Math.round(copperINR*1.3)},
-    'Kerala Monazite':     {base:reeINR,     lo:Math.round(reeINR*0.7),      hi:Math.round(reeINR*1.4)},
-    'Jaduguda Uranium':    {base:uraniumINR, lo:Math.round(uraniumINR*0.75), hi:Math.round(uraniumINR*1.3)},
+    'Jharia Coalfield':    {base:parseFloat(coalINR),    lo:Math.round(coalINR*0.75),    hi:Math.round(coalINR*1.3)},
+    'Bailadila Iron Ore':  {base:parseFloat(ironINR),    lo:Math.round(ironINR*0.75),    hi:Math.round(ironINR*1.3)},
+    'Hutti Gold Mine':     {base:parseFloat(goldINRgram),lo:Math.round(goldINRgram*0.85),hi:Math.round(goldINRgram*1.2)},
+    'Malanjkhand Copper':  {base:parseFloat(copperINR),  lo:Math.round(copperINR*0.75),  hi:Math.round(copperINR*1.3)},
+    'Kerala Monazite':     {base:parseFloat(reeINR),     lo:Math.round(reeINR*0.7),      hi:Math.round(reeINR*1.4)},
+    'Jaduguda Uranium':    {base:parseFloat(uraniumINR), lo:Math.round(uraniumINR*0.75), hi:Math.round(uraniumINR*1.3)},
   };
   if(typeof MINES !== 'undefined'){
-    MINES.forEach(m=>{if(livePrices[m.name])m.price=livePrices[m.name];});
+    MINES.forEach(m=>{
+      if(livePrices[m.name]){
+        m.price=livePrices[m.name];
+        // Ensure all price values are valid numbers
+        Object.keys(m.price).forEach(k=>{
+          if(isNaN(m.price[k])||!isFinite(m.price[k])) m.price[k]=m.price.base||5000;
+        });
+      }
+    });
   }
 
   // Update OFFLINE_CORE prices too
@@ -946,6 +954,11 @@ async function fetchLive(){
   if(goldBadge) goldBadge.textContent='Au ₹'+goldINRgram.toLocaleString()+'/g';
   if(ironBadge) ironBadge.textContent='Fe ₹'+ironINR.toLocaleString()+'/t';
   if(coalBadge) coalBadge.textContent='Coal ₹'+coalINR.toLocaleString()+'/t';
+
+  // Re-render active mining panel with updated prices
+  if(typeof mode !== 'undefined' && mode !== 'petro' && typeof goMine === 'function'){
+    goMine(curMinePanel);
+  }
 
   document.getElementById('last-upd').textContent='Live '+new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
   document.getElementById('last-upd').style.color='#9FE1CB';
@@ -1420,7 +1433,8 @@ function renderMinePanel(panel){
 
 function renderMineOverview(m){
   const top=m.methods[0];
-  const npvEst=((m.recov*m.price.base*(1-m.roy-m.dmf-m.pmk)*0.85-top.opex*40-top.capex)/100).toFixed(0);
+  const safePrice = (isNaN(m.price.base)||!isFinite(m.price.base)) ? 5000 : m.price.base;
+  const npvEst=((m.recov*safePrice*(1-m.roy-m.dmf-m.pmk)*0.85-top.opex*40-top.capex)/100).toFixed(0);
   document.getElementById('m-kpis').innerHTML=`
     <div class="kpi g"><div class="kpi-l">In-situ resource</div><div class="kpi-v">${m.insitu.toFixed(0)}<span style="font-size:12px;font-weight:400"> ${m.unit}</span></div><div class="kpi-s">${m.com} · ${m.grade}% grade</div></div>
     <div class="kpi n"><div class="kpi-l">Recoverable reserve</div><div class="kpi-v">${m.recov.toFixed(1)}<span style="font-size:12px;font-weight:400"> ${m.unit}</span></div><div class="kpi-s">RF ${(m.frf*100).toFixed(0)}% combined</div></div>
@@ -2233,7 +2247,6 @@ function renderLasSampleBtns() {
 
 /* ── LAS FILE UPLOAD MODULE ── */
 const BACKEND_URL = 'http://localhost:8000';  // Change to Render URL for production
-const AV_KEY = 'SOY9YWB9J6KFQG92';
 let lasParams = null;  // Stores parsed LAS parameters
 
 function setLasStatus(msg, type='') {
