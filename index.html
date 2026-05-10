@@ -1545,7 +1545,100 @@ function renderMineTwin(m){
   document.getElementById('m-tw-repos').innerHTML=`<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:7px;">${repos.map(([n,c,s])=>`<div style="background:var(--${c}-bg);border:0.5px solid;border-color:var(--${c}-mid);border-radius:5px;padding:7px 9px;"><div style="font-size:10px;font-weight:500;color:var(--${c}-dark);margin-bottom:2px;">${s}</div><div style="font-size:10px;color:var(--gray);">${n}</div></div>`).join('')}</div>`;
 }
 /* ── MINING EXECUTIVE VIEW ── */
-/* ── MINING CORE DATA — OFFLINE SYNTHETIC ASSAY DATA ── */
+function renderMineExec(){
+  const dr=0.12;
+  const mineData=MINES.map(m=>{
+    const mineLife=Math.max(5,Math.round(m.recov/(m.insitu*0.04)));
+    const annProd=m.recov/mineLife;
+    let npv=-m.capex;
+    for(let yr=1;yr<=mineLife;yr++){
+      const rev=annProd*m.price.base,roy=rev*m.roy,dmf=rev*(m.dmf||0),pmk=rev*(m.pmk||0);
+      const gst=(rev-roy-dmf-pmk)*(m.gst||0),ebitda=rev-roy-dmf-pmk-gst-m.opex;
+      npv+=(ebitda-Math.max(0,ebitda*0.2517))/Math.pow(1+dr,yr);
+    }
+    return {...m,npv,mineLife,annProd,annRev:annProd*m.price.base};
+  });
+
+  const ranked=[...mineData].sort((a,b)=>b.npv-a.npv);
+  const totalInsitu=mineData.reduce((s,m)=>s+m.insitu,0);
+  const totalRecov=mineData.reduce((s,m)=>s+m.recov,0);
+  const totalNPV=mineData.reduce((s,m)=>s+m.npv,0);
+  const totalCapex=mineData.reduce((s,m)=>s+m.capex,0);
+  const topMine=ranked[0];
+  const criticalCount=mineData.filter(m=>m.restricted).length;
+
+  // KPIs
+  document.getElementById('m-exec-kpis').innerHTML=
+    `<div class="kpi g"><div class="kpi-l">Portfolio NPV</div><div class="kpi-v">${totalNPV>0?'+':''}₹${totalNPV.toFixed(0)}<span style="font-size:12px"> Cr</span></div><div class="kpi-s">6 mines · 12% discount</div></div>`+
+    `<div class="kpi n"><div class="kpi-l">Total in-situ resource</div><div class="kpi-v">${totalInsitu.toFixed(0)}<span style="font-size:12px"> Mt</span></div><div class="kpi-s">Across all commodities</div></div>`+
+    `<div class="kpi g"><div class="kpi-l">Total recoverable</div><div class="kpi-v">${totalRecov.toFixed(0)}<span style="font-size:12px"> Mt</span></div><div class="kpi-s">Post mining & process RF</div></div>`+
+    `<div class="kpi a"><div class="kpi-l">Total CAPEX required</div><div class="kpi-v">₹${totalCapex}<span style="font-size:12px"> Cr</span></div><div class="kpi-s">All 6 projects combined</div></div>`+
+    `<div class="kpi p"><div class="kpi-l">Top ranked mine</div><div class="kpi-v" style="font-size:14px;">${topMine.name.split(' ')[0]}</div><div class="kpi-s">NPV +₹${topMine.npv.toFixed(0)} Cr</div></div>`+
+    `<div class="kpi r"><div class="kpi-l">Strategic / restricted</div><div class="kpi-v">${criticalCount}<span style="font-size:12px"> mines</span></div><div class="kpi-s">DAE / AEA regulated</div></div>`;
+
+  // Portfolio ranking table
+  const rankColors=['#E8D87A','#9FE1CB','#AB47BC','#EF9F27','#5DCAA5','#E24B4A'];
+  document.getElementById('m-exec-rank').innerHTML=
+    `<table style="width:100%;border-collapse:collapse;font-size:10px;"><thead><tr style="border-bottom:1px solid var(--border);">
+    <th style="padding:4px;text-align:left;">#</th><th style="padding:4px;text-align:left;">Mine</th>
+    <th style="padding:4px;text-align:left;">Commodity</th><th style="padding:4px;">Grade</th>
+    <th style="padding:4px;text-align:left;">Best method</th><th style="padding:4px;text-align:right;">NPV ₹Cr</th>
+    <th style="padding:4px;text-align:center;">Life</th></tr></thead><tbody>`+
+    ranked.map((m,i)=>{
+      const best=m.methods[0];
+      const npvCls=m.npv>500?'color:#1D9E75':m.npv>0?'color:#EF9F27':'color:#E24B4A';
+      const lock=m.restricted?' 🔒':'';
+      return `<tr style="border-bottom:0.5px solid var(--border);${i%2===0?'background:rgba(255,255,255,.02)':''}">
+        <td style="padding:5px 4px;"><span style="color:${rankColors[i]};font-weight:600;">#${i+1}</span></td>
+        <td style="padding:5px 4px;">${m.name}${lock}<br><span style="color:#888;font-size:9px;">${m.state}</span></td>
+        <td style="padding:5px 4px;">${m.com}</td>
+        <td style="padding:5px 4px;text-align:center;">${m.grade}%</td>
+        <td style="padding:5px 4px;font-size:9px;">${best.n}</td>
+        <td style="padding:5px 4px;text-align:right;font-weight:600;${npvCls}">${m.npv>0?'+':''}₹${m.npv.toFixed(0)}</td>
+        <td style="padding:5px 4px;text-align:center;">${m.mineLife}yr</td>
+      </tr>`;
+    }).join('')+`</tbody></table>`;
+
+  // Strategic minerals
+  const critMinerals=[
+    {name:'Kerala Monazite',com:'REE / Thorium',act:'Atomic Energy Act 1962',body:'BARC / DAE / AERB',status:'Restricted',col:'vr'},
+    {name:'Jaduguda Uranium',com:'U₃O₈',act:'Atomic Energy Act 1962',body:'UCIL / DAE / NCA',status:'Classified',col:'vr'},
+    {name:'Malanjkhand Cu',com:'Copper',act:'Critical Minerals List 2023',body:'HCL / KABIL',status:'Strategic',col:'va'},
+    {name:'Hutti Gold',com:'Au',act:'FEMA / RBI Export controls',body:'HGML / RBI liaison',status:'Monitored',col:'va'},
+  ];
+  document.getElementById('m-exec-strat').innerHTML=
+    critMinerals.map(c=>`
+      <div style="border:0.5px solid var(--border);border-radius:5px;padding:8px 10px;margin-bottom:7px;
+           background:${c.col==='vr'?'rgba(226,75,74,0.08)':'rgba(239,159,39,0.08)'};">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
+          <span style="font-size:11px;font-weight:500;color:${c.col==='vr'?'#E24B4A':'#EF9F27'};">${c.name}</span>
+          <span style="font-size:9px;padding:2px 6px;border-radius:3px;
+            background:${c.col==='vr'?'#E24B4A':'#EF9F27'};color:white;">${c.status}</span>
+        </div>
+        <div style="font-size:10px;color:var(--gray);">${c.com} · ${c.act}</div>
+        <div style="font-size:10px;color:var(--gray);margin-top:2px;">Oversight: ${c.body}</div>
+      </div>`).join('')+
+    `<div style="font-size:9px;color:#5A7A94;margin-top:6px;font-style:italic;">
+      Critical Minerals List 2023 · MoM · IBM · KABIL · National Critical Minerals Mission</div>`;
+
+  // Executive verdict
+  const top3=ranked.slice(0,3);
+  const totalScore=totalNPV>2000?88:totalNPV>500?74:58;
+  const vCls=totalNPV>0?'v-g':'v-a';
+  document.getElementById('m-exec-verdict').innerHTML=
+    `<div class="verdict ${vCls}">
+      <strong>HyperSenseIQ Mining Intelligence — 6-mine India portfolio · ${totalNPV>0?'Positive':'Marginal'} NPV</strong><br>
+      Total in-situ: <span class="vg">${totalInsitu.toFixed(0)} Mt</span> · Recoverable: <span class="vg">${totalRecov.toFixed(0)} Mt</span> · Portfolio NPV: <span class="vg">${totalNPV>0?'+':''}₹${totalNPV.toFixed(0)} Cr</span><br><br>
+      <strong>Priority investment sequence:</strong><br>
+      ${top3.map((m,i)=>`<span style="color:${rankColors[i]}">#${i+1}</span> ${m.name} (${m.com}) — NPV +₹${m.npv.toFixed(0)} Cr · Best: ${m.methods[0].n} · ${m.mineLife}yr life`).join('<br>')}
+      <br><br>
+      <span style="color:#E24B4A;font-size:10px;">⚠️ Kerala Monazite &amp; Jaduguda Uranium — Atomic Energy Act regulated. DAE/AERB clearance mandatory before any development.</span>
+      <div class="sbar-w" style="margin-top:8px;"><div class="sbar" style="width:${totalScore}%;background:var(--g-mid);"></div></div>
+      <div style="font-size:10px;color:var(--g-dark);margin-top:3px;">Portfolio Techno-Economic Score: ${totalScore}% · MMDR Act 2021 · IBM · Critical Minerals Mission 2023</div>
+    </div>`;
+}
+
+
 const OFFLINE_CORE = {
   'JCF-01': {
     id:'JCF-01', name:'Jharia Coalfield — Block A', loc:'Dhanbad, Jharkhand', com:'Bituminous Coal', op:'BCCL / CIL',
