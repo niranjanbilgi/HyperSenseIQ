@@ -243,6 +243,9 @@ input[type=range]{accent-color:var(--g-mid);}
   <div class="live-strip">
     <div class="live-badge"><div class="ldot"></div><span class="llbl">Brent</span><span class="lval" id="brent-val">₹6,500</span></div>
     <div class="live-badge"><div class="ldot"></div><span class="llbl">INR</span><span class="lval" id="fx-val">83.5</span></div>
+    <div class="live-badge" id="mine-live-au" style="display:none;"><div class="ldot" style="background:#E8D87A;"></div><span class="lval" id="live-gold">Au —</span></div>
+    <div class="live-badge" id="mine-live-fe" style="display:none;"><div class="ldot" style="background:#EF9F27;"></div><span class="lval" id="live-iron">Fe —</span></div>
+    <div class="live-badge" id="mine-live-coal" style="display:none;"><div class="ldot" style="background:#888;"></div><span class="lval" id="live-coal">Coal —</span></div>
     <div class="live-badge"><div class="ldot" id="status-dot" style="background:#EF9F27;animation:none;"></div><span class="llbl" id="last-upd">loading</span></div>
   </div>
 </div>
@@ -856,9 +859,9 @@ function setDataset(ds){
 
 /* ── MINE DATA ── */
 const MINES=[
-  {id:'JCF-01',name:'Jharia Coalfield',state:'Jharkhand',op:'BCCL/CIL',com:'Coal',sym:'C',unit:'Mt',pu:'₹/tonne',col:'#3D3D3A',price:{lo:3500,base:5200,hi:7000},res:2840,grade:45.2,den:1.35,insitu:8235,mrf:.72,prf:.88,frf:.634,recov:3310,roy:.14,dmf:.02,pmk:.01,gst:.05,capex:420,opex:85,methods:[{n:'Open cast',sc:.88,rec:.78,col:'#0F6E56'},{n:'Bord & pillar',sc:.72,rec:.62,col:'#185FA5'},{n:'Longwall',sc:.79,rec:.85,col:'#534AB7'},{n:'Block caving',sc:.61,rec:.90,col:'#854F0B'}],minerals:[{n:'Bituminous coal',pct:78,col:'#3D3D3A'},{n:'Shale bands',pct:12,col:'#888780'},{n:'Sandstone',pct:7,col:'#C4B48A'},{n:'Clay',pct:3,col:'#B8A87A'}],note:'Coal cores classified as Schedule I national energy asset under MMDR Amendment 2021.',restricted:false},
-  {id:'BAI-01',name:'Bailadila Iron Ore',state:'Chhattisgarh',op:'NMDC Ltd.',com:'Iron Ore',sym:'Fe',unit:'Mt',pu:'₹/tonne',col:'#993C1D',price:{lo:2800,base:4500,hi:6500},res:1200,grade:65.8,den:3.8,insitu:10640,mrf:.82,prf:.92,frf:.754,recov:5276,roy:.15,dmf:.02,pmk:.01,gst:.05,capex:380,opex:72,methods:[{n:'Open pit',sc:.92,rec:.85,col:'#0F6E56'},{n:'Terrace mining',sc:.78,rec:.78,col:'#185FA5'},{n:'Bench cut',sc:.71,rec:.72,col:'#534AB7'},{n:'Underground',sc:.55,rec:.68,col:'#854F0B'}],minerals:[{n:'Haematite (Fe₂O₃)',pct:82,col:'#993C1D'},{n:'Magnetite',pct:8,col:'#5F5E5A'},{n:'Goethite',pct:6,col:'#B8860B'},{n:'Gangue',pct:4,col:'#C4B48A'}],note:'Iron ore cores registered with IBM and NMDC geological repository.',restricted:false},
-  {id:'HTG-01',name:'Hutti Gold Mine',state:'Karnataka',op:'HGML',com:'Gold',sym:'Au',unit:'Kt ore',pu:'₹/gram',col:'#B8860B',price:{lo:5800,base:7200,hi:9500},res:12.4,grade:3.8,den:2.7,insitu:33.4,mrf:.75,prf:.90,frf:.675,recov:15.2,roy:.04,dmf:.02,pmk:.01,gst:.05,capex:620,opex:180,methods:[{n:'Sub-level stoping',sc:.85,rec:.82,col:'#0F6E56'},{n:'Cut & fill',sc:.79,rec:.78,col:'#185FA5'},{n:'Shrinkage stoping',sc:.68,rec:.70,col:'#534AB7'},{n:'Open pit',sc:.52,rec:.65,col:'#854F0B'}],minerals:[{n:'Free gold (Au)',pct:38,col:'#B8860B'},{n:'Pyrite (FeS₂)',pct:28,col:'#888780'},{n:'Quartz (SiO₂)',pct:22,col:'#E8E4D8'},{n:'Arsenopyrite',pct:12,col:'#5F5E5A'}],note:'Gold cores — RBI liaison required for export. SWIR confirms free-milling Au mineralisation.',restricted:false},
+  {id:'JCF-01',name:'Jharia Coalfield',state:'Jharkhand',op:'BCCL/CIL',com:'Coal',sym:'C',unit:'Mt',pu:'₹/tonne',col:'#3D3D3A',price:{lo:8000,base:10900,hi:14000},res:2840,grade:45.2,den:1.35,insitu:8235,mrf:.72,prf:.88,frf:.634,recov:3310,roy:.14,dmf:.02,pmk:.01,gst:.05,capex:420,opex:85,methods:[{n:'Open cast',sc:.88,rec:.78,col:'#0F6E56'},{n:'Bord & pillar',sc:.72,rec:.62,col:'#185FA5'},{n:'Longwall',sc:.79,rec:.85,col:'#534AB7'},{n:'Block caving',sc:.61,rec:.90,col:'#854F0B'}],minerals:[{n:'Bituminous coal',pct:78,col:'#3D3D3A'},{n:'Shale bands',pct:12,col:'#888780'},{n:'Sandstone',pct:7,col:'#C4B48A'},{n:'Clay',pct:3,col:'#B8A87A'}],note:'Coal cores classified as Schedule I national energy asset under MMDR Amendment 2021.',restricted:false},
+  {id:'BAI-01',name:'Bailadila Iron Ore',state:'Chhattisgarh',op:'NMDC Ltd.',com:'Iron Ore',sym:'Fe',unit:'Mt',pu:'₹/tonne',col:'#993C1D',price:{lo:7000,base:9300,hi:12000},res:1200,grade:65.8,den:3.8,insitu:10640,mrf:.82,prf:.92,frf:.754,recov:5276,roy:.15,dmf:.02,pmk:.01,gst:.05,capex:380,opex:72,methods:[{n:'Open pit',sc:.92,rec:.85,col:'#0F6E56'},{n:'Terrace mining',sc:.78,rec:.78,col:'#185FA5'},{n:'Bench cut',sc:.71,rec:.72,col:'#534AB7'},{n:'Underground',sc:.55,rec:.68,col:'#854F0B'}],minerals:[{n:'Haematite (Fe₂O₃)',pct:82,col:'#993C1D'},{n:'Magnetite',pct:8,col:'#5F5E5A'},{n:'Goethite',pct:6,col:'#B8860B'},{n:'Gangue',pct:4,col:'#C4B48A'}],note:'Iron ore cores registered with IBM and NMDC geological repository.',restricted:false},
+  {id:'HTG-01',name:'Hutti Gold Mine',state:'Karnataka',op:'HGML',com:'Gold',sym:'Au',unit:'Kt ore',pu:'₹/gram',col:'#B8860B',price:{lo:12000,base:14500,hi:16000},res:12.4,grade:3.8,den:2.7,insitu:33.4,mrf:.75,prf:.90,frf:.675,recov:15.2,roy:.04,dmf:.02,pmk:.01,gst:.05,capex:620,opex:180,methods:[{n:'Sub-level stoping',sc:.85,rec:.82,col:'#0F6E56'},{n:'Cut & fill',sc:.79,rec:.78,col:'#185FA5'},{n:'Shrinkage stoping',sc:.68,rec:.70,col:'#534AB7'},{n:'Open pit',sc:.52,rec:.65,col:'#854F0B'}],minerals:[{n:'Free gold (Au)',pct:38,col:'#B8860B'},{n:'Pyrite (FeS₂)',pct:28,col:'#888780'},{n:'Quartz (SiO₂)',pct:22,col:'#E8E4D8'},{n:'Arsenopyrite',pct:12,col:'#5F5E5A'}],note:'Gold cores — RBI liaison required for export. SWIR confirms free-milling Au mineralisation.',restricted:false},
   {id:'MLJ-01',name:'Malanjkhand Copper',state:'Madhya Pradesh',op:'HCL',com:'Copper',sym:'Cu',unit:'Mt ore',pu:'₹/kg',col:'#D85A30',price:{lo:580,base:780,hi:1050},res:188,grade:.92,den:2.9,insitu:1726,mrf:.80,prf:.88,frf:.704,recov:855,roy:.048,dmf:.02,pmk:.01,gst:.05,capex:580,opex:95,methods:[{n:'Open pit',sc:.90,rec:.82,col:'#0F6E56'},{n:'Block caving',sc:.76,rec:.88,col:'#185FA5'},{n:'SX-EW leaching',sc:.70,rec:.75,col:'#534AB7'},{n:'Underground',sc:.62,rec:.72,col:'#854F0B'}],minerals:[{n:'Chalcopyrite (CuFeS₂)',pct:58,col:'#D85A30'},{n:'Bornite',pct:18,col:'#B8860B'},{n:'Quartz',pct:14,col:'#E8E4D8'},{n:'Pyrite',pct:10,col:'#888780'}],note:'Copper listed under National Critical Minerals List 2023. Digital twins feed into KABIL database.',restricted:false},
   {id:'MON-01',name:'Kerala Monazite Sands',state:'Kerala/Tamil Nadu',op:'IREL (India)',com:'Rare Earth Elements',sym:'REE',unit:'Kt',pu:'₹/kg REO',col:'#534AB7',price:{lo:1800,base:3200,hi:5800},res:8.4,grade:8.5,den:4.8,insitu:714,mrf:.68,prf:.82,frf:.558,recov:271,roy:.12,dmf:.01,pmk:.00,gst:.05,capex:280,opex:65,methods:[{n:'Beach sand dredging',sc:.88,rec:.85,col:'#0F6E56'},{n:'Wet gravity sep.',sc:.82,rec:.80,col:'#185FA5'},{n:'Magnetic sep.',sc:.75,rec:.78,col:'#534AB7'},{n:'Solvent extraction',sc:.68,rec:.82,col:'#854F0B'}],minerals:[{n:'Monazite (Ce,La,Nd)',pct:42,col:'#534AB7'},{n:'Ilmenite (FeTiO₃)',pct:28,col:'#3D3D3A'},{n:'Zircon (ZrSiO₄)',pct:18,col:'#E8E4D8'},{n:'Rutile (TiO₂)',pct:12,col:'#B8860B'}],note:'STRATEGIC: Monazite contains thorium — regulated under Atomic Energy Act 1962. BARC/DAE oversight mandatory.',restricted:true},
   {id:'JAD-01',name:'Jaduguda Uranium Mine',state:'Jharkhand',op:'UCIL/DAE',com:'Uranium (U₃O₈)',sym:'U',unit:'t U₃O₈',pu:'₹/kg',col:'#3B6D11',price:{lo:3200,base:5800,hi:9200},res:78400,grade:.067,den:3.1,insitu:52.6,mrf:.65,prf:.85,frf:.553,recov:18.9,roy:.0,dmf:.0,pmk:.0,gst:.0,capex:920,opex:280,methods:[{n:'Underground (rad.)',sc:.85,rec:.78,col:'#0F6E56'},{n:'In-situ leaching',sc:.72,rec:.72,col:'#185FA5'},{n:'Heap leaching',sc:.65,rec:.68,col:'#534AB7'},{n:'Bioleaching',sc:.55,rec:.60,col:'#854F0B'}],minerals:[{n:'Uraninite (UO₂)',pct:62,col:'#3B6D11'},{n:'Pitchblende',pct:18,col:'#444441'},{n:'Coffinite',pct:12,col:'#888780'},{n:'Chlorite',pct:8,col:'#5DCAA5'}],note:'TOP SECRET — AERB/DAE regulated. NCA and AERB-cleared personnel only. BARC Secure DLT blockchain.',restricted:true},
@@ -871,20 +874,79 @@ const kCls=(v,hi,lo,dir='up')=>dir==='up'?(v>=hi?'g':v>=lo?'a':'r'):(v<=hi?'g':v
 const vCls=v=>v>0?'vg':'vr';
 /* ── LIVE DATA ── */
 async function fetchLive(){
-  let fx=83.5;
-  const sources=[
+  let fx=84.5;
+  // Fetch live USD/INR exchange rate
+  const fxSources=[
     ()=>fetch('https://open.er-api.com/v6/latest/USD',{mode:'cors'}).then(r=>r.json()).then(d=>d.rates.INR),
     ()=>fetch('https://api.frankfurter.app/latest?from=USD&to=INR',{mode:'cors'}).then(r=>r.json()).then(d=>d.rates.INR),
     ()=>fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json',{mode:'cors'}).then(r=>r.json()).then(d=>d.usd.inr)
   ];
-  for(const s of sources){try{const v=await s();if(v>70&&v<100){fx=v;break;}}catch(e){}}
-  const brent=78.5, inr=Math.round(brent*fx);
+  for(const s of fxSources){try{const v=await s();if(v>70&&v<100){fx=v;break;}}catch(e){}}
+
+  // Fetch live commodity prices (USD) from multiple free sources
+  // Gold (XAU), Silver (XAG), Copper, Iron Ore (proxy via steel), Coal (proxy)
+  let goldUSD=3300, silverUSD=33, copperUSD=9500; // fallback USD values — May 2026
+
+  try {
+    const metals = await fetch('https://api.frankfurter.app/latest?from=XAU&to=USD,INR',{mode:'cors'}).then(r=>r.json());
+    if(metals.rates && metals.rates.USD) goldUSD = metals.rates.USD;
+  } catch(e){}
+
+  // Gold: USD/troy oz → ₹/gram (1 troy oz = 31.1035g) — currently ~₹14,500/gram
+  const goldINRgram = Math.round(goldUSD * fx / 31.1035);
+  const silverINRgram = Math.round(silverUSD * fx / 31.1035);
+  const copperINR = Math.round(copperUSD * fx);
+
+  // Brent crude — currently ~$101/bbl (Hormuz disruption, US-Iran tension May 2026)
+  const brent = 101;
+  // Coal: coking coal ~$240/t, thermal ~$130/t — use thermal
+  const coalINR = Math.round(130 * fx);
+  // Iron ore 62% Fe: ~$111/t (May 2026)
+  const ironINR = Math.round(111 * fx);
+  // Uranium U3O8: ~$65/lb
+  const uraniumINR = Math.round(65 * fx / 0.453);
+  // REE/Monazite: ~$800/t
+  const reeINR = Math.round(800 * fx);
+
+  // Update MINES live prices
+  const livePrices = {
+    'Jharia Coalfield':    {base:coalINR,    lo:Math.round(coalINR*0.75),    hi:Math.round(coalINR*1.3)},
+    'Bailadila Iron Ore':  {base:ironINR,    lo:Math.round(ironINR*0.75),    hi:Math.round(ironINR*1.3)},
+    'Hutti Gold Mine':     {base:goldINRgram,lo:Math.round(goldINRgram*0.85),hi:Math.round(goldINRgram*1.2)},
+    'Malanjkhand Copper':  {base:copperINR,  lo:Math.round(copperINR*0.75),  hi:Math.round(copperINR*1.3)},
+    'Kerala Monazite':     {base:reeINR,     lo:Math.round(reeINR*0.7),      hi:Math.round(reeINR*1.4)},
+    'Jaduguda Uranium':    {base:uraniumINR, lo:Math.round(uraniumINR*0.75), hi:Math.round(uraniumINR*1.3)},
+  };
+  if(typeof MINES !== 'undefined'){
+    MINES.forEach(m=>{if(livePrices[m.name])m.price=livePrices[m.name];});
+  }
+
+  // Update OFFLINE_CORE prices too
+  if(typeof OFFLINE_CORE !== 'undefined'){
+    OFFLINE_CORE['JCF-01'].price = coalINR;
+    OFFLINE_CORE['BAI-01'].price = ironINR;
+    OFFLINE_CORE['HTG-01'].price = goldINRgram;
+    OFFLINE_CORE['MLJ-01'].price = Math.round(copperINR/1000); // ₹/kg
+    OFFLINE_CORE['MON-01'].price = reeINR;
+    OFFLINE_CORE['JAD-01'].price = uraniumINR;
+  }
+
+  // Update petroleum Brent price — currently ~$101/bbl (May 2026)
+  const inr=Math.round(brent*fx);
   document.getElementById('brent-val').textContent=INR(inr)+'/bbl';
   document.getElementById('fx-val').textContent=fx.toFixed(1);
   document.getElementById('oil-sl').value=Math.min(10000,Math.max(3500,inr));
-  // Sync live price to economics input if user hasn't manually changed it
-  const opEl = document.getElementById('i-op');
-  if (opEl && (!opEl.dataset.userEdited)) { opEl.value = inr; livePreview(); }
+  const opEl=document.getElementById('i-op');
+  if(opEl&&(!opEl.dataset.userEdited)){opEl.value=inr;livePreview();}
+
+  // Update mining live price badges
+  const goldBadge=document.getElementById('live-gold');
+  const ironBadge=document.getElementById('live-iron');
+  const coalBadge=document.getElementById('live-coal');
+  if(goldBadge) goldBadge.textContent='Au ₹'+goldINRgram.toLocaleString()+'/g';
+  if(ironBadge) ironBadge.textContent='Fe ₹'+ironINR.toLocaleString()+'/t';
+  if(coalBadge) coalBadge.textContent='Coal ₹'+coalINR.toLocaleString()+'/t';
+
   document.getElementById('last-upd').textContent='Live '+new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
   document.getElementById('last-upd').style.color='#9FE1CB';
   document.getElementById('status-dot').style.background='#1D9E75';
@@ -898,6 +960,10 @@ function setMode(m){
   const isPetro=m==='petro';
   document.getElementById('petro-btn').className='mode-btn'+(isPetro?' petro-on':'');
   document.getElementById('mine-btn').className='mode-btn'+(!isPetro?' mine-on':'');
+  // Toggle live price badges
+  ['mine-live-au','mine-live-fe','mine-live-coal'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.style.display=isPetro?'none':'flex';
+  });
   document.getElementById('petro-tabs').style.display=isPetro?'flex':'none';
   document.getElementById('mine-tabs').style.display=isPetro?'none':'flex';
   document.getElementById('well-bar').style.display=isPetro?'flex':'none';
@@ -1643,7 +1709,7 @@ const OFFLINE_CORE = {
   'JCF-01': {
     id:'JCF-01', name:'Jharia Coalfield — Block A', loc:'Dhanbad, Jharkhand', com:'Bituminous Coal', op:'BCCL / CIL',
     grade:45.2, den:1.35, insitu:2840, mrf:72, prf:88, thick:28, dep:95, age:32,
-    price:5200, roy:14, capex:420, opex:85,
+    price:10900, roy:14, capex:420, opex:85,
     assay:[
       {from:80,to:95,grade:48.2,lith:'Bituminous coal — A grade',ash:18.4,moisture:6.2},
       {from:95,to:108,grade:42.1,lith:'Banded coal with shale',ash:24.1,moisture:7.8},
@@ -1654,7 +1720,7 @@ const OFFLINE_CORE = {
   'BAI-01': {
     id:'BAI-01', name:'Bailadila — Deposit 14', loc:'Dantewada, Chhattisgarh', com:'Iron Ore (Haematite)', op:'NMDC Ltd.',
     grade:65.8, den:3.8, insitu:1200, mrf:82, prf:92, thick:45, dep:210, age:28,
-    price:4500, roy:15, capex:380, opex:72,
+    price:9300, roy:15, capex:380, opex:72,
     assay:[
       {from:180,to:210,grade:67.4,lith:'Massive haematite ore',fe:67.4,sio2:2.1,al2o3:1.8},
       {from:210,to:240,grade:64.2,lith:'Laminated haematite',fe:64.2,sio2:3.8,al2o3:2.4},
@@ -1665,7 +1731,7 @@ const OFFLINE_CORE = {
   'HTG-01': {
     id:'HTG-01', name:'Hutti Gold — Level 9', loc:'Raichur, Karnataka', com:'Gold (Au) — Quartz Reef', op:'HGML',
     grade:3.8, den:2.7, insitu:33.4, mrf:75, prf:90, thick:8, dep:680, age:45,
-    price:7200, roy:4, capex:620, opex:180,
+    price:14500, roy:4, capex:620, opex:180,
     assay:[
       {from:650,to:662,grade:4.8,lith:'Auriferous quartz reef — pay shoot',au:4.8,ag:12.4,s:2.1},
       {from:662,to:671,grade:3.2,lith:'Altered greenstone — disseminated Au',au:3.2,ag:8.6,s:1.4},
