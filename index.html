@@ -246,6 +246,7 @@ input[type=range]{accent-color:var(--g-mid);}
     <div class="live-badge" id="mine-live-au" style="display:none;"><div class="ldot" style="background:#E8D87A;"></div><span class="lval" id="live-gold">Au —</span></div>
     <div class="live-badge" id="mine-live-fe" style="display:none;"><div class="ldot" style="background:#EF9F27;"></div><span class="lval" id="live-iron">Fe —</span></div>
     <div class="live-badge" id="mine-live-coal" style="display:none;"><div class="ldot" style="background:#888;"></div><span class="lval" id="live-coal">Coal —</span></div>
+    <div class="live-badge" id="mine-live-cu" style="display:none;"><div class="ldot" style="background:#B87333;"></div><span class="lval" id="live-copper">Cu —</span></div>
     <div class="live-badge"><div class="ldot" id="status-dot" style="background:#EF9F27;animation:none;"></div><span class="llbl" id="last-upd">loading</span></div>
   </div>
 </div>
@@ -885,7 +886,41 @@ async function fetchLive(){
 
   // Fetch live commodity prices (USD) from multiple free sources
   // Gold (XAU), Silver (XAG), Copper, Iron Ore (proxy via steel), Coal (proxy)
-  let goldUSD=3300, silverUSD=33, copperUSD=9500; // fallback USD values — May 2026
+  // Fetch Brent crude from AlphaVantage
+  let brent = 101; // fallback
+  try {
+    if(typeof AV_KEY !== 'undefined' && AV_KEY && AV_KEY !== 'your_alphavantage_key_here'){
+      const avBrent = await fetch(
+        `https://www.alphavantage.co/query?function=BRENT&interval=daily&apikey=${AV_KEY}`,
+        {mode:'cors'}
+      ).then(r=>r.json());
+      if(avBrent.data && avBrent.data.length > 0){
+        const latest = avBrent.data[0].value;
+        if(latest && !isNaN(parseFloat(latest))) brent = parseFloat(latest);
+      }
+    }
+  } catch(e){ console.warn('AlphaVantage Brent fetch failed, using fallback:', e); }
+
+  // Fetch Copper from AlphaVantage (USD/tonne)
+  let copperUSDt = 9500; // fallback
+  try {
+    if(typeof AV_KEY !== 'undefined' && AV_KEY && AV_KEY !== 'your_alphavantage_key_here'){
+      const avCopper = await fetch(
+        `https://www.alphavantage.co/query?function=COPPER&interval=monthly&apikey=${AV_KEY}`,
+        {mode:'cors'}
+      ).then(r=>r.json());
+      if(avCopper.data && avCopper.data.length > 0){
+        const latest = avCopper.data[0].value;
+        // AV returns copper in USD/tonne
+        if(latest && !isNaN(parseFloat(latest))){
+        // AlphaVantage returns copper in USD/lb — convert to USD/tonne (1 tonne = 2204.62 lb)
+        copperUSDt = parseFloat(latest) * 2204.62;
+      }
+      }
+    }
+  } catch(e){ console.warn('AlphaVantage Copper fetch failed, using fallback:', e); }
+
+  let goldUSD=3300, silverUSD=33, copperUSD=copperUSDt;
 
   try {
     const metals = await fetch('https://api.frankfurter.app/latest?from=XAU&to=USD,INR',{mode:'cors'}).then(r=>r.json());
@@ -897,9 +932,8 @@ async function fetchLive(){
   const silverINRgram = Math.round(silverUSD * fx / 31.1035);
   const copperINR = Math.round(copperUSD * fx);
 
-  // Brent crude — currently ~$101/bbl (Hormuz disruption, US-Iran tension May 2026)
-  const brent = 101;
-  // Coal: coking coal ~$240/t, thermal ~$130/t — use thermal
+  // Brent now fetched live from AlphaVantage above (fallback $101)
+  // Coal: thermal ~$130/t
   const coalINR = Math.round(130 * fx);
   // Iron ore 62% Fe: ~$111/t (May 2026)
   const ironINR = Math.round(111 * fx);
@@ -939,7 +973,6 @@ async function fetchLive(){
     OFFLINE_CORE['JAD-01'].price = uraniumINR;
   }
 
-  // Update petroleum Brent price — currently ~$101/bbl (May 2026)
   const inr=Math.round(brent*fx);
   document.getElementById('brent-val').textContent=INR(inr)+'/bbl';
   document.getElementById('fx-val').textContent=fx.toFixed(1);
@@ -951,9 +984,11 @@ async function fetchLive(){
   const goldBadge=document.getElementById('live-gold');
   const ironBadge=document.getElementById('live-iron');
   const coalBadge=document.getElementById('live-coal');
+  const copperBadge=document.getElementById('live-copper');
   if(goldBadge) goldBadge.textContent='Au ₹'+goldINRgram.toLocaleString()+'/g';
   if(ironBadge) ironBadge.textContent='Fe ₹'+ironINR.toLocaleString()+'/t';
   if(coalBadge) coalBadge.textContent='Coal ₹'+coalINR.toLocaleString()+'/t';
+  if(copperBadge) copperBadge.textContent='Cu ₹'+(Math.round(copperINR/1000)).toLocaleString()+'k/t';
 
   // Re-render active mining panel with updated prices
   if(typeof mode !== 'undefined' && mode !== 'petro' && typeof goMine === 'function'){
@@ -974,7 +1009,7 @@ function setMode(m){
   document.getElementById('petro-btn').className='mode-btn'+(isPetro?' petro-on':'');
   document.getElementById('mine-btn').className='mode-btn'+(!isPetro?' mine-on':'');
   // Toggle live price badges
-  ['mine-live-au','mine-live-fe','mine-live-coal'].forEach(id=>{
+  ['mine-live-au','mine-live-fe','mine-live-coal','mine-live-cu'].forEach(id=>{
     const el=document.getElementById(id);if(el)el.style.display=isPetro?'none':'flex';
   });
   document.getElementById('petro-tabs').style.display=isPetro?'flex':'none';
@@ -2247,8 +2282,7 @@ function renderLasSampleBtns() {
 
 /* ── LAS FILE UPLOAD MODULE ── */
 const BACKEND_URL = 'http://localhost:8000';  // Change to Render URL for production
-const AV_KEY = 'SOY9YWB9J6KFQG92';
-let lasParams = null;  // Stores parsed LAS psarameters
+let lasParams = null;  // Stores parsed LAS parameters
 
 function setLasStatus(msg, type='') {
   const el = document.getElementById('las-status');
