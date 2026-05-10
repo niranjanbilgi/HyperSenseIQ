@@ -1473,7 +1473,7 @@ function renderMineOverview(m){
   const dmf = parseFloat(m.dmf)||0;
   const pmk = parseFloat(m.pmk)||0;
   const capex = parseFloat(m.capex)||100;
-  const npvRaw = (m.recov*safePrice*(1-roy-dmf-pmk)*0.85-top.opex*40-capex)/100;
+  const npvRaw = (m.recov*safePrice*(1-roy-dmf-pmk)*0.85-parseFloat(m.opex||85)*40-capex)/100;
   const npvEst = (isNaN(npvRaw)||!isFinite(npvRaw)) ? '0' : npvRaw.toFixed(0);
   document.getElementById('m-kpis').innerHTML=`
     <div class="kpi g"><div class="kpi-l">In-situ resource</div><div class="kpi-v">${m.insitu.toFixed(0)}<span style="font-size:12px;font-weight:400"> ${m.unit}</span></div><div class="kpi-s">${m.com} · ${m.grade}% grade</div></div>
