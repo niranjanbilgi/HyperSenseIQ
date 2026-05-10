@@ -1277,18 +1277,134 @@ function renderMineRec(m){
   document.getElementById('m-verdict').innerHTML=`<div class="verdict ${top.sc>.80?'v-g':'v-a'}"><strong>HyperSenseIQ mining — ${m.name} · ${m.com}</strong><br>${top.n} is the optimal method (score: ${(top.sc*100).toFixed(0)}%). Recoverable reserve: ${m.recov.toFixed(1)} ${m.unit} at ${(top.rec*100).toFixed(0)}% recovery. CAPEX ₹${m.capex} Cr. Mine life ~${Math.round(m.recov/2.5)} years.<div class="sbar-w" style="margin-top:6px;"><div class="sbar" style="width:${(top.sc*100).toFixed(0)}%;background:var(--g-mid);"></div></div></div>`;
 }
 
-function renderMineEcon(m){}
+function renderMineEcon(m){
+  document.getElementById('m-price-disp').textContent=`${m.pu} — Base: ${INR(m.price.base)}`;
+  document.getElementById('m-disc-v').textContent='12%';
+  document.getElementById('m-disc-sl').value=12;
+}
 function updateMineEcon(){
   const m=MINES[CM];if(!m)return;
   const dr=parseFloat(document.getElementById('m-disc-sl').value)/100;
   document.getElementById('m-disc-v').textContent=Math.round(dr*100)+'%';
-  document.getElementById('m-price-disp').textContent=`${m.pu}: ${INR(m.price.base)}`;
-  const top=m.methods[0],annO=m.recov*1e6/Math.max(1,Math.round(m.recov/2.5));
-  const npvOf=price=>{let n=-top.capex;const ramp=[.5,.8,1,1,.9,.8,.7];for(let yr=1;yr<=7;yr++){const rev=annO*price/1e10;const net=rev*(1-m.roy-m.dmf-m.pmk)*(1-m.gst)*.85-m.opex;n+=net/Math.pow(1+dr,yr);}return n;};
-  const [nvL,nvB,nvH]=[m.price.lo,m.price.base,m.price.hi].map(npvOf);
-  document.getElementById('m-scens').innerHTML=`<div class="scen sc-l"><div class="sc-lbl">Low — ${INR(m.price.lo)}</div><div class="sc-val ${vCls(nvL)}">${nvL>0?'+':''}₹${nvL.toFixed(0)} Cr</div><div class="sc-sub">NPV (7yr)</div></div><div class="scen sc-b"><div class="sc-lbl">Base — ${INR(m.price.base)}</div><div class="sc-val ${vCls(nvB)}">${nvB>0?'+':''}₹${nvB.toFixed(0)} Cr</div><div class="sc-sub">NPV (7yr)</div></div><div class="scen sc-h"><div class="sc-lbl">High — ${INR(m.price.hi)}</div><div class="sc-val vb">+₹${nvH.toFixed(0)} Cr</div><div class="sc-sub">NPV (7yr)</div></div>`;
-  const annRev=annO*m.price.base/1e10,royAmt=annRev*m.roy,dmfAmt=annRev*m.dmf,netRev=(annRev-royAmt-dmfAmt)*(1-m.gst)*.85;
-  document.getElementById('m-fiscal').innerHTML=`<div class="fr"><span class="fl">Mine / operator</span><span class="fv">${m.id} · ${m.op}</span></div><div class="fr"><span class="fl">Annual gross revenue</span><span class="fv vg">${INR(annRev)} Cr/yr</span></div>${m.roy>0?`<div class="fr fr-neg"><span class="fl">State royalty (MMDR) ${(m.roy*100).toFixed(0)}%</span><span class="fv vr">− ${INR(royAmt)} Cr/yr</span></div>`:'<div class="fr"><span class="fl">Royalty</span><span class="fv va">Exempt (Atomic Energy)</span></div>'}${m.dmf>0?`<div class="fr fr-neg"><span class="fl">DMF fund ${(m.dmf*100).toFixed(0)}%</span><span class="fv vr">− ${INR(dmfAmt)} Cr/yr</span></div>`:''}<div class="fr fr-hl"><span class="fl" style="font-weight:500;">Net operator revenue</span><span class="fv vg" style="font-size:13px;">${INR(netRev)} Cr/yr</span></div><div class="fr"><span class="fl">Project CAPEX</span><span class="fv vr">₹${top.capex} Cr</span></div><div class="fr ${nvB>0?'fr-hl':'fr-neg'}"><span class="fl" style="font-weight:500;">NPV @ ${Math.round(dr*100)}%</span><span class="fv ${vCls(nvB)}" style="font-size:13px;">${nvB>0?'+':''}₹${nvB.toFixed(0)} Cr</span></div><div class="fr"><span class="fl">Mine life</span><span class="fv va">${Math.round(m.recov/2.5)} years</span></div>`;
+  document.getElementById('m-price-disp').textContent=`${m.pu} — Base: ${INR(m.price.base)}`;
+
+  // Mine life & annual production
+  const mineLife=Math.max(5,Math.round(m.recov/(m.insitu*0.04)));
+  const annProd=m.recov/mineLife;
+
+  // NPV calculator — proper MMDR deductions
+  function calcNPV(price){
+    let npv=-m.capex;
+    for(let yr=1;yr<=mineLife;yr++){
+      const rev=annProd*price;
+      const roy=rev*m.roy, dmf=rev*(m.dmf||0), pmk=rev*(m.pmk||0);
+      const gst=(rev-roy-dmf-pmk)*(m.gst||0);
+      const ebitda=rev-roy-dmf-pmk-gst-m.opex;
+      const tax=Math.max(0,ebitda*0.2517);
+      npv+=(ebitda-tax)/Math.pow(1+dr,yr);
+    }
+    return npv;
+  }
+  const nvL=calcNPV(m.price.lo),nvB=calcNPV(m.price.base),nvH=calcNPV(m.price.hi);
+  const vCls=v=>v>0?'vg':v>-50?'va':'vr';
+
+  // Scenario cards
+  document.getElementById('m-scens').innerHTML=
+    `<div class="scen sc-l"><div class="sc-lbl">Low — ${INR(m.price.lo)}</div><div class="sc-val ${vCls(nvL)}">${nvL>0?'+':''}₹${nvL.toFixed(0)} Cr</div><div class="sc-sub">NPV (${mineLife}yr)</div></div>`+
+    `<div class="scen sc-b"><div class="sc-lbl">Base — ${INR(m.price.base)}</div><div class="sc-val ${vCls(nvB)}">${nvB>0?'+':''}₹${nvB.toFixed(0)} Cr</div><div class="sc-sub">NPV (${mineLife}yr)</div></div>`+
+    `<div class="scen sc-h"><div class="sc-lbl">High — ${INR(m.price.hi)}</div><div class="sc-val vg">+₹${nvH.toFixed(0)} Cr</div><div class="sc-sub">NPV (${mineLife}yr)</div></div>`;
+
+  // Full MMDR fiscal waterfall
+  const p=m.price.base, annRev=annProd*p;
+  const royAmt=annRev*m.roy, dmfAmt=annRev*(m.dmf||0), pmkAmt=annRev*(m.pmk||0);
+  const gstAmt=(annRev-royAmt-dmfAmt-pmkAmt)*(m.gst||0);
+  const netRev=annRev-royAmt-dmfAmt-pmkAmt-gstAmt;
+  const ebitda=netRev-m.opex, taxAmt=Math.max(0,ebitda*0.2517), pat=ebitda-taxAmt;
+
+  document.getElementById('m-fiscal').innerHTML=[
+    ['Mine / Operator',`${m.id} · ${m.op}`,'vn'],
+    ['Annual production',`${annProd.toFixed(2)} ${m.unit}/yr`,'vn'],
+    ['Annual gross revenue',`${INR(annRev)} Cr/yr`,'vg'],
+    m.roy>0?[`State royalty — MMDR ${(m.roy*100).toFixed(0)}%`,`− ${INR(royAmt)} Cr/yr`,'vr']:['Royalty','Exempt (Atomic Energy Act)','va'],
+    ...(m.dmf>0?[[`DMF contribution ${(m.dmf*100).toFixed(0)}%`,`− ${INR(dmfAmt)} Cr/yr`,'vr']]:[]),
+    ...(m.pmk>0?[[`NMET/PMK ${(m.pmk*100).toFixed(1)}%`,`− ${INR(pmkAmt)} Cr/yr`,'vr']]:[]),
+    ...(m.gst>0?[[`GST ${(m.gst*100).toFixed(0)}%`,`− ${INR(gstAmt)} Cr/yr`,'vr']]:[]),
+    ['Net operator revenue',`${INR(netRev)} Cr/yr`,'vg'],
+    ['Annual OPEX',`− ₹${m.opex} Cr/yr`,'vr'],
+    ['EBITDA',`${INR(ebitda)} Cr/yr`,ebitda>0?'vg':'vr'],
+    ['Corporate tax (25.17%)',`− ${INR(taxAmt)} Cr/yr`,'vr'],
+    ['PAT (annual)',`${INR(pat)} Cr/yr`,pat>0?'vg':'vr'],
+    ['Project CAPEX',`₹${m.capex} Cr`,'vr'],
+    ['Mine life (est.)',`${mineLife} years`,'vn'],
+    [`NPV @ ${Math.round(dr*100)}% (base)`,`${nvB>0?'+':''}₹${nvB.toFixed(0)} Cr`,vCls(nvB)],
+  ].map(([l,v,c])=>`<div class="fr ${c==='vr'?'fr-neg':c==='vg'?'fr-hl':''}"><span class="fl">${l}</span><span class="fv ${c}">${v}</span></div>`).join('');
+
+  // ── CASHFLOW CANVAS ──
+  setTimeout(()=>{
+    const canvas=document.getElementById('m-cf-c');if(!canvas)return;
+    const par=canvas.parentElement;
+    canvas.width=par.clientWidth||400; canvas.height=par.clientHeight||175;
+    const ctx=canvas.getContext('2d');
+    const W=canvas.width,H=canvas.height,pad={t:14,r:16,b:32,l:52};
+    const cW=W-pad.l-pad.r,cH=H-pad.t-pad.b;
+    ctx.clearRect(0,0,W,H);
+
+    // Build annual FCF and cumulative NPV series
+    const cfs=[-m.capex]; let cumNPV=-m.capex; const cumCFs=[-m.capex];
+    for(let yr=1;yr<=mineLife;yr++){
+      const rev=annProd*m.price.base;
+      const roy=rev*m.roy,dmf=rev*(m.dmf||0),pmk=rev*(m.pmk||0);
+      const gst=(rev-roy-dmf-pmk)*(m.gst||0);
+      const ebitda=rev-roy-dmf-pmk-gst-m.opex;
+      const fcf=ebitda-Math.max(0,ebitda*0.2517);
+      cfs.push(fcf); cumNPV+=fcf/Math.pow(1+dr,yr); cumCFs.push(cumNPV);
+    }
+    const allV=[...cfs,...cumCFs];
+    const maxV=Math.max(...allV)*1.15,minV=Math.min(...allV,0)*1.15,range=maxV-minV;
+    const toY=v=>pad.t+cH-((v-minV)/range)*cH;
+    const toX=i=>pad.l+(i/mineLife)*cW;
+    const barW=Math.max(5,(cW/(mineLife+1))*0.5);
+
+    // Zero line
+    ctx.strokeStyle='#CCC';ctx.lineWidth=0.5;
+    ctx.beginPath();ctx.moveTo(pad.l,toY(0));ctx.lineTo(pad.l+cW,toY(0));ctx.stroke();
+
+    // Annual FCF bars
+    cfs.forEach((v,i)=>{
+      const x=toX(i)-barW/2,yT=toY(Math.max(v,0)),yB=toY(Math.min(v,0));
+      ctx.fillStyle=v>=0?'#1D9E75':'#E24B4A';
+      ctx.fillRect(x,yT,barW,Math.max(2,Math.abs(yB-yT)));
+    });
+
+    // Cumulative NPV line
+    ctx.beginPath();ctx.strokeStyle='#AB47BC';ctx.lineWidth=2;
+    cumCFs.forEach((v,i)=>i===0?ctx.moveTo(toX(i),toY(v)):ctx.lineTo(toX(i),toY(v)));
+    ctx.stroke();
+
+    // Payback year marker
+    const pbYr=cumCFs.findIndex(v=>v>=0);
+    if(pbYr>0){
+      ctx.strokeStyle='rgba(239,159,39,0.6)';ctx.lineWidth=1;ctx.setLineDash([3,3]);
+      ctx.beginPath();ctx.moveTo(toX(pbYr),pad.t);ctx.lineTo(toX(pbYr),pad.t+cH);ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle='#EF9F27';ctx.font='8px system-ui';ctx.textAlign='center';
+      ctx.fillText('Payback',toX(pbYr),pad.t+9);
+    }
+
+    // Axes labels
+    ctx.fillStyle='#AAA';ctx.font='9px system-ui';ctx.textAlign='center';
+    for(let i=0;i<=mineLife;i+=Math.ceil(mineLife/5)) ctx.fillText('Yr'+i,toX(i),H-6);
+    ctx.textAlign='right';
+    [0,Math.round(maxV*0.5),Math.round(maxV)].forEach(v=>ctx.fillText((v>=0?'+':'')+v.toFixed(0),pad.l-4,toY(v)+3));
+
+    // Legend
+    ctx.font='9px system-ui';ctx.textAlign='left';
+    ctx.fillStyle='#1D9E75';ctx.fillRect(pad.l,pad.t,10,8);
+    ctx.fillStyle='#666';ctx.fillText('Annual FCF (₹Cr)',pad.l+14,pad.t+7);
+    ctx.strokeStyle='#AB47BC';ctx.lineWidth=2;ctx.setLineDash([]);
+    ctx.beginPath();ctx.moveTo(pad.l+130,pad.t+4);ctx.lineTo(pad.l+144,pad.t+4);ctx.stroke();
+    ctx.fillStyle='#666';ctx.fillText('Cumulative NPV',pad.l+148,pad.t+7);
+  },60);
 }
 
 function renderMineTwin(m){
