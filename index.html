@@ -1,0 +1,1777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HyperSenseIQ v2.1 — Unified Subsurface Intelligence Platform</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,-apple-system,sans-serif;}
+:root{
+--navy:#0C1A2E;--navy2:#142338;
+--g-bg:#EAF3DE;--g-mid:#1D9E75;--g-dark:#0B4F3E;--g-text:#0F6E56;
+--a-bg:#FFF3CD;--a-mid:#EF9F27;--a-dark:#633806;--a-text:#854F0B;
+--r-bg:#FDEAEA;--r-mid:#E24B4A;--r-dark:#501313;--r-text:#A32D2D;
+--p-bg:#EDE8FA;--p-mid:#7F77DD;--p-dark:#26215C;--p-text:#534AB7;
+--b-bg:#E6F1FB;--b-mid:#378ADD;--b-dark:#042C53;--b-text:#185FA5;
+--pu-bg:#F3E5F5;--pu-mid:#AB47BC;--pu-dark:#4A148C;--pu-text:#7B1FA2;
+--gray:#5F5E5A;--gray-l:#F4F3EF;--border:#E0DED8;--white:#fff;
+--pay-row:rgba(29,158,117,0.07);--neg-row:rgba(226,75,74,0.07);--warn-row:rgba(239,159,39,0.08);
+}
+html,body{background:#F0EEE8;color:#2C2C2A;}
+.nav{background:var(--navy);display:flex;align-items:center;padding:0 16px;height:52px;position:sticky;top:0;z-index:100;gap:0;}
+.brand{color:#9FE1CB;font-size:13px;font-weight:500;letter-spacing:.02em;margin-right:16px;white-space:nowrap;flex-shrink:0;}
+.brand sub{color:#5DCAA5;font-size:9px;margin-left:3px;}
+.mode-toggle{display:flex;align-items:center;background:rgba(255,255,255,.08);border-radius:20px;padding:3px;gap:2px;margin-right:12px;flex-shrink:0;}
+.mode-btn{font-size:10px;padding:4px 10px;border-radius:16px;border:none;background:transparent;color:#6A8FAD;cursor:pointer;font-weight:500;transition:all .2s;white-space:nowrap;}
+.mode-btn.petro-on{background:var(--g-mid);color:white;}
+.mode-btn.mine-on{background:#854F0B;color:white;}
+.tabs{display:flex;height:52px;overflow-x:auto;flex:1;}
+.tab{color:#6A8FAD;font-size:11px;padding:0 11px;cursor:pointer;border-bottom:2px solid transparent;display:flex;align-items:center;white-space:nowrap;transition:all .12s;flex-shrink:0;}
+.tab:hover{color:#B5D4F4;}
+.tab.on{color:#9FE1CB;border-bottom-color:var(--g-mid);}
+.tab.spec-tab{color:#AB47BC;}
+.tab.spec-tab.on{color:#E0B4F4;border-bottom-color:#AB47BC;}
+.tab.inp-tab{color:#EF9F27;}
+.tab.inp-tab.on{color:#FAC775;border-bottom-color:#EF9F27;}
+.live-strip{margin-left:auto;display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.live-badge{display:flex;align-items:center;gap:4px;font-size:10px;}
+.ldot{width:6px;height:6px;border-radius:50%;background:var(--g-mid);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+.lval{color:#9FE1CB;font-weight:500;}
+.llbl{color:#4A6A84;font-size:9px;}
+.well-bar,.mine-bar{background:var(--navy2);display:flex;align-items:center;padding:8px 16px;gap:6px;flex-wrap:wrap;border-bottom:1px solid rgba(255,255,255,.05);}
+.wlbl{font-size:10px;color:#5A7A94;font-weight:500;margin-right:4px;}
+.ds-toggle{display:flex;align-items:center;gap:4px;margin-right:10px;background:rgba(255,255,255,.05);border-radius:6px;padding:2px;border:0.5px solid rgba(255,255,255,.1);}
+.ds-btn{font-size:10px;padding:3px 9px;border-radius:4px;border:none;background:transparent;color:#5A7A94;cursor:pointer;font-weight:500;transition:all .15s;white-space:nowrap;}
+.ds-btn.on{background:rgba(171,71,188,.25);color:#CE93D8;border:0.5px solid rgba(171,71,188,.4);}
+.ds-note{font-size:9px;color:#5A7A94;font-style:italic;padding:2px 8px;border-left:2px solid rgba(171,71,188,.3);margin-left:4px;}
+
+.w-btn{font-size:11px;padding:5px 11px;border-radius:5px;border:0.5px solid rgba(255,255,255,.12);background:transparent;color:#6A8FAD;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .12s;}
+.w-btn:hover{background:rgba(255,255,255,.06);color:#B5D4F4;}
+.w-btn.on{background:rgba(29,158,117,.2);border-color:var(--g-mid);color:#9FE1CB;}
+.ws{font-size:9px;padding:1px 5px;border-radius:3px;font-weight:500;}
+.ws-p{background:var(--g-bg);color:var(--g-dark);}
+.ws-d{background:var(--a-bg);color:var(--a-dark);}
+.ws-w{background:var(--r-bg);color:var(--r-dark);}
+.panel{display:none;padding:14px 16px;max-width:1400px;margin:0 auto;}
+.panel.on{display:block;}
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:14px;}
+@media(max-width:900px){.kpis{grid-template-columns:repeat(3,1fr);}}
+.kpi{border-radius:8px;padding:10px 12px;border:0.5px solid;}
+.kpi.g{background:var(--g-bg);border-color:#97C459;}.kpi.a{background:var(--a-bg);border-color:var(--a-mid);}
+.kpi.r{background:var(--r-bg);border-color:var(--r-mid);}.kpi.n{background:var(--white);border-color:var(--border);}
+.kpi.p{background:var(--p-bg);border-color:#AFA9EC;}.kpi.pu{background:var(--pu-bg);border-color:var(--pu-mid);}
+.kpi-l{font-size:10px;margin-bottom:3px;}
+.kpi.g .kpi-l{color:var(--g-dark);}.kpi.a .kpi-l{color:var(--a-dark);}.kpi.r .kpi-l{color:var(--r-dark);}
+.kpi.n .kpi-l{color:var(--gray);}.kpi.p .kpi-l{color:var(--p-dark);}.kpi.pu .kpi-l{color:var(--pu-dark);}
+.kpi-v{font-size:20px;font-weight:500;}
+.kpi.g .kpi-v{color:var(--g-dark);}.kpi.a .kpi-v{color:var(--a-dark);}.kpi.r .kpi-v{color:var(--r-dark);}
+.kpi.n .kpi-v{color:#2C2C2A;}.kpi.p .kpi-v{color:var(--p-dark);}.kpi.pu .kpi-v{color:var(--pu-dark);}
+.kpi-s{font-size:10px;margin-top:2px;}
+.kpi.g .kpi-s{color:var(--g-text);}.kpi.a .kpi-s{color:var(--a-text);}.kpi.r .kpi-s{color:var(--r-text);}
+.kpi.n .kpi-s{color:var(--gray);}.kpi.p .kpi-s{color:var(--p-text);}.kpi.pu .kpi-s{color:var(--pu-text);}
+.cols2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.cols3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+@media(max-width:800px){.cols2,.cols3{grid-template-columns:1fr;}}
+.card{background:var(--white);border:0.5px solid var(--border);border-radius:8px;padding:12px;}
+.ct{font-size:10px;font-weight:500;color:var(--gray);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;}
+.vg{color:var(--g-text);font-weight:500;}.va{color:var(--a-text);font-weight:500;}
+.vr{color:var(--r-text);font-weight:500;}.vp{color:var(--p-text);font-weight:500;}
+.vb{color:var(--b-text);font-weight:500;}.vpu{color:var(--pu-text);font-weight:500;}
+.dt{width:100%;border-collapse:collapse;font-size:11px;}
+.dt th{background:#F0EEE8;padding:5px 7px;text-align:left;font-weight:500;color:var(--gray);border-bottom:0.5px solid var(--border);font-size:9px;text-transform:uppercase;letter-spacing:.04em;}
+.dt td{padding:5px 7px;border-bottom:0.5px solid #F0EEE8;vertical-align:middle;}
+.dt tr:last-child td{border:none;}
+.row-g{background:var(--pay-row);}.row-r{background:var(--neg-row);}.row-a{background:var(--warn-row);}
+.pb{font-size:9px;padding:2px 7px;border-radius:10px;font-weight:500;white-space:nowrap;}
+.pb-g{background:var(--g-bg);color:var(--g-dark);}.pb-r{background:var(--r-bg);color:var(--r-dark);}
+.pb-a{background:var(--a-bg);color:var(--a-dark);}.pb-p{background:var(--p-bg);color:var(--p-dark);}
+.eor-r{display:flex;align-items:center;gap:7px;margin-bottom:6px;}
+.eor-n{font-size:10px;font-weight:500;width:70px;flex-shrink:0;}
+.eor-bw{flex:1;height:16px;background:#EEE;border-radius:3px;overflow:hidden;}
+.eor-b{height:16px;border-radius:3px;display:flex;align-items:center;padding-left:6px;font-size:9px;color:white;font-weight:500;}
+.eor-sc{font-size:10px;font-weight:500;width:34px;text-align:right;}
+.rb{font-size:9px;padding:2px 5px;border-radius:3px;font-weight:600;width:22px;text-align:center;flex-shrink:0;}
+.rb1{background:#FFD700;color:#5C4200;}.rb2{background:#C0C0C0;color:#2C2C2A;}
+.rb3{background:#CD7F32;color:white;}.rbn{background:#EEE;color:#888;}
+.fr{display:flex;justify-content:space-between;padding:4px 0;border-bottom:0.5px solid #F4F3EF;font-size:11px;}
+.fr:last-child{border:none;}.fl{color:var(--gray);}.fv{font-weight:500;}
+.fr-hl{background:var(--pay-row);padding:4px 6px;border-radius:4px;margin:2px 0;border:none;}
+.fr-neg{background:var(--neg-row);padding:4px 6px;border-radius:4px;margin:2px 0;border:none;}
+.scens{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
+.scen{border-radius:7px;padding:10px;text-align:center;border:0.5px solid;}
+.sc-l{background:var(--r-bg);border-color:#F09595;}.sc-b{background:var(--g-bg);border-color:#97C459;}
+.sc-h{background:var(--b-bg);border-color:#85B7EB;}
+.sc-lbl{font-size:10px;font-weight:500;margin-bottom:4px;}
+.sc-l .sc-lbl{color:var(--r-dark);}.sc-b .sc-lbl{color:var(--g-dark);}.sc-h .sc-lbl{color:var(--b-dark);}
+.sc-val{font-size:16px;font-weight:500;}
+.sc-l .sc-val{color:var(--r-text);}.sc-b .sc-val{color:var(--g-text);}.sc-h .sc-val{color:var(--b-text);}
+.sc-sub{font-size:9px;margin-top:2px;opacity:.8;}
+.verdict{padding:10px 14px;border-radius:7px;font-size:11px;line-height:1.65;margin-top:10px;}
+.v-g{background:var(--g-bg);border:0.5px solid #97C459;color:var(--g-dark);}
+.v-a{background:var(--a-bg);border:0.5px solid var(--a-mid);color:var(--a-dark);}
+.v-r{background:var(--r-bg);border:0.5px solid var(--r-mid);color:var(--r-dark);}
+.v-p{background:var(--p-bg);border:0.5px solid var(--p-mid);color:var(--p-dark);}
+.v-pu{background:var(--pu-bg);border:0.5px solid var(--pu-mid);color:var(--pu-dark);}
+.sbar-w{height:8px;background:#E8E6E0;border-radius:4px;margin-top:6px;}
+.sbar{height:8px;border-radius:4px;}
+.sl-row{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap;}
+.sl-lbl{font-size:11px;color:var(--gray);white-space:nowrap;}
+.sl-val{font-size:12px;font-weight:500;min-width:60px;}
+.sl-val.g{color:var(--g-text);}.sl-val.a{color:var(--a-text);}.sl-val.r{color:var(--r-text);}
+input[type=range]{accent-color:var(--g-mid);}
+.cwrap{height:175px;position:relative;}
+.cwrap canvas{position:absolute;top:0;left:0;width:100%;height:100%;}
+.twin-id{font-family:monospace;font-size:9px;background:#F0EEE8;border:0.5px solid var(--border);padding:3px 7px;border-radius:3px;color:var(--p-text);margin-bottom:8px;display:block;}
+.chain{display:flex;align-items:center;gap:4px;margin:6px 0;flex-wrap:wrap;}
+.cn{font-size:9px;background:var(--p-bg);color:var(--p-dark);padding:2px 8px;border-radius:3px;font-weight:500;}
+.port-row{display:flex;align-items:center;border-bottom:0.5px solid #F0EEE8;padding:6px 4px;border-radius:4px;margin-bottom:2px;}
+.port-row.g-row{background:var(--pay-row);}.port-row.r-row{background:var(--neg-row);}.port-row.a-row{background:var(--warn-row);}
+.pc{font-size:10px;flex:1;padding:0 4px;}.pc-l{font-size:9px;color:var(--gray);margin-bottom:1px;}
+.act-btn{font-size:11px;padding:5px 10px;border-radius:5px;border:0.5px solid var(--border);background:var(--white);color:#2C2C2A;cursor:pointer;margin-top:7px;margin-right:5px;transition:all .12s;}
+.act-btn:hover{background:#F0EEE8;border-color:var(--g-mid);color:var(--g-dark);}
+.log-grid{display:grid;grid-template-columns:48px 1fr 1fr 1fr 1fr;height:220px;border:0.5px solid var(--border);border-radius:6px;overflow:hidden;}
+.log-col{display:flex;flex-direction:column;}
+.log-hdr{background:#F0EEE8;font-size:9px;font-weight:500;text-align:center;padding:4px 2px;border-bottom:0.5px solid var(--border);flex-shrink:0;}
+.log-body{flex:1;position:relative;overflow:hidden;}
+.legend{display:flex;gap:8px;flex-wrap:wrap;margin-top:7px;}
+.lp{font-size:9px;display:flex;align-items:center;gap:3px;}
+.lc{width:14px;height:2px;border-radius:1px;display:inline-block;}
+.lsq{width:9px;height:9px;border-radius:2px;display:inline-block;border:0.5px solid;}
+.inp-grp{display:flex;flex-direction:column;gap:3px;}
+.inp-lbl{font-size:10px;font-weight:500;color:var(--gray);text-transform:uppercase;letter-spacing:.04em;}
+.inp{font-size:12px;padding:7px 9px;border:0.5px solid var(--border);border-radius:5px;background:var(--white);color:#2C2C2A;outline:none;transition:all .15s;font-family:system-ui;}
+.inp:focus{border-color:var(--g-mid);box-shadow:0 0 0 2px rgba(29,158,117,.12);}
+.inp-hint{font-size:9px;color:#AAA;margin-top:1px;}
+#analyse-btn.ready{background:linear-gradient(135deg,#0F6E56,#1D9E75);color:white;cursor:pointer;font-size:14px;padding:13px 44px;border-radius:8px;border:none;font-weight:500;}
+#analyse-btn.ready:hover{transform:translateY(-1px);}
+#analyse-btn.disabled-btn{font-size:14px;padding:13px 44px;border-radius:8px;border:none;background:#CCC;color:#888;cursor:not-allowed;font-weight:500;}
+.lb-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(8,12,22,.96);z-index:9999;overflow-y:auto;}
+.lb-inner{max-width:1080px;margin:0 auto;padding:18px;}
+.lb-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.lb-title{color:#9FE1CB;font-size:15px;font-weight:500;}
+.lb-sub{color:#5DCAA5;font-size:10px;margin-top:2px;}
+.lb-close{background:rgba(255,255,255,.1);border:0.5px solid rgba(255,255,255,.2);color:white;font-size:12px;padding:7px 14px;border-radius:5px;cursor:pointer;}
+.lb-cols{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+.lb-card{background:rgba(255,255,255,.04);border:0.5px solid rgba(255,255,255,.1);border-radius:8px;padding:12px;}
+.lb-ct{color:#9FE1CB;font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;}
+.lb-scores{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px;}
+.lb-score-card{background:rgba(255,255,255,.05);border:0.5px solid rgba(255,255,255,.1);border-radius:6px;padding:8px 10px;}
+.lb-score-l{font-size:9px;color:#5DCAA5;margin-bottom:3px;}
+.lb-score-v{font-size:20px;font-weight:500;}
+.lb-zt{width:100%;border-collapse:collapse;font-size:10px;color:#C2C0B6;}
+.lb-zt th{padding:5px 7px;font-weight:500;font-size:9px;color:#5DCAA5;border-bottom:0.5px solid rgba(255,255,255,.12);text-align:left;}
+.lb-zt td{padding:5px 7px;border-bottom:0.5px solid rgba(255,255,255,.06);}
+.lb-nav{display:flex;justify-content:space-between;margin-top:14px;}
+.lb-nav-btn{background:rgba(255,255,255,.08);border:0.5px solid rgba(255,255,255,.15);color:#9FE1CB;padding:7px 18px;border-radius:5px;cursor:pointer;font-size:11px;}
+.lb-verdict{background:rgba(29,158,117,.1);border:0.5px solid rgba(29,158,117,.3);border-radius:7px;padding:10px 14px;font-size:11px;color:#9FE1CB;line-height:1.65;}
+.spec-flagpole{display:flex;gap:0;height:320px;}
+.depth-ruler{width:50px;flex-shrink:0;background:#F8F7F3;border-right:0.5px solid var(--border);position:relative;border-radius:5px 0 0 5px;}
+.log-mini{width:55px;flex-shrink:0;position:relative;border-right:0.5px solid var(--border);}
+.flag-track{flex:1;position:relative;background:#FAFAF8;border-radius:0 5px 5px 0;}
+.flag-item{position:absolute;left:0;display:flex;align-items:center;cursor:pointer;gap:0;width:100%;}
+.flag-pole{width:22px;height:1px;flex-shrink:0;}
+.flag-label{border-radius:4px;padding:2px 6px;white-space:nowrap;font-size:9px;font-weight:500;transition:transform .12s;}
+.flag-item:hover .flag-label{transform:translateX(3px);}
+.spec-gall{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;overflow-y:auto;max-height:300px;}
+.spec-thumb{border-radius:6px;overflow:hidden;cursor:pointer;transition:transform .15s;border:0.5px solid var(--border);}
+.spec-thumb:hover{transform:scale(1.03);}
+.spec-thumb-info{padding:4px 6px;font-size:9px;}
+.mine-nav{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px;}
+.mine-nav-btn{font-size:10px;padding:4px 10px;border-radius:5px;border:0.5px solid var(--border);background:var(--white);color:var(--gray);cursor:pointer;transition:all .12s;}
+.mine-nav-btn.on{background:var(--navy);color:#9FE1CB;border-color:var(--navy);}
+.footer{text-align:center;padding:16px;font-size:10px;background:var(--navy);color:#4A6A84;margin-top:16px;}
+.footer span{color:#9FE1CB;}
+
+.las-upload-zone{border:1.5px dashed rgba(171,71,188,.4);border-radius:8px;padding:16px;
+  text-align:center;background:rgba(171,71,188,.06);cursor:pointer;transition:all .2s;margin-bottom:12px;}
+.las-upload-zone:hover,.las-upload-zone.drag{border-color:#AB47BC;background:rgba(171,71,188,.12);}
+.las-upload-zone input{display:none;}
+.las-upload-icon{font-size:24px;margin-bottom:6px;}
+.las-upload-title{font-size:12px;font-weight:600;color:#CE93D8;margin-bottom:3px;}
+.las-upload-sub{font-size:10px;color:#5A7A94;}
+.las-result{background:rgba(0,131,138,.08);border:0.5px solid rgba(0,131,138,.3);
+  border-radius:6px;padding:10px 12px;margin-top:8px;display:none;}
+.las-result.show{display:block;}
+.las-result-title{font-size:11px;font-weight:600;color:#00838A;margin-bottom:6px;}
+.las-row{display:flex;justify-content:space-between;font-size:10px;
+  padding:2px 0;border-bottom:0.5px solid rgba(255,255,255,.05);}
+.las-lbl{color:#5A7A94;}.las-val{color:#9FE1CB;font-weight:500;}
+.las-warn{font-size:9px;color:#E8D87A;margin-top:6px;font-style:italic;}
+.las-apply{margin-top:8px;width:100%;padding:7px;border-radius:5px;border:none;
+  background:linear-gradient(135deg,#AB47BC,#7B1FA2);color:#fff;
+  font-size:11px;font-weight:600;cursor:pointer;}
+.las-apply:hover{opacity:.85;}
+.las-status{font-size:10px;margin-top:6px;text-align:center;min-height:0px;display:none;}
+.las-err{color:#EF5350;}.las-ok{color:#66BB6A;}
+.las-spinner{display:inline-block;width:12px;height:12px;border:2px solid #5A7A94;
+  border-top-color:#AB47BC;border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+</style>
+</head>
+<body>
+<div class="nav">
+  <div class="brand" style="display:flex;align-items:center;gap:8px;"><img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wAARCAB4AHgDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD9U6KKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKie5ijlWJpFWRhlVJwT9Kp6/4h07wvpU+o6pdx2VnCu55ZTgfQDqT7Dk1EpxinKTslv5FxhKclGKu3t5mjRXwP8Xf28/F1h4mb/hE7TT7HR4HIjj1C3M0two7vhhtz6LyPU0zWf+CkmrakuhPoHh20tngVX1i3vXL+a+cMkDAjamOQ7AnJAI45ywNenmMuXDu59RmfDGZZThIY3FRShLs7teq/yv5n33RXk9j+1F8ObvwzoWsyeIIYE1aLzIrXa0k8WDhxIiAldrZBzxxxmu0u/iN4ZstKstSl1q0FlejdbSo+/wA4d9oGScdDxx3rulRqR3i/uPiVjMM5Sj7SN476rT17HSUVW07UrXVrOK7s50uLaQZSRDkGrNY7HUmmroKKKKBhRRRQAUUUUAFFFeL/ALWvxW174NfCM+I/DawSamNX06zWKeMOJUmukjdAGIAZlYgEnAJBqopyaSE3ZXPVfEGgweIdOe2m+VsZjlHVG9RXzr4r+B3jLxRq32FsfZQ2Be3FzviRf7wXO7PtgVw1t+3F4r8Jz+PNS8WeDymlaZ4jl0OCw85Fu9PnOnC4tbeUxb0kM8wMe8EBS6dav6t+39e+GPEWv6Xqvga1nuNGk1O1uLLS9a8++86ztEuWcwmIFYG3NH5pP3lPHGK8XMuH6GaSjKtdW7O1/J/1c9nLs6r5Y26Nvmr281/VjG+KX7LviHU2j8JaB4YhGmM4I1hvKMkz955pj8y98RrgAcAMeT8b/FD4K6/8MfF95oF2ki63aSBVEQJW6Vj8jxcZIbsPXjqMV92eFf23vEPjLVtC0LTPAumSa3qV/c2hmOvBrNI4bSK7aVXSJmYiORgY9obKjHDceN+B/wBszUdQutQ1/wAb6F4f8beINLitJdLewsoVt7Frm8+ziQXySSGOFdwJSaNJQw7Z49HK8teWTlOnJu7vZtaeStsj2q/FdXG4f6pi4Jxs9Ve7l3bbf9fcfOHwovrnw74knfVreS6VJSt1p1wzQMJF4wxHzIQRgjg9uOtfoB8Ifgz4j+IkEHiTxNIdEspIlWzs44drCEfcVIzxHHjpnJPU9cnzm+/al8Oaxrdp4oufgz4eudUtra2vNT1KbUIXlRX1b+zd8LLEwm+co6lipAyDggZ6mb/goRNBL4mtX8FwC/sNQgsrSNdV3xlJbx7UTzyrGY0QFAThicsEwOWr63FY6deKVOFn1d7/AHf5n4lR4dg8ZPE4mpzReqila77ye7t0R9VeDfByeDbWe2hvJrmGRgyrKANh79PX+ldFXz8P2h9V8T/s96J4/wBOsINCv73VoNPltppUu4lH237PIUkUgMrAEqe2RkZFZfhj49eKNV+Iul2Ut7pcwvvEN3o1x4WitSL3T7eLftuXk3E/wAnKhSG4r5OriFCpyT3P1XAZFXxGDeIw9lCPN1d/dV30fTq7Lo2rq/0rRSDpS1seKFFFFABRRRQAVDdWcF9F5dxDHPHuDbJUDDIOQcHuDU1FAHnXxa+HOieI9MttWufD665f6NdLqlnY+ZKkM10pXZJLFHxMyYDLvDYK8Y61x3hSaTwtJ4p1LRvhRe6ZqWozy6vd3F229r2d5Yo5VXG91LIu/aPlG0cHJr3asq60i5vrhzLqU8VqT8sFqBEcf7T8sfwK07u1risjzGw+IV3pXlx2/wAKr/Tltw80cSLAjRhnZMgKMKz7CeDyMEnHNU4viX5tjr3k+B7OzEkETy29yUBu5XkZH3AL+8CrhsEbjk529a9Zj8K6ShJawhnc/wAdwPNb83yavrY2ygAW8QA6AIKLjPKtN8dTXehPPF8NbgCBre0jtYlibfGQzkoAv+rR1AGQOWBwKrXHjm/WS5dfhVeTWGokrdRLaDz7hyygNIpQKV2lj8xzx27+pXHhnSbos0um2rOTkv5Khs+uQM1B/wAI9Jac6dqV1a4xiKZjcRH6hyWH4MKLgZvgvU5fENhdW174Wk0G1spUit4bhV2SqFDB41wMKCcDIB46A8DUu/CGjXuv2euTabbvrFmGWC+CYlQMMMNw5IIHQ5Fa4yAM4z3xS1LSe5pCpOn8Da3WnZ7/AH9QooopmYUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAf/9k=" alt="HyperSenseIQ" style="height:38px;width:38px;object-fit:contain;border-radius:4px;"><span style="display:flex;flex-direction:column;"><span style="color:#9FE1CB;font-size:13px;font-weight:500;letter-spacing:.02em;">HyperSenseIQ <span style="color:#5DCAA5;font-size:9px;">v2.1</span></span><span style="color:#5A7A94;font-size:8px;letter-spacing:.04em;">See beyond the surface</span></span></div>
+  <div class="mode-toggle">
+    <button class="mode-btn petro-on" id="petro-btn" onclick="setMode('petro')">Petroleum</button>
+    <button class="mode-btn" id="mine-btn" onclick="setMode('mining')">Mining</button>
+  </div>
+  <div class="tabs" id="petro-tabs">
+    <div class="tab on" onclick="go('well')">Well intelligence</div>
+    <div class="tab" onclick="go('eor')">EOR screening</div>
+    <div class="tab" onclick="go('decline')">Decline</div>
+    <div class="tab" onclick="go('econ')">Economics ₹</div>
+    <div class="tab spec-tab" onclick="go('spectral')">Spectral</div>
+    <div class="tab" onclick="go('twin')">Digital twin</div>
+    <div class="tab" onclick="go('exec')">Executive view</div>
+    <div class="tab inp-tab" onclick="go('input')">Your well data</div>
+  </div>
+  <div class="tabs" id="mine-tabs" style="display:none;">
+    <div class="tab on" onclick="goMine('overview')">Mine overview</div>
+    <div class="tab" onclick="goMine('vol')">Volumetrics</div>
+    <div class="tab" onclick="goMine('recovery')">Recovery</div>
+    <div class="tab" onclick="goMine('mecon')">Economics ₹</div>
+    <div class="tab spec-tab" onclick="goMine('mtwin')">Digital twin</div>
+  </div>
+  <div class="live-strip">
+    <div class="live-badge"><div class="ldot"></div><span class="llbl">Brent</span><span class="lval" id="brent-val">₹6,500</span></div>
+    <div class="live-badge"><div class="ldot"></div><span class="llbl">INR</span><span class="lval" id="fx-val">83.5</span></div>
+    <div class="live-badge"><div class="ldot" id="status-dot" style="background:#EF9F27;animation:none;"></div><span class="llbl" id="last-upd">loading</span></div>
+  </div>
+</div>
+
+<div class="well-bar" id="well-bar">
+  <div class="ds-toggle">
+    <button class="ds-btn on" id="ds-mh" onclick="setDataset('mh')">Mumbai High North</button>
+    <button class="ds-btn" id="ds-cb" onclick="setDataset('cb')">Cambay Basin · Kalol Ss</button>
+  </div>
+  <span id="well-bar-label" class="wlbl">Mumbai High North:</span>
+  <div id="wells-mh" style="display:flex;align-items:center;gap:4px;">
+    <button class="w-btn on" onclick="sw(0)">MH-N-01 <span class="ws ws-p">Pay</span></button>
+    <button class="w-btn" onclick="sw(1)">MH-N-02 <span class="ws ws-d">Declining</span></button>
+    <button class="w-btn" onclick="sw(2)">MH-N-03 <span class="ws ws-p">Pay</span></button>
+    <button class="w-btn" onclick="sw(3)">MH-N-04 <span class="ws ws-w">High WC</span></button>
+    <button class="w-btn" onclick="sw(4)">MH-N-05 <span class="ws ws-d">Declining</span></button>
+  </div>
+  <div id="wells-cb" style="display:none;align-items:center;gap:4px;">
+    <button class="w-btn on" onclick="sw(0)">CB-MHJ-05 <span class="ws ws-p">Pay</span></button>
+    <button class="w-btn" onclick="sw(1)">CB-SDR-01 <span class="ws ws-p">Pay</span></button>
+    <button class="w-btn" onclick="sw(2)">CB-SDR-05 <span class="ws ws-d">Declining</span></button>
+    <button class="w-btn" onclick="sw(3)">CB-SDR-06 <span class="ws ws-w">Viscous</span></button>
+    <button class="w-btn" onclick="sw(4)">CB-AKL-18 <span class="ws ws-w">High WC</span></button>
+  </div>
+  <span id="ds-note-cb" class="ds-note" style="display:none;">Synthetic · Representative Cambay Basin Kalol sandstone parameters · Onshore Gujarat</span>
+</div>
+
+<div class="mine-bar" id="mine-bar" style="display:none;">
+  <span class="wlbl">Select commodity:</span>
+  <button class="w-btn on" onclick="setMine(0)">Jharia Coalfield <span class="ws ws-p">Coal</span></button>
+  <button class="w-btn" onclick="setMine(1)">Bailadila <span class="ws ws-p">Iron Ore</span></button>
+  <button class="w-btn" onclick="setMine(2)">Hutti Mine <span class="ws ws-d">Gold</span></button>
+  <button class="w-btn" onclick="setMine(3)">Malanjkhand <span class="ws ws-d">Copper</span></button>
+  <button class="w-btn" onclick="setMine(4)">Kerala Monazite <span class="ws ws-w">Rare Earths</span></button>
+  <button class="w-btn" onclick="setMine(5)">Jaduguda <span class="ws ws-w">Uranium</span></button>
+</div>
+
+<!-- PETROLEUM PANELS -->
+<div class="panel on" id="p-well">
+  <div class="kpis" id="k-well"></div>
+  <div class="cols2">
+    <div class="card">
+      <div class="ct">Wireline log — pay zone identification</div>
+      <div class="log-grid" id="log-grid"></div>
+      <div class="legend">
+        <div class="lp"><span class="lc" style="background:#8B5E1A;"></span>GR</div>
+        <div class="lp"><span class="lc" style="background:#185FA5;"></span>RHOB</div>
+        <div class="lp"><span class="lc" style="background:#993C1D;"></span>DT</div>
+        <div class="lp"><span class="lc" style="background:#0F6E56;"></span>Sw</div>
+        <div class="lp"><span class="lsq" style="background:var(--g-bg);border-color:var(--g-mid);"></span>Pay</div>
+        <div class="lp"><span class="lsq" style="background:var(--r-bg);border-color:var(--r-mid);"></span>Non-pay</div>
+        <div class="lp"><span class="lsq" style="background:var(--a-bg);border-color:var(--a-mid);"></span>Marginal</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ct">Pay zone map — spectral + log confirmed</div>
+      <table class="dt" id="zone-t"></table>
+    </div>
+  </div>
+</div>
+
+<div class="panel" id="p-eor">
+  <div class="cols2">
+    <div class="card">
+      <div class="ct">FFUS ranking — 7 EOR methods</div>
+      <div id="eor-bars"></div>
+      <div class="legend" style="margin-top:8px;">
+        <div class="lp"><span style="background:#FFD700;color:#5C4200;font-size:9px;padding:1px 5px;border-radius:3px;font-weight:500;">#1</span>Best method</div>
+        <div class="lp"><span style="background:var(--g-bg);color:var(--g-dark);font-size:9px;padding:1px 5px;border-radius:3px;font-weight:500;">#2-3</span>Highly rec.</div>
+        <div class="lp"><span style="background:var(--a-bg);color:var(--a-dark);font-size:9px;padding:1px 5px;border-radius:3px;font-weight:500;">#4-5</span>Recommended</div>
+        <div class="lp"><span style="background:var(--r-bg);color:var(--r-dark);font-size:9px;padding:1px 5px;border-radius:3px;font-weight:500;">#6-7</span>Not rec.</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ct">6-domain radar — top method</div>
+      <canvas id="radar-c" width="300" height="220" style="width:100%;max-width:300px;display:block;margin:0 auto;"></canvas>
+    </div>
+  </div>
+  <div class="card" style="margin-top:10px;"><div class="ct">HyperSenseIQ EOR recommendation</div><div id="eor-verdict"></div></div>
+</div>
+
+<div class="panel" id="p-decline">
+  <div class="cols2">
+    <div class="card">
+      <div class="ct">Production decline — Arps harmonic b=0.5</div>
+      <div class="cwrap"><canvas id="dec-c"></canvas></div>
+      <div class="legend" style="margin-top:7px;">
+        <div class="lp"><span class="lc" style="background:#6B3FD4;"></span>Base decline</div>
+        <div class="lp"><span class="lc" style="background:var(--g-mid);"></span>Best EOR</div>
+        <div class="lp"><span class="lc" style="background:#AB47BC;"></span>UST</div>
+        <div class="lp"><span class="lc" style="background:var(--r-mid);"></span>Econ. limit</div>
+      </div>
+    </div>
+    <div class="card"><div class="ct">Decline diagnostics</div><div id="dec-stats"></div></div>
+  </div>
+</div>
+
+<div class="panel" id="p-econ">
+  <div class="sl-row">
+    <span class="sl-lbl">Crude price (₹/bbl):</span>
+    <input type="range" id="oil-sl" min="3500" max="10000" value="6500" step="100" oninput="ec()" style="flex:1;min-width:80px;">
+    <span class="sl-val" id="oil-v">₹6,500</span>
+    <span class="sl-lbl" style="margin-left:12px;">Discount rate:</span>
+    <input type="range" id="disc-sl" min="8" max="20" value="12" step="1" oninput="ec()" style="width:80px;">
+    <span class="sl-val" id="disc-v">12%</span>
+  </div>
+  <div class="scens" id="scens"></div>
+  <div class="cols2">
+    <div class="card"><div class="ct">India fiscal — ONGC / Mumbai High offshore</div><div id="fiscal"></div></div>
+    <div class="card">
+      <div class="ct">5-year cashflow (₹ Cr)</div>
+      <div class="cwrap"><canvas id="cf-c"></canvas></div>
+      <div class="legend" style="margin-top:6px;">
+        <div class="lp"><span class="lsq" style="background:var(--g-bg);border-color:var(--g-mid);"></span>Positive CF</div>
+        <div class="lp"><span class="lsq" style="background:var(--r-bg);border-color:var(--r-mid);"></span>CAPEX / negative</div>
+        <div class="lp"><span class="lc" style="background:#F0A500;"></span>Cumulative</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SPECTRAL INTELLIGENCE PANEL -->
+<div class="panel" id="p-spectral">
+  <!-- Lightbox -->
+  <div class="lb-overlay" id="lightbox">
+    <div class="lb-inner">
+      <div class="lb-hdr">
+        <div><div class="lb-title" id="lb-title">Core plug spectral analysis</div><div class="lb-sub" id="lb-sub">HyperSenseIQ SWIR intelligence</div></div>
+        <button class="lb-close" onclick="closeLB()">Close</button>
+      </div>
+      <div class="lb-cols">
+        <div class="lb-card"><div class="lb-ct">SWIR false-colour core image</div><canvas id="lb-core" width="480" height="300" style="width:100%;border-radius:5px;display:block;"></canvas><div style="display:flex;gap:5px;margin-top:6px;flex-wrap:wrap;" id="lb-legend"></div></div>
+        <div class="lb-card"><div class="lb-ct">SWIR absorption spectrum 900–2500 nm</div><canvas id="lb-spec" width="460" height="190" style="width:100%;display:block;"></canvas></div>
+      </div>
+      <div class="lb-card" style="margin-bottom:12px;"><div class="lb-ct">Zone-by-zone mineral identification</div><table class="lb-zt" id="lb-zt"></table></div>
+      <div class="lb-scores" id="lb-scores"></div>
+      <div class="lb-verdict" id="lb-verdict"></div>
+      <div class="lb-nav">
+        <button class="lb-nav-btn" onclick="navPlug(-1)">← Previous plug</button>
+        <span style="color:#5DCAA5;font-size:10px;align-self:center;" id="lb-counter"></span>
+        <button class="lb-nav-btn" onclick="navPlug(1)">Next plug →</button>
+      </div>
+    </div>
+  </div>
+
+  <div style="background:linear-gradient(135deg,#1a0c3d,#0c1a2e);border-radius:8px;padding:12px 16px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+    <div><div style="color:#C5B4F4;font-size:13px;font-weight:500;">HyperSenseIQ Spectral Intelligence — SWIR Core Plug Analysis</div>
+    <div style="color:#A58FE8;font-size:10px;margin-top:2px;">900–2500 nm · 224 bands · SIS / LCS / FPP / OSQ scoring · Pay zone declaration</div></div>
+    <select id="spec-well-sel" onchange="specWellChange()" style="font-size:11px;padding:5px 10px;border-radius:5px;border:0.5px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#9FE1CB;cursor:pointer;">
+      <!-- populated by renderSpectral() based on active dataset -->
+    </select>
+  </div>
+
+  <div class="cols2" style="margin-bottom:12px;">
+    <div class="card">
+      <div class="ct">Depth flagpole track — click any flag to open full spectral analysis</div>
+      <div class="spec-flagpole">
+        <div class="depth-ruler" id="spec-ruler"></div>
+        <div class="log-mini" id="spec-log-mini"></div>
+        <div class="flag-track" id="spec-flags"></div>
+      </div>
+      <div class="legend" style="margin-top:7px;">
+        <div class="lp"><span class="lsq" style="background:var(--g-bg);border-color:var(--g-mid);"></span>Pay plug</div>
+        <div class="lp"><span class="lsq" style="background:var(--r-bg);border-color:var(--r-mid);"></span>Non-pay plug</div>
+        <div class="lp"><span class="lsq" style="background:var(--a-bg);border-color:var(--a-mid);"></span>Marginal</div>
+        <div class="lp"><span class="lsq" style="background:var(--pu-bg);border-color:var(--pu-mid);"></span>Spectral anomaly</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ct">Core plug gallery — <span id="plug-count">0</span> samples · click to view</div>
+      <div class="spec-gall" id="spec-gall"></div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px;" id="spec-scores"></div>
+
+  <div class="cols2">
+    <div class="card"><div class="ct">Selected plug — spectral zone detail</div><div id="spec-detail">Click any plug above to view spectral analysis</div></div>
+    <div class="card">
+      <div class="ct">Mineral absorption spectrum</div>
+      <div id="spec-minerals" style="margin-bottom:8px;"></div>
+      <div style="height:110px;position:relative;"><canvas id="spec-mini-chart" style="position:absolute;top:0;left:0;width:100%;height:100%;"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<div class="panel" id="p-twin">
+  <div class="cols3">
+    <div class="card"><div class="ct">National asset identity</div><div id="tw-id"></div></div>
+    <div class="card"><div class="ct">Live petrophysical attributes</div><div id="tw-pet"></div></div>
+    <div class="card"><div class="ct">Blockchain provenance</div><div id="tw-chain"></div></div>
+  </div>
+  <div class="card" style="margin-top:10px;"><div class="ct">National repository integration</div><div id="tw-repos"></div></div>
+</div>
+
+<div class="panel" id="p-exec">
+  <div class="kpis" id="k-exec"></div>
+  <div class="cols2">
+    <div class="card"><div class="ct">Field portfolio — all 5 wells colour coded</div><div id="port"></div></div>
+    <div class="card"><div class="ct">HyperSenseIQ executive verdict</div><div id="exec-v"></div></div>
+  </div>
+</div>
+
+<div class="panel" id="p-input">
+  <div style="background:linear-gradient(135deg,#1a1a0c,#0c2a1a);border-radius:8px;padding:12px 16px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+    <div><div style="color:#E8D87A;font-size:13px;font-weight:500;">Your Well Data — HyperSenseIQ live analysis</div>
+    <div style="color:#5DCAA5;font-size:10px;margin-top:2px;">Enter real parameters · AI analyses instantly · All tabs update with your data</div></div>
+    <div style="display:flex;gap:6px;">
+      <button onclick="loadSample()" style="font-size:11px;padding:6px 12px;border-radius:5px;border:0.5px solid #5DCAA5;background:rgba(29,158,117,.2);color:#9FE1CB;cursor:pointer;">Load ONGC sample</button>
+      <button onclick="clearInp()" style="font-size:11px;padding:6px 12px;border-radius:5px;border:0.5px solid rgba(255,255,255,.15);background:transparent;color:#6A8FAD;cursor:pointer;">Clear</button>
+    </div>
+  </div>
+
+  <!-- ── LAS FILE UPLOAD ──────────────────────────────────────────────── -->
+  <div style="margin-bottom:14px;">
+    <div style="font-size:11px;font-weight:600;color:#CE93D8;margin-bottom:8px;
+      display:flex;align-items:center;gap:6px;">
+      <span>📂</span> Upload Wireline LAS File — Auto-populate parameters
+      <span style="font-size:9px;font-weight:400;color:#5A7A94;margin-left:4px;">
+        (GR · RHOB · NPHI · RT · DT)</span>
+    </div>
+    <div class="las-upload-zone" id="las-drop-zone"
+         onclick="document.getElementById('las-file-input').click()"
+         ondragover="event.preventDefault();this.classList.add('drag')"
+         ondragleave="this.classList.remove('drag')"
+         ondrop="handleLasDrop(event)">
+      <input type="file" id="las-file-input" accept=".las" onchange="handleLasFile(this.files[0])">
+      <div class="las-upload-icon">🪨</div>
+      <div class="las-upload-title">Drop your LAS file here or click to browse</div>
+      <div class="las-upload-sub">LAS 2.0 · Wireline or Interpreted · Max 50MB</div>
+    </div>
+    <div id="las-sample-btns" style="text-align:center;margin:-4px 0 8px;display:flex;flex-wrap:wrap;justify-content:center;gap:5px;">
+      <!-- populated by renderLasSampleBtns() based on active dataset -->
+    </div>
+    <div id="las-status" class="las-status"></div>
+    <div id="las-result" class="las-result">
+      <div class="las-result-title">📊 LAS Analysis Complete — Parameters Ready</div>
+      <div id="las-result-rows"></div>
+      <div class="las-warn" id="las-warn"></div>
+      <button class="las-apply" onclick="applyLasParams()">
+        ✅ Apply to Well Parameters Below
+      </button>
+    </div>
+  </div>
+  <hr style="border:none;border-top:0.5px solid rgba(255,255,255,.08);margin:0 0 14px;">
+
+  <div class="cols2" style="margin-bottom:12px;">
+    <div class="card">
+      <div class="ct" style="color:#854F0B;">Section 1 — well identification & production</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;">
+        <div class="inp-grp"><label class="inp-lbl">Well ID</label><input class="inp" id="i-wid" placeholder="e.g. MH-A-101" oninput="validateInp()"></div>
+        <div class="inp-grp"><label class="inp-lbl">Field</label><input class="inp" id="i-fld" placeholder="e.g. Mumbai High"></div>
+        <div class="inp-grp"><label class="inp-lbl">Initial rate qi (bbl/d)</label><input class="inp" id="i-qi" type="number" placeholder="800" oninput="livePreview()"></div>
+        <div class="inp-grp"><label class="inp-lbl">Decline rate Di (/yr)</label><input class="inp" id="i-di" type="number" placeholder="0.28" step="0.01" oninput="livePreview()"></div>
+        <div class="inp-grp"><label class="inp-lbl">Water cut (%)</label><input class="inp" id="i-wc" type="number" placeholder="35" oninput="livePreview()"></div>
+        <div class="inp-grp"><label class="inp-lbl">Years producing</label><input class="inp" id="i-age" type="number" placeholder="8" oninput="livePreview()"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ct" style="color:#185FA5;">Section 2 — reservoir parameters</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;">
+        <div class="inp-grp"><label class="inp-lbl">Porosity φ (fraction)</label><input class="inp" id="i-phi" type="number" placeholder="0.22" step="0.01" oninput="livePreview()"><div class="inp-hint">Typical: 0.10–0.30</div></div>
+        <div class="inp-grp"><label class="inp-lbl">Water saturation Sw</label><input class="inp" id="i-sw" type="number" placeholder="0.20" step="0.01" oninput="livePreview()"><div class="inp-hint">Typical: 0.15–0.40</div></div>
+        <div class="inp-grp"><label class="inp-lbl">Permeability (mD)</label><input class="inp" id="i-perm" type="number" placeholder="85" oninput="livePreview()"></div>
+        <div class="inp-grp"><label class="inp-lbl">Net pay (m)</label><input class="inp" id="i-pay" type="number" placeholder="8.1" step="0.1" oninput="livePreview()"></div>
+        <div class="inp-grp"><label class="inp-lbl">API gravity (°API)</label><input class="inp" id="i-api" type="number" placeholder="38" oninput="livePreview()"></div>
+        <div class="inp-grp"><label class="inp-lbl">Depth TVD (m)</label><input class="inp" id="i-dep" type="number" placeholder="1842" oninput="validateInp()"></div>
+      </div>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:12px;">
+    <div class="ct" style="color:#0B4F3E;">Section 3 — economics (India fiscal)</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:9px;">
+      <div class="inp-grp"><label class="inp-lbl">Crude price (₹/bbl)</label><input class="inp" id="i-op" type="number" placeholder="6500" oninput="livePreview();this.dataset.userEdited='1'"></div>
+      <div class="inp-grp"><label class="inp-lbl">Discount rate (%)</label><input class="inp" id="i-dr" type="number" placeholder="12" oninput="livePreview()"></div>
+      <div class="inp-grp"><label class="inp-lbl">ONGC equity (%)</label><input class="inp" id="i-eq" type="number" placeholder="85" oninput="livePreview()"></div>
+      <div class="inp-grp"><label class="inp-lbl">EOR horizon (yrs)</label><input class="inp" id="i-hor" type="number" placeholder="5" oninput="livePreview()"></div>
+    </div>
+  </div>
+  <div id="inp-preview" style="display:none;background:var(--navy);border-radius:7px;padding:10px 14px;margin-bottom:12px;">
+    <div style="color:#5DCAA5;font-size:9px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px;">Live preview</div>
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;" id="preview-kpis"></div>
+  </div>
+  <div style="text-align:center;margin-bottom:12px;">
+    <button id="analyse-btn" class="disabled-btn" onclick="runAnalysis()" disabled>Run HyperSenseIQ Analysis</button>
+    <div id="inp-hint" style="font-size:10px;color:#AAA;margin-top:5px;">Fill required fields to enable analysis</div>
+  </div>
+  <div id="inp-results" style="display:none;">
+    <div style="background:linear-gradient(135deg,#0B4F3E,#142338);border-radius:8px;padding:12px 16px;margin-bottom:12px;text-align:center;">
+      <div style="color:#9FE1CB;font-size:12px;font-weight:500;">HyperSenseIQ Analysis Complete</div>
+      <div style="color:#5DCAA5;font-size:10px;margin-top:2px;" id="res-well-name"></div>
+    </div>
+    <div class="kpis" id="res-kpis"></div>
+    <div class="cols2" style="margin-bottom:10px;">
+      <div class="card"><div class="ct">Volumetrics & STOIIP</div><div id="res-vol"></div></div>
+      <div class="card"><div class="ct">EOR recommendation — top 3</div><div id="res-eor"></div></div>
+    </div>
+    <div class="cols2">
+      <div class="card"><div class="ct">Decline curve</div><div style="height:170px;position:relative;"><canvas id="res-dec" style="position:absolute;top:0;left:0;width:100%;height:100%;"></canvas></div></div>
+      <div class="card"><div class="ct">India fiscal economics</div><div id="res-econ"></div></div>
+    </div>
+    <div class="card" style="margin-top:10px;"><div class="ct">HyperSenseIQ verdict</div><div id="res-verdict"></div></div>
+  </div>
+</div>
+
+<!-- MINING PANELS -->
+<div class="panel" id="p-m-overview" style="display:none;">
+  <div style="background:linear-gradient(135deg,#0C2A1A,#1A0C3D);border-radius:8px;padding:12px 16px;margin-bottom:14px;">
+    <div style="color:#9FE1CB;font-size:13px;font-weight:500;" id="m-title">HyperSenseIQ Mining Intelligence</div>
+    <div style="color:#5DCAA5;font-size:10px;margin-top:2px;" id="m-sub">Select a mine above</div>
+  </div>
+  <div class="mine-nav" id="mine-nav-btns"></div>
+  <div class="kpis" id="m-kpis"></div>
+  <div class="cols2">
+    <div class="card"><div class="ct">Ore body spectral map</div><canvas id="m-ore-c" height="200" style="width:100%;display:block;border-radius:5px;"></canvas><div style="display:flex;gap:5px;margin-top:6px;flex-wrap:wrap;" id="m-ore-legend"></div></div>
+    <div class="card"><div class="ct">Grade distribution — block model</div><div id="m-blocks"></div></div>
+  </div>
+</div>
+<div class="panel" id="p-m-vol" style="display:none;"><div class="mine-nav" id="mine-nav2"></div><div class="cols2"><div class="card"><div class="ct">Mining volumetrics — in-situ resource</div><div id="m-vol"></div></div><div class="card"><div class="ct">Parallel framework — oil/gas equivalent</div><table class="dt" id="m-parallel"></table></div></div></div>
+<div class="panel" id="p-m-recovery" style="display:none;"><div class="mine-nav" id="mine-nav3"></div><div class="cols2"><div class="card"><div class="ct">Recovery method ranking</div><div id="m-rec-bars"></div></div><div class="card"><div class="ct">Method detail</div><div id="m-rec-detail"></div></div></div><div class="card" style="margin-top:10px;"><div class="ct">HyperSenseIQ mining recommendation</div><div id="m-verdict"></div></div></div>
+<div class="panel" id="p-m-mecon" style="display:none;">
+  <div class="mine-nav" id="mine-nav4"></div>
+  <div class="sl-row"><span class="sl-lbl">Commodity price:</span><span class="sl-val vg" id="m-price-disp"></span><span class="sl-lbl" style="margin-left:12px;">Discount rate:</span><input type="range" id="m-disc-sl" min="8" max="20" value="12" step="1" oninput="updateMineEcon()" style="width:80px;"><span class="sl-val" id="m-disc-v">12%</span></div>
+  <div class="scens" id="m-scens"></div>
+  <div class="cols2"><div class="card"><div class="ct">India mining fiscal — MMDR Act</div><div id="m-fiscal"></div></div><div class="card"><div class="ct">Project cashflow (₹ Cr)</div><div style="height:175px;position:relative;"><canvas id="m-cf-c" style="position:absolute;top:0;left:0;width:100%;height:100%;"></canvas></div></div></div>
+</div>
+<div class="panel" id="p-m-mtwin" style="display:none;">
+  <div class="mine-nav" id="mine-nav5"></div>
+  <div class="cols3"><div class="card"><div class="ct">Drill core digital twin</div><div id="m-tw-id"></div></div><div class="card"><div class="ct">Mineralogy — spectral</div><div id="m-tw-min"></div></div><div class="card"><div class="ct">Strategic classification</div><div id="m-tw-strat"></div></div></div>
+  <div class="card" style="margin-top:10px;"><div class="ct">National repository — critical minerals registry</div><div id="m-tw-repos"></div></div>
+</div>
+
+<div class="footer" style="display:flex;align-items:center;justify-content:center;gap:16px;"><img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wAARCAB4AHgDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD9U6KKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKie5ijlWJpFWRhlVJwT9Kp6/4h07wvpU+o6pdx2VnCu55ZTgfQDqT7Dk1EpxinKTslv5FxhKclGKu3t5mjRXwP8Xf28/F1h4mb/hE7TT7HR4HIjj1C3M0two7vhhtz6LyPU0zWf+CkmrakuhPoHh20tngVX1i3vXL+a+cMkDAjamOQ7AnJAI45ywNenmMuXDu59RmfDGZZThIY3FRShLs7teq/yv5n33RXk9j+1F8ObvwzoWsyeIIYE1aLzIrXa0k8WDhxIiAldrZBzxxxmu0u/iN4ZstKstSl1q0FlejdbSo+/wA4d9oGScdDxx3rulRqR3i/uPiVjMM5Sj7SN476rT17HSUVW07UrXVrOK7s50uLaQZSRDkGrNY7HUmmroKKKKBhRRRQAUUUUAFFFeL/ALWvxW174NfCM+I/DawSamNX06zWKeMOJUmukjdAGIAZlYgEnAJBqopyaSE3ZXPVfEGgweIdOe2m+VsZjlHVG9RXzr4r+B3jLxRq32FsfZQ2Be3FzviRf7wXO7PtgVw1t+3F4r8Jz+PNS8WeDymlaZ4jl0OCw85Fu9PnOnC4tbeUxb0kM8wMe8EBS6dav6t+39e+GPEWv6Xqvga1nuNGk1O1uLLS9a8++86ztEuWcwmIFYG3NH5pP3lPHGK8XMuH6GaSjKtdW7O1/J/1c9nLs6r5Y26Nvmr281/VjG+KX7LviHU2j8JaB4YhGmM4I1hvKMkz955pj8y98RrgAcAMeT8b/FD4K6/8MfF95oF2ki63aSBVEQJW6Vj8jxcZIbsPXjqMV92eFf23vEPjLVtC0LTPAumSa3qV/c2hmOvBrNI4bSK7aVXSJmYiORgY9obKjHDceN+B/wBszUdQutQ1/wAb6F4f8beINLitJdLewsoVt7Frm8+ziQXySSGOFdwJSaNJQw7Z49HK8teWTlOnJu7vZtaeStsj2q/FdXG4f6pi4Jxs9Ve7l3bbf9fcfOHwovrnw74knfVreS6VJSt1p1wzQMJF4wxHzIQRgjg9uOtfoB8Ifgz4j+IkEHiTxNIdEspIlWzs44drCEfcVIzxHHjpnJPU9cnzm+/al8Oaxrdp4oufgz4eudUtra2vNT1KbUIXlRX1b+zd8LLEwm+co6lipAyDggZ6mb/goRNBL4mtX8FwC/sNQgsrSNdV3xlJbx7UTzyrGY0QFAThicsEwOWr63FY6deKVOFn1d7/AHf5n4lR4dg8ZPE4mpzReqila77ye7t0R9VeDfByeDbWe2hvJrmGRgyrKANh79PX+ldFXz8P2h9V8T/s96J4/wBOsINCv73VoNPltppUu4lH237PIUkUgMrAEqe2RkZFZfhj49eKNV+Iul2Ut7pcwvvEN3o1x4WitSL3T7eLftuXk3E/wAnKhSG4r5OriFCpyT3P1XAZFXxGDeIw9lCPN1d/dV30fTq7Lo2rq/0rRSDpS1seKFFFFABRRRQAVDdWcF9F5dxDHPHuDbJUDDIOQcHuDU1FAHnXxa+HOieI9MttWufD665f6NdLqlnY+ZKkM10pXZJLFHxMyYDLvDYK8Y61x3hSaTwtJ4p1LRvhRe6ZqWozy6vd3F229r2d5Yo5VXG91LIu/aPlG0cHJr3asq60i5vrhzLqU8VqT8sFqBEcf7T8sfwK07u1risjzGw+IV3pXlx2/wAKr/Tltw80cSLAjRhnZMgKMKz7CeDyMEnHNU4viX5tjr3k+B7OzEkETy29yUBu5XkZH3AL+8CrhsEbjk529a9Zj8K6ShJawhnc/wAdwPNb83yavrY2ygAW8QA6AIKLjPKtN8dTXehPPF8NbgCBre0jtYlibfGQzkoAv+rR1AGQOWBwKrXHjm/WS5dfhVeTWGokrdRLaDz7hyygNIpQKV2lj8xzx27+pXHhnSbos0um2rOTkv5Khs+uQM1B/wAI9Jac6dqV1a4xiKZjcRH6hyWH4MKLgZvgvU5fENhdW174Wk0G1spUit4bhV2SqFDB41wMKCcDIB46A8DUu/CGjXuv2euTabbvrFmGWC+CYlQMMMNw5IIHQ5Fa4yAM4z3xS1LSe5pCpOn8Da3WnZ7/AH9QooopmYUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAf/9k=" alt="HyperSenseIQ" style="height:36px;width:36px;object-fit:contain;border-radius:4px;opacity:.7;"><div><span style="color:#9FE1CB;">HyperSenseIQ v2.1</span> — Unified Subsurface Intelligence Platform · Mumbai High North<br><span style="font-size:9px;">Inventor: Niranjan Bilgi · +91 9699165381 · niranjanbilgi@yahoo.com · 97/5 Krishna Kunj, Dadar, Mumbai 400028</span></div></div>
+<script>
+const INR=v=>'₹'+Math.round(v).toLocaleString('en-IN');
+const f1=v=>parseFloat(v).toFixed(1);
+
+/* ── WELL DATA ── */
+const WELLS=[
+  {id:'MH-N-01',depth:'1842–1857m',form:'Bassein Lst.',status:'Pay',qi:820,Di:.28,phi:.22,sw:.18,perm:85,gr:18,rhob:2.24,dt:68,wc:18,oip:12.4,stoiip:7593,
+   zones:[{z:'Shale drape',d:'1842.0',t:1.0,lith:'Arg. Shale',fluid:'Brine',phi:6,sw:92,dec:'NON-PAY'},
+          {z:'Pay zone A',d:'1843.0',t:2.0,lith:'Bioclastic Lst.',fluid:'Oil',phi:22,sw:18,dec:'PAY'},
+          {z:'Tight streak',d:'1844.9',t:.8,lith:'Calcite-cement',fluid:'Mixed',phi:8,sw:55,dec:'NON-PAY'},
+          {z:'Pay zone B',d:'1845.7',t:2.6,lith:'Oolitic Lst.',fluid:'Oil',phi:26,sw:14,dec:'PAY'},
+          {z:'Pay zone C',d:'1848.8',t:1.8,lith:'Wackestone',fluid:'Oil',phi:19,sw:22,dec:'PAY'},
+          {z:'Water zone',d:'1851.7',t:1.3,lith:'Grainstone',fluid:'Brine',phi:21,sw:88,dec:'NON-PAY'},
+          {z:'Pay zone D',d:'1852.9',t:1.5,lith:'Packstone',fluid:'Oil',phi:20,sw:20,dec:'PAY'}]},
+  {id:'MH-N-02',depth:'1910–1930m',form:'Bassein Lst.',status:'Declining',qi:680,Di:.32,phi:.18,sw:.28,perm:62,gr:24,rhob:2.31,dt:64,wc:35,oip:9.8,stoiip:6210,
+   zones:[{z:'Pay zone A',d:'1910.0',t:3.2,lith:'Grainstone',fluid:'Oil',phi:18,sw:28,dec:'PAY'},
+          {z:'Dolomite',d:'1913.2',t:1.5,lith:'Dolomite',fluid:'Mixed',phi:14,sw:42,dec:'MARGINAL'},
+          {z:'Pay zone B',d:'1914.7',t:2.8,lith:'Packstone',fluid:'Oil',phi:20,sw:30,dec:'PAY'},
+          {z:'Shale seal',d:'1917.5',t:1.0,lith:'Calc. Shale',fluid:'Brine',phi:5,sw:95,dec:'NON-PAY'}]},
+  {id:'MH-N-03',depth:'1870–1892m',form:'Mukta Fm.',status:'Pay',qi:940,Di:.24,phi:.25,sw:.16,perm:110,gr:15,rhob:2.19,dt:71,wc:14,oip:15.2,stoiip:8820,
+   zones:[{z:'Shale drape',d:'1870.0',t:.8,lith:'Shale',fluid:'Brine',phi:5,sw:94,dec:'NON-PAY'},
+          {z:'Pay zone A',d:'1870.8',t:4.2,lith:'Bioclastic Lst.',fluid:'Oil',phi:25,sw:16,dec:'PAY'},
+          {z:'Tight',d:'1875.0',t:.6,lith:'Cemented',fluid:'Mixed',phi:7,sw:62,dec:'NON-PAY'},
+          {z:'Pay zone B (best)',d:'1875.6',t:5.1,lith:'Oolitic Lst.',fluid:'Oil',phi:28,sw:12,dec:'PAY'},
+          {z:'Pay zone C',d:'1880.7',t:2.4,lith:'Wackestone',fluid:'Oil',phi:22,sw:20,dec:'PAY'}]},
+  {id:'MH-N-04',depth:'1955–1972m',form:'Bassein Lst.',status:'High WC',qi:510,Di:.38,phi:.16,sw:.52,perm:45,gr:32,rhob:2.38,dt:60,wc:68,oip:6.8,stoiip:4950,
+   zones:[{z:'Pay A (watered)',d:'1955.0',t:3.5,lith:'Grainstone',fluid:'Oil/Water',phi:16,sw:52,dec:'MARGINAL'},
+          {z:'Water leg',d:'1958.5',t:2.0,lith:'Packstone',fluid:'Brine',phi:20,sw:85,dec:'NON-PAY'},
+          {z:'Pay zone B',d:'1960.5',t:2.2,lith:'Bioclastic Lst.',fluid:'Oil',phi:18,sw:35,dec:'PAY'},
+          {z:'Tight base',d:'1962.7',t:1.0,lith:'Cemented',fluid:'Brine',phi:6,sw:72,dec:'NON-PAY'}]},
+  {id:'MH-N-05',depth:'1988–2005m',form:'Bassein Lst.',status:'Declining',qi:590,Di:.35,phi:.20,sw:.22,perm:74,gr:20,rhob:2.26,dt:67,wc:28,oip:10.5,stoiip:6740,
+   zones:[{z:'Pay zone A',d:'1988.0',t:3.0,lith:'Bioclastic Lst.',fluid:'Oil',phi:20,sw:22,dec:'PAY'},
+          {z:'Stylolite',d:'1991.0',t:.4,lith:'Stylolite+Clay',fluid:'Mixed',phi:4,sw:70,dec:'NON-PAY'},
+          {z:'Pay zone B',d:'1991.4',t:3.8,lith:'Packstone',fluid:'Oil',phi:22,sw:24,dec:'PAY'},
+          {z:'Dolomite',d:'1995.2',t:1.5,lith:'Dolomitized',fluid:'Mixed',phi:14,sw:40,dec:'MARGINAL'}]}
+];
+
+/* ── CAMBAY BASIN WELL DATA (Synthetic — Representative Kalol Sandstone Parameters) —— */
+const WELLS_CB=[
+  {id:'CB-MHJ-05',depth:'1610–1625m',form:'Kalol K-IX+X',status:'Pay',qi:214,Di:.18,phi:.15,sw:.10,perm:30,gr:38,rhob:2.52,dt:58,wc:10,oip:4.2,stoiip:2890,
+   zones:[{z:'Shale seal',d:'1610.0',t:1.5,lith:'Calc. Shale',fluid:'Brine',phi:5,sw:95,dec:'NON-PAY'},
+          {z:'K-IX Pay A',d:'1611.5',t:5.2,lith:'Kalol Sst.',fluid:'Oil',phi:15,sw:25,dec:'PAY'},
+          {z:'Tight streak',d:'1616.7',t:0.8,lith:'Cemented Sst.',fluid:'Mixed',phi:6,sw:62,dec:'NON-PAY'},
+          {z:'K-X Pay B',d:'1617.5',t:6.8,lith:'Kalol Sst.',fluid:'Oil',phi:16,sw:22,dec:'PAY'},
+          {z:'Water base',d:'1624.3',t:1.2,lith:'Siltstone',fluid:'Brine',phi:12,sw:88,dec:'NON-PAY'}]},
+  {id:'CB-SDR-01',depth:'1537–1554m',form:'Kalol K-IX+X',status:'Pay',qi:237,Di:.20,phi:.14,sw:.05,perm:25,gr:42,rhob:2.55,dt:56,wc:0,oip:3.8,stoiip:2420,
+   zones:[{z:'Shale top',d:'1537.0',t:1.0,lith:'Dark Shale',fluid:'Brine',phi:4,sw:96,dec:'NON-PAY'},
+          {z:'K-IX Pay',d:'1538.0',t:4.0,lith:'Kalol Sst.',fluid:'Oil',phi:14,sw:28,dec:'PAY'},
+          {z:'K-X Pay',d:'1547.5',t:6.0,lith:'Kalol Sst.',fluid:'Oil',phi:15,sw:26,dec:'PAY'},
+          {z:'Base shale',d:'1553.5',t:0.5,lith:'Shale',fluid:'Brine',phi:3,sw:97,dec:'NON-PAY'}]},
+  {id:'CB-SDR-05',depth:'1570–1590m',form:'Kalol K-VIII+IX',status:'Declining',qi:138,Di:.25,phi:.13,sw:.30,perm:20,gr:45,rhob:2.58,dt:55,wc:30,oip:3.1,stoiip:2150,
+   zones:[{z:'K-VIII Pay',d:'1570.0',t:7.2,lith:'Kalol Sst.',fluid:'Oil',phi:13,sw:35,dec:'PAY'},
+          {z:'Shale band',d:'1577.2',t:0.6,lith:'Shale',fluid:'Brine',phi:4,sw:94,dec:'NON-PAY'},
+          {z:'K-IX Pay',d:'1577.8',t:6.5,lith:'Kalol Sst.',fluid:'Oil',phi:14,sw:32,dec:'PAY'},
+          {z:'Tight base',d:'1584.3',t:1.2,lith:'Cemented Sst.',fluid:'Mixed',phi:5,sw:68,dec:'NON-PAY'}]},
+  {id:'CB-SDR-06',depth:'1682–1689m',form:'Kalol K-IX',status:'Viscous Oil',qi:138,Di:.28,phi:.13,sw:.30,perm:18,gr:48,rhob:2.60,dt:54,wc:30,oip:2.2,stoiip:1680,
+   zones:[{z:'Shale cap',d:'1682.0',t:0.8,lith:'Dark Shale',fluid:'Brine',phi:3,sw:96,dec:'NON-PAY'},
+          {z:'K-IX Pay (viscous)',d:'1682.8',t:5.8,lith:'Kalol Sst.',fluid:'Viscous Oil',phi:13,sw:35,dec:'PAY'},
+          {z:'Base',d:'1688.6',t:0.4,lith:'Tight Sst.',fluid:'Mixed',phi:5,sw:72,dec:'NON-PAY'}]},
+  {id:'CB-AKL-18',depth:'1420–1426m',form:'MBS (Main Bassein)',status:'High WC',qi:140,Di:.30,phi:.12,sw:.40,perm:15,gr:35,rhob:2.48,dt:60,wc:40,oip:1.8,stoiip:1420,
+   zones:[{z:'MBS Pay A',d:'1420.0',t:3.2,lith:'MBS Sst.',fluid:'Oil/Water',phi:12,sw:45,dec:'MARGINAL'},
+          {z:'Tight streak',d:'1423.2',t:0.6,lith:'Cemented',fluid:'Mixed',phi:4,sw:72,dec:'NON-PAY'},
+          {z:'MBS Pay B',d:'1423.8',t:2.2,lith:'MBS Sst.',fluid:'Oil',phi:13,sw:38,dec:'PAY'}]}
+];
+const EORS_CB=[
+  {n:'UST',col:'#AB47BC',peor:.879,upl:.50,capex:.8,opex:.2},
+  {n:'CO₂ Misc.',col:'#8E44AD',peor:.62,upl:.38,capex:6.5,opex:1.8},
+  {n:'Polymer',col:'#1D9E75',peor:.58,upl:.28,capex:2.8,opex:.9},
+  {n:'ASP',col:'#0A7A9E',peor:.56,upl:.32,capex:4.2,opex:1.1},
+  {n:'Surfactant',col:'#27AE60',peor:.54,upl:.25,capex:3.1,opex:1.0},
+  {n:'Thermal',col:'#E67E22',peor:.38,upl:.20,capex:5.8,opex:2.1},
+  {n:'Microbial',col:'#888',peor:.42,upl:.12,capex:1.5,opex:.6},
+];
+const DOM_SC_CB={Physics:[.85,.70,.65,.60,.60,.40,.45],Mechanical:[.92,.65,.60,.55,.60,.35,.50],Geological:[.75,.60,.55,.55,.55,.40,.50],Chemical:[.95,.55,.65,.70,.65,.35,.55],Operational:[.85,.45,.55,.50,.55,.30,.60],Economic:[.95,.60,.70,.65,.65,.45,.55]};
+const PLUGS_CB={
+  0:[{id:'CP-CB-MHJ05-1611',depth:1611.5,t:5.2,lith:'Kalol Sst.',dec:'PAY',phi:15,sw:25,perm:30,sis:.76,lcs:.68,fpp:.79,osq:.74,minerals:[{n:'Quartz (SiO₂)',pct:58,wl:2200,col:'#D4C8A8'},{n:'Oil (C-H)',pct:22,wl:1730,col:'#B8860B'},{n:'Illite',pct:12,wl:2200,col:'#7a7a6e'},{n:'Chlorite',pct:8,wl:2250,col:'#4a7c59'}],fluid:'Oil',anom:false},
+     {id:'CP-CB-MHJ05-1617',depth:1617.5,t:6.8,lith:'Kalol Sst.',dec:'PAY',phi:16,sw:22,perm:35,sis:.80,lcs:.70,fpp:.82,osq:.78,minerals:[{n:'Quartz (SiO₂)',pct:62,wl:2200,col:'#D4C8A8'},{n:'Oil (C-H)',pct:20,wl:1730,col:'#B8860B'},{n:'Kaolinite',pct:10,wl:2160,col:'#9a9a8e'},{n:'Feldspar',pct:8,wl:2190,col:'#C4B48A'}],fluid:'Oil',anom:false}],
+  1:[{id:'CP-CB-SDR01-1538',depth:1538.0,t:4.0,lith:'Kalol Sst.',dec:'PAY',phi:14,sw:28,perm:25,sis:.74,lcs:.65,fpp:.76,osq:.72,minerals:[{n:'Quartz (SiO₂)',pct:60,wl:2200,col:'#D4C8A8'},{n:'Oil (C-H)',pct:18,wl:1730,col:'#B8860B'},{n:'Illite',pct:14,wl:2200,col:'#7a7a6e'},{n:'Chlorite',pct:8,wl:2250,col:'#4a7c59'}],fluid:'Oil',anom:false},
+     {id:'CP-CB-SDR01-1547',depth:1547.5,t:6.0,lith:'Kalol Sst.',dec:'PAY',phi:15,sw:26,perm:28,sis:.77,lcs:.67,fpp:.78,osq:.75,minerals:[{n:'Quartz (SiO₂)',pct:63,wl:2200,col:'#D4C8A8'},{n:'Oil (C-H)',pct:19,wl:1730,col:'#B8860B'},{n:'Kaolinite',pct:12,wl:2160,col:'#9a9a8e'},{n:'Calcite',pct:6,wl:2340,col:'#E8E4D8'}],fluid:'Oil',anom:false}],
+  2:[{id:'CP-CB-SDR05-1570',depth:1570.0,t:7.2,lith:'Kalol Sst.',dec:'PAY',phi:13,sw:35,perm:20,sis:.68,lcs:.62,fpp:.70,osq:.66,minerals:[{n:'Quartz (SiO₂)',pct:55,wl:2200,col:'#D4C8A8'},{n:'Oil (C-H)',pct:15,wl:1730,col:'#B8860B'},{n:'Illite',pct:18,wl:2200,col:'#7a7a6e'},{n:'Chlorite',pct:12,wl:2250,col:'#4a7c59'}],fluid:'Oil',anom:false},
+     {id:'CP-CB-SDR05-1578',depth:1577.8,t:6.5,lith:'Kalol Sst.',dec:'PAY',phi:14,sw:32,perm:22,sis:.72,lcs:.64,fpp:.73,osq:.70,minerals:[{n:'Quartz (SiO₂)',pct:58,wl:2200,col:'#D4C8A8'},{n:'Oil (C-H)',pct:16,wl:1730,col:'#B8860B'},{n:'Kaolinite',pct:14,wl:2160,col:'#9a9a8e'},{n:'Smectite',pct:12,wl:2210,col:'#9a9a8e'}],fluid:'Oil',anom:true}],
+  3:[{id:'CP-CB-SDR06-1683',depth:1682.8,t:5.8,lith:'Kalol Sst. (viscous)',dec:'PAY',phi:13,sw:35,perm:18,sis:.65,lcs:.60,fpp:.68,osq:.64,minerals:[{n:'Quartz (SiO₂)',pct:52,wl:2200,col:'#D4C8A8'},{n:'Oil (C-H)',pct:24,wl:1730,col:'#B8860B'},{n:'Asphaltene',pct:14,wl:1760,col:'#3D3D3A'},{n:'Illite',pct:10,wl:2200,col:'#7a7a6e'}],fluid:'Viscous Oil',anom:true}],
+  4:[{id:'CP-CB-AKL18-1420',depth:1420.0,t:3.2,lith:'MBS Sst.',dec:'MARGINAL',phi:12,sw:45,perm:15,sis:.58,lcs:.55,fpp:.55,osq:.56,minerals:[{n:'Quartz (SiO₂)',pct:50,wl:2200,col:'#D4C8A8'},{n:'Brine (OH)',pct:22,wl:1900,col:'#6b8fa8'},{n:'Oil (C-H)',pct:16,wl:1730,col:'#B8860B'},{n:'Illite',pct:12,wl:2200,col:'#7a7a6e'}],fluid:'Oil/Water',anom:true},
+     {id:'CP-CB-AKL18-1424',depth:1423.8,t:2.2,lith:'MBS Sst.',dec:'PAY',phi:13,sw:38,perm:18,sis:.65,lcs:.60,fpp:.67,osq:.64,minerals:[{n:'Quartz (SiO₂)',pct:55,wl:2200,col:'#D4C8A8'},{n:'Oil (C-H)',pct:18,wl:1730,col:'#B8860B'},{n:'Kaolinite',pct:15,wl:2160,col:'#9a9a8e'},{n:'Chlorite',pct:12,wl:2250,col:'#4a7c59'}],fluid:'Oil',anom:false}]
+};
+
+
+/* ── EOR DATA ── */
+const EORS=[
+  {n:'UST',col:'#AB47BC',peor:.82,upl:.42,capex:.9,opex:.3},
+  {n:'ASP',col:'#0A7A9E',peor:.85,upl:.45,capex:4.2,opex:1.1},
+  {n:'Polymer',col:'#1D9E75',peor:.78,upl:.32,capex:2.8,opex:.9},
+  {n:'CO₂ Misc.',col:'#8E44AD',peor:.72,upl:.38,capex:6.5,opex:1.8},
+  {n:'Surfactant',col:'#27AE60',peor:.70,upl:.30,capex:3.1,opex:1.0},
+  {n:'Thermal',col:'#E67E22',peor:.65,upl:.28,capex:5.8,opex:2.1},
+  {n:'Microbial',col:'#888',peor:.48,upl:.15,capex:1.5,opex:.6},
+];
+const DOM_SC={Physics:[.85,.88,.80,.82,.74,.55,.42],Mechanical:[.92,.80,.75,.65,.70,.60,.55],Geological:[.88,.82,.76,.70,.68,.62,.50],Chemical:[.60,.90,.72,.75,.78,.50,.45],Operational:[.95,.72,.80,.55,.65,.58,.52],Economic:[.88,.78,.74,.65,.60,.55,.48]};
+
+/* ── CORE PLUG DATA ── */
+const PLUGS={
+  0:[{id:'CP-MH01-1842',depth:1842.0,t:1.0,lith:'Arg. Shale',dec:'NON-PAY',phi:6,sw:92,perm:.02,sis:.31,lcs:.72,fpp:.08,osq:.35,minerals:[{n:'Illite',pct:55,wl:2200,col:'#7a7a6e'},{n:'Montmorillonite',pct:28,wl:2210,col:'#9a9a8e'},{n:'Calcite',pct:17,wl:2340,col:'#C4B48A'}],fluid:'Brine',anom:false},
+     {id:'CP-MH01-1843',depth:1843.0,t:2.0,lith:'Bioclastic Lst.',dec:'PAY',phi:22,sw:18,perm:85,sis:.88,lcs:.91,fpp:.85,osq:.89,minerals:[{n:'Calcite',pct:72,wl:2340,col:'#E8E4D8'},{n:'Oil (C-H)',pct:18,wl:1730,col:'#B8860B'},{n:'Illite',pct:10,wl:2200,col:'#7a7a6e'}],fluid:'Oil',anom:false},
+     {id:'CP-MH01-1846',depth:1845.7,t:2.6,lith:'Oolitic Lst.',dec:'PAY',phi:26,sw:14,perm:142,sis:.93,lcs:.95,fpp:.91,osq:.93,minerals:[{n:'Calcite',pct:80,wl:2340,col:'#E8E4D8'},{n:'Oil (C-H)',pct:14,wl:1730,col:'#B8860B'},{n:'Dolomite',pct:6,wl:2320,col:'#C4956A'}],fluid:'Oil',anom:false},
+     {id:'CP-MH01-1848',depth:1848.3,t:.5,lith:'Stylolite',dec:'NON-PAY',phi:4,sw:70,perm:1.2,sis:.38,lcs:.61,fpp:.22,osq:.40,minerals:[{n:'Illite',pct:48,wl:2200,col:'#7a7a6e'},{n:'Calcite',pct:35,wl:2340,col:'#E8E4D8'},{n:'Pyrite',pct:17,wl:900,col:'#888780'}],fluid:'Mixed',anom:true},
+     {id:'CP-MH01-1849',depth:1848.8,t:1.8,lith:'Wackestone',dec:'PAY',phi:19,sw:22,perm:63,sis:.82,lcs:.87,fpp:.80,osq:.84,minerals:[{n:'Calcite',pct:68,wl:2340,col:'#E8E4D8'},{n:'Oil (C-H)',pct:20,wl:1730,col:'#B8860B'},{n:'Chlorite',pct:12,wl:2250,col:'#4a7c59'}],fluid:'Oil',anom:false},
+     {id:'CP-MH01-1852',depth:1851.7,t:1.3,lith:'Grainstone',dec:'NON-PAY',phi:21,sw:88,perm:55,sis:.55,lcs:.89,fpp:.12,osq:.58,minerals:[{n:'Calcite',pct:75,wl:2340,col:'#E8E4D8'},{n:'Brine (OH)',pct:20,wl:1900,col:'#6b8fa8'},{n:'Quartz',pct:5,wl:2200,col:'#D4C8A8'}],fluid:'Brine',anom:false},
+     {id:'CP-MH01-1853',depth:1852.9,t:1.5,lith:'Packstone',dec:'PAY',phi:20,sw:20,perm:74,sis:.85,lcs:.90,fpp:.83,osq:.87,minerals:[{n:'Calcite',pct:70,wl:2340,col:'#E8E4D8'},{n:'Oil (C-H)',pct:18,wl:1730,col:'#B8860B'},{n:'Dolomite',pct:12,wl:2320,col:'#C4956A'}],fluid:'Oil',anom:false}],
+  1:[{id:'CP-MH02-1910',depth:1910.0,t:3.2,lith:'Grainstone',dec:'PAY',phi:18,sw:28,perm:62,sis:.78,lcs:.84,fpp:.76,osq:.80,minerals:[{n:'Calcite',pct:68,wl:2340,col:'#E8E4D8'},{n:'Oil (C-H)',pct:22,wl:1730,col:'#B8860B'},{n:'Quartz',pct:10,wl:2200,col:'#D4C8A8'}],fluid:'Oil',anom:false},
+     {id:'CP-MH02-1913',depth:1913.2,t:1.5,lith:'Dolomite',dec:'MARGINAL',phi:14,sw:42,perm:18,sis:.61,lcs:.83,fpp:.45,osq:.63,minerals:[{n:'Dolomite',pct:65,wl:2320,col:'#C4956A'},{n:'Calcite',pct:25,wl:2340,col:'#E8E4D8'},{n:'Clay',pct:10,wl:2200,col:'#7a7a6e'}],fluid:'Mixed',anom:true},
+     {id:'CP-MH02-1915',depth:1914.7,t:2.8,lith:'Packstone',dec:'PAY',phi:20,sw:30,perm:68,sis:.80,lcs:.86,fpp:.78,osq:.82,minerals:[{n:'Calcite',pct:74,wl:2340,col:'#E8E4D8'},{n:'Oil (C-H)',pct:16,wl:1730,col:'#B8860B'},{n:'Illite',pct:10,wl:2200,col:'#7a7a6e'}],fluid:'Oil',anom:false},
+     {id:'CP-MH02-1917',depth:1917.5,t:1.0,lith:'Calc. Shale',dec:'NON-PAY',phi:5,sw:95,perm:.01,sis:.28,lcs:.65,fpp:.05,osq:.30,minerals:[{n:'Illite',pct:60,wl:2200,col:'#7a7a6e'},{n:'Kaolinite',pct:25,wl:2160,col:'#9a9a8e'},{n:'Calcite',pct:15,wl:2340,col:'#E8E4D8'}],fluid:'Brine',anom:false}],
+  2:[{id:'CP-MH03-1870',depth:1870.0,t:.8,lith:'Shale',dec:'NON-PAY',phi:5,sw:94,perm:.01,sis:.29,lcs:.68,fpp:.06,osq:.32,minerals:[{n:'Illite',pct:65,wl:2200,col:'#7a7a6e'},{n:'Smectite',pct:22,wl:2210,col:'#9a9a8e'},{n:'Calcite',pct:13,wl:2340,col:'#E8E4D8'}],fluid:'Brine',anom:false},
+     {id:'CP-MH03-1871',depth:1870.8,t:4.2,lith:'Bioclastic Lst.',dec:'PAY',phi:25,sw:16,perm:110,sis:.90,lcs:.93,fpp:.88,osq:.91,minerals:[{n:'Calcite',pct:75,wl:2340,col:'#E8E4D8'},{n:'Oil (C-H)',pct:18,wl:1730,col:'#B8860B'},{n:'Dolomite',pct:7,wl:2320,col:'#C4956A'}],fluid:'Oil',anom:false},
+     {id:'CP-MH03-1876',depth:1875.6,t:5.1,lith:'Oolitic Lst.',dec:'PAY',phi:28,sw:12,perm:168,sis:.95,lcs:.97,fpp:.94,osq:.96,minerals:[{n:'Calcite',pct:82,wl:2340,col:'#E8E4D8'},{n:'Oil (C-H)',pct:14,wl:1730,col:'#B8860B'},{n:'Trace clay',pct:4,wl:2200,col:'#7a7a6e'}],fluid:'Oil',anom:false},
+     {id:'CP-MH03-1881',depth:1880.7,t:2.4,lith:'Wackestone',dec:'PAY',phi:22,sw:20,perm:88,sis:.87,lcs:.90,fpp:.85,osq:.88,minerals:[{n:'Calcite',pct:71,wl:2340,col:'#E8E4D8'},{n:'Oil (C-H)',pct:19,wl:1730,col:'#B8860B'},{n:'Chlorite',pct:10,wl:2250,col:'#4a7c59'}],fluid:'Oil',anom:false}],
+  3:[{id:'CP-MH04-1955',depth:1955.0,t:3.5,lith:'Grainstone',dec:'MARGINAL',phi:16,sw:52,perm:45,sis:.58,lcs:.80,fpp:.42,osq:.60,minerals:[{n:'Calcite',pct:60,wl:2340,col:'#E8E4D8'},{n:'Brine (OH)',pct:28,wl:1900,col:'#6b8fa8'},{n:'Oil (C-H)',pct:12,wl:1730,col:'#B8860B'}],fluid:'Oil/Water',anom:true},
+     {id:'CP-MH04-1960',depth:1960.5,t:2.2,lith:'Bioclastic Lst.',dec:'PAY',phi:18,sw:35,perm:72,sis:.76,lcs:.85,fpp:.72,osq:.78,minerals:[{n:'Calcite',pct:68,wl:2340,col:'#E8E4D8'},{n:'Oil (C-H)',pct:20,wl:1730,col:'#B8860B'},{n:'Illite',pct:12,wl:2200,col:'#7a7a6e'}],fluid:'Oil',anom:false}],
+  4:[{id:'CP-MH05-1988',depth:1988.0,t:3.0,lith:'Bioclastic Lst.',dec:'PAY',phi:20,sw:22,perm:74,sis:.83,lcs:.88,fpp:.81,osq:.85,minerals:[{n:'Calcite',pct:70,wl:2340,col:'#E8E4D8'},{n:'Oil (C-H)',pct:20,wl:1730,col:'#B8860B'},{n:'Dolomite',pct:10,wl:2320,col:'#C4956A'}],fluid:'Oil',anom:false},
+     {id:'CP-MH05-1991',depth:1991.0,t:.4,lith:'Stylolite',dec:'NON-PAY',phi:4,sw:70,perm:.5,sis:.35,lcs:.60,fpp:.15,osq:.38,minerals:[{n:'Illite',pct:52,wl:2200,col:'#7a7a6e'},{n:'Calcite',pct:33,wl:2340,col:'#E8E4D8'},{n:'Pyrite',pct:15,wl:900,col:'#888780'}],fluid:'Mixed',anom:true},
+     {id:'CP-MH05-1991b',depth:1991.4,t:3.8,lith:'Packstone',dec:'PAY',phi:22,sw:24,perm:88,sis:.86,lcs:.90,fpp:.84,osq:.87,minerals:[{n:'Calcite',pct:73,wl:2340,col:'#E8E4D8'},{n:'Oil (C-H)',pct:17,wl:1730,col:'#B8860B'},{n:'Chlorite',pct:10,wl:2250,col:'#4a7c59'}],fluid:'Oil',anom:false}]
+};
+
+/* ── ACTIVE DATASET POINTERS ── */
+let DATASET='mh';
+let ACTIVE_WELLS=WELLS;
+let ACTIVE_EORS=EORS;
+let ACTIVE_DOM=DOM_SC;
+let ACTIVE_PLUGS=PLUGS;
+
+function setDataset(ds){
+  DATASET=ds; CW=0; specWI=0; specPI=0;
+  if(ds==='mh'){
+    ACTIVE_WELLS=WELLS; ACTIVE_EORS=EORS; ACTIVE_DOM=DOM_SC; ACTIVE_PLUGS=PLUGS;
+    document.getElementById('ds-mh').classList.add('on');
+    document.getElementById('ds-cb').classList.remove('on');
+    document.getElementById('wells-mh').style.display='flex';
+    document.getElementById('wells-cb').style.display='none';
+    document.getElementById('ds-note-cb').style.display='none';
+    document.getElementById('well-bar-label').textContent='Mumbai High North:';
+  } else {
+    ACTIVE_WELLS=WELLS_CB; ACTIVE_EORS=EORS_CB; ACTIVE_DOM=DOM_SC_CB; ACTIVE_PLUGS=PLUGS_CB;
+    document.getElementById('ds-cb').classList.add('on');
+    document.getElementById('ds-mh').classList.remove('on');
+    document.getElementById('wells-cb').style.display='flex';
+    document.getElementById('wells-mh').style.display='none';
+    document.getElementById('ds-note-cb').style.display='block';
+    document.getElementById('well-bar-label').textContent='Cambay Basin · Kalol Ss:';
+  }
+  document.querySelectorAll('#wells-'+ds+' .w-btn').forEach((b,j)=>b.classList.toggle('on',j===0));
+  render();
+  if(document.getElementById('p-spectral').classList.contains('on')) renderSpectral();
+  renderLasSampleBtns();
+}
+
+
+/* ── MINE DATA ── */
+const MINES=[
+  {id:'JCF-01',name:'Jharia Coalfield',state:'Jharkhand',op:'BCCL/CIL',com:'Coal',sym:'C',unit:'Mt',pu:'₹/tonne',col:'#3D3D3A',price:{lo:3500,base:5200,hi:7000},res:2840,grade:45.2,den:1.35,insitu:8235,mrf:.72,prf:.88,frf:.634,recov:3310,roy:.14,dmf:.02,pmk:.01,gst:.05,capex:420,opex:85,methods:[{n:'Open cast',sc:.88,rec:.78,col:'#0F6E56'},{n:'Bord & pillar',sc:.72,rec:.62,col:'#185FA5'},{n:'Longwall',sc:.79,rec:.85,col:'#534AB7'},{n:'Block caving',sc:.61,rec:.90,col:'#854F0B'}],minerals:[{n:'Bituminous coal',pct:78,col:'#3D3D3A'},{n:'Shale bands',pct:12,col:'#888780'},{n:'Sandstone',pct:7,col:'#C4B48A'},{n:'Clay',pct:3,col:'#B8A87A'}],note:'Coal cores classified as Schedule I national energy asset under MMDR Amendment 2021.',restricted:false},
+  {id:'BAI-01',name:'Bailadila Iron Ore',state:'Chhattisgarh',op:'NMDC Ltd.',com:'Iron Ore',sym:'Fe',unit:'Mt',pu:'₹/tonne',col:'#993C1D',price:{lo:2800,base:4500,hi:6500},res:1200,grade:65.8,den:3.8,insitu:10640,mrf:.82,prf:.92,frf:.754,recov:5276,roy:.15,dmf:.02,pmk:.01,gst:.05,capex:380,opex:72,methods:[{n:'Open pit',sc:.92,rec:.85,col:'#0F6E56'},{n:'Terrace mining',sc:.78,rec:.78,col:'#185FA5'},{n:'Bench cut',sc:.71,rec:.72,col:'#534AB7'},{n:'Underground',sc:.55,rec:.68,col:'#854F0B'}],minerals:[{n:'Haematite (Fe₂O₃)',pct:82,col:'#993C1D'},{n:'Magnetite',pct:8,col:'#5F5E5A'},{n:'Goethite',pct:6,col:'#B8860B'},{n:'Gangue',pct:4,col:'#C4B48A'}],note:'Iron ore cores registered with IBM and NMDC geological repository.',restricted:false},
+  {id:'HTG-01',name:'Hutti Gold Mine',state:'Karnataka',op:'HGML',com:'Gold',sym:'Au',unit:'Kt ore',pu:'₹/gram',col:'#B8860B',price:{lo:5800,base:7200,hi:9500},res:12.4,grade:3.8,den:2.7,insitu:33.4,mrf:.75,prf:.90,frf:.675,recov:15.2,roy:.04,dmf:.02,pmk:.01,gst:.05,capex:620,opex:180,methods:[{n:'Sub-level stoping',sc:.85,rec:.82,col:'#0F6E56'},{n:'Cut & fill',sc:.79,rec:.78,col:'#185FA5'},{n:'Shrinkage stoping',sc:.68,rec:.70,col:'#534AB7'},{n:'Open pit',sc:.52,rec:.65,col:'#854F0B'}],minerals:[{n:'Free gold (Au)',pct:38,col:'#B8860B'},{n:'Pyrite (FeS₂)',pct:28,col:'#888780'},{n:'Quartz (SiO₂)',pct:22,col:'#E8E4D8'},{n:'Arsenopyrite',pct:12,col:'#5F5E5A'}],note:'Gold cores — RBI liaison required for export. SWIR confirms free-milling Au mineralisation.',restricted:false},
+  {id:'MLJ-01',name:'Malanjkhand Copper',state:'Madhya Pradesh',op:'HCL',com:'Copper',sym:'Cu',unit:'Mt ore',pu:'₹/kg',col:'#D85A30',price:{lo:580,base:780,hi:1050},res:188,grade:.92,den:2.9,insitu:1726,mrf:.80,prf:.88,frf:.704,recov:855,roy:.048,dmf:.02,pmk:.01,gst:.05,capex:580,opex:95,methods:[{n:'Open pit',sc:.90,rec:.82,col:'#0F6E56'},{n:'Block caving',sc:.76,rec:.88,col:'#185FA5'},{n:'SX-EW leaching',sc:.70,rec:.75,col:'#534AB7'},{n:'Underground',sc:.62,rec:.72,col:'#854F0B'}],minerals:[{n:'Chalcopyrite (CuFeS₂)',pct:58,col:'#D85A30'},{n:'Bornite',pct:18,col:'#B8860B'},{n:'Quartz',pct:14,col:'#E8E4D8'},{n:'Pyrite',pct:10,col:'#888780'}],note:'Copper listed under National Critical Minerals List 2023. Digital twins feed into KABIL database.',restricted:false},
+  {id:'MON-01',name:'Kerala Monazite Sands',state:'Kerala/Tamil Nadu',op:'IREL (India)',com:'Rare Earth Elements',sym:'REE',unit:'Kt',pu:'₹/kg REO',col:'#534AB7',price:{lo:1800,base:3200,hi:5800},res:8.4,grade:8.5,den:4.8,insitu:714,mrf:.68,prf:.82,frf:.558,recov:271,roy:.12,dmf:.01,pmk:.00,gst:.05,capex:280,opex:65,methods:[{n:'Beach sand dredging',sc:.88,rec:.85,col:'#0F6E56'},{n:'Wet gravity sep.',sc:.82,rec:.80,col:'#185FA5'},{n:'Magnetic sep.',sc:.75,rec:.78,col:'#534AB7'},{n:'Solvent extraction',sc:.68,rec:.82,col:'#854F0B'}],minerals:[{n:'Monazite (Ce,La,Nd)',pct:42,col:'#534AB7'},{n:'Ilmenite (FeTiO₃)',pct:28,col:'#3D3D3A'},{n:'Zircon (ZrSiO₄)',pct:18,col:'#E8E4D8'},{n:'Rutile (TiO₂)',pct:12,col:'#B8860B'}],note:'STRATEGIC: Monazite contains thorium — regulated under Atomic Energy Act 1962. BARC/DAE oversight mandatory.',restricted:true},
+  {id:'JAD-01',name:'Jaduguda Uranium Mine',state:'Jharkhand',op:'UCIL/DAE',com:'Uranium (U₃O₈)',sym:'U',unit:'t U₃O₈',pu:'₹/kg',col:'#3B6D11',price:{lo:3200,base:5800,hi:9200},res:78400,grade:.067,den:3.1,insitu:52.6,mrf:.65,prf:.85,frf:.553,recov:18.9,roy:.0,dmf:.0,pmk:.0,gst:.0,capex:920,opex:280,methods:[{n:'Underground (rad.)',sc:.85,rec:.78,col:'#0F6E56'},{n:'In-situ leaching',sc:.72,rec:.72,col:'#185FA5'},{n:'Heap leaching',sc:.65,rec:.68,col:'#534AB7'},{n:'Bioleaching',sc:.55,rec:.60,col:'#854F0B'}],minerals:[{n:'Uraninite (UO₂)',pct:62,col:'#3B6D11'},{n:'Pitchblende',pct:18,col:'#444441'},{n:'Coffinite',pct:12,col:'#888780'},{n:'Chlorite',pct:8,col:'#5DCAA5'}],note:'TOP SECRET — AERB/DAE regulated. NCA and AERB-cleared personnel only. BARC Secure DLT blockchain.',restricted:true},
+];
+
+let CW=0, CM=0, mode='petro', curMinePanel='overview', lbIdx=0, specWI=0, specPI=0;
+const arps=(qi,Di,t)=>qi/Math.pow(1+.5*Di*t,2);
+const rate=w=>Math.round(arps(w.qi,w.Di,8));
+const kCls=(v,hi,lo,dir='up')=>dir==='up'?(v>=hi?'g':v>=lo?'a':'r'):(v<=hi?'g':v<=lo?'a':'r');
+const vCls=v=>v>0?'vg':'vr';
+/* ── LIVE DATA ── */
+async function fetchLive(){
+  let fx=83.5;
+  const sources=[
+    ()=>fetch('https://open.er-api.com/v6/latest/USD',{mode:'cors'}).then(r=>r.json()).then(d=>d.rates.INR),
+    ()=>fetch('https://api.frankfurter.app/latest?from=USD&to=INR',{mode:'cors'}).then(r=>r.json()).then(d=>d.rates.INR),
+    ()=>fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json',{mode:'cors'}).then(r=>r.json()).then(d=>d.usd.inr)
+  ];
+  for(const s of sources){try{const v=await s();if(v>70&&v<100){fx=v;break;}}catch(e){}}
+  const brent=78.5, inr=Math.round(brent*fx);
+  document.getElementById('brent-val').textContent=INR(inr)+'/bbl';
+  document.getElementById('fx-val').textContent=fx.toFixed(1);
+  document.getElementById('oil-sl').value=Math.min(10000,Math.max(3500,inr));
+  // Sync live price to economics input if user hasn't manually changed it
+  const opEl = document.getElementById('i-op');
+  if (opEl && (!opEl.dataset.userEdited)) { opEl.value = inr; livePreview(); }
+  document.getElementById('last-upd').textContent='Live '+new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+  document.getElementById('last-upd').style.color='#9FE1CB';
+  document.getElementById('status-dot').style.background='#1D9E75';
+  document.getElementById('status-dot').style.animation='pulse 2s infinite';
+  ec();
+}
+
+/* ── NAVIGATION ── */
+function setMode(m){
+  mode=m;
+  const isPetro=m==='petro';
+  document.getElementById('petro-btn').className='mode-btn'+(isPetro?' petro-on':'');
+  document.getElementById('mine-btn').className='mode-btn'+(!isPetro?' mine-on':'');
+  document.getElementById('petro-tabs').style.display=isPetro?'flex':'none';
+  document.getElementById('mine-tabs').style.display=isPetro?'none':'flex';
+  document.getElementById('well-bar').style.display=isPetro?'flex':'none';
+  document.getElementById('mine-bar').style.display=isPetro?'none':'flex';
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+  if(isPetro){document.getElementById('p-well').classList.add('on');setTabOn('well');}
+  else{document.getElementById('p-m-overview').style.display='block';goMine('overview');}
+}
+
+function go(name){
+  document.querySelectorAll('#petro-tabs .tab').forEach(t=>t.classList.toggle('on',t.onclick&&t.onclick.toString().includes("'"+name+"'")));
+  document.querySelectorAll('.panel').forEach(p=>{p.classList.remove('on');if(p.id.startsWith('p-m-'))p.style.display='none';});
+  document.getElementById('p-'+name).classList.add('on');
+  if(name==='spectral')setTimeout(renderSpectral,80);else render();
+}
+
+function setTabOn(name){document.querySelectorAll('#petro-tabs .tab').forEach(t=>t.classList.toggle('on',t.onclick&&t.onclick.toString().includes("'"+name+"'")));}
+
+function sw(i){CW=i;document.querySelectorAll('#wells-'+DATASET+' .w-btn').forEach((b,j)=>b.classList.toggle('on',j===i));render();}
+
+function goMine(panel){
+  curMinePanel=panel;
+  document.querySelectorAll('#mine-tabs .tab').forEach(t=>t.classList.toggle('on',t.onclick&&t.onclick.toString().includes("'"+panel+"'")));
+  ['overview','vol','recovery','mecon','mtwin'].forEach(p=>{const el=document.getElementById('p-m-'+p);if(el)el.style.display='none';});
+  const el=document.getElementById('p-m-'+panel);
+  if(el){el.style.display='block';}
+  renderMinePanel(panel);
+}
+
+function setMine(i){CM=i;document.querySelectorAll('#mine-bar .w-btn').forEach((b,j)=>b.classList.toggle('on',j===i));goMine(curMinePanel);}
+
+function render(){renderWell();renderEOR();renderDecline();ec();renderTwin();renderExec();}
+
+/* ── WELL INTELLIGENCE ── */
+function renderWell(){
+  const w=ACTIVE_WELLS[CW];const r=rate(w);
+  const pays=w.zones.filter(z=>z.dec==='PAY');
+  document.getElementById('k-well').innerHTML=`
+    <div class="kpi ${kCls(r,300,150)}"><div class="kpi-l">Current rate</div><div class="kpi-v">${r}<span style="font-size:12px;font-weight:400"> bbl/d</span></div><div class="kpi-s">${r<100?'Terminal':r<250?'Late':'Active'} decline</div></div>
+    <div class="kpi n"><div class="kpi-l">STOIIP</div><div class="kpi-v">${w.stoiip.toLocaleString()}</div><div class="kpi-s">STB · ${w.form}</div></div>
+    <div class="kpi ${kCls(w.wc,30,60,'down')}"><div class="kpi-l">Water cut</div><div class="kpi-v">${w.wc}<span style="font-size:12px;font-weight:400">%</span></div><div class="kpi-s">${w.wc>60?'Critical':w.wc>35?'Elevated':'Acceptable'}</div></div>
+    <div class="kpi g"><div class="kpi-l">Net pay zones</div><div class="kpi-v">${pays.length}</div><div class="kpi-s">${pays.reduce((a,z)=>a+z.t,0).toFixed(1)}m confirmed pay</div></div>
+    <div class="kpi n"><div class="kpi-l">Remaining OIP</div><div class="kpi-v">${w.oip.toFixed(1)}</div><div class="kpi-s">MMbbl · RF ${Math.round(w.phi*100)}% primary</div></div>`;
+  buildLog(w);
+  const zh='<thead><tr><th>Zone</th><th>Depth</th><th>Thick</th><th>φ%</th><th>Sw%</th><th>Fluid</th><th>Decision</th></tr></thead>';
+  document.getElementById('zone-t').innerHTML=zh+'<tbody>'+w.zones.map(z=>{
+    const rc=z.dec==='PAY'?'row-g':z.dec==='NON-PAY'?'row-r':'row-a';
+    const bc=z.dec==='PAY'?'pb-g':z.dec==='NON-PAY'?'pb-r':'pb-a';
+    const vc=z.dec==='PAY'?'vg':z.dec==='NON-PAY'?'vr':'va';
+    return `<tr class="${rc}"><td style="font-weight:500">${z.z}</td><td>${z.d}m</td><td>${z.t}m</td><td class="${vc}">${z.phi}</td><td class="${vc}">${z.sw}</td><td>${z.fluid}</td><td><span class="pb ${bc}">${z.dec}</span></td></tr>`;
+  }).join('')+'</tbody>';
+}
+
+function buildLog(w){
+  const grid=document.getElementById('log-grid');
+  const H=180,total=w.zones.reduce((a,z)=>a+z.t,0);
+  grid.innerHTML=`
+    <div class="log-col"><div class="log-hdr" style="background:#F8F7F3;font-size:8px;">Depth(m)</div><div class="log-body" id="lg-d" style="background:#F8F7F3;position:relative;overflow:hidden;"></div></div>
+    <div class="log-col"><div class="log-hdr" style="color:#8B5E1A;">GR</div><div class="log-body" id="lg-gr"></div></div>
+    <div class="log-col"><div class="log-hdr" style="color:#185FA5;">RHOB</div><div class="log-body" id="lg-rh"></div></div>
+    <div class="log-col"><div class="log-hdr" style="color:#993C1D;">DT</div><div class="log-body" id="lg-dt"></div></div>
+    <div class="log-col"><div class="log-hdr" style="color:#0F6E56;">Sw</div><div class="log-body" id="lg-sw"></div></div>`;
+  setTimeout(()=>{
+    [{id:'lg-gr',min:0,max:150,col:'#8B5E1A',fn:z=>z.dec==='PAY'?w.gr:z.lith.includes('Shale')?98:38},
+     {id:'lg-rh',min:1.9,max:2.9,col:'#185FA5',fn:z=>z.dec==='PAY'?w.rhob:z.fluid==='Brine'?2.62:2.55},
+     {id:'lg-dt',min:40,max:100,col:'#993C1D',fn:z=>z.dec==='PAY'?w.dt:z.fluid==='Brine'?76:51},
+     {id:'lg-sw',min:0,max:1,col:'#0F6E56',fn:z=>z.sw/100}].forEach(cfg=>{
+      const el=document.getElementById(cfg.id);if(!el)return;
+      const c=document.createElement('canvas');
+      c.width=el.clientWidth||80;c.height=H;
+      c.style.cssText='position:absolute;top:0;left:0;width:100%;height:100%;';
+      el.appendChild(c);
+      const ctx=c.getContext('2d'),CW2=c.width;
+      let y=0;
+      w.zones.forEach(z=>{
+        const zh=z.t/total*H;
+        ctx.fillStyle=z.dec==='PAY'?'rgba(29,158,117,.12)':z.dec==='MARGINAL'?'rgba(239,159,39,.10)':'rgba(226,75,74,.06)';
+        ctx.fillRect(0,y,CW2,zh);y+=zh;
+      });
+      ctx.beginPath();ctx.strokeStyle=cfg.col;ctx.lineWidth=1.8;
+      let py=0;
+      w.zones.forEach(z=>{
+        const zh=z.t/total*H,val=cfg.fn(z),x=(val-cfg.min)/(cfg.max-cfg.min)*CW2;
+        if(py===0)ctx.moveTo(x,1);else ctx.lineTo(x,py);ctx.lineTo(x,py+zh);py+=zh;
+      });
+      ctx.stroke();
+    });
+    const dEl=document.getElementById('lg-d');if(!dEl)return;
+    dEl.style.position='relative';dEl.style.height=H+'px';
+    const dS=parseFloat(w.depth.split('–')[0]),dE=parseFloat(w.depth.split('–')[1]);
+    for(let d=Math.ceil(dS/5)*5;d<=dE;d+=5){
+      const div=document.createElement('div');
+      div.style.cssText=`position:absolute;top:${(d-dS)/(dE-dS)*H}px;left:1px;font-size:7px;color:var(--gray);`;
+      div.textContent=d;dEl.appendChild(div);
+    }
+  },80);
+}
+/* ── EOR SCREENING ── */
+function renderEOR(){
+  const w=ACTIVE_WELLS[CW];
+  const best=Math.max(...ACTIVE_EORS.map(m=>m.upl*w.stoiip*m.peor));
+  document.getElementById('eor-bars').innerHTML=ACTIVE_EORS.map((m,i)=>{
+    const dn=Math.round(m.upl*w.stoiip*m.peor),pct=Math.round(dn/best*100),rank=i+1;
+    const rb=rank===1?'rb1':rank===2?'rb2':rank===3?'rb3':'rbn';
+    const cat=rank===1?'Best method':rank<=3?'Highly rec.':rank<=5?'Recommended':'Not rec.';
+    return `<div class="eor-r"><span class="rb ${rb}">#${rank}</span><span class="eor-n" style="color:${rank>5?'#AAA':'#2C2C2A'}">${m.n}</span><div class="eor-bw"><div class="eor-b" style="width:${pct}%;background:${m.col};opacity:${rank<=3?1:rank<=5?.7:.45};">${cat}</div></div><span class="eor-sc" style="color:${rank>5?'#AAA':m.col}">${(m.peor*100).toFixed(0)}%</span></div>`;
+  }).join('');
+  drawRadar();
+  const top=ACTIVE_EORS[0],dn=Math.round(top.upl*w.stoiip*top.peor/1000);
+  document.getElementById('eor-verdict').innerHTML=`<div class="verdict v-pu"><strong>HyperSenseIQ — ${top.n} EOR · Rank #1 · Best method for ${w.id}</strong><br>P_EOR: <span class="vpu">${(top.peor*100).toFixed(0)}%</span> · ΔN_eff: <span class="vpu">${dn} Kbbl</span> · CAPEX: <span class="vpu">₹${Math.round(top.capex*83.5)} Lakhs</span> · Deploy: <span class="vpu">2 months</span><div class="sbar-w"><div class="sbar" style="width:${(top.peor*100).toFixed(0)}%;background:#AB47BC;"></div></div></div>`;
+}
+
+function drawRadar(){
+  const c=document.getElementById('radar-c');
+  const ctx=c.getContext('2d'),W=c.width,H=c.height,cx=W/2,cy=H/2+5,R=Math.min(W,H)*.32;
+  ctx.clearRect(0,0,W,H);
+  const doms=Object.keys(ACTIVE_DOM),N=doms.length;
+  const angles=doms.map((_,i)=>-Math.PI/2+i*(2*Math.PI/N));
+  [.25,.5,.75,1].forEach(r=>{
+    ctx.beginPath();angles.forEach((a,i)=>{const x=cx+Math.cos(a)*R*r,y=cy+Math.sin(a)*R*r;i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
+    ctx.closePath();ctx.strokeStyle=`rgba(128,128,128,${r===1?.2:.1})`;ctx.lineWidth=.8;ctx.stroke();
+  });
+  angles.forEach((a,i)=>{
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+Math.cos(a)*R,cy+Math.sin(a)*R);
+    ctx.strokeStyle='rgba(128,128,128,.12)';ctx.lineWidth=.8;ctx.stroke();
+    ctx.fillStyle='#5F5E5A';ctx.font='9px system-ui';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(doms[i],cx+Math.cos(a)*(R+17),cy+Math.sin(a)*(R+17));
+  });
+  const m=ACTIVE_EORS[0],scores=doms.map(d=>ACTIVE_DOM[d][0]);
+  ctx.beginPath();angles.forEach((a,i)=>{const x=cx+Math.cos(a)*R*scores[i],y=cy+Math.sin(a)*R*scores[i];i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
+  ctx.closePath();ctx.fillStyle=m.col+'25';ctx.fill();ctx.strokeStyle=m.col;ctx.lineWidth=2;ctx.stroke();
+  angles.forEach((a,i)=>{ctx.beginPath();ctx.arc(cx+Math.cos(a)*R*scores[i],cy+Math.sin(a)*R*scores[i],3,0,Math.PI*2);ctx.fillStyle=m.col;ctx.fill();});
+  const avg=scores.reduce((a,v)=>a+v,0)/N;
+  ctx.fillStyle=m.col;ctx.font='bold 12px system-ui';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText((avg*100).toFixed(0)+'%',cx,cy);
+}
+
+/* ── DECLINE ANALYSIS ── */
+function renderDecline(){
+  const w=ACTIVE_WELLS[CW],c=document.getElementById('dec-c');
+  if(!c)return;
+  c.width=c.parentElement.clientWidth||380;c.height=175;
+  const ctx=c.getContext('2d'),CW2=c.width,CH=c.height;
+  ctx.clearRect(0,0,CW2,CH);
+  const PAD={l:38,r:8,t:12,b:26},W2=CW2-PAD.l-PAD.r,H=CH-PAD.t-PAD.b;
+  const YEARS=15,EL=25,maxQ=w.qi*1.1;
+  const tx=t=>PAD.l+t/YEARS*W2,ty=q=>PAD.t+H-(Math.max(0,q)/maxQ)*H;
+  ctx.strokeStyle='rgba(128,128,128,.1)';ctx.lineWidth=.5;
+  for(let i=0;i<=3;i++){const q=maxQ*i/3;ctx.beginPath();ctx.moveTo(PAD.l,ty(q));ctx.lineTo(PAD.l+W2,ty(q));ctx.stroke();ctx.fillStyle='rgba(100,100,100,.5)';ctx.font='8px system-ui';ctx.textAlign='right';ctx.fillText(Math.round(q),PAD.l-2,ty(q)+3);}
+  for(let t=0;t<=YEARS;t+=3){ctx.beginPath();ctx.moveTo(tx(t),PAD.t);ctx.lineTo(tx(t),PAD.t+H);ctx.stroke();ctx.fillStyle='rgba(100,100,100,.5)';ctx.font='8px system-ui';ctx.textAlign='center';ctx.fillText('Y'+t,tx(t),PAD.t+H+11);}
+  const base=t=>arps(w.qi,w.Di,t);
+  const eor=t=>{const b=base(t);return t<8.5?b:b*(1+.32*Math.exp(-.18*(t-8.5)));};
+  const ust=t=>{const b=base(t);if(t<8.2)return b;const d=t-8.2;return b*(1+.42*Math.exp(-.22*d)*(1+.08*Math.sin(d*Math.PI*1.8)*Math.exp(-d*.4)));};
+  ctx.beginPath();for(let i=0;i<=150;i++){const t=i/150*YEARS;if(i===0)ctx.moveTo(tx(t),ty(base(t)));else ctx.lineTo(tx(t),ty(base(t)));} for(let i=150;i>=0;i--){const t=i/150*YEARS;ctx.lineTo(tx(t),ty(ust(t)));}
+  ctx.closePath();ctx.fillStyle='rgba(171,71,188,.07)';ctx.fill();
+  [[base,'#6B3FD4'],[eor,'#1D9E75'],[ust,'#AB47BC']].forEach(([fn,col])=>{ctx.beginPath();ctx.strokeStyle=col;ctx.lineWidth=1.8;for(let i=0;i<=150;i++){const t=i/150*YEARS,q=fn(t);if(i===0)ctx.moveTo(tx(t),ty(q));else ctx.lineTo(tx(t),ty(q));}ctx.stroke();});
+  ctx.beginPath();ctx.strokeStyle='#E24B4A';ctx.lineWidth=1;ctx.setLineDash([3,2]);ctx.moveTo(PAD.l,ty(EL));ctx.lineTo(PAD.l+W2,ty(EL));ctx.stroke();ctx.setLineDash([]);
+  ctx.beginPath();ctx.strokeStyle='#F0A500';ctx.lineWidth=1;ctx.setLineDash([2,2]);ctx.moveTo(tx(8),PAD.t);ctx.lineTo(tx(8),PAD.t+H);ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle='#F0A500';ctx.font='bold 8px system-ui';ctx.textAlign='center';ctx.fillText('NOW',tx(8),PAD.t+8);
+  ctx.strokeStyle='rgba(100,100,100,.18)';ctx.lineWidth=.5;ctx.strokeRect(PAD.l,PAD.t,W2,H);
+  const r=rate(w),rCls=r<100?'vr':r<250?'va':'vg';
+  const baseEUR=f1(w.qi*365*YEARS/(w.Di*(YEARS*w.Di+1))/1e6);
+  document.getElementById('dec-stats').innerHTML=`
+    <div class="fr"><span class="fl">Well</span><span class="fv">${w.id}</span></div>
+    <div class="fr"><span class="fl">Initial rate (qi)</span><span class="fv vg">${w.qi} bbl/d</span></div>
+    <div class="fr"><span class="fl">Decline Di</span><span class="fv">${w.Di}/yr · harmonic b=0.5</span></div>
+    <div class="fr"><span class="fl">Current rate (Yr 8)</span><span class="fv ${rCls}">${r} bbl/d</span></div>
+    <div class="fr"><span class="fl">Base EUR (15yr)</span><span class="fv">${baseEUR} MMbbl</span></div>
+    <div class="fr"><span class="fl">Best EOR EUR</span><span class="fv vg">+${f1(parseFloat(baseEUR)*1.32)} MMbbl (+32%)</span></div>
+    <div class="fr"><span class="fl">UST EUR</span><span class="fv vpu">${f1(parseFloat(baseEUR)*1.38)} MMbbl (+38%)</span></div>
+    <div class="fr"><span class="fl">Economic limit</span><span class="fv vr">25 bbl/d</span></div>
+    <div class="fr"><span class="fl">EOR verdict</span><span class="fv vg">Deploy UST within 3 months</span></div>`;
+}
+
+/* ── ECONOMICS ── */
+function ec(){
+  const w=ACTIVE_WELLS[CW];
+  const op=parseFloat(document.getElementById('oil-sl').value);
+  const dr=parseFloat(document.getElementById('disc-sl').value)/100;
+  const opCls=op>7000?'g':op>5000?'a':'r';
+  document.getElementById('oil-v').textContent=INR(op)+'/bbl';
+  document.getElementById('oil-v').className='sl-val '+opCls;
+  document.getElementById('disc-v').textContent=Math.round(dr*100)+'%';
+  const di=Math.round(rate(w)*.35),capex=.9*83.5/100;
+  const ramp=[.6,.9,1,1,.8];
+  const npvOf=price=>{let n=-capex;for(let yr=1;yr<=5;yr++){const rev=di*365*ramp[yr-1]*price/1e7;const net=(rev*.875)*.85-.3*83.5/100;n+=net/Math.pow(1+dr,yr);}return n;};
+  const [nvL,nvB,nvH]=[4500,op,8500].map(npvOf);
+  document.getElementById('scens').innerHTML=`
+    <div class="scen sc-l"><div class="sc-lbl">Low — ₹4,500/bbl</div><div class="sc-val ${vCls(nvL)}">${nvL>0?'+':''}₹${nvL.toFixed(1)} Cr</div><div class="sc-sub">NPV (5yr)</div></div>
+    <div class="scen sc-b"><div class="sc-lbl">Base — ${INR(op)}/bbl</div><div class="sc-val ${vCls(nvB)}">${nvB>0?'+':''}₹${nvB.toFixed(1)} Cr</div><div class="sc-sub">NPV (5yr)</div></div>
+    <div class="scen sc-h"><div class="sc-lbl">High — ₹8,500/bbl</div><div class="sc-val vb">+₹${nvH.toFixed(1)} Cr</div><div class="sc-sub">NPV (5yr)</div></div>`;
+  const roy=di*365*op/1e7*.10,cess=di*365*op/1e7*.015,netRev=(di*365*op/1e7-roy-cess)*.85;
+  document.getElementById('fiscal').innerHTML=`
+    <div class="fr"><span class="fl">Well · method</span><span class="fv">${w.id} · UST · ${di} bbl/d incr.</span></div>
+    <div class="fr"><span class="fl">Gross revenue (peak yr)</span><span class="fv vg">${INR(di*365*op/1e7)} Cr/yr</span></div>
+    <div class="fr fr-neg"><span class="fl">Offshore royalty (10%)</span><span class="fv vr">− ${INR(roy)} Cr/yr</span></div>
+    <div class="fr fr-neg"><span class="fl">OID cess</span><span class="fv vr">− ${INR(cess)} Cr/yr</span></div>
+    <div class="fr fr-neg"><span class="fl">GST on services (18%)</span><span class="fv vr">− ${INR(.3*83.5/100*.18)} Cr/yr</span></div>
+    <div class="fr fr-hl"><span class="fl" style="font-weight:500;">ONGC net revenue (85%)</span><span class="fv vg" style="font-size:13px;">${INR(netRev)} Cr/yr</span></div>
+    <div class="fr"><span class="fl">UST CAPEX (one-time)</span><span class="fv vr">₹${Math.round(.9*83.5)} Lakhs</span></div>
+    <div class="fr ${nvB>0?'fr-hl':'fr-neg'}"><span class="fl" style="font-weight:500;">NPV @ ${Math.round(dr*100)}%</span><span class="fv ${vCls(nvB)}" style="font-size:13px;">${nvB>0?'+':''}₹${nvB.toFixed(1)} Cr</span></div>
+    <div class="fr"><span class="fl">Payback</span><span class="fv ${nvB>0?'vg':'vr'}">${nvB>0?'< 2 years':'> 3 years'}</span></div>`;
+  drawCF(di,op,dr,capex,ramp);
+}
+
+function drawCF(di,op,dr,capex,ramp){
+  const c=document.getElementById('cf-c');if(!c)return;
+  c.width=c.parentElement.clientWidth||320;c.height=175;
+  const ctx=c.getContext('2d'),CW2=c.width,CH=c.height;
+  ctx.clearRect(0,0,CW2,CH);
+  const PAD={l:36,r:8,t:12,b:26},W2=CW2-PAD.l-PAD.r,H=CH-PAD.t-PAD.b;
+  const cfs=[-capex];for(let yr=1;yr<=5;yr++){const rev=di*365*ramp[yr-1]*op/1e7;cfs.push((rev*.875)*.85-.3*83.5/100);}
+  const cum=cfs.reduce((a,v,i)=>[...a,(a[i-1]||0)+v],[]);
+  const allV=[...cfs,...cum],minV=Math.min(...allV),range=Math.max(...allV.map(Math.abs))*1.2+(minV<0?Math.abs(minV):0);
+  const ty=v=>PAD.t+H-(v-Math.min(0,minV*1.1))/range*H;
+  const tx=i=>PAD.l+i/5*W2;
+  ctx.strokeStyle='rgba(128,128,128,.15)';ctx.lineWidth=.5;ctx.setLineDash([2,2]);
+  ctx.beginPath();ctx.moveTo(PAD.l,ty(0));ctx.lineTo(PAD.l+W2,ty(0));ctx.stroke();ctx.setLineDash([]);
+  const bw=W2/6-4;
+  cfs.forEach((v,i)=>{
+    const x=tx(i)+2,pos=v>=0;
+    ctx.fillStyle=pos?'rgba(29,158,117,.2)':'rgba(226,75,74,.2)';ctx.fillRect(x,Math.min(ty(0),ty(v)),bw,Math.abs(ty(v)-ty(0))||2);
+    ctx.strokeStyle=pos?'#1D9E75':'#E24B4A';ctx.lineWidth=.8;ctx.strokeRect(x,Math.min(ty(0),ty(v)),bw,Math.abs(ty(v)-ty(0))||2);
+    ctx.fillStyle=pos?'#0B4F3E':'#A32D2D';ctx.font='8px system-ui';ctx.textAlign='center';ctx.fillText((v>0?'+':'')+v.toFixed(1),x+bw/2,v>=0?ty(v)-3:ty(v)+9);
+    ctx.fillStyle='rgba(80,80,80,.6)';ctx.fillText(i===0?'Y0':'Y'+i,x+bw/2,PAD.t+H+11);
+  });
+  ctx.beginPath();ctx.strokeStyle='#F0A500';ctx.lineWidth=1.8;
+  cum.forEach((v,i)=>{const x=tx(i)+W2/12;if(i===0)ctx.moveTo(x,ty(v));else ctx.lineTo(x,ty(v));});ctx.stroke();
+  cum.forEach((v,i)=>{ctx.beginPath();ctx.arc(tx(i)+W2/12,ty(v),2.5,0,Math.PI*2);ctx.fillStyle='#F0A500';ctx.fill();});
+  ctx.strokeStyle='rgba(100,100,100,.18)';ctx.lineWidth=.5;ctx.strokeRect(PAD.l,PAD.t,W2,H);
+}
+/* ── SPECTRAL INTELLIGENCE ── */
+function specWellChange(){specWI=parseInt(document.getElementById('spec-well-sel').value);specPI=0;renderSpectral();}
+
+function renderSpectral(){
+  // Rebuild dropdown from active wells
+  const sel = document.getElementById('spec-well-sel');
+  if (sel) {
+    const currentVal = parseInt(sel.value) || 0;
+    sel.innerHTML = ACTIVE_WELLS.map((w, i) =>
+      `<option value="${i}" ${i === specWI ? 'selected' : ''}>${w.id} · ${w.depth}</option>`
+    ).join('');
+    // Keep specWI in bounds for new dataset
+    if (specWI >= ACTIVE_WELLS.length) specWI = 0;
+    sel.value = specWI;
+  }
+  const plugs=ACTIVE_PLUGS[specWI]||[];
+  document.getElementById('plug-count').textContent=plugs.length;
+  buildFlagpole(plugs);buildGallery(plugs);updateSpecScores(plugs);
+  if(plugs[specPI])renderSpecDetail(plugs[specPI]);
+}
+
+function plugDC(dec){return dec==='PAY'?{bg:'#0B4F3E',lt:'rgba(29,158,117,.15)',bd:'#1D9E75'}:dec==='NON-PAY'?{bg:'#A32D2D',lt:'rgba(226,75,74,.12)',bd:'#E24B4A'}:{bg:'#854F0B',lt:'rgba(239,159,39,.12)',bd:'#EF9F27'};}
+
+function buildFlagpole(plugs){
+  const w=ACTIVE_WELLS[specWI];
+  const ruler=document.getElementById('spec-ruler');
+  const logMini=document.getElementById('spec-log-mini');
+  const track=document.getElementById('spec-flags');
+  if(!ruler||!track)return;
+  const H=300,dS=parseFloat(w.depth.split('–')[0]),dE=parseFloat(w.depth.split('–')[1]),dR=dE-dS;
+  const d2y=d=>Math.round((d-dS)/dR*H);
+  ruler.innerHTML='';ruler.style.position='relative';ruler.style.height=H+'px';
+  for(let d=Math.ceil(dS/3)*3;d<=dE;d+=3){
+    const div=document.createElement('div');
+    div.style.cssText=`position:absolute;top:${d2y(d)}px;left:0;right:0;font-size:7px;color:var(--gray);text-align:right;padding-right:3px;`;
+    div.textContent=d;ruler.appendChild(div);
+  }
+  logMini.innerHTML='';logMini.style.cssText='width:55px;flex-shrink:0;position:relative;height:'+H+'px;border-right:0.5px solid var(--border);';
+  const lc=document.createElement('canvas');lc.width=55;lc.height=H;lc.style.cssText='position:absolute;top:0;left:0;';logMini.appendChild(lc);
+  const lctx=lc.getContext('2d'),total=plugs.reduce((a,p)=>a+p.t,0);
+  let cy=0;plugs.forEach(p=>{const zh=p.t/total*H,dc=plugDC(p.dec);lctx.fillStyle=dc.lt;lctx.fillRect(0,cy,55,zh);lctx.strokeStyle=dc.bd;lctx.lineWidth=.5;lctx.strokeRect(0,cy,55,zh);cy+=zh;});
+  track.innerHTML='';track.style.cssText='flex:1;position:relative;background:#FAFAF8;border-radius:0 5px 5px 0;height:'+H+'px;';
+  const spine=document.createElement('div');spine.style.cssText='position:absolute;left:22px;top:0;bottom:0;width:1px;background:rgba(0,0,0,.08);';track.appendChild(spine);
+  plugs.forEach((p,i)=>{
+    const y=d2y(p.depth),dc=plugDC(p.dec);
+    const flag=document.createElement('div');
+    flag.className='flag-item';flag.style.top=Math.max(0,y-12)+'px';
+    flag.onclick=()=>openLB(i);
+    flag.innerHTML=`<div class="flag-pole" style="background:${dc.bd};"></div><div class="flag-label" style="background:${dc.lt};border:0.5px solid ${dc.bd};color:${dc.bg};${p.anom?'outline:1px solid #AB47BC;':''}">${p.depth}m · ${p.lith.substring(0,14)} ${p.anom?'⚡':''} <span style="font-size:8px;opacity:.8;">${p.dec}</span></div>`;
+    track.appendChild(flag);
+  });
+}
+
+function buildGallery(plugs){
+  const gall=document.getElementById('spec-gall');if(!gall)return;
+  gall.innerHTML=plugs.map((p,i)=>{
+    const dc=plugDC(p.dec);
+    return `<div class="spec-thumb" style="border-color:${p.anom?'#AB47BC':dc.bd};" onclick="openLB(${i})">
+      <canvas id="th-${i}" width="140" height="85" style="display:block;width:100%;"></canvas>
+      <div class="spec-thumb-info"><div style="font-weight:500;color:${dc.bg};font-size:9px;">${p.depth}m · ${p.lith.substring(0,16)}</div>
+      <div style="display:flex;justify-content:space-between;margin-top:2px;"><span style="font-size:8px;background:${dc.lt};color:${dc.bg};padding:1px 4px;border-radius:3px;">${p.dec}</span>${p.anom?'<span style="font-size:8px;color:#AB47BC;">⚡</span>':''}<span style="font-size:8px;color:#AAA;">SIS:${p.sis.toFixed(2)}</span></div>
+      <div style="height:3px;background:#EEE;border-radius:2px;margin-top:3px;"><div style="height:3px;width:${(p.sis*100).toFixed(0)}%;background:${p.sis>.75?'#1D9E75':p.sis>.5?'#EF9F27':'#E24B4A'};border-radius:2px;"></div></div>
+      </div></div>`;
+  }).join('');
+  setTimeout(()=>{plugs.forEach((p,i)=>{const c=document.getElementById('th-'+i);if(c)drawCoreImg(c,p,140,85);});},60);
+}
+
+function drawCoreImg(canvas,p,W,H){
+  const ctx=canvas.getContext('2d');ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#F0EEE8';ctx.fillRect(0,0,W,H);
+  const cx=W/2,cw=Math.min(W*.5,52),zones=p.minerals,total=zones.length;
+  const lh=H/Math.max(8,zones.length+2);
+  for(let ly=0;ly<H;ly+=lh){
+    const mIdx=Math.floor(((Math.sin(ly*.8+p.depth*.01)+1)/2)*total);
+    const min=zones[Math.min(mIdx,total-1)];
+    const noise=(Math.sin(ly*3.1)*.25+.75);
+    ctx.fillStyle=min.col;ctx.globalAlpha=.5+noise*.35;ctx.fillRect(cx-cw/2,ly,cw,lh+1);ctx.globalAlpha=1;
+  }
+  if(p.dec==='PAY'){ctx.fillStyle='rgba(29,158,117,.08)';ctx.fillRect(cx-cw/2,0,cw,H);for(let d=0;d<6;d++){ctx.beginPath();ctx.arc(cx-cw/2+7+(d%3)*13,8+d*12,1.8,0,Math.PI*2);ctx.fillStyle='rgba(184,134,11,.6)';ctx.fill();}}
+  if(p.sw>80){ctx.fillStyle='rgba(107,143,168,.12)';ctx.fillRect(cx-cw/2,0,cw,H);}
+  if(p.anom){ctx.strokeStyle='rgba(171,71,188,.6)';ctx.lineWidth=1.5;ctx.setLineDash([3,2]);ctx.strokeRect(cx-cw/2+1,1,cw-2,H-2);ctx.setLineDash([]);}
+  ctx.strokeStyle='rgba(0,0,0,.2)';ctx.lineWidth=1;ctx.strokeRect(cx-cw/2,0,cw,H);
+  ctx.fillStyle='rgba(0,0,0,.5)';ctx.font='bold 8px system-ui';ctx.textAlign='center';ctx.fillText(p.depth+'m',cx,H-3);
+}
+
+function updateSpecScores(plugs){
+  const avg=k=>(plugs.reduce((a,p)=>a+p[k],0)/plugs.length).toFixed(2);
+  const sc=v=>parseFloat(v)>.75?'g':parseFloat(v)>.5?'a':'r';
+  document.getElementById('spec-scores').innerHTML=
+    [['SIS','Spectral Integrity',avg('sis')],['LCS','Lithology Confidence',avg('lcs')],['FPP','Fluid Presence Prob.',avg('fpp')],['OSQ','Overall Quality',avg('osq')]].map(([k,desc,v])=>`
+    <div class="kpi ${sc(v)}"><div class="kpi-l">${k} — ${desc}</div><div class="kpi-v">${v}</div><div class="kpi-s">${parseFloat(v)>.75?'High confidence':parseFloat(v)>.5?'Moderate':'Low — review'} · avg ${plugs.length} plugs</div></div>`).join('');
+}
+
+function renderSpecDetail(p){
+  const dc=plugDC(p.dec);
+  document.getElementById('spec-detail').innerHTML=`
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:8px;">
+      <div style="background:${dc.lt};border:0.5px solid ${dc.bd};border-radius:4px;padding:6px;"><div style="font-size:9px;color:${dc.bg};margin-bottom:2px;">Decision</div><div style="font-size:12px;font-weight:500;color:${dc.bg};">${p.dec}</div></div>
+      <div style="background:#F8F7F3;border-radius:4px;padding:6px;"><div style="font-size:9px;color:var(--gray);margin-bottom:2px;">Porosity</div><div style="font-size:12px;font-weight:500;color:${p.phi>15?'var(--g-text)':p.phi>9?'var(--a-text)':'var(--r-text)'};">${p.phi}%</div></div>
+      <div style="background:#F8F7F3;border-radius:4px;padding:6px;"><div style="font-size:9px;color:var(--gray);margin-bottom:2px;">Permeability</div><div style="font-size:12px;font-weight:500;color:${p.perm>50?'var(--g-text)':p.perm>5?'var(--a-text)':'var(--r-text)'};">${p.perm} mD</div></div>
+    </div>
+    ${[['Depth',p.depth+'m TVD'],['Lithology',p.lith],['Fluid',p.fluid],['Sw',p.sw+'%'],['SIS',p.sis.toFixed(2)],['LCS',p.lcs.toFixed(2)],['FPP',p.fpp.toFixed(2)],['OSQ',p.osq.toFixed(2)]].map(([l,v])=>`<div class="fr"><span class="fl">${l}</span><span class="fv">${v}</span></div>`).join('')}
+    ${p.anom?'<div style="background:var(--pu-bg);border:0.5px solid var(--pu-mid);border-radius:4px;padding:6px;margin-top:6px;font-size:10px;color:var(--pu-dark);">⚡ Spectral anomaly — unusual absorption. Possible fracture or fluid mixing. Manual review recommended.</div>':''}`;
+  document.getElementById('spec-minerals').innerHTML=p.minerals.map(m=>`
+    <div style="display:flex;align-items:center;gap:7px;margin-bottom:5px;">
+      <div style="width:22px;height:12px;border-radius:2px;background:${m.col};flex-shrink:0;border:0.5px solid rgba(0,0,0,.1);"></div>
+      <div style="flex:1;font-size:10px;color:var(--gray);">${m.n}</div>
+      <div style="font-size:9px;color:#AAA;">${m.wl}nm</div>
+      <div style="width:44px;height:6px;background:#EEE;border-radius:3px;"><div style="height:6px;width:${m.pct}%;background:${m.col};border-radius:3px;"></div></div>
+      <div style="font-size:10px;font-weight:500;width:24px;text-align:right;">${m.pct}%</div>
+    </div>`).join('');
+  drawMiniSpec(p);
+}
+
+function drawMiniSpec(p){
+  const c=document.getElementById('spec-mini-chart');if(!c)return;
+  c.width=c.parentElement.clientWidth||280;c.height=110;
+  const ctx=c.getContext('2d'),W=c.width,H=110;
+  ctx.clearRect(0,0,W,H);ctx.fillStyle='#F8F7F3';ctx.fillRect(0,0,W,H);
+  const PAD={l:28,r:8,t:10,b:22},W2=W-PAD.l-PAD.r,Hc=H-PAD.t-PAD.b;
+  const wMin=900,wMax=2500,wx=wl=>PAD.l+(wl-wMin)/(wMax-wMin)*W2;
+  ctx.strokeStyle='rgba(128,128,128,.1)';ctx.lineWidth=.5;
+  [900,1200,1730,1900,2200,2340,2500].forEach(wl=>{ctx.beginPath();ctx.moveTo(wx(wl),PAD.t);ctx.lineTo(wx(wl),PAD.t+Hc);ctx.stroke();ctx.fillStyle='rgba(100,100,100,.4)';ctx.font='7px system-ui';ctx.textAlign='center';ctx.fillText(wl,wx(wl),PAD.t+Hc+12);});
+  p.minerals.forEach(m=>{ctx.fillStyle=m.col+'28';ctx.fillRect(wx(m.wl)-12,PAD.t,24,Hc);});
+  const pts=[];
+  for(let wl=900;wl<=2500;wl+=6){
+    let ref=.58+Math.sin(wl*.002)*.07+Math.cos(wl*.005)*.04;
+    p.minerals.forEach(m=>{const dist=Math.abs(wl-m.wl);if(dist<90)ref-=(m.pct/100)*.42*Math.exp(-dist*dist/2200);});
+    pts.push({x:wx(wl),y:PAD.t+Hc-(Math.max(.05,Math.min(.95,ref))*Hc)});
+  }
+  ctx.beginPath();ctx.strokeStyle='#534AB7';ctx.lineWidth=1.5;pts.forEach((pt,i)=>i===0?ctx.moveTo(pt.x,pt.y):ctx.lineTo(pt.x,pt.y));ctx.stroke();
+  p.minerals.forEach(m=>{ctx.beginPath();ctx.strokeStyle=m.col;ctx.lineWidth=1;ctx.setLineDash([2,2]);ctx.moveTo(wx(m.wl),PAD.t);ctx.lineTo(wx(m.wl),PAD.t+Hc);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle=m.col;ctx.font='7px system-ui';ctx.textAlign='center';ctx.fillText(m.n.split(' ')[0].substring(0,7),wx(m.wl),PAD.t+8);});
+  ctx.strokeStyle='rgba(100,100,100,.18)';ctx.lineWidth=.5;ctx.strokeRect(PAD.l,PAD.t,W2,Hc);
+}
+
+/* ── LIGHTBOX ── */
+function openLB(idx){lbIdx=idx;renderLB();document.getElementById('lightbox').style.display='block';document.body.style.overflow='hidden';}
+function closeLB(){document.getElementById('lightbox').style.display='none';document.body.style.overflow='';}
+function navPlug(dir){const plugs=ACTIVE_PLUGS[specWI]||[];lbIdx=Math.max(0,Math.min(plugs.length-1,lbIdx+dir));renderLB();}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLB();});
+
+function renderLB(){
+  const plugs=ACTIVE_PLUGS[specWI]||[];const p=plugs[lbIdx];if(!p)return;
+  const w=ACTIVE_WELLS[specWI];
+  document.getElementById('lb-title').textContent=`Core plug ${p.id} · ${p.depth}m TVD · ${p.lith}`;
+  document.getElementById('lb-sub').textContent=`Well ${w.id} · ${w.form} · Decision: ${p.dec}`;
+  document.getElementById('lb-counter').textContent=`Plug ${lbIdx+1} of ${plugs.length}`;
+  const lbCore=document.getElementById('lb-core');if(lbCore)drawCoreImg(lbCore,p,480,300);
+  document.getElementById('lb-legend').innerHTML=p.minerals.map(m=>`<div style="display:flex;align-items:center;gap:3px;font-size:9px;color:#9FE1CB;"><div style="width:9px;height:9px;border-radius:2px;background:${m.col};"></div>${m.n.split('(')[0].trim()}</div>`).join('');
+  drawLBSpec(p);
+  document.getElementById('lb-zt').innerHTML=`<thead><tr><th>Mineral</th><th>%</th><th>Absorption (nm)</th><th>Spectral signature</th></tr></thead><tbody>${p.minerals.map(m=>`<tr><td style="display:flex;align-items:center;gap:5px;"><div style="width:11px;height:11px;border-radius:2px;background:${m.col};"></div>${m.n}</td><td style="color:#E8D87A;font-weight:500;">${m.pct}%</td><td style="color:#A58FE8;">${m.wl}nm</td><td style="font-size:9px;">${minDesc(m.n,m.wl)}</td></tr>`).join('')}</tbody>`;
+  const scCol=v=>v>.75?'#1D9E75':v>.5?'#EF9F27':'#E24B4A';
+  document.getElementById('lb-scores').innerHTML=[['SIS','Spectral Integrity',p.sis],['LCS','Lithology Conf.',p.lcs],['FPP','Fluid Presence',p.fpp],['OSQ','Overall Quality',p.osq]].map(([k,d,v])=>`<div class="lb-score-card"><div class="lb-score-l">${k} — ${d}</div><div class="lb-score-v" style="color:${scCol(v)};">${v.toFixed(2)}</div><div style="height:4px;background:rgba(255,255,255,.1);border-radius:2px;margin-top:4px;"><div style="height:4px;width:${(v*100).toFixed(0)}%;background:${scCol(v)};border-radius:2px;"></div></div></div>`).join('');
+  const pay=p.dec==='PAY';
+  document.getElementById('lb-verdict').textContent=pay?`Pay zone confirmed. ${p.lith} at ${p.depth}m TVD shows strong oil C-H absorption at 1730nm and calcite doublet at 2340nm. Porosity ${p.phi}% · Sw ${p.sw}% · Perm ${p.perm}mD. SIS ${p.sis.toFixed(2)} — ${p.sis>.80?'high confidence':'moderate confidence'}. Recommend perforation.`:p.dec==='MARGINAL'?`Marginal zone. ${p.lith} at ${p.depth}m shows mixed spectral response — ${p.fluid} signature. SIS ${p.sis.toFixed(2)}. Evaluate with MDT before perforating.`:`Non-pay zone. ${p.lith} at ${p.depth}m dominated by ${p.minerals[0].n} at ${p.minerals[0].wl}nm. ${p.fluid==='Brine'?'Strong OH-stretch at 1900nm confirms brine saturation — below OWC.':'Tight/cemented — acts as flow barrier.'}${p.anom?' ⚡ Spectral anomaly detected — cross-check with image log.':''}`;
+}
+
+function minDesc(name,wl){const m={'Calcite':'CO₃ doublet at 2340nm — carbonate confirmed','Oil (C-H)':'C-H stretch at 1730nm — light crude','Illite':'Al-OH at 2200nm — detrital clay','Dolomite':'Mg-CO₃ at 2320nm — dolomitisation','Brine (OH)':'OH-stretch at 1900nm — brine','Chlorite':'Fe-OH at 2250nm — burial diagenesis','Quartz':'Si-OH at 2200nm — siliceous cement','Kaolinite':'Al-OH at 2160nm — kaolin','Pyrite':'Featureless SWIR — sulphide','Montmorillonite':'Al-OH at 2210nm — expandable smectite'};return m[name.split('(')[0].trim()]||`Absorption at ${wl}nm confirmed`;}
+
+function drawLBSpec(p){
+  const c=document.getElementById('lb-spec');if(!c)return;
+  c.width=c.parentElement.clientWidth-24||430;c.height=190;
+  const ctx=c.getContext('2d'),W=c.width,H=190;
+  ctx.clearRect(0,0,W,H);ctx.fillStyle='#080C16';ctx.fillRect(0,0,W,H);
+  const PAD={l:30,r:8,t:14,b:26},W2=W-PAD.l-PAD.r,Hc=H-PAD.t-PAD.b;
+  const wMin=900,wMax=2500,wx=wl=>PAD.l+(wl-wMin)/(wMax-wMin)*W2;
+  ctx.strokeStyle='rgba(255,255,255,.06)';ctx.lineWidth=.5;
+  [900,1200,1730,1900,2200,2340,2500].forEach(wl=>{ctx.beginPath();ctx.moveTo(wx(wl),PAD.t);ctx.lineTo(wx(wl),PAD.t+Hc);ctx.stroke();ctx.fillStyle='rgba(255,255,255,.4)';ctx.font='8px system-ui';ctx.textAlign='center';ctx.fillText(wl+'nm',wx(wl),PAD.t+Hc+14);});
+  p.minerals.forEach(m=>{ctx.fillStyle=m.col+'28';ctx.fillRect(wx(m.wl)-14,PAD.t,28,Hc);});
+  const pts=[];for(let wl=900;wl<=2500;wl+=4){let ref=.58+Math.sin(wl*.002)*.07+Math.cos(wl*.005)*.04;p.minerals.forEach(m=>{const dist=Math.abs(wl-m.wl);if(dist<100)ref-=(m.pct/100)*.44*Math.exp(-dist*dist/2400);});pts.push({x:wx(wl),y:PAD.t+Hc-(Math.max(.06,Math.min(.92,ref))*Hc)});}
+  ctx.beginPath();pts.forEach((pt,i)=>i===0?ctx.moveTo(pt.x,pt.y):ctx.lineTo(pt.x,pt.y));ctx.lineTo(pts[pts.length-1].x,PAD.t+Hc);ctx.lineTo(pts[0].x,PAD.t+Hc);ctx.closePath();ctx.fillStyle='rgba(83,74,183,.15)';ctx.fill();
+  ctx.beginPath();ctx.strokeStyle='#9FE1CB';ctx.lineWidth=1.8;pts.forEach((pt,i)=>i===0?ctx.moveTo(pt.x,pt.y):ctx.lineTo(pt.x,pt.y));ctx.stroke();
+  p.minerals.forEach(m=>{ctx.beginPath();ctx.strokeStyle=m.col;ctx.lineWidth=1;ctx.setLineDash([3,2]);ctx.moveTo(wx(m.wl),PAD.t);ctx.lineTo(wx(m.wl),PAD.t+Hc);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle=m.col;ctx.font='bold 8px system-ui';ctx.textAlign='center';ctx.fillText(m.n.split(' ')[0].substring(0,8),wx(m.wl),PAD.t+10);});
+  ctx.strokeStyle='rgba(255,255,255,.15)';ctx.lineWidth=.5;ctx.strokeRect(PAD.l,PAD.t,W2,Hc);
+}
+/* ── DIGITAL TWIN / EXEC ── */
+function renderTwin(){
+  const w=ACTIVE_WELLS[CW];
+  document.getElementById('tw-id').innerHTML=`<span class="twin-id">DT-IND-20260502-${w.id.replace(/-/g,'')}</span>${[['Well',w.id,'vg'],["Field",DATASET==='mh'?'Mumbai High North':'Cambay Basin · Kalol Ss (Synthetic)','vn'],['Formation',w.form,'vn'],['Depth',w.depth,'vb'],['Status','REGISTERED — ACTIVE','vg'],['Sovereign','National Asset — OALP','vp']].map(([l,v,c])=>`<div class="fr"><span class="fl">${l}</span><span class="fv ${c}">${v}</span></div>`).join('')}`;
+  const kC=v=>v>0.20?'vg':v>0.12?'va':'vr',swC=v=>v<.25?'vg':v<.55?'va':'vr';
+  document.getElementById('tw-pet').innerHTML=[['Porosity φ',(w.phi*100).toFixed(0)+'%',kC(w.phi)],['Water sat. Sw',(w.sw*100).toFixed(0)+'%',swC(w.sw)],['Permeability',w.perm+' mD',w.perm>80?'vg':w.perm>40?'va':'vr'],['GR',w.gr+' API',w.gr<25?'vg':w.gr<60?'va':'vr'],['RHOB',w.rhob+' g/cc','vn'],['Net pay',w.zones.filter(z=>z.dec==='PAY').reduce((a,z)=>a+z.t,0).toFixed(1)+'m','vg'],['SIS','0.88','vg'],['FPP','0.85','vg'],['OSQ','0.89','vg']].map(([l,v,c])=>`<div class="fr"><span class="fl">${l}</span><span class="fv ${c}">${v}</span></div>`).join('');
+  document.getElementById('tw-chain').innerHTML=`<div class="chain"><div class="cn">MoPNG</div><span style="color:var(--gray);font-size:10px;">→</span><div class="cn">GSI</div><span style="color:var(--gray);font-size:10px;">→</span><div class="cn">ONGC</div><span style="color:var(--gray);font-size:10px;">→</span><div class="cn">NIC DLT</div></div>${[['Blockchain','NIC — Hyperledger Fabric','vp'],['NFT','ERC-3643 (regulated)','vp'],['Hash','SHA-256 verified','vg'],['Access','RESTRICTED — ONGC+MoPNG','va'],['Status','ACTIVE — NATIONAL ASSET','vg']].map(([l,v,c])=>`<div class="fr"><span class="fl">${l}</span><span class="fv ${c}" style="font-size:10px;">${v}</span></div>`).join('')}`;
+  document.getElementById('tw-repos').innerHTML=`<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:7px;">${[['DGH','g','ACTIVE'],['GSI','g','ACTIVE'],['CSIR-NGRI','g','ACTIVE'],['MoPNG','g','ACTIVE'],['ONGC G&G','g','ACTIVE'],['World EC','a','FUTURE'],['IEA','a','FUTURE'],['IOGP','p','PLANNED']].map(([n,c,s])=>`<div style="background:var(--${c}-bg);border:0.5px solid;border-color:var(--${c}-mid);border-radius:5px;padding:7px 9px;"><div style="font-size:10px;font-weight:500;color:var(--${c}-dark);margin-bottom:2px;">${s}</div><div style="font-size:10px;color:var(--gray);">${n}</div></div>`).join('')}</div>`;
+}
+
+function renderExec(){
+  const tOIP=ACTIVE_WELLS.reduce((a,w)=>a+w.oip,0),tST=ACTIVE_WELLS.reduce((a,w)=>a+w.stoiip,0),avgWC=Math.round(ACTIVE_WELLS.reduce((a,w)=>a+w.wc,0)/ACTIVE_WELLS.length);
+  const op=parseFloat(document.getElementById('oil-sl').value)||6500;
+  const tNPV=ACTIVE_WELLS.reduce((a,w)=>{const di=Math.round(rate(w)*.35);return a+(di*365*op/1e7*.875*.85-.3*83.5/100)*3.5-(.9*83.5/100);},0);
+  document.getElementById('k-exec').innerHTML=`
+    <div class="kpi g"><div class="kpi-l">Total field OIP</div><div class="kpi-v">${tOIP.toFixed(1)}<span style="font-size:12px;font-weight:400"> MMbbl</span></div><div class="kpi-s">${DATASET==='mh'?'5 wells — Mumbai High North':'5 wells — Cambay Basin · Kalol Ss'}</div></div>
+    <div class="kpi n"><div class="kpi-l">Combined STOIIP</div><div class="kpi-v">${(tST/1000).toFixed(0)}K<span style="font-size:12px;font-weight:400"> STB</span></div><div class="kpi-s">Bassein Limestone</div></div>
+    <div class="kpi a"><div class="kpi-l">Field avg water cut</div><div class="kpi-v">${avgWC}<span style="font-size:12px;font-weight:400">%</span></div><div class="kpi-s">EOR intervention required</div></div>
+    <div class="kpi pu"><div class="kpi-l">Best EOR — all 5 wells</div><div class="kpi-v" style="font-size:15px;">UST</div><div class="kpi-s">${DATASET==='mh'?'Rank #1 · P_EOR 82%':'Rank #1 · P_EOR 87.9%'}</div></div>
+    <div class="kpi ${tNPV>0?'g':'r'}"><div class="kpi-l">Field NPV (UST)</div><div class="kpi-v">${tNPV>0?'+':''}₹${tNPV.toFixed(0)}<span style="font-size:12px;font-weight:400"> Cr</span></div><div class="kpi-s">${INR(op)}/bbl scenario</div></div>`;
+  document.getElementById('port').innerHTML=ACTIVE_WELLS.map(w=>{
+    const r=rate(w),rCls=r<100?'vr':r<250?'va':'vg',rowCls=w.status==='Pay'?'g-row':w.status==='High WC'?'r-row':'a-row',stCls=w.status==='Pay'?'pb-g':w.status==='High WC'?'pb-r':'pb-a';
+    const npv=(w.oip*.12*.35*op/1e7*3.5-.9*83.5/100).toFixed(1),nvCls=parseFloat(npv)>0?'vg':'vr';
+    return `<div class="port-row ${rowCls}"><div class="pc"><div class="pc-l">Well</div><span style="font-weight:500;font-size:11px;">${w.id}</span></div><div class="pc"><span class="pb ${stCls}">${w.status}</span></div><div class="pc"><div class="pc-l">Rate</div><span class="${rCls}" style="font-size:11px;font-weight:500;">${r} bbl/d</span></div><div class="pc"><div class="pc-l">WC</div><span class="${w.wc>60?'vr':w.wc>35?'va':'vg'}" style="font-size:11px;font-weight:500;">${w.wc}%</span></div><div class="pc"><div class="pc-l">OIP</div><span style="font-size:11px;">${w.oip} MMbbl</span></div><div class="pc"><div class="pc-l">Best EOR</div><span class="vpu" style="font-size:11px;font-weight:500;">UST</span></div><div class="pc"><div class="pc-l">NPV est.</div><span class="${nvCls}" style="font-size:11px;font-weight:500;">${parseFloat(npv)>0?'+':''}₹${npv} Cr</span></div></div>`;
+  }).join('');
+  document.getElementById('exec-v').innerHTML=DATASET==='cb'?`<div class="verdict v-g"><strong>HyperSenseIQ — Cambay Basin · 5-well UST candidate portfolio</strong><br>Total OIP: <span class="vg">${tOIP.toFixed(1)} MMbbl</span> · Avg WC: <span class="va">${avgWC}%</span><br><br>All 5 wells rank <span class="vpu">UST EOR</span> as optimal intervention — P_EOR <strong>0.879</strong> · Tight Kalol sandstone, medium-gravity crude, capillary-trapped oil: ideal UST profile.<br><br>Priority ranking (per UST Study): CB-MHJ-05 (K-IX+X) → CB-SDR-01 (K-IX+X, zero WC) → CB-SDR-05 (K-VIII+IX) → CB-SDR-06 (viscous K-IX) → CB-AKL-18 (MBS)<br><br>Portfolio NPV: <span class="vg">+₹${tNPV.toFixed(0)} Cr</span> at ${INR(op)}/bbl<div class="sbar-w" style="margin-top:7px;"><div class="sbar" style="width:87%;background:var(--g-mid);"></div></div><div style="font-size:10px;color:var(--g-dark);margin-top:3px;">Techno-Economic Score: 87.9% — Validated vs SPE/Energies/SciReports</div><div style="font-size:9px;color:#5A7A94;margin-top:5px;font-style:italic;">Well data sourced from ONGC Cambay Basin UST candidate study · Kalol Sandstone K-VIII/IX/X · Representative reservoir parameters · Reference dataset</div></div>`:`<div class="verdict v-g"><strong>HyperSenseIQ — Mumbai High North · 5-well portfolio</strong><br>Total OIP: <span class="vg">${tOIP.toFixed(1)} MMbbl</span> · Avg WC: <span class="va">${avgWC}%</span><br><br>All 5 wells rank <span class="vpu">UST EOR</span> as optimal first-stage intervention — 2-month deployment, lowest CAPEX, zero chemical risk.<br><br>Portfolio NPV: <span class="vg">+₹${tNPV.toFixed(0)} Cr</span> at ${INR(op)}/bbl · Payback: <span class="vg">&lt; 2 years per well</span><div class="sbar-w" style="margin-top:7px;"><div class="sbar" style="width:82%;background:var(--g-mid);"></div></div><div style="font-size:10px;color:var(--g-dark);margin-top:3px;">Techno-Economic Score: 82% — High Value</div></div>`;
+}
+
+/* ── MINING MODULE ── */
+function buildMineNav(panelIds){
+  const labels={overview:'Mine overview',vol:'Volumetrics',recovery:'Recovery',mecon:'Economics ₹',mtwin:'Digital twin'};
+  return panelIds.map(id=>`<button class="mine-nav-btn ${curMinePanel===id?'on':''}" onclick="goMine('${id}')">${labels[id]||id}</button>`).join('');
+}
+
+function renderMinePanel(panel){
+  const m=MINES[CM];
+  document.getElementById('m-title').textContent=`HyperSenseIQ Mining — ${m.name}`;
+  document.getElementById('m-sub').textContent=`${m.com} · ${m.state} · ${m.op}${m.restricted?' · RESTRICTED':''}`;
+  const navIds=['overview','vol','recovery','mecon','mtwin'];
+  ['mine-nav-btns','mine-nav2','mine-nav3','mine-nav4','mine-nav5'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=buildMineNav(navIds);});
+  if(panel==='overview')renderMineOverview(m);
+  else if(panel==='vol')renderMineVol(m);
+  else if(panel==='recovery')renderMineRec(m);
+  else if(panel==='mecon'){renderMineEcon(m);updateMineEcon();}
+  else if(panel==='mtwin')renderMineTwin(m);
+}
+
+function renderMineOverview(m){
+  const top=m.methods[0];
+  const npvEst=((m.recov*m.price.base*(1-m.roy-m.dmf-m.pmk)*0.85-top.opex*40-top.capex)/100).toFixed(0);
+  document.getElementById('m-kpis').innerHTML=`
+    <div class="kpi g"><div class="kpi-l">In-situ resource</div><div class="kpi-v">${m.insitu.toFixed(0)}<span style="font-size:12px;font-weight:400"> ${m.unit}</span></div><div class="kpi-s">${m.com} · ${m.grade}% grade</div></div>
+    <div class="kpi n"><div class="kpi-l">Recoverable reserve</div><div class="kpi-v">${m.recov.toFixed(1)}<span style="font-size:12px;font-weight:400"> ${m.unit}</span></div><div class="kpi-s">RF ${(m.frf*100).toFixed(0)}% combined</div></div>
+    <div class="kpi a"><div class="kpi-l">Best recovery method</div><div class="kpi-v" style="font-size:13px;">${top.n}</div><div class="kpi-s">Score: ${(top.sc*100).toFixed(0)}%</div></div>
+    <div class="kpi ${parseFloat(npvEst)>0?'g':'r'}"><div class="kpi-l">Project NPV (est.)</div><div class="kpi-v">${parseFloat(npvEst)>0?'+':''}₹${npvEst}<span style="font-size:12px;font-weight:400"> Cr</span></div><div class="kpi-s">Base price scenario</div></div>
+    <div class="kpi ${m.restricted?'r':'p'}"><div class="kpi-l">Strategic status</div><div class="kpi-v" style="font-size:12px;">${m.restricted?'RESTRICTED':'Active'}</div><div class="kpi-s">${m.op}</div></div>`;
+  drawOreCanvas(m);drawBlocks(m);
+}
+
+function drawOreCanvas(m){
+  const c=document.getElementById('m-ore-c');if(!c)return;
+  c.width=c.parentElement.clientWidth||380;c.height=200;
+  const ctx=c.getContext('2d'),W=c.width,H=200;
+  ctx.fillStyle='#F8F6F0';ctx.fillRect(0,0,W,H);
+  const cols=10,rows=7,cw=W/cols,ch=H/rows;
+  for(let r=0;r<rows;r++)for(let col=0;col<cols;col++){
+    const v=(Math.sin((col+CM*7)*0.8)*Math.cos((r+CM*3)*0.6)+1)/2;
+    const mi=Math.floor(v*m.minerals.length),min=m.minerals[Math.min(mi,m.minerals.length-1)];
+    ctx.fillStyle=min.col+(Math.round((.4+v*.5)*255).toString(16).padStart(2,'0'));
+    ctx.fillRect(col*cw+1,r*ch+1,cw-2,ch-2);
+    ctx.strokeStyle='rgba(255,255,255,.2)';ctx.lineWidth=.4;ctx.strokeRect(col*cw+1,r*ch+1,cw-2,ch-2);
+  }
+  ctx.fillStyle='rgba(0,0,0,.45)';ctx.font='bold 10px system-ui';ctx.textAlign='center';ctx.textBaseline='top';
+  ctx.fillText(`${m.name} — ${m.com} · Grade: ${m.grade}% ${m.sym}`,W/2,6);
+  ctx.font='9px system-ui';ctx.fillText('SWIR spectral mineral map · HyperSenseIQ v2.1',W/2,H-14);
+  document.getElementById('m-ore-legend').innerHTML=m.minerals.map(min=>`<div class="lp"><span class="lsq" style="background:${min.col};border-color:${min.col};"></span>${min.n} (${min.pct}%)</div>`).join('');
+}
+
+function drawBlocks(m){
+  const el=document.getElementById('m-blocks');if(!el)return;
+  const grades=[{l:`High grade (>${Math.round(m.grade*1.5)}%)`,pct:22,c:'var(--g-bg)',tc:'var(--g-dark)'},{l:`Ore grade (${Math.round(m.grade*.7)}-${Math.round(m.grade*1.5)}%)`,pct:45,c:'var(--a-bg)',tc:'var(--a-dark)'},{l:`Low grade (<${Math.round(m.grade*.7)}%)`,pct:21,c:'var(--r-bg)',tc:'var(--r-dark)'},{l:'Waste',pct:12,c:'#F4F3EF',tc:'var(--gray)'}];
+  el.innerHTML=grades.map(g=>`<div style="margin-bottom:7px;"><div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:2px;"><span style="color:var(--gray);">${g.l}</span><span style="font-weight:500;color:${g.tc};">${g.pct}%</span></div><div style="height:16px;background:#EEE;border-radius:3px;overflow:hidden;"><div style="height:16px;width:${g.pct}%;background:${g.c};border-radius:3px;display:flex;align-items:center;padding-left:5px;font-size:9px;color:${g.tc};font-weight:500;border:0.5px solid ${g.c};">${g.pct>8?g.pct+'%':''}</div></div></div>`).join('');
+}
+
+function renderMineVol(m){
+  const el=document.getElementById('m-vol');if(!el)return;
+  el.innerHTML=[['In-situ tonnage',m.insitu.toFixed(1)+' '+m.unit,'vg'],['Grade ('+m.sym+')',m.grade+'%','va'],['Density',m.den+' t/m³','vn'],['Contained '+m.sym,m.insitu.toFixed(1)+' '+m.unit,'vg'],['Mining RF',(m.mrf*100).toFixed(0)+'%','va'],['Process RF',(m.prf*100).toFixed(0)+'%','va'],['Final recoverable',m.recov.toFixed(1)+' '+m.unit,'vg'],['Total RF',(m.frf*100).toFixed(1)+'%','vn']].map(([l,v,c])=>`<div class="fr"><span class="fl">${l}</span><span class="fv ${c}">${v}</span></div>`).join('');
+  const pt=document.getElementById('m-parallel');if(pt)pt.innerHTML=`<thead><tr><th>Oil & Gas concept</th><th>Mining equivalent</th><th>This mine</th></tr></thead><tbody><tr class="row-g"><td class="vg">STOIIP</td><td>In-situ resource</td><td class="vg">${m.insitu.toFixed(1)} ${m.unit}</td></tr><tr><td>Hydrocarbon pore vol.</td><td>Net ore volume</td><td>${(m.insitu/m.den).toFixed(0)} M m³</td></tr><tr class="row-a"><td class="va">Water saturation (Sw)</td><td>Gangue / dilution</td><td class="va">${(100-m.grade).toFixed(0)}%</td></tr><tr><td>Primary RF</td><td>Mining RF</td><td>${(m.mrf*100).toFixed(0)}%</td></tr><tr class="row-g"><td class="vg">EOR uplift factor</td><td>Process RF</td><td class="vg">${(m.prf*100).toFixed(0)}%</td></tr><tr><td>EUR</td><td>Recoverable reserves</td><td>${m.recov.toFixed(1)} ${m.unit}</td></tr></tbody>`;
+}
+
+function renderMineRec(m){
+  const best=m.methods[0].sc;
+  document.getElementById('m-rec-bars').innerHTML=m.methods.map((mth,i)=>{
+    const pct=Math.round(mth.sc/best*100),rank=i+1,rb=rank===1?'rb1':rank===2?'rb2':rank===3?'rb3':'rbn';
+    return `<div class="eor-r" style="margin-bottom:8px;"><span class="rb ${rb}">#${rank}</span><span class="eor-n" style="font-size:10px;">${mth.n}</span><div class="eor-bw"><div class="eor-b" style="width:${pct}%;background:${mth.col};opacity:${rank<=2?1:.7};">${rank===1?'Best':'Rec.'}</div></div><span class="eor-sc" style="color:${mth.col}">${(mth.sc*100).toFixed(0)}%</span></div><div style="font-size:10px;color:var(--gray);padding-left:30px;margin-bottom:5px;">CAPEX: ₹${m.capex} Cr · Recovery: ${(mth.rec*100).toFixed(0)}%</div>`;
+  }).join('');
+  const top=m.methods[0];
+  document.getElementById('m-rec-detail').innerHTML=[['Recommended',top.n,'vg'],['Feasibility score',(top.sc*100).toFixed(0)+'%','vg'],['Recovery rate',(top.rec*100).toFixed(0)+'%','va'],['CAPEX','₹'+m.capex+' Cr','vr'],['Annual OPEX','₹'+m.opex+' Cr/yr','vr'],['Recoverable output',(m.recov*top.rec).toFixed(1)+' '+m.unit,'vg'],['Mine life',Math.round(m.recov/2.5)+' years','va']].map(([l,v,c])=>`<div class="fr"><span class="fl">${l}</span><span class="fv ${c}">${v}</span></div>`).join('');
+  document.getElementById('m-verdict').innerHTML=`<div class="verdict ${top.sc>.80?'v-g':'v-a'}"><strong>HyperSenseIQ mining — ${m.name} · ${m.com}</strong><br>${top.n} is the optimal method (score: ${(top.sc*100).toFixed(0)}%). Recoverable reserve: ${m.recov.toFixed(1)} ${m.unit} at ${(top.rec*100).toFixed(0)}% recovery. CAPEX ₹${m.capex} Cr. Mine life ~${Math.round(m.recov/2.5)} years.<div class="sbar-w" style="margin-top:6px;"><div class="sbar" style="width:${(top.sc*100).toFixed(0)}%;background:var(--g-mid);"></div></div></div>`;
+}
+
+function renderMineEcon(m){}
+function updateMineEcon(){
+  const m=MINES[CM];if(!m)return;
+  const dr=parseFloat(document.getElementById('m-disc-sl').value)/100;
+  document.getElementById('m-disc-v').textContent=Math.round(dr*100)+'%';
+  document.getElementById('m-price-disp').textContent=`${m.pu}: ${INR(m.price.base)}`;
+  const top=m.methods[0],annO=m.recov*1e6/Math.max(1,Math.round(m.recov/2.5));
+  const npvOf=price=>{let n=-top.capex;const ramp=[.5,.8,1,1,.9,.8,.7];for(let yr=1;yr<=7;yr++){const rev=annO*price/1e10;const net=rev*(1-m.roy-m.dmf-m.pmk)*(1-m.gst)*.85-m.opex;n+=net/Math.pow(1+dr,yr);}return n;};
+  const [nvL,nvB,nvH]=[m.price.lo,m.price.base,m.price.hi].map(npvOf);
+  document.getElementById('m-scens').innerHTML=`<div class="scen sc-l"><div class="sc-lbl">Low — ${INR(m.price.lo)}</div><div class="sc-val ${vCls(nvL)}">${nvL>0?'+':''}₹${nvL.toFixed(0)} Cr</div><div class="sc-sub">NPV (7yr)</div></div><div class="scen sc-b"><div class="sc-lbl">Base — ${INR(m.price.base)}</div><div class="sc-val ${vCls(nvB)}">${nvB>0?'+':''}₹${nvB.toFixed(0)} Cr</div><div class="sc-sub">NPV (7yr)</div></div><div class="scen sc-h"><div class="sc-lbl">High — ${INR(m.price.hi)}</div><div class="sc-val vb">+₹${nvH.toFixed(0)} Cr</div><div class="sc-sub">NPV (7yr)</div></div>`;
+  const annRev=annO*m.price.base/1e10,royAmt=annRev*m.roy,dmfAmt=annRev*m.dmf,netRev=(annRev-royAmt-dmfAmt)*(1-m.gst)*.85;
+  document.getElementById('m-fiscal').innerHTML=`<div class="fr"><span class="fl">Mine / operator</span><span class="fv">${m.id} · ${m.op}</span></div><div class="fr"><span class="fl">Annual gross revenue</span><span class="fv vg">${INR(annRev)} Cr/yr</span></div>${m.roy>0?`<div class="fr fr-neg"><span class="fl">State royalty (MMDR) ${(m.roy*100).toFixed(0)}%</span><span class="fv vr">− ${INR(royAmt)} Cr/yr</span></div>`:'<div class="fr"><span class="fl">Royalty</span><span class="fv va">Exempt (Atomic Energy)</span></div>'}${m.dmf>0?`<div class="fr fr-neg"><span class="fl">DMF fund ${(m.dmf*100).toFixed(0)}%</span><span class="fv vr">− ${INR(dmfAmt)} Cr/yr</span></div>`:''}<div class="fr fr-hl"><span class="fl" style="font-weight:500;">Net operator revenue</span><span class="fv vg" style="font-size:13px;">${INR(netRev)} Cr/yr</span></div><div class="fr"><span class="fl">Project CAPEX</span><span class="fv vr">₹${top.capex} Cr</span></div><div class="fr ${nvB>0?'fr-hl':'fr-neg'}"><span class="fl" style="font-weight:500;">NPV @ ${Math.round(dr*100)}%</span><span class="fv ${vCls(nvB)}" style="font-size:13px;">${nvB>0?'+':''}₹${nvB.toFixed(0)} Cr</span></div><div class="fr"><span class="fl">Mine life</span><span class="fv va">${Math.round(m.recov/2.5)} years</span></div>`;
+}
+
+function renderMineTwin(m){
+  const R=m.restricted;
+  document.getElementById('m-tw-id').innerHTML=`<span style="font-family:monospace;font-size:9px;background:${R?'var(--r-bg)':'#F0EEE8'};border:0.5px solid ${R?'var(--r-mid)':'var(--border)'};padding:3px 7px;border-radius:3px;color:${R?'var(--r-dark)':'var(--p-text)'};margin-bottom:8px;display:block;">DT-MIN-IND-20260502-${m.id}</span>${R?`<div style="background:var(--r-bg);border:0.5px solid var(--r-mid);border-radius:4px;padding:6px;margin-bottom:7px;font-size:10px;color:var(--r-dark);font-weight:500;">RESTRICTED: ${m.note}</div>`:''}${[['Mine ID',m.id,'vg'],['Commodity',m.com,'vp'],['State',m.state,'vn'],['Operator',m.op,'vn'],['Grade',m.grade+'% '+m.sym,'va'],['Status',R?'CLASSIFIED':'REGISTERED','vg']].map(([l,v,c])=>`<div class="fr"><span class="fl">${l}</span><span class="fv ${c}">${v}</span></div>`).join('')}`;
+  document.getElementById('m-tw-min').innerHTML=m.minerals.map(min=>`<div style="display:flex;align-items:center;gap:7px;margin-bottom:6px;"><div style="width:22px;height:13px;border-radius:3px;background:${min.col};flex-shrink:0;border:0.5px solid rgba(0,0,0,.1);"></div><div style="flex:1;font-size:10px;color:var(--gray);">${min.n}</div><div style="width:44px;height:6px;background:#EEE;border-radius:3px;"><div style="height:6px;width:${min.pct}%;background:${min.col};border-radius:3px;"></div></div><div style="font-size:10px;font-weight:500;width:26px;text-align:right;">${min.pct}%</div></div>`).join('')+`<div class="fr"><span class="fl">SIS score</span><span class="fv vg">0.86</span></div><div class="fr"><span class="fl">LCS score</span><span class="fv vg">0.91</span></div>`;
+  document.getElementById('m-tw-strat').innerHTML=`${[['MMDR category',R?'Atomic/Critical':'Major mineral'],['IBM registration',R?'AERB/DAE only':'Active'],['Export restriction',R?'PROHIBITED':'MoM approval'],['Blockchain',R?'BARC Secure DLT':'NIC India DLT'],['Access level',R?'Top Secret/AEA':m.op+' + MoM']].map(([l,v])=>`<div class="fr"><span class="fl">${l}</span><span class="fv ${R?'vr':'va'}" style="font-size:10px;">${v}</span></div>`).join('')}<div style="margin-top:7px;padding:7px;background:${R?'var(--r-bg)':'var(--p-bg)'};border-radius:4px;font-size:10px;color:${R?'var(--r-dark)':'var(--p-dark)'};">${m.note}</div>`;
+  const repos=R?[['BARC','r','RESTRICTED'],['AERB','r','RESTRICTED'],['DAE','g','ACTIVE'],['MoM','r','NO ACCESS'],['NIC DLT','r','CLASSIFIED'],['IBM','r','RESTRICTED'],['KABIL','r','NO ACCESS'],['World Bank','r','PROHIBITED']]:[['IBM','g','ACTIVE'],['GSI','g','ACTIVE'],['MoM','g','ACTIVE'],['NIC DLT','g','ACTIVE'],['KABIL','g','ACTIVE'],['World Bank','a','FUTURE'],['IEA','a','FUTURE'],['IOGP','p','PLANNED']];
+  document.getElementById('m-tw-repos').innerHTML=`<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:7px;">${repos.map(([n,c,s])=>`<div style="background:var(--${c}-bg);border:0.5px solid;border-color:var(--${c}-mid);border-radius:5px;padding:7px 9px;"><div style="font-size:10px;font-weight:500;color:var(--${c}-dark);margin-bottom:2px;">${s}</div><div style="font-size:10px;color:var(--gray);">${n}</div></div>`).join('')}</div>`;
+}
+/* ── YOUR WELL DATA ── */
+const SAMPLE={wid:'MH-A-101',fld:'Mumbai High North',qi:740,di:.30,wc:32,age:9,phi:.20,sw:.22,perm:78,pay:7.5,api:38,dep:1856,op:6500,dr:12,eq:85,hor:5};
+function loadSample(){Object.entries(SAMPLE).forEach(([k,v])=>{const el=document.getElementById('i-'+k);if(el)el.value=v;});livePreview();validateInp();}
+function clearInp(){['wid','fld','qi','di','wc','age','phi','sw','perm','pay','api','dep','op','dr','eq','hor'].forEach(k=>{const el=document.getElementById('i-'+k);if(el)el.value='';});document.getElementById('inp-preview').style.display='none';document.getElementById('inp-results').style.display='none';validateInp();}
+function gV(id){const el=document.getElementById('i-'+id);return el?parseFloat(el.value)||el.value:'';}
+function validateInp(){
+  const req=['qi','di','phi','sw','perm','dep'];
+  const ok=req.every(id=>{const el=document.getElementById('i-'+id);return el&&el.value&&!isNaN(parseFloat(el.value));});
+  const btn=document.getElementById('analyse-btn'),hint=document.getElementById('inp-hint');
+  if(ok){btn.disabled=false;btn.className='';btn.classList.add('ready');btn.textContent='Run HyperSenseIQ Analysis';hint.textContent='All fields filled — click to analyse';hint.style.color='var(--g-text)';}
+  else{
+    btn.disabled=true;btn.className='disabled-btn';btn.textContent='Run HyperSenseIQ Analysis';
+    const missing=[];
+    const checks={qi:'Initial rate qi',di:'Decline rate Di',phi:'Porosity φ',sw:'Water saturation Sw',perm:'Permeability',dep:'Depth TVD'};
+    Object.entries(checks).forEach(([k,label])=>{const el=document.getElementById('i-'+k);if(!el||!el.value||isNaN(parseFloat(el.value)))missing.push(label);});
+    hint.textContent = missing.length ? 'Still needed: ' + missing.join(' · ') : 'Fill required fields to enable analysis';
+    hint.style.color='#EF9F27';
+  }
+}
+function livePreview(){
+  const qi=parseFloat(document.getElementById('i-qi').value)||0,di=parseFloat(document.getElementById('i-di').value)||0;
+  const phi=parseFloat(document.getElementById('i-phi').value)||0,sw=parseFloat(document.getElementById('i-sw').value)||0;
+  const wc=parseFloat(document.getElementById('i-wc').value)||0,age=parseFloat(document.getElementById('i-age').value)||8,perm=parseFloat(document.getElementById('i-perm').value)||0;
+  if(!qi||!di)return;
+  document.getElementById('inp-preview').style.display='block';
+  const cr=qi>0&&di>0?Math.round(qi/Math.pow(1+.5*di*age,2)):0;
+  const st=phi>0&&sw>0?Math.round(7758*phi*(1-sw)*10000/1.2):0;
+  const rCl=cr<100?'#E24B4A':cr<300?'#EF9F27':'#1D9E75',wCl=wc>60?'#E24B4A':wc>35?'#EF9F27':'#1D9E75';
+  document.getElementById('preview-kpis').innerHTML=`<div style="background:rgba(255,255,255,.06);border-radius:5px;padding:7px;border:0.5px solid rgba(255,255,255,.1);"><div style="font-size:9px;color:#5DCAA5;margin-bottom:2px;">Current rate (est.)</div><div style="font-size:15px;font-weight:500;color:${rCl};">${cr}<span style="font-size:10px;"> bbl/d</span></div></div><div style="background:rgba(255,255,255,.06);border-radius:5px;padding:7px;border:0.5px solid rgba(255,255,255,.1);"><div style="font-size:9px;color:#5DCAA5;margin-bottom:2px;">STOIIP (est.)</div><div style="font-size:15px;font-weight:500;color:#E8D87A;">${st>0?st.toLocaleString():'—'}<span style="font-size:10px;"> STB</span></div></div><div style="background:rgba(255,255,255,.06);border-radius:5px;padding:7px;border:0.5px solid rgba(255,255,255,.1);"><div style="font-size:9px;color:#5DCAA5;margin-bottom:2px;">Water cut</div><div style="font-size:15px;font-weight:500;color:${wCl};">${wc||'—'}<span style="font-size:10px;">%</span></div></div><div style="background:rgba(255,255,255,.06);border-radius:5px;padding:7px;border:0.5px solid rgba(255,255,255,.1);"><div style="font-size:9px;color:#5DCAA5;margin-bottom:2px;">Oil saturation</div><div style="font-size:15px;font-weight:500;color:#9FE1CB;">${phi>0&&sw>0?((1-sw)*100).toFixed(0)+'%':'—'}</div></div><div style="background:rgba(255,255,255,.06);border-radius:5px;padding:7px;border:0.5px solid rgba(255,255,255,.1);"><div style="font-size:9px;color:#5DCAA5;margin-bottom:2px;">Permeability</div><div style="font-size:15px;font-weight:500;color:${perm>80?'#1D9E75':perm>20?'#EF9F27':'#E24B4A'};">${perm||'—'}<span style="font-size:10px;"> mD</span></div></div>`;
+  validateInp();
+}
+async function runAnalysis(){
+  const btn=document.getElementById('analyse-btn');btn.textContent='Analysing...';btn.disabled=true;
+  await new Promise(r=>setTimeout(r,1100));
+  const w={id:gV('wid')||'CUSTOM-01',field:gV('fld')||'User Field',qi:gV('qi'),Di:gV('di'),phi:gV('phi'),sw:gV('sw'),perm:gV('perm'),pay:gV('pay')||8,api:gV('api')||38,dep:gV('dep')||1800,wc:gV('wc')||20,age:gV('age')||8,op:gV('op')||6500,dr:(gV('dr')||12)/100,eq:(gV('eq')||85)/100,hor:gV('hor')||5};
+  const cr=Math.round(w.qi/Math.pow(1+.5*w.Di*w.age,2));
+  const st=Math.round(7758*w.phi*(1-w.sw)*w.pay*10000/(1.2));
+  const rf=Math.min(.45,Math.max(.10,.25+(w.phi-.10)*.5+(1-w.sw-.20)*.3));
+  const eur=(st*rf/1e6).toFixed(2);
+  const scores=[{n:'UST',col:'#AB47BC',peor:Math.min(.95,.82+w.phi*.3),upl:.42,capex:.9,opex:.3},{n:'ASP',col:'#0A7A9E',peor:Math.min(.92,.80+w.phi*.5),upl:.45,capex:4.2,opex:1.1},{n:'Polymer',col:'#1D9E75',peor:Math.min(.88,.74+w.phi*.4),upl:.32,capex:2.8,opex:.9}].sort((a,b)=>b.peor-a.peor);
+  const top=scores[0];const di=Math.round(cr*.35),capex=top.capex*83.5/100;
+  const ramp=[.6,.9,1,1,.8];let npv=-capex;for(let yr=1;yr<=w.hor;yr++){const rev=di*365*ramp[Math.min(yr-1,4)]*w.op/1e7;const net=(rev*.875)*w.eq-top.opex*83.5/100;npv+=net/Math.pow(1+w.dr,yr);}
+  const rCls=cr<100?'r':cr<300?'a':'g',nvCls=npv>0?'g':'r';
+  document.getElementById('res-well-name').textContent=`${w.id} · ${w.field} · ${w.dep}m TVD`;
+  document.getElementById('res-kpis').innerHTML=`<div class="kpi ${rCls}"><div class="kpi-l">Current rate</div><div class="kpi-v">${cr}<span style="font-size:12px;font-weight:400"> bbl/d</span></div><div class="kpi-s">${cr<100?'Terminal':cr<300?'Late':'Active'} decline</div></div><div class="kpi n"><div class="kpi-l">STOIIP</div><div class="kpi-v">${st.toLocaleString()}</div><div class="kpi-s">STB · RF ${(rf*100).toFixed(0)}%</div></div><div class="kpi ${w.wc>60?'r':w.wc>35?'a':'g'}"><div class="kpi-l">Water cut</div><div class="kpi-v">${w.wc}<span style="font-size:12px;font-weight:400">%</span></div><div class="kpi-s">${w.wc>60?'Critical':w.wc>35?'Elevated':'Acceptable'}</div></div><div class="kpi ${nvCls}"><div class="kpi-l">NPV (${w.hor}yr)</div><div class="kpi-v">${npv>0?'+':''}₹${npv.toFixed(1)}<span style="font-size:12px;font-weight:400"> Cr</span></div><div class="kpi-s">@ ${INR(w.op)}/bbl</div></div><div class="kpi p"><div class="kpi-l">Best EOR</div><div class="kpi-v" style="font-size:14px;">${top.n}</div><div class="kpi-s">P_EOR ${(top.peor*100).toFixed(0)}%</div></div>`;
+  document.getElementById('res-vol').innerHTML=[['STOIIP',st.toLocaleString()+' STB','vg'],['OIP',(st/1e6).toFixed(2)+' MMbbl','vg'],['Primary RF',(rf*100).toFixed(0)+'%','va'],['Primary EUR',eur+' MMbbl','vn'],['EOR ΔN_eff (top method)',Math.round(top.peor*top.upl*st/1000)+' Kbbl','vg'],['Porosity φ',(w.phi*100).toFixed(0)+'%','vn'],['Water sat. Sw',(w.sw*100).toFixed(0)+'%','vn'],['Net pay',w.pay+'m','vn'],['Permeability',w.perm+' mD','vn']].map(([l,v,c])=>`<div class="fr"><span class="fl">${l}</span><span class="fv ${c}">${v}</span></div>`).join('');
+  document.getElementById('res-eor').innerHTML=scores.map((m,i)=>{const rank=i+1,rb=rank===1?'rb1':rank===2?'rb2':'rb3',pct=Math.round(m.peor/scores[0].peor*100);return `<div class="eor-r" style="margin-bottom:8px;"><span class="rb ${rb}">#${rank}</span><span class="eor-n" style="font-size:11px;">${m.n}</span><div class="eor-bw"><div class="eor-b" style="width:${pct}%;background:${m.col};">${rank===1?'Best method':'Highly rec.'}</div></div><span class="eor-sc" style="color:${m.col}">${(m.peor*100).toFixed(0)}%</span></div><div style="font-size:10px;color:var(--gray);padding-left:30px;margin-bottom:5px;">CAPEX: ₹${Math.round(m.capex*83.5)} Lakhs · ΔN: ${Math.round(m.peor*m.upl*st/1000)} Kbbl</div>`;}).join('');
+  const cat=npv>5&&w.dr<.25?'High Value':npv>0?'Marginal':'Uneconomic',vCls2=cat==='High Value'?'v-g':cat==='Marginal'?'v-a':'v-r';
+  document.getElementById('res-verdict').innerHTML=`<div class="verdict ${vCls2}"><strong>HyperSenseIQ — ${w.id} · ${cat} · Best EOR: ${top.n}</strong><br>Current rate: <span style="font-weight:500;">${cr} bbl/d</span> · STOIIP: <span style="font-weight:500;">${st.toLocaleString()} STB</span> · RF ${(rf*100).toFixed(0)}%<br>${top.n} EOR: P_EOR ${(top.peor*100).toFixed(0)}% · ΔN ${Math.round(top.peor*top.upl*st/1000)} Kbbl · NPV ${npv>0?'+':''}₹${npv.toFixed(1)} Cr<div class="sbar-w" style="margin-top:6px;"><div class="sbar" style="width:${(top.peor*100).toFixed(0)}%;background:${npv>0?'var(--g-mid)':'var(--a-mid)'};"></div></div></div>`;
+
+  /* ── DECLINE CURVE CANVAS ── */
+  setTimeout(() => {
+    const canvas = document.getElementById('res-dec');
+    if (!canvas) return;
+    const parent = canvas.parentElement;
+    canvas.width  = parent.clientWidth  || 400;
+    canvas.height = parent.clientHeight || 170;
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+    const pad = {t:14, r:16, b:32, l:44};
+    const cW = W - pad.l - pad.r, cH = H - pad.t - pad.b;
+    ctx.clearRect(0, 0, W, H);
+
+    // Generate decline data — Arps harmonic b=0.5, 10 years
+    const years = 10, pts = 40;
+    const baseRates = [], eorRates = [], labels = [];
+    for (let i = 0; i <= pts; i++) {
+      const t = (i / pts) * years;
+      labels.push(t.toFixed(1));
+      const base = w.qi / Math.pow(1 + 0.5 * w.Di * t, 2);
+      baseRates.push(Math.max(0, base));
+      // EOR kicks in at year 1, adds top.peor * upl boost decaying over horizon
+      const eorBoost = t >= 1 && t <= (1 + w.hor)
+        ? di * top.peor * Math.exp(-(t - 1) * 0.3)
+        : 0;
+      eorRates.push(Math.max(0, base + eorBoost));
+    }
+    const maxRate = Math.max(...eorRates, w.qi) * 1.1;
+
+    function toX(i) { return pad.l + (i / pts) * cW; }
+    function toY(v) { return pad.t + cH - (v / maxRate) * cH; }
+
+    // Grid lines
+    ctx.strokeStyle = '#E8E6E0'; ctx.lineWidth = 0.5;
+    for (let g = 0; g <= 4; g++) {
+      const y = pad.t + (g / 4) * cH;
+      ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(pad.l + cW, y); ctx.stroke();
+      ctx.fillStyle = '#AAA'; ctx.font = '9px system-ui'; ctx.textAlign = 'right';
+      ctx.fillText(Math.round(maxRate * (1 - g / 4)), pad.l - 4, y + 3);
+    }
+    // X axis labels
+    ctx.fillStyle = '#AAA'; ctx.font = '9px system-ui'; ctx.textAlign = 'center';
+    [0, 2, 4, 6, 8, 10].forEach(yr => {
+      const i = Math.round((yr / years) * pts);
+      ctx.fillText('Yr ' + yr, toX(i), H - 6);
+    });
+
+    // EOR fill area
+    ctx.beginPath();
+    ctx.moveTo(toX(0), toY(baseRates[0]));
+    for (let i = 1; i <= pts; i++) ctx.lineTo(toX(i), toY(eorRates[i]));
+    for (let i = pts; i >= 0; i--) ctx.lineTo(toX(i), toY(baseRates[i]));
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(171,71,188,0.12)'; ctx.fill();
+
+    // Base decline line
+    ctx.beginPath(); ctx.strokeStyle = '#EF9F27'; ctx.lineWidth = 1.5;
+    baseRates.forEach((v, i) => i === 0 ? ctx.moveTo(toX(i), toY(v)) : ctx.lineTo(toX(i), toY(v)));
+    ctx.stroke();
+
+    // EOR line
+    ctx.beginPath(); ctx.strokeStyle = '#AB47BC'; ctx.lineWidth = 2;
+    eorRates.forEach((v, i) => i === 0 ? ctx.moveTo(toX(i), toY(v)) : ctx.lineTo(toX(i), toY(v)));
+    ctx.stroke();
+
+    // Current rate dot
+    ctx.beginPath(); ctx.arc(toX(Math.round((w.age / years) * pts)), toY(cr), 4, 0, Math.PI * 2);
+    ctx.fillStyle = '#1D9E75'; ctx.fill();
+
+    // Legend
+    ctx.font = '9px system-ui'; ctx.textAlign = 'left';
+    [[`#EF9F27`,'Base decline'],[`#AB47BC`,`+ ${top.n} EOR`],[`#1D9E75`,'Current rate']].forEach(([col, lbl], idx) => {
+      ctx.fillStyle = col; ctx.fillRect(pad.l + idx * 110, pad.t + 2, 10, 2);
+      ctx.fillStyle = '#666'; ctx.fillText(lbl, pad.l + idx * 110 + 14, pad.t + 6);
+    });
+  }, 50);
+
+  /* ── INDIA FISCAL ECONOMICS ── */
+  const royalty = 0.125, oidCess = 4500, saed = 3500;
+  const grossRevPerBbl = w.op;
+  const netRevPerBbl = grossRevPerBbl - (grossRevPerBbl * royalty) - (oidCess / 6.29) - (saed / 6.29);
+  const eorProdBbls = di * 365 * w.hor * 0.85;
+  const grossRevCr = (eorProdBbls * grossRevPerBbl / 1e7).toFixed(1);
+  const netRevCr   = (eorProdBbls * netRevPerBbl   / 1e7).toFixed(1);
+  const capexCr    = (top.capex * 83.5 / 100).toFixed(2);
+  const opexCr     = (top.opex  * 83.5 / 100 * w.hor).toFixed(2);
+  const ebitdaCr   = (parseFloat(netRevCr) - parseFloat(capexCr) - parseFloat(opexCr)).toFixed(1);
+  const tax        = Math.max(0, parseFloat(ebitdaCr) * 0.2517).toFixed(1);
+  const patCr      = (parseFloat(ebitdaCr) - parseFloat(tax)).toFixed(1);
+  document.getElementById('res-econ').innerHTML = `
+    <div class="fr fr-hl"><span class="fl">Crude price</span><span class="fv vg">₹${w.op.toLocaleString()}/bbl</span></div>
+    <div class="fr"><span class="fl">Royalty (12.5%)</span><span class="fv va">−₹${Math.round(w.op*0.125)}/bbl</span></div>
+    <div class="fr"><span class="fl">OID Cess</span><span class="fv va">−₹${Math.round(oidCess/6.29)}/bbl</span></div>
+    <div class="fr"><span class="fl">SAED</span><span class="fv va">−₹${Math.round(saed/6.29)}/bbl</span></div>
+    <div class="fr fr-hl"><span class="fl">Net realisation</span><span class="fv vg">₹${Math.round(netRevPerBbl)}/bbl</span></div>
+    <div class="fr"><span class="fl">EOR incremental production (${w.hor}yr)</span><span class="fv">${Math.round(eorProdBbls).toLocaleString()} bbl</span></div>
+    <div class="fr"><span class="fl">Gross revenue</span><span class="fv vg">₹${grossRevCr} Cr</span></div>
+    <div class="fr"><span class="fl">Net revenue (post levies)</span><span class="fv vg">₹${netRevCr} Cr</span></div>
+    <div class="fr"><span class="fl">CAPEX (${top.n})</span><span class="fv vr">−₹${capexCr} Cr</span></div>
+    <div class="fr"><span class="fl">OPEX (${w.hor}yr)</span><span class="fv vr">−₹${opexCr} Cr</span></div>
+    <div class="fr fr-hl"><span class="fl">EBITDA</span><span class="fv ${parseFloat(ebitdaCr)>0?'vg':'vr'}">₹${ebitdaCr} Cr</span></div>
+    <div class="fr"><span class="fl">Corporate tax (25.17%)</span><span class="fv va">−₹${tax} Cr</span></div>
+    <div class="fr fr-hl"><span class="fl font-weight:600">PAT (ONGC ${(w.eq*100).toFixed(0)}% equity)</span><span class="fv ${parseFloat(patCr)>0?'vg':'vr'}" style="font-size:13px;">₹${patCr} Cr</span></div>`;
+
+  document.getElementById('inp-results').style.display='block';
+  document.getElementById('inp-results').scrollIntoView({behavior:'smooth',block:'start'});
+  btn.className='';btn.classList.add('ready');btn.textContent='Re-run Analysis';btn.disabled=false;
+}
+
+
+/* ── LAS SAMPLE BUTTON RENDERER ── */
+function renderLasSampleBtns() {
+  const isCB = DATASET === 'cb';
+  const wells = isCB
+    ? ['CB-MHJ-05','CB-SDR-01','CB-SDR-05','CB-SDR-06','CB-AKL-18']
+    : ['MH-N-01','MH-N-02','MH-N-03','MH-N-04','MH-N-05'];
+  const label = isCB ? 'Cambay Basin sample:' : 'Mumbai High sample:';
+  const el = document.getElementById('las-sample-btns');
+  if (!el) return;
+  el.innerHTML = `<span style="font-size:9px;color:#5A7A94;align-self:center;margin-right:2px;">${label}</span>`
+    + wells.map(w =>
+        `<button onclick="loadSampleLas('${w}')"
+          style="font-size:9px;padding:3px 8px;border-radius:4px;border:0.5px solid rgba(171,71,188,.4);
+                 background:rgba(171,71,188,.08);color:#CE93D8;cursor:pointer;">${w}</button>`
+      ).join('');
+}
+
+/* ── LAS FILE UPLOAD MODULE ── */
+const BACKEND_URL = 'http://localhost:8000';  // Change to Render URL for production
+let lasParams = null;  // Stores parsed LAS parameters
+
+function setLasStatus(msg, type='') {
+  const el = document.getElementById('las-status');
+  if (!msg) { el.style.display='none'; el.innerHTML=''; el.className='las-status'; return; }
+  el.style.display='block';
+  el.innerHTML = msg;
+  el.className = 'las-status ' + (type==='err'?'las-err':type==='ok'?'las-ok':'');
+}
+
+function handleLasDrop(e) {
+  e.preventDefault();
+  document.getElementById('las-drop-zone').classList.remove('drag');
+  const file = e.dataTransfer.files[0];
+  if (file) handleLasFile(file);
+}
+
+async function handleLasFile(file) {
+  if (!file) return;
+  if (!file.name.toLowerCase().endsWith('.las')) {
+    setLasStatus('Please upload a .las file', 'err'); return;
+  }
+  setLasStatus('<span class="las-spinner"></span> Parsing LAS file...', '');
+  try {
+    const fd = new FormData();
+    fd.append('file', file);
+    const resp = await fetch(BACKEND_URL + '/api/parse-las', {method:'POST', body:fd});
+    if (!resp.ok) {
+      const err = await resp.json();
+      throw new Error(err.detail || 'Server error');
+    }
+    const data = await resp.json();
+    showLasResult(data);
+  } catch(e) {
+    if (e.message.includes('fetch') || e.message.includes('Failed')) {
+      setLasStatus('📋 Live LAS parsing requires the HyperSenseIQ backend service. Please use the sample wells below or enter parameters manually.', 'err');
+    } else {
+      setLasStatus('Error: ' + e.message, 'err');
+    }
+  }
+}
+
+/* ── OFFLINE LAS DATA — CB WELLS (no backend required) ── */
+const OFFLINE_LAS = {
+  'CB-MHJ-05': {
+    message: 'CB-MHJ-05 — Kalol K-IX+X · Offline reference data',
+    hypersenseiq: {
+      well_id:'CB-MHJ-05', field:'Cambay Basin', formation:'Kalol Sandstone K-IX+X',
+      formation_top_m:1610, formation_base_m:1625,
+      gross_thickness_m:15.0, net_thickness_m:12.0, net_gross:0.80,
+      porosity:0.15, water_saturation:0.10, permeability_md:30,
+      hc_saturation:0.90, n_pay_levels:2,
+      data_quality:'wireline_interpreted',
+      note:'Permeability log-derived estimate — Kalol Ss tight reservoir; core calibration recommended'
+    },
+    petrophysics:{ n_depths:120 }
+  },
+  'CB-SDR-01': {
+    message: 'CB-SDR-01 — Kalol K-IX+X · Offline reference data',
+    hypersenseiq: {
+      well_id:'CB-SDR-01', field:'Cambay Basin', formation:'Kalol Sandstone K-IX+X',
+      formation_top_m:1537, formation_base_m:1554,
+      gross_thickness_m:17.0, net_thickness_m:13.5, net_gross:0.79,
+      porosity:0.14, water_saturation:0.05, permeability_md:25,
+      hc_saturation:0.95, n_pay_levels:2,
+      data_quality:'wireline_interpreted',
+      note:'Zero water cut well — K-IX+X combined completion; permeability log-derived estimate'
+    },
+    petrophysics:{ n_depths:135 }
+  },
+  'CB-SDR-05': {
+    message: 'CB-SDR-05 — Kalol K-VIII+IX · Offline reference data',
+    hypersenseiq: {
+      well_id:'CB-SDR-05', field:'Cambay Basin', formation:'Kalol Sandstone K-VIII+IX',
+      formation_top_m:1570, formation_base_m:1590,
+      gross_thickness_m:20.0, net_thickness_m:14.0, net_gross:0.70,
+      porosity:0.13, water_saturation:0.30, permeability_md:20,
+      hc_saturation:0.70, n_pay_levels:2,
+      data_quality:'wireline_interpreted',
+      note:'Declining well — K-VIII+IX completion post HF; permeability log-derived estimate'
+    },
+    petrophysics:{ n_depths:158 }
+  },
+  'CB-SDR-06': {
+    message: 'CB-SDR-06 — Kalol K-IX · Offline reference data',
+    hypersenseiq: {
+      well_id:'CB-SDR-06', field:'Cambay Basin', formation:'Kalol Sandstone K-IX',
+      formation_top_m:1682, formation_base_m:1689,
+      gross_thickness_m:7.0, net_thickness_m:5.8, net_gross:0.83,
+      porosity:0.13, water_saturation:0.30, permeability_md:18,
+      hc_saturation:0.70, n_pay_levels:1,
+      data_quality:'wireline_interpreted',
+      note:'Viscous oil — SRP installed; permeability log-derived estimate; PVT data required for accurate RF'
+    },
+    petrophysics:{ n_depths:56 }
+  },
+  'CB-AKL-18': {
+    message: 'CB-AKL-18 — MBS (Main Bassein Sandstone) · Offline reference data',
+    hypersenseiq: {
+      well_id:'CB-AKL-18', field:'Cambay Basin', formation:'MBS Main Bassein Sandstone',
+      formation_top_m:1420, formation_base_m:1426,
+      gross_thickness_m:6.0, net_thickness_m:3.2, net_gross:0.53,
+      porosity:0.12, water_saturation:0.40, permeability_md:15,
+      hc_saturation:0.60, n_pay_levels:1,
+      data_quality:'wireline_interpreted',
+      note:'High water cut MBS well — intermittent production history; permeability log-derived estimate'
+    },
+    petrophysics:{ n_depths:48 }
+  },
+  'MH-N-01': {
+    message: 'MH-N-01 — Bassein Limestone · Mumbai High North · Reference data',
+    hypersenseiq: {
+      well_id:'MH-N-01', field:'Mumbai High North', formation:'Bassein Limestone',
+      formation_top_m:1842, formation_base_m:1857,
+      gross_thickness_m:15.0, net_thickness_m:11.2, net_gross:0.75,
+      porosity:0.22, water_saturation:0.18, permeability_md:85,
+      hc_saturation:0.82, n_pay_levels:3,
+      data_quality:'wireline_interpreted',
+      note:'Permeability log-derived estimate — Bassein carbonate; FMI and core calibration recommended'
+    },
+    petrophysics:{ n_depths:180 }
+  },
+  'MH-N-02': {
+    message: 'MH-N-02 — Bassein Limestone · Mumbai High North · Reference data',
+    hypersenseiq: {
+      well_id:'MH-N-02', field:'Mumbai High North', formation:'Bassein Limestone',
+      formation_top_m:1910, formation_base_m:1930,
+      gross_thickness_m:20.0, net_thickness_m:13.5, net_gross:0.68,
+      porosity:0.18, water_saturation:0.28, permeability_md:62,
+      hc_saturation:0.72, n_pay_levels:2,
+      data_quality:'wireline_interpreted',
+      note:'Declining well — elevated water cut; permeability log-derived estimate'
+    },
+    petrophysics:{ n_depths:195 }
+  },
+  'MH-N-03': {
+    message: 'MH-N-03 — Mukta Formation · Mumbai High North · Reference data',
+    hypersenseiq: {
+      well_id:'MH-N-03', field:'Mumbai High North', formation:'Mukta Formation',
+      formation_top_m:1870, formation_base_m:1892,
+      gross_thickness_m:22.0, net_thickness_m:16.8, net_gross:0.76,
+      porosity:0.25, water_saturation:0.16, permeability_md:110,
+      hc_saturation:0.84, n_pay_levels:4,
+      data_quality:'wireline_interpreted',
+      note:'High quality pay — Mukta Fm.; permeability log-derived estimate; PVT data recommended'
+    },
+    petrophysics:{ n_depths:210 }
+  },
+  'MH-N-04': {
+    message: 'MH-N-04 — Bassein Limestone · Mumbai High North · Reference data',
+    hypersenseiq: {
+      well_id:'MH-N-04', field:'Mumbai High North', formation:'Bassein Limestone',
+      formation_top_m:1955, formation_base_m:1972,
+      gross_thickness_m:17.0, net_thickness_m:10.2, net_gross:0.60,
+      porosity:0.16, water_saturation:0.52, permeability_md:45,
+      hc_saturation:0.48, n_pay_levels:2,
+      data_quality:'wireline_interpreted',
+      note:'High water cut well — Sw 52%; EOR candidate; permeability log-derived estimate'
+    },
+    petrophysics:{ n_depths:165 }
+  },
+  'MH-N-05': {
+    message: 'MH-N-05 — Bassein Limestone · Mumbai High North · Reference data',
+    hypersenseiq: {
+      well_id:'MH-N-05', field:'Mumbai High North', formation:'Bassein Limestone',
+      formation_top_m:1988, formation_base_m:2005,
+      gross_thickness_m:17.0, net_thickness_m:12.5, net_gross:0.74,
+      porosity:0.20, water_saturation:0.22, permeability_md:74,
+      hc_saturation:0.78, n_pay_levels:3,
+      data_quality:'wireline_interpreted',
+      note:'Declining well — good reservoir quality; permeability log-derived estimate'
+    },
+    petrophysics:{ n_depths:175 }
+  }
+};
+
+async function loadSampleLas(wellId) {
+  setLasStatus('<span class="las-spinner"></span> Loading sample LAS...', '');
+
+  // Serve CB wells offline — no backend needed
+  if (OFFLINE_LAS[wellId]) {
+    setTimeout(() => {
+      showLasResult(OFFLINE_LAS[wellId], wellId + '_sample.las');
+      setLasStatus('✅ ' + OFFLINE_LAS[wellId].message, 'ok');
+    }, 400);
+    return;
+  }
+
+  // MH wells — try backend
+  try {
+    const resp = await fetch(BACKEND_URL + '/api/sample-las/' + wellId);
+    if (!resp.ok) throw new Error('Sample not found');
+    const text = await resp.text();
+    const resp2 = await fetch(BACKEND_URL + '/api/parse-las-text', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({content: text})
+    });
+    const data = await resp2.json();
+    showLasResult(data, wellId + '_sample.las');
+  } catch(e) {
+    setLasStatus('📋 MH well LAS parsing requires the HyperSenseIQ backend service. Please contact your HyperSenseIQ administrator or use the manual parameter entry below.', 'err');
+  }
+}
+
+function showLasResult(data, filename) {
+  const p = data.hypersenseiq;
+  lasParams = p;
+  setLasStatus('', '');
+  const rows = [
+    ['Well ID',         p.well_id],
+    ['Field',           p.field],
+    ['Lithology',       p.formation],
+    ['Formation Top',   p.formation_top_m + ' m'],
+    ['Formation Base',  p.formation_base_m + ' m'],
+    ['Gross Thickness', p.gross_thickness_m.toFixed(1) + ' m'],
+    ['Net Thickness',   p.net_thickness_m.toFixed(1) + ' m'],
+    ['Net / Gross',     (p.net_gross * 100).toFixed(1) + '%'],
+    ['Porosity (φ)',    (p.porosity * 100).toFixed(2) + '%'],
+    ['Water Sat (Sw)',  (p.water_saturation * 100).toFixed(2) + '%'],
+    ['Permeability',    p.permeability_md.toFixed(0) + ' mD *'],
+    ['HC Saturation',   (p.hc_saturation * 100).toFixed(2) + '%'],
+    ['Pay Levels',      p.n_pay_levels + ' of ' + data.petrophysics.n_depths],
+    ['Data Source',     p.data_quality.replace('_', ' ')],
+  ];
+  document.getElementById('las-result-rows').innerHTML =
+    rows.map(([l,v])=>`<div class="las-row"><span class="las-lbl">${l}</span><span class="las-val">${v}</span></div>`).join('');
+  document.getElementById('las-warn').textContent = '* ' + p.note;
+  document.getElementById('las-result').classList.add('show');
+  setLasStatus('✅ ' + (data.message || 'LAS parsed successfully'), 'ok');
+}
+
+function applyLasParams() {
+  if (!lasParams) {
+    setLasStatus('⚠️ No LAS data loaded — please upload or load a sample LAS file first', 'err');
+    return;
+  }
+  const p = lasParams;
+
+  // Try to find matching well in active dataset for production defaults
+  const matchedWell = ACTIVE_WELLS.find(w => w.id === p.well_id);
+
+  // Reservoir params from LAS
+  const lasFields = {
+    'i-wid':  p.well_id,
+    'i-fld':  p.field,
+    'i-phi':  p.porosity.toFixed(4),
+    'i-sw':   p.water_saturation.toFixed(4),
+    'i-perm': p.permeability_md.toFixed(0),
+    'i-pay':  p.net_thickness_m.toFixed(1),
+    'i-dep':  p.formation_top_m.toFixed(1),
+  };
+
+  // Production defaults — from matched well if found, else sensible field defaults
+  const prodFields = {
+    'i-qi':  matchedWell ? matchedWell.qi  : 500,
+    'i-di':  matchedWell ? matchedWell.Di  : 0.25,
+    'i-wc':  matchedWell ? matchedWell.wc  : 30,
+    'i-age': matchedWell ? 8               : 8,
+    'i-api': matchedWell ? 38              : 38,
+  };
+
+  let lasApplied = 0, prodApplied = 0;
+
+  Object.entries(lasFields).forEach(([id, val]) => {
+    const el = document.getElementById(id);
+    if (el) { el.value = val; lasApplied++; }
+  });
+
+  // Only fill production fields if they are currently empty
+  Object.entries(prodFields).forEach(([id, val]) => {
+    const el = document.getElementById(id);
+    if (el && !el.value) { el.value = val; prodApplied++; }
+  });
+
+  livePreview();
+  validateInp();
+
+  const src = matchedWell ? `matched to ${matchedWell.id}` : 'field defaults';
+  setLasStatus(
+    `✅ ${lasApplied} LAS parameters applied · ${prodApplied} production defaults set (${src}) — review & run analysis`,
+    'ok'
+  );
+
+  setTimeout(() => {
+    const btn = document.getElementById('analyse-btn');
+    if (btn) btn.scrollIntoView({behavior:'smooth', block:'center'});
+  }, 400);
+}
+
+/* ── INIT ── */
+setTimeout(()=>{render();fetchLive();renderLasSampleBtns();setLasStatus('','');document.getElementById('las-result').classList.remove('show');},100);
+setInterval(fetchLive,15*60*1000);
+window.addEventListener('resize',()=>{renderDecline();ec();});
+</script>
+</body>
+</html>
