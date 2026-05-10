@@ -1729,10 +1729,16 @@ function mineLivePreview(){
   mineValidate();
 }
 
+function resetMineBtn(){
+  const btn=document.getElementById('mine-analyse-btn');
+  if(btn){btn.textContent='Run HyperSenseIQ Mining Analysis';btn.disabled=false;btn.style.opacity='1';}
+}
+
 function runMineAnalysis(){
   const btn=document.getElementById('mine-analyse-btn');
   btn.textContent='Analysing...';btn.disabled=true;btn.style.opacity='0.7';
   setTimeout(()=>{
+    try{
     const grade=mGV('grade'),den=mGV('den'),insitu=mGV('insitu');
     const mrf=mGV('mrf')/100||0.72,prf=mGV('prf')/100||0.88;
     const dep=mGV('dep'),thick=mGV('thick')||20,age=mGV('age')||10;
@@ -1815,6 +1821,7 @@ function runMineAnalysis(){
 
     // Production curve canvas
     setTimeout(()=>{
+      try{
       const canvas=document.getElementById('mine-res-chart');if(!canvas)return;
       const par=canvas.parentElement;
       canvas.width=par.clientWidth||400;canvas.height=par.clientHeight||170;
@@ -1822,31 +1829,28 @@ function runMineAnalysis(){
       const W=canvas.width,H=canvas.height,pad={t:14,r:16,b:32,l:52};
       const cW=W-pad.l-pad.r,cH=H-pad.t-pad.b;
       ctx.clearRect(0,0,W,H);
-      // Ramp-up → plateau → decline production profile
       const ramp=[0.4,0.7,0.9,1.0,1.0,1.0,0.95,0.90,0.80,0.65,0.50,0.35,0.20,0.10,0.05];
-      const yrs=Math.min(mineLife,15);
+      const yrs=Math.max(2,Math.min(mineLife,15));
       const prods=ramp.slice(0,yrs).map(r=>annProd*r);
-      const maxP=Math.max(...prods)*1.15;
+      const maxP=Math.max(...prods,1)*1.15;
       const toY=v=>pad.t+cH-(v/maxP)*cH;
-      const toX=i=>pad.l+(i/(yrs-1))*cW;
+      const toX=i=>pad.l+(yrs>1?(i/(yrs-1))*cW:cW/2);
       const barW=Math.max(5,(cW/yrs)*0.6);
-      // Bars
       prods.forEach((v,i)=>{
         ctx.fillStyle=i<2?'#EF9F27':i<yrs-3?'#1D9E75':'#E24B4A';
         const x=toX(i)-barW/2;
         ctx.fillRect(x,toY(v),barW,Math.max(2,cH-(toY(v)-pad.t)));
       });
-      // Peak line
       ctx.strokeStyle='rgba(232,216,122,0.5)';ctx.lineWidth=1;ctx.setLineDash([3,3]);
       ctx.beginPath();ctx.moveTo(pad.l,toY(annProd));ctx.lineTo(pad.l+cW,toY(annProd));ctx.stroke();
       ctx.setLineDash([]);
-      // Labels
       ctx.fillStyle='#AAA';ctx.font='9px system-ui';ctx.textAlign='center';
       for(let i=0;i<yrs;i+=Math.ceil(yrs/5)) ctx.fillText('Yr'+(i+1),toX(i),H-6);
       ctx.textAlign='right';
       [0,annProd*0.5,annProd].forEach(v=>ctx.fillText(v.toFixed(1),pad.l-4,toY(v)+3));
       ctx.fillStyle='#E8D87A';ctx.textAlign='left';ctx.font='8px system-ui';
       ctx.fillText('Peak: '+annProd.toFixed(1)+' Mt/yr',pad.l+4,pad.t+10);
+      }catch(e){console.warn('Canvas error:',e);}
     },60);
 
     // Verdict
@@ -1868,6 +1872,12 @@ function runMineAnalysis(){
     setTimeout(()=>{
       document.getElementById('mine-inp-results').scrollIntoView({behavior:'smooth',block:'start'});
     },100);
+    }catch(err){
+      console.error('Mining analysis error:', err);
+      resetMineBtn();
+      document.getElementById('mine-inp-hint').textContent='Analysis error — check console. '+err.message;
+      document.getElementById('mine-inp-hint').style.color='#E24B4A';
+    }
   },1200);
 }
 
