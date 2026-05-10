@@ -1859,11 +1859,14 @@ function runMineAnalysis(){
         <div style="font-size:10px;color:var(--g-dark);margin-top:3px;">MMDR Act 2021 · IBM rates · India critical minerals framework</div>
       </div>`;
 
-    btn.textContent='Run HyperSenseIQ Mining Analysis';
-    btn.disabled=false; btn.style.opacity='1';
-    btn.style.background='linear-gradient(135deg,#854F0B,#EF9F27)';
-    // Scroll to results
+    btn.textContent = '✅ Run HyperSenseIQ Mining Analysis';
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    btn.style.cursor = 'pointer';
+    btn.style.background = 'linear-gradient(135deg,#854F0B,#EF9F27)';
+    btn.className = '';
     setTimeout(()=>{
+      btn.textContent = 'Run HyperSenseIQ Mining Analysis';
       document.getElementById('mine-inp-results').scrollIntoView({behavior:'smooth',block:'start'});
     },100);
   },1200);
