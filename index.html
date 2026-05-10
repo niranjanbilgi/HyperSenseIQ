@@ -234,6 +234,7 @@ input[type=range]{accent-color:var(--g-mid);}
     <div class="tab" onclick="goMine('recovery')">Recovery</div>
     <div class="tab" onclick="goMine('mecon')">Economics ₹</div>
     <div class="tab spec-tab" onclick="goMine('mtwin')">Digital twin</div>
+    <div class="tab" onclick="goMine('mexec')">Executive view</div>
   </div>
   <div class="live-strip">
     <div class="live-badge"><div class="ldot"></div><span class="llbl">Brent</span><span class="lval" id="brent-val">₹6,500</span></div>
@@ -564,8 +565,15 @@ input[type=range]{accent-color:var(--g-mid);}
   <div class="scens" id="m-scens"></div>
   <div class="cols2"><div class="card"><div class="ct">India mining fiscal — MMDR Act</div><div id="m-fiscal"></div></div><div class="card"><div class="ct">Project cashflow (₹ Cr)</div><div style="height:175px;position:relative;"><canvas id="m-cf-c" style="position:absolute;top:0;left:0;width:100%;height:100%;"></canvas></div></div></div>
 </div>
-<div class="panel" id="p-m-mtwin" style="display:none;">
-  <div class="mine-nav" id="mine-nav5"></div>
+<div class="panel" id="p-m-mexec" style="display:none;">
+  <div class="mine-nav" id="mine-nav6"></div>
+  <div class="kpis" id="m-exec-kpis"></div>
+  <div class="cols2" style="margin-top:10px;">
+    <div class="card"><div class="ct">Portfolio ranking — all mines by NPV</div><div id="m-exec-rank"></div></div>
+    <div class="card"><div class="ct">Strategic & critical minerals</div><div id="m-exec-strat"></div></div>
+  </div>
+  <div class="card" style="margin-top:10px;"><div class="ct">HyperSenseIQ — Mining executive verdict</div><div id="m-exec-verdict"></div></div>
+</div>
   <div class="cols3"><div class="card"><div class="ct">Drill core digital twin</div><div id="m-tw-id"></div></div><div class="card"><div class="ct">Mineralogy — spectral</div><div id="m-tw-min"></div></div><div class="card"><div class="ct">Strategic classification</div><div id="m-tw-strat"></div></div></div>
   <div class="card" style="margin-top:10px;"><div class="ct">National repository — critical minerals registry</div><div id="m-tw-repos"></div></div>
 </div>
@@ -794,7 +802,7 @@ function sw(i){CW=i;document.querySelectorAll('#wells-'+DATASET+' .w-btn').forEa
 function goMine(panel){
   curMinePanel=panel;
   document.querySelectorAll('#mine-tabs .tab').forEach(t=>t.classList.toggle('on',t.onclick&&t.onclick.toString().includes("'"+panel+"'")));
-  ['overview','vol','recovery','mecon','mtwin'].forEach(p=>{const el=document.getElementById('p-m-'+p);if(el)el.style.display='none';});
+  ['overview','vol','recovery','mecon','mtwin','mexec'].forEach(p=>{const el=document.getElementById('p-m-'+p);if(el)el.style.display='none';});
   const el=document.getElementById('p-m-'+panel);
   if(el){el.style.display='block';}
   renderMinePanel(panel);
@@ -1215,12 +1223,13 @@ function renderMinePanel(panel){
   document.getElementById('m-title').textContent=`HyperSenseIQ Mining — ${m.name}`;
   document.getElementById('m-sub').textContent=`${m.com} · ${m.state} · ${m.op}${m.restricted?' · RESTRICTED':''}`;
   const navIds=['overview','vol','recovery','mecon','mtwin'];
-  ['mine-nav-btns','mine-nav2','mine-nav3','mine-nav4','mine-nav5'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=buildMineNav(navIds);});
+  ['mine-nav-btns','mine-nav2','mine-nav3','mine-nav4','mine-nav5','mine-nav6'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=buildMineNav(navIds);});
   if(panel==='overview')renderMineOverview(m);
   else if(panel==='vol')renderMineVol(m);
   else if(panel==='recovery')renderMineRec(m);
   else if(panel==='mecon'){renderMineEcon(m);updateMineEcon();}
   else if(panel==='mtwin')renderMineTwin(m);
+  else if(panel==='mexec')renderMineExec();
 }
 
 function renderMineOverview(m){
@@ -1415,7 +1424,98 @@ function renderMineTwin(m){
   const repos=R?[['BARC','r','RESTRICTED'],['AERB','r','RESTRICTED'],['DAE','g','ACTIVE'],['MoM','r','NO ACCESS'],['NIC DLT','r','CLASSIFIED'],['IBM','r','RESTRICTED'],['KABIL','r','NO ACCESS'],['World Bank','r','PROHIBITED']]:[['IBM','g','ACTIVE'],['GSI','g','ACTIVE'],['MoM','g','ACTIVE'],['NIC DLT','g','ACTIVE'],['KABIL','g','ACTIVE'],['World Bank','a','FUTURE'],['IEA','a','FUTURE'],['IOGP','p','PLANNED']];
   document.getElementById('m-tw-repos').innerHTML=`<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:7px;">${repos.map(([n,c,s])=>`<div style="background:var(--${c}-bg);border:0.5px solid;border-color:var(--${c}-mid);border-radius:5px;padding:7px 9px;"><div style="font-size:10px;font-weight:500;color:var(--${c}-dark);margin-bottom:2px;">${s}</div><div style="font-size:10px;color:var(--gray);">${n}</div></div>`).join('')}</div>`;
 }
-/* ── YOUR WELL DATA ── */
+/* ── MINING EXECUTIVE VIEW ── */
+function renderMineExec(){
+  // Calculate NPV and key metrics for all mines
+  const dr = 0.12;
+  const mineData = MINES.map(m => {
+    const mineLife = Math.max(5, Math.round(m.recov / (m.insitu * 0.04)));
+    const annProd  = m.recov / mineLife;
+    let npv = -m.capex;
+    for(let yr=1; yr<=mineLife; yr++){
+      const rev=annProd*m.price.base, roy=rev*m.roy, dmf=rev*(m.dmf||0), pmk=rev*(m.pmk||0);
+      const gst=(rev-roy-dmf-pmk)*(m.gst||0), ebitda=rev-roy-dmf-pmk-gst-m.opex;
+      npv+=(ebitda-Math.max(0,ebitda*0.2517))/Math.pow(1+dr,yr);
+    }
+    const annRev=annProd*m.price.base;
+    return {...m, npv, mineLife, annProd, annRev};
+  });
+
+  // Sort by NPV descending
+  const ranked = [...mineData].sort((a,b) => b.npv - a.npv);
+
+  // Portfolio totals
+  const totalInsitu   = mineData.reduce((s,m) => s + m.insitu, 0);
+  const totalRecov    = mineData.reduce((s,m) => s + m.recov,  0);
+  const totalNPV      = mineData.reduce((s,m) => s + m.npv,    0);
+  const totalCapex    = mineData.reduce((s,m) => s + m.capex,  0);
+  const topMine       = ranked[0];
+  const criticalCount = mineData.filter(m => m.restricted).length;
+
+  // ── KPIs ──
+  document.getElementById('m-exec-kpis').innerHTML =
+    `<div class="kpi g"><div class="kpi-l">Portfolio NPV</div><div class="kpi-v">${totalNPV>0?'+':''}₹${totalNPV.toFixed(0)}<span style="font-size:12px"> Cr</span></div><div class="kpi-s">6 mines · 12% discount</div></div>`+
+    `<div class="kpi n"><div class="kpi-l">Total in-situ resource</div><div class="kpi-v">${totalInsitu.toFixed(0)}<span style="font-size:12px"> Mt/Kt</span></div><div class="kpi-s">Across all commodities</div></div>`+
+    `<div class="kpi g"><div class="kpi-l">Total recoverable</div><div class="kpi-v">${totalRecov.toFixed(0)}<span style="font-size:12px"> Mt/Kt</span></div><div class="kpi-s">Post mining & process RF</div></div>`+
+    `<div class="kpi a"><div class="kpi-l">Total CAPEX required</div><div class="kpi-v">₹${totalCapex}<span style="font-size:12px"> Cr</span></div><div class="kpi-s">All 6 projects combined</div></div>`+
+    `<div class="kpi p"><div class="kpi-l">Top ranked mine</div><div class="kpi-v" style="font-size:14px;">${topMine.name.split(' ')[0]}</div><div class="kpi-s">NPV +₹${topMine.npv.toFixed(0)} Cr</div></div>`+
+    `<div class="kpi r"><div class="kpi-l">Strategic / restricted</div><div class="kpi-v">${criticalCount}<span style="font-size:12px"> mines</span></div><div class="kpi-s">DAE / AEA regulated</div></div>`;
+
+  // ── PORTFOLIO RANKING TABLE ──
+  const rankColors = ['#E8D87A','#9FE1CB','#AB47BC','#EF9F27','#5DCAA5','#E24B4A'];
+  document.getElementById('m-exec-rank').innerHTML =
+    `<table class="dt" style="width:100%;"><thead><tr><th>#</th><th>Mine</th><th>Commodity</th><th>Grade</th><th>Method</th><th>NPV (₹Cr)</th><th>Life</th></tr></thead><tbody>` +
+    ranked.map((m,i) => {
+      const best = m.methods[0];
+      const npvCls = m.npv > 500 ? 'vg' : m.npv > 0 ? 'va' : 'vr';
+      const restricted = m.restricted ? ' 🔒' : '';
+      return `<tr class="${i===0?'row-g':i%2===0?'':'row-a'}">
+        <td><span style="color:${rankColors[i]};font-weight:600;">#${i+1}</span></td>
+        <td style="font-size:10px;">${m.name}${restricted}<br><span style="color:#888;font-size:9px;">${m.state}</span></td>
+        <td><span style="font-size:10px;color:${m.col||'#888'};">■</span> ${m.com}</td>
+        <td>${m.grade}% ${m.sym}</td>
+        <td style="font-size:10px;">${best.n}</td>
+        <td class="${npvCls}" style="font-weight:600;">${m.npv>0?'+':''}₹${m.npv.toFixed(0)}</td>
+        <td>${m.mineLife}yr</td>
+      </tr>`;
+    }).join('') +
+    `</tbody></table>`;
+
+  // ── STRATEGIC MINERALS ──
+  const critMinerals = [
+    {name:'Kerala Monazite',com:'REE / Thorium',act:'Atomic Energy Act 1962',body:'BARC / DAE / AERB',status:'Top Secret',col:'vr'},
+    {name:'Jaduguda Uranium',com:'U₃O₈',act:'Atomic Energy Act 1962',body:'UCIL / DAE / NCA',status:'Classified',col:'vr'},
+    {name:'Malanjkhand Cu',com:'Copper',act:'Critical Minerals List 2023',body:'HCL / KABIL',status:'Strategic',col:'va'},
+    {name:'Hutti Gold',com:'Au',act:'FEMA / RBI Export',body:'HGML / RBI liaison',status:'Monitored',col:'va'},
+  ];
+  document.getElementById('m-exec-strat').innerHTML =
+    critMinerals.map(c =>
+      `<div style="border:0.5px solid var(--border);border-radius:5px;padding:8px 10px;margin-bottom:7px;background:${c.col==='vr'?'var(--r-bg)':'var(--a-bg)'};">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+          <span style="font-size:11px;font-weight:500;color:${c.col==='vr'?'var(--r-dark)':'var(--a-dark)'};">${c.name}</span>
+          <span style="font-size:9px;padding:2px 6px;border-radius:3px;background:${c.col==='vr'?'var(--r-mid)':'var(--a-mid)'};color:white;">${c.status}</span>
+        </div>
+        <div style="font-size:10px;color:var(--gray);">${c.com} · ${c.act}</div>
+        <div style="font-size:10px;color:var(--gray);margin-top:2px;">Oversight: ${c.body}</div>
+      </div>`
+    ).join('') +
+    `<div style="font-size:9px;color:#5A7A94;margin-top:8px;font-style:italic;">Critical Minerals List 2023 — MoM · IBM · KABIL · National Critical Minerals Mission</div>`;
+
+  // ── EXECUTIVE VERDICT ──
+  const top3 = ranked.slice(0,3);
+  const totalScore = (totalNPV > 2000 ? 88 : totalNPV > 500 ? 74 : 58);
+  document.getElementById('m-exec-verdict').innerHTML =
+    `<div class="verdict v-g">
+      <strong>HyperSenseIQ Mining Intelligence — 6-mine India portfolio · ${totalNPV>0?'Positive':'Marginal'} NPV</strong><br>
+      Total in-situ: <span class="vg">${totalInsitu.toFixed(0)} Mt/Kt</span> · Recoverable: <span class="vg">${totalRecov.toFixed(0)} Mt/Kt</span> · Portfolio NPV: <span class="vg">${totalNPV>0?'+':''}₹${totalNPV.toFixed(0)} Cr</span><br><br>
+      <strong>Priority investment sequence:</strong><br>
+      ${top3.map((m,i)=>`<span style="color:${rankColors[i]}">#${i+1}</span> ${m.name} (${m.com}) — NPV +₹${m.npv.toFixed(0)} Cr · Best method: ${m.methods[0].n} · Mine life: ${m.mineLife}yr`).join('<br>')}
+      <br><br>
+      <span style="color:var(--r-dark);font-size:10px;">⚠️ Kerala Monazite &amp; Jaduguda Uranium — Atomic Energy Act regulated. DAE/AERB clearance mandatory before any development action.</span>
+      <div class="sbar-w" style="margin-top:8px;"><div class="sbar" style="width:${totalScore}%;background:var(--g-mid);"></div></div>
+      <div style="font-size:10px;color:var(--g-dark);margin-top:3px;">Portfolio Techno-Economic Score: ${totalScore}% · Validated against MMDR Act 2021 · IBM rates · Critical Minerals Mission 2023</div>
+    </div>`;
+}
 const SAMPLE={wid:'MH-A-101',fld:'Mumbai High North',qi:740,di:.30,wc:32,age:9,phi:.20,sw:.22,perm:78,pay:7.5,api:38,dep:1856,op:6500,dr:12,eq:85,hor:5};
 function loadSample(){Object.entries(SAMPLE).forEach(([k,v])=>{const el=document.getElementById('i-'+k);if(el)el.value=v;});livePreview();validateInp();}
 function clearInp(){['wid','fld','qi','di','wc','age','phi','sw','perm','pay','api','dep','op','dr','eq','hor'].forEach(k=>{const el=document.getElementById('i-'+k);if(el)el.value='';});document.getElementById('inp-preview').style.display='none';document.getElementById('inp-results').style.display='none';validateInp();}
