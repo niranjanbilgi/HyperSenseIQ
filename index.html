@@ -747,14 +747,41 @@ const kCls=(v,hi,lo,dir='up')=>dir==='up'?(v>=hi?'g':v>=lo?'a':'r'):(v<=hi?'g':v
 const vCls=v=>v>0?'vg':'vr';
 /* ── LIVE DATA ── */
 async function fetchLive(){
+  // ── Step 1: Fetch live USD/INR forex rate ─────────────────────────────────
   let fx=83.5;
-  const sources=[
+  const fxSources=[
     ()=>fetch('https://open.er-api.com/v6/latest/USD',{mode:'cors'}).then(r=>r.json()).then(d=>d.rates.INR),
     ()=>fetch('https://api.frankfurter.app/latest?from=USD&to=INR',{mode:'cors'}).then(r=>r.json()).then(d=>d.rates.INR),
     ()=>fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json',{mode:'cors'}).then(r=>r.json()).then(d=>d.usd.inr)
   ];
-  for(const s of sources){try{const v=await s();if(v>70&&v<100){fx=v;break;}}catch(e){}}
-  const brent=78.5, inr=Math.round(brent*fx);
+  for(const s of fxSources){try{const v=await s();if(v>70&&v<100){fx=v;break;}}catch(e){}}
+
+  // ── Step 2: Fetch live Brent crude price (USD/bbl) ───────────────────────
+  // Multiple CORS-enabled free sources tried in order
+  let brent=78.5; // fallback if all sources fail
+  const brentSources=[
+    // Yahoo Finance via allorigins proxy (no API key needed)
+    ()=>fetch('https://api.allorigins.win/raw?url='+encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/BZ=F?interval=1d&range=1d'),{mode:'cors'})
+          .then(r=>r.json())
+          .then(d=>d.chart.result[0].meta.regularMarketPrice),
+    // Alternative: Yahoo Finance direct (works in some browsers)
+    ()=>fetch('https://query2.finance.yahoo.com/v8/finance/chart/BZ=F?interval=1d&range=1d',{mode:'cors'})
+          .then(r=>r.json())
+          .then(d=>d.chart.result[0].meta.regularMarketPrice),
+    // Fallback: stooq.com CSV (Brent front month)
+    ()=>fetch('https://api.allorigins.win/raw?url='+encodeURIComponent('https://stooq.com/q/l/?s=@bco.uk&f=sd2t2ohlcv&e=csv'),{mode:'cors'})
+          .then(r=>r.text())
+          .then(t=>{const rows=t.trim().split('\n');const cols=rows[1].split(',');const price=parseFloat(cols[4]);if(isNaN(price))throw new Error('no price');return price;})
+  ];
+  for(const s of brentSources){
+    try{
+      const v=await s();
+      if(v>40&&v<200){brent=v;break;}  // sanity check: Brent between $40-$200
+    }catch(e){}
+  }
+
+  // ── Step 3: Compute INR price and update UI ───────────────────────────────
+  const inr=Math.round(brent*fx);
   document.getElementById('brent-val').textContent=INR(inr)+'/bbl';
   document.getElementById('fx-val').textContent=fx.toFixed(1);
   document.getElementById('oil-sl').value=Math.min(10000,Math.max(3500,inr));
@@ -762,6 +789,8 @@ async function fetchLive(){
   document.getElementById('last-upd').style.color='#9FE1CB';
   document.getElementById('status-dot').style.background='#1D9E75';
   document.getElementById('status-dot').style.animation='pulse 2s infinite';
+  // Store fetched values for use in economics calculations
+  window._liveBrent=brent; window._liveFx=fx;
   ec();
 }
 
