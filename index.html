@@ -147,9 +147,6 @@ input[type=range]{accent-color:var(--g-mid);}
 #analyse-btn.ready{background:linear-gradient(135deg,#0F6E56,#1D9E75);color:white;cursor:pointer;font-size:14px;padding:13px 44px;border-radius:8px;border:none;font-weight:500;}
 #analyse-btn.ready:hover{transform:translateY(-1px);}
 #analyse-btn.disabled-btn{font-size:14px;padding:13px 44px;border-radius:8px;border:none;background:#CCC;color:#888;cursor:not-allowed;font-weight:500;}
-#mine-analyse-btn{font-size:13px;padding:14px 40px;border-radius:8px;border:none;color:white;font-weight:600;transition:opacity .2s;}
-#mine-analyse-btn:disabled{opacity:0.5;cursor:not-allowed;}
-#mine-analyse-btn:not(:disabled){opacity:1;cursor:pointer;background:linear-gradient(135deg,#854F0B,#EF9F27);}
 .lb-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(8,12,22,.96);z-index:9999;overflow-y:auto;}
 .lb-inner{max-width:1080px;margin:0 auto;padding:18px;}
 .lb-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
@@ -206,7 +203,7 @@ input[type=range]{accent-color:var(--g-mid);}
   background:linear-gradient(135deg,#AB47BC,#7B1FA2);color:#fff;
   font-size:11px;font-weight:600;cursor:pointer;}
 .las-apply:hover{opacity:.85;}
-.las-status{font-size:10px;margin-top:6px;text-align:center;min-height:0px;display:none;}
+.las-status{font-size:10px;margin-top:6px;text-align:center;min-height:14px;}
 .las-err{color:#EF5350;}.las-ok{color:#66BB6A;}
 .las-spinner{display:inline-block;width:12px;height:12px;border:2px solid #5A7A94;
   border-top-color:#AB47BC;border-radius:50%;animation:spin .7s linear infinite;}
@@ -237,16 +234,10 @@ input[type=range]{accent-color:var(--g-mid);}
     <div class="tab" onclick="goMine('recovery')">Recovery</div>
     <div class="tab" onclick="goMine('mecon')">Economics ₹</div>
     <div class="tab spec-tab" onclick="goMine('mtwin')">Digital twin</div>
-    <div class="tab" onclick="goMine('mexec')">Executive view</div>
-    <div class="tab" style="color:#E8D87A;" onclick="goMine('mcore')">Your core data</div>
   </div>
   <div class="live-strip">
     <div class="live-badge"><div class="ldot"></div><span class="llbl">Brent</span><span class="lval" id="brent-val">₹6,500</span></div>
     <div class="live-badge"><div class="ldot"></div><span class="llbl">INR</span><span class="lval" id="fx-val">83.5</span></div>
-    <div class="live-badge" id="mine-live-au" style="display:none;"><div class="ldot" style="background:#E8D87A;"></div><span class="lval" id="live-gold">Au —</span></div>
-    <div class="live-badge" id="mine-live-fe" style="display:none;"><div class="ldot" style="background:#EF9F27;"></div><span class="lval" id="live-iron">Fe —</span></div>
-    <div class="live-badge" id="mine-live-coal" style="display:none;"><div class="ldot" style="background:#888;"></div><span class="lval" id="live-coal">Coal —</span></div>
-    <div class="live-badge" id="mine-live-cu" style="display:none;"><div class="ldot" style="background:#B87333;"></div><span class="lval" id="live-copper">Cu —</span></div>
     <div class="live-badge"><div class="ldot" id="status-dot" style="background:#EF9F27;animation:none;"></div><span class="llbl" id="last-upd">loading</span></div>
   </div>
 </div>
@@ -265,11 +256,11 @@ input[type=range]{accent-color:var(--g-mid);}
     <button class="w-btn" onclick="sw(4)">MH-N-05 <span class="ws ws-d">Declining</span></button>
   </div>
   <div id="wells-cb" style="display:none;align-items:center;gap:4px;">
-    <button class="w-btn on" onclick="sw(0)">CB-MHJ-05 <span class="ws ws-p">Pay</span></button>
-    <button class="w-btn" onclick="sw(1)">CB-SDR-01 <span class="ws ws-p">Pay</span></button>
-    <button class="w-btn" onclick="sw(2)">CB-SDR-05 <span class="ws ws-d">Declining</span></button>
-    <button class="w-btn" onclick="sw(3)">CB-SDR-06 <span class="ws ws-w">Viscous</span></button>
-    <button class="w-btn" onclick="sw(4)">CB-AKL-18 <span class="ws ws-w">High WC</span></button>
+    <button class="w-btn on" onclick="sw(0)">CB-01 <span class="ws ws-p">Pay</span></button>
+    <button class="w-btn" onclick="sw(1)">CB-02 <span class="ws ws-p">Pay</span></button>
+    <button class="w-btn" onclick="sw(2)">CB-03 <span class="ws ws-d">Declining</span></button>
+    <button class="w-btn" onclick="sw(3)">CB-04 <span class="ws ws-w">Viscous</span></button>
+    <button class="w-btn" onclick="sw(4)">CB-05 <span class="ws ws-w">High WC</span></button>
   </div>
   <span id="ds-note-cb" class="ds-note" style="display:none;">Synthetic · Representative Cambay Basin Kalol sandstone parameters · Onshore Gujarat</span>
 </div>
@@ -396,7 +387,11 @@ input[type=range]{accent-color:var(--g-mid);}
     <div><div style="color:#C5B4F4;font-size:13px;font-weight:500;">HyperSenseIQ Spectral Intelligence — SWIR Core Plug Analysis</div>
     <div style="color:#A58FE8;font-size:10px;margin-top:2px;">900–2500 nm · 224 bands · SIS / LCS / FPP / OSQ scoring · Pay zone declaration</div></div>
     <select id="spec-well-sel" onchange="specWellChange()" style="font-size:11px;padding:5px 10px;border-radius:5px;border:0.5px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#9FE1CB;cursor:pointer;">
-      <!-- populated by renderSpectral() based on active dataset -->
+      <option value="0">MH-N-01 · 1842–1857m</option>
+      <option value="1">MH-N-02 · 1910–1930m</option>
+      <option value="2">MH-N-03 · 1870–1892m</option>
+      <option value="3">MH-N-04 · 1955–1972m</option>
+      <option value="4">MH-N-05 · 1988–2005m</option>
     </select>
   </div>
 
@@ -455,7 +450,7 @@ input[type=range]{accent-color:var(--g-mid);}
     <div><div style="color:#E8D87A;font-size:13px;font-weight:500;">Your Well Data — HyperSenseIQ live analysis</div>
     <div style="color:#5DCAA5;font-size:10px;margin-top:2px;">Enter real parameters · AI analyses instantly · All tabs update with your data</div></div>
     <div style="display:flex;gap:6px;">
-      <button onclick="loadSample()" style="font-size:11px;padding:6px 12px;border-radius:5px;border:0.5px solid #5DCAA5;background:rgba(29,158,117,.2);color:#9FE1CB;cursor:pointer;">Load ONGC sample</button>
+      <button onclick="loadSample()" style="font-size:11px;padding:6px 12px;border-radius:5px;border:0.5px solid #5DCAA5;background:rgba(29,158,117,.2);color:#9FE1CB;cursor:pointer;">⬇ Load selected well</button>
       <button onclick="clearInp()" style="font-size:11px;padding:6px 12px;border-radius:5px;border:0.5px solid rgba(255,255,255,.15);background:transparent;color:#6A8FAD;cursor:pointer;">Clear</button>
     </div>
   </div>
@@ -478,8 +473,17 @@ input[type=range]{accent-color:var(--g-mid);}
       <div class="las-upload-title">Drop your LAS file here or click to browse</div>
       <div class="las-upload-sub">LAS 2.0 · Wireline or Interpreted · Max 50MB</div>
     </div>
-    <div id="las-sample-btns" style="text-align:center;margin:-4px 0 8px;display:flex;flex-wrap:wrap;justify-content:center;gap:5px;">
-      <!-- populated by renderLasSampleBtns() based on active dataset -->
+    <div style="text-align:center;margin:-4px 0 8px;">
+      <button onclick="loadSampleLas('MH-N-01')"
+        style="font-size:9px;padding:3px 8px;border-radius:4px;border:0.5px solid rgba(171,71,188,.4);
+               background:rgba(171,71,188,.08);color:#CE93D8;cursor:pointer;margin-right:4px;">
+        Try: MH-N-01 sample LAS
+      </button>
+      <button onclick="loadSampleLas('MH-N-04')"
+        style="font-size:9px;padding:3px 8px;border-radius:4px;border:0.5px solid rgba(171,71,188,.4);
+               background:rgba(171,71,188,.08);color:#CE93D8;cursor:pointer;">
+        Try: MH-N-04 sample LAS
+      </button>
     </div>
     <div id="las-status" class="las-status"></div>
     <div id="las-result" class="las-result">
@@ -520,7 +524,7 @@ input[type=range]{accent-color:var(--g-mid);}
   <div class="card" style="margin-bottom:12px;">
     <div class="ct" style="color:#0B4F3E;">Section 3 — economics (India fiscal)</div>
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:9px;">
-      <div class="inp-grp"><label class="inp-lbl">Crude price (₹/bbl)</label><input class="inp" id="i-op" type="number" placeholder="6500" oninput="livePreview();this.dataset.userEdited='1'"></div>
+      <div class="inp-grp"><label class="inp-lbl">Crude price (₹/bbl)</label><input class="inp" id="i-op" type="number" placeholder="6500" oninput="livePreview()"></div>
       <div class="inp-grp"><label class="inp-lbl">Discount rate (%)</label><input class="inp" id="i-dr" type="number" placeholder="12" oninput="livePreview()"></div>
       <div class="inp-grp"><label class="inp-lbl">ONGC equity (%)</label><input class="inp" id="i-eq" type="number" placeholder="85" oninput="livePreview()"></div>
       <div class="inp-grp"><label class="inp-lbl">EOR horizon (yrs)</label><input class="inp" id="i-hor" type="number" placeholder="5" oninput="livePreview()"></div>
@@ -573,128 +577,6 @@ input[type=range]{accent-color:var(--g-mid);}
   <div class="scens" id="m-scens"></div>
   <div class="cols2"><div class="card"><div class="ct">India mining fiscal — MMDR Act</div><div id="m-fiscal"></div></div><div class="card"><div class="ct">Project cashflow (₹ Cr)</div><div style="height:175px;position:relative;"><canvas id="m-cf-c" style="position:absolute;top:0;left:0;width:100%;height:100%;"></canvas></div></div></div>
 </div>
-<div class="panel" id="p-m-mcore" style="display:none;">
-  <!-- Header -->
-  <div style="background:linear-gradient(135deg,#1a0c0c,#1a1a0c);border-radius:8px;padding:12px 16px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
-    <div>
-      <div style="color:#E8D87A;font-size:13px;font-weight:500;">Your Core Data — HyperSenseIQ Mining Analysis</div>
-      <div style="color:#EF9F27;font-size:10px;margin-top:2px;">Enter drill core parameters · Instant extraction method ranking · MMDR economics</div>
-    </div>
-    <div style="display:flex;gap:6px;">
-      <button onclick="loadMineSample()" style="font-size:11px;padding:6px 12px;border-radius:5px;border:0.5px solid #EF9F27;background:rgba(239,159,39,.2);color:#E8D87A;cursor:pointer;">Load sample assay</button>
-      <button onclick="clearMineInp()" style="font-size:11px;padding:6px 12px;border-radius:5px;border:0.5px solid rgba(255,255,255,.15);background:transparent;color:#6A8FAD;cursor:pointer;">Clear</button>
-    </div>
-  </div>
-
-  <!-- Assay Upload Zone -->
-  <div style="margin-bottom:14px;">
-    <div style="font-size:11px;font-weight:600;color:#E8D87A;margin-bottom:8px;display:flex;align-items:center;gap:6px;">
-      <span>📂</span> Upload Drill Core Assay Report — Auto-populate parameters
-      <span style="font-size:9px;font-weight:400;color:#5A7A94;margin-left:4px;">(CSV · From · To · Grade · Lithology)</span>
-    </div>
-    <div class="las-upload-zone" id="core-drop-zone"
-         onclick="document.getElementById('core-file-input').click()"
-         ondragover="event.preventDefault();this.classList.add('drag')"
-         ondragleave="this.classList.remove('drag')"
-         ondrop="handleCoreDrop(event)"
-         style="border-color:rgba(232,216,122,.3);background:rgba(232,216,122,.03);">
-      <input type="file" id="core-file-input" accept=".csv,.pdf,.xlsx" onchange="handleCoreFile(this.files[0])">
-      <div class="las-upload-icon">⛏️</div>
-      <div class="las-upload-title" style="color:#E8D87A;">Drop your assay CSV here or click to browse</div>
-      <div class="las-upload-sub">CSV · PDF · XLSX · Drill core assay report · Max 50MB</div>
-    </div>
-    <!-- Sample assay buttons -->
-    <div id="core-sample-btns" style="text-align:center;margin:6px 0 8px;display:flex;flex-wrap:wrap;justify-content:center;gap:5px;">
-      <!-- populated by renderCoreSampleBtns() -->
-    </div>
-    <div id="core-status" style="font-size:10px;margin-top:6px;text-align:center;display:none;"></div>
-    <div id="core-result" class="las-result" style="display:none;">
-      <div class="las-result-title">⛏️ Assay Analysis Complete — Parameters Ready</div>
-      <div id="core-result-rows"></div>
-      <button class="las-apply" style="background:linear-gradient(135deg,#854F0B,#EF9F27);" onclick="applyCoreParams()">
-        ✅ Apply to Mine Parameters Below
-      </button>
-    </div>
-  </div>
-  <hr style="border:none;border-top:0.5px solid rgba(255,255,255,.08);margin:0 0 14px;">
-
-  <!-- Input Sections -->
-  <div class="cols2" style="margin-bottom:12px;">
-    <div class="card">
-      <div class="ct" style="color:#854F0B;">Section 1 — deposit identification</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;">
-        <div class="inp-grp"><label class="inp-lbl">Mine / Deposit ID</label><input class="inp" id="m-i-id" placeholder="e.g. JCF-BLOCK-A" oninput="mineValidate()"></div>
-        <div class="inp-grp"><label class="inp-lbl">Location / State</label><input class="inp" id="m-i-loc" placeholder="e.g. Jharkhand"></div>
-        <div class="inp-grp"><label class="inp-lbl">Commodity</label><input class="inp" id="m-i-com" placeholder="e.g. Coal, Iron Ore, Gold" oninput="mineValidate()"></div>
-        <div class="inp-grp"><label class="inp-lbl">Operator</label><input class="inp" id="m-i-op" placeholder="e.g. BCCL / CIL"></div>
-        <div class="inp-grp"><label class="inp-lbl">Deposit depth (m)</label><input class="inp" id="m-i-dep" type="number" placeholder="120" oninput="mineValidate()"></div>
-        <div class="inp-grp"><label class="inp-lbl">Years in operation</label><input class="inp" id="m-i-age" type="number" placeholder="10" oninput="mineLivePreview()"></div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="ct" style="color:#185FA5;">Section 2 — ore body parameters</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;">
-        <div class="inp-grp"><label class="inp-lbl">Grade (%)</label><input class="inp" id="m-i-grade" type="number" placeholder="45.2" step="0.1" oninput="mineLivePreview()"><div class="inp-hint">Coal: 40–70% · Fe: 55–68% · Au: 1–8 g/t</div></div>
-        <div class="inp-grp"><label class="inp-lbl">Density (t/m³)</label><input class="inp" id="m-i-den" type="number" placeholder="1.35" step="0.05" oninput="mineLivePreview()"><div class="inp-hint">Coal: 1.2–1.5 · Fe: 3.5–4.2 · Au ore: 2.6–2.8</div></div>
-        <div class="inp-grp"><label class="inp-lbl">In-situ resource (Mt)</label><input class="inp" id="m-i-insitu" type="number" placeholder="2840" oninput="mineLivePreview()"></div>
-        <div class="inp-grp"><label class="inp-lbl">Mining RF (%)</label><input class="inp" id="m-i-mrf" type="number" placeholder="72" oninput="mineLivePreview()"><div class="inp-hint">Open pit: 75–90% · Underground: 60–80%</div></div>
-        <div class="inp-grp"><label class="inp-lbl">Process RF (%)</label><input class="inp" id="m-i-prf" type="number" placeholder="88" oninput="mineLivePreview()"><div class="inp-hint">Wash/float: 80–92% · Leach: 70–85%</div></div>
-        <div class="inp-grp"><label class="inp-lbl">Ore body thickness (m)</label><input class="inp" id="m-i-thick" type="number" placeholder="25" oninput="mineValidate()"></div>
-      </div>
-    </div>
-  </div>
-  <div class="card" style="margin-bottom:12px;">
-    <div class="ct" style="color:#0B4F3E;">Section 3 — mining economics (MMDR Act)</div>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:9px;">
-      <div class="inp-grp"><label class="inp-lbl">Commodity price (₹/unit)</label><input class="inp" id="m-i-price" type="number" placeholder="5200" oninput="mineLivePreview()"></div>
-      <div class="inp-grp"><label class="inp-lbl">Royalty rate (%)</label><input class="inp" id="m-i-roy" type="number" placeholder="14" step="0.5" oninput="mineLivePreview()"><div class="inp-hint">Coal 14% · Fe 15% · Au 4%</div></div>
-      <div class="inp-grp"><label class="inp-lbl">CAPEX est. (₹ Cr)</label><input class="inp" id="m-i-capex" type="number" placeholder="420" oninput="mineLivePreview()"></div>
-      <div class="inp-grp"><label class="inp-lbl">OPEX (₹ Cr/yr)</label><input class="inp" id="m-i-opex" type="number" placeholder="85" oninput="mineLivePreview()"></div>
-    </div>
-  </div>
-
-  <!-- Live Preview -->
-  <div id="mine-inp-preview" style="display:none;background:var(--navy);border-radius:7px;padding:10px 14px;margin-bottom:12px;">
-    <div style="color:#E8D87A;font-size:9px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px;">Live preview</div>
-    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;" id="mine-preview-kpis"></div>
-  </div>
-
-  <!-- Run Button -->
-  <div style="text-align:center;margin-bottom:12px;">
-    <button id="mine-analyse-btn" onclick="runMineAnalysis()" disabled
-      style="background:linear-gradient(135deg,#854F0B,#EF9F27);">
-      Run HyperSenseIQ Mining Analysis
-    </button>
-    <div id="mine-inp-hint" style="font-size:10px;color:#AAA;margin-top:5px;">Fill required fields to enable analysis</div>
-  </div>
-
-  <!-- Results -->
-  <div id="mine-inp-results" style="display:none;">
-    <div style="background:linear-gradient(135deg,#1a0c0c,#1a1a0c);border-radius:8px;padding:12px 16px;margin-bottom:12px;text-align:center;">
-      <div style="color:#E8D87A;font-size:12px;font-weight:500;">HyperSenseIQ Mining Analysis Complete</div>
-      <div style="color:#EF9F27;font-size:10px;margin-top:2px;" id="mine-res-name"></div>
-    </div>
-    <div class="kpis" id="mine-res-kpis"></div>
-    <div class="cols2" style="margin-bottom:10px;">
-      <div class="card"><div class="ct">Ore body volumetrics</div><div id="mine-res-vol"></div></div>
-      <div class="card"><div class="ct">Extraction method ranking</div><div id="mine-res-methods"></div></div>
-    </div>
-    <div class="cols2">
-      <div class="card"><div class="ct">Production & recovery profile</div><div style="height:170px;position:relative;"><canvas id="mine-res-chart" style="position:absolute;top:0;left:0;width:100%;height:100%;"></canvas></div></div>
-      <div class="card"><div class="ct">MMDR fiscal economics</div><div id="mine-res-econ"></div></div>
-    </div>
-    <div class="card" style="margin-top:10px;"><div class="ct">HyperSenseIQ mining verdict</div><div id="mine-res-verdict"></div></div>
-  </div>
-</div>
-<div class="panel" id="p-m-mexec" style="display:none;">
-  <div class="mine-nav" id="mine-nav6"></div>
-  <div class="kpis" id="m-exec-kpis"></div>
-  <div class="cols2" style="margin-top:10px;">
-    <div class="card"><div class="ct">Portfolio ranking — all mines by NPV</div><div id="m-exec-rank"></div></div>
-    <div class="card"><div class="ct">Strategic & critical minerals</div><div id="m-exec-strat"></div></div>
-  </div>
-  <div class="card" style="margin-top:10px;"><div class="ct">HyperSenseIQ — Mining executive verdict</div><div id="m-exec-verdict"></div></div>
-</div>
 <div class="panel" id="p-m-mtwin" style="display:none;">
   <div class="mine-nav" id="mine-nav5"></div>
   <div class="cols3"><div class="card"><div class="ct">Drill core digital twin</div><div id="m-tw-id"></div></div><div class="card"><div class="ct">Mineralogy — spectral</div><div id="m-tw-min"></div></div><div class="card"><div class="ct">Strategic classification</div><div id="m-tw-strat"></div></div></div>
@@ -741,27 +623,27 @@ const WELLS=[
 
 /* ── CAMBAY BASIN WELL DATA (Synthetic — Representative Kalol Sandstone Parameters) —— */
 const WELLS_CB=[
-  {id:'CB-MHJ-05',depth:'1610–1625m',form:'Kalol K-IX+X',status:'Pay',qi:214,Di:.18,phi:.15,sw:.10,perm:30,gr:38,rhob:2.52,dt:58,wc:10,oip:4.2,stoiip:2890,
+  {id:'CB-01',depth:'1610–1635m',form:'Kalol K-IX+X',status:'Pay',qi:214,Di:.18,phi:.15,sw:.25,perm:30,gr:38,rhob:2.52,dt:58,wc:10,oip:4.2,stoiip:2890,
    zones:[{z:'Shale seal',d:'1610.0',t:1.5,lith:'Calc. Shale',fluid:'Brine',phi:5,sw:95,dec:'NON-PAY'},
           {z:'K-IX Pay A',d:'1611.5',t:5.2,lith:'Kalol Sst.',fluid:'Oil',phi:15,sw:25,dec:'PAY'},
           {z:'Tight streak',d:'1616.7',t:0.8,lith:'Cemented Sst.',fluid:'Mixed',phi:6,sw:62,dec:'NON-PAY'},
           {z:'K-X Pay B',d:'1617.5',t:6.8,lith:'Kalol Sst.',fluid:'Oil',phi:16,sw:22,dec:'PAY'},
           {z:'Water base',d:'1624.3',t:1.2,lith:'Siltstone',fluid:'Brine',phi:12,sw:88,dec:'NON-PAY'}]},
-  {id:'CB-SDR-01',depth:'1537–1554m',form:'Kalol K-IX+X',status:'Pay',qi:237,Di:.20,phi:.14,sw:.05,perm:25,gr:42,rhob:2.55,dt:56,wc:0,oip:3.8,stoiip:2420,
+  {id:'CB-02',depth:'1537–1554m',form:'Kalol K-IX+X',status:'Pay',qi:237,Di:.20,phi:.14,sw:.28,perm:25,gr:42,rhob:2.55,dt:56,wc:0,oip:3.8,stoiip:2420,
    zones:[{z:'Shale top',d:'1537.0',t:1.0,lith:'Dark Shale',fluid:'Brine',phi:4,sw:96,dec:'NON-PAY'},
           {z:'K-IX Pay',d:'1538.0',t:4.0,lith:'Kalol Sst.',fluid:'Oil',phi:14,sw:28,dec:'PAY'},
           {z:'K-X Pay',d:'1547.5',t:6.0,lith:'Kalol Sst.',fluid:'Oil',phi:15,sw:26,dec:'PAY'},
           {z:'Base shale',d:'1553.5',t:0.5,lith:'Shale',fluid:'Brine',phi:3,sw:97,dec:'NON-PAY'}]},
-  {id:'CB-SDR-05',depth:'1570–1590m',form:'Kalol K-VIII+IX',status:'Declining',qi:138,Di:.25,phi:.13,sw:.30,perm:20,gr:45,rhob:2.58,dt:55,wc:30,oip:3.1,stoiip:2150,
+  {id:'CB-03',depth:'1570–1590m',form:'Kalol K-VIII+IX',status:'Declining',qi:138,Di:.25,phi:.13,sw:.35,perm:20,gr:45,rhob:2.58,dt:55,wc:30,oip:3.1,stoiip:2150,
    zones:[{z:'K-VIII Pay',d:'1570.0',t:7.2,lith:'Kalol Sst.',fluid:'Oil',phi:13,sw:35,dec:'PAY'},
           {z:'Shale band',d:'1577.2',t:0.6,lith:'Shale',fluid:'Brine',phi:4,sw:94,dec:'NON-PAY'},
           {z:'K-IX Pay',d:'1577.8',t:6.5,lith:'Kalol Sst.',fluid:'Oil',phi:14,sw:32,dec:'PAY'},
           {z:'Tight base',d:'1584.3',t:1.2,lith:'Cemented Sst.',fluid:'Mixed',phi:5,sw:68,dec:'NON-PAY'}]},
-  {id:'CB-SDR-06',depth:'1682–1689m',form:'Kalol K-IX',status:'Viscous Oil',qi:138,Di:.28,phi:.13,sw:.30,perm:18,gr:48,rhob:2.60,dt:54,wc:30,oip:2.2,stoiip:1680,
+  {id:'CB-04',depth:'1682–1689m',form:'Kalol K-IX',status:'Declining',qi:138,Di:.28,phi:.13,sw:.35,perm:18,gr:48,rhob:2.60,dt:54,wc:30,oip:2.2,stoiip:1680,
    zones:[{z:'Shale cap',d:'1682.0',t:0.8,lith:'Dark Shale',fluid:'Brine',phi:3,sw:96,dec:'NON-PAY'},
           {z:'K-IX Pay (viscous)',d:'1682.8',t:5.8,lith:'Kalol Sst.',fluid:'Viscous Oil',phi:13,sw:35,dec:'PAY'},
           {z:'Base',d:'1688.6',t:0.4,lith:'Tight Sst.',fluid:'Mixed',phi:5,sw:72,dec:'NON-PAY'}]},
-  {id:'CB-AKL-18',depth:'1420–1426m',form:'MBS (Main Bassein)',status:'High WC',qi:140,Di:.30,phi:.12,sw:.40,perm:15,gr:35,rhob:2.48,dt:60,wc:40,oip:1.8,stoiip:1420,
+  {id:'CB-05',depth:'1420–1426m',form:'MBS (Main Bassein)',status:'Declining',qi:140,Di:.30,phi:.12,sw:.45,perm:15,gr:35,rhob:2.48,dt:60,wc:40,oip:1.8,stoiip:1420,
    zones:[{z:'MBS Pay A',d:'1420.0',t:3.2,lith:'MBS Sst.',fluid:'Oil/Water',phi:12,sw:45,dec:'MARGINAL'},
           {z:'Tight streak',d:'1423.2',t:0.6,lith:'Cemented',fluid:'Mixed',phi:4,sw:72,dec:'NON-PAY'},
           {z:'MBS Pay B',d:'1423.8',t:2.2,lith:'MBS Sst.',fluid:'Oil',phi:13,sw:38,dec:'PAY'}]}
@@ -777,15 +659,15 @@ const EORS_CB=[
 ];
 const DOM_SC_CB={Physics:[.85,.70,.65,.60,.60,.40,.45],Mechanical:[.92,.65,.60,.55,.60,.35,.50],Geological:[.75,.60,.55,.55,.55,.40,.50],Chemical:[.95,.55,.65,.70,.65,.35,.55],Operational:[.85,.45,.55,.50,.55,.30,.60],Economic:[.95,.60,.70,.65,.65,.45,.55]};
 const PLUGS_CB={
-  0:[{id:'CP-CB-MHJ05-1611',depth:1611.5,t:5.2,lith:'Kalol Sst.',dec:'PAY',phi:15,sw:25,perm:30,sis:.76,lcs:.68,fpp:.79,osq:.74,minerals:[{n:'Quartz (SiO₂)',pct:58,wl:2200,col:'#D4C8A8'},{n:'Oil (C-H)',pct:22,wl:1730,col:'#B8860B'},{n:'Illite',pct:12,wl:2200,col:'#7a7a6e'},{n:'Chlorite',pct:8,wl:2250,col:'#4a7c59'}],fluid:'Oil',anom:false},
-     {id:'CP-CB-MHJ05-1617',depth:1617.5,t:6.8,lith:'Kalol Sst.',dec:'PAY',phi:16,sw:22,perm:35,sis:.80,lcs:.70,fpp:.82,osq:.78,minerals:[{n:'Quartz (SiO₂)',pct:62,wl:2200,col:'#D4C8A8'},{n:'Oil (C-H)',pct:20,wl:1730,col:'#B8860B'},{n:'Kaolinite',pct:10,wl:2160,col:'#9a9a8e'},{n:'Feldspar',pct:8,wl:2190,col:'#C4B48A'}],fluid:'Oil',anom:false}],
-  1:[{id:'CP-CB-SDR01-1538',depth:1538.0,t:4.0,lith:'Kalol Sst.',dec:'PAY',phi:14,sw:28,perm:25,sis:.74,lcs:.65,fpp:.76,osq:.72,minerals:[{n:'Quartz (SiO₂)',pct:60,wl:2200,col:'#D4C8A8'},{n:'Oil (C-H)',pct:18,wl:1730,col:'#B8860B'},{n:'Illite',pct:14,wl:2200,col:'#7a7a6e'},{n:'Chlorite',pct:8,wl:2250,col:'#4a7c59'}],fluid:'Oil',anom:false},
-     {id:'CP-CB-SDR01-1547',depth:1547.5,t:6.0,lith:'Kalol Sst.',dec:'PAY',phi:15,sw:26,perm:28,sis:.77,lcs:.67,fpp:.78,osq:.75,minerals:[{n:'Quartz (SiO₂)',pct:63,wl:2200,col:'#D4C8A8'},{n:'Oil (C-H)',pct:19,wl:1730,col:'#B8860B'},{n:'Kaolinite',pct:12,wl:2160,col:'#9a9a8e'},{n:'Calcite',pct:6,wl:2340,col:'#E8E4D8'}],fluid:'Oil',anom:false}],
-  2:[{id:'CP-CB-SDR05-1570',depth:1570.0,t:7.2,lith:'Kalol Sst.',dec:'PAY',phi:13,sw:35,perm:20,sis:.68,lcs:.62,fpp:.70,osq:.66,minerals:[{n:'Quartz (SiO₂)',pct:55,wl:2200,col:'#D4C8A8'},{n:'Oil (C-H)',pct:15,wl:1730,col:'#B8860B'},{n:'Illite',pct:18,wl:2200,col:'#7a7a6e'},{n:'Chlorite',pct:12,wl:2250,col:'#4a7c59'}],fluid:'Oil',anom:false},
-     {id:'CP-CB-SDR05-1578',depth:1577.8,t:6.5,lith:'Kalol Sst.',dec:'PAY',phi:14,sw:32,perm:22,sis:.72,lcs:.64,fpp:.73,osq:.70,minerals:[{n:'Quartz (SiO₂)',pct:58,wl:2200,col:'#D4C8A8'},{n:'Oil (C-H)',pct:16,wl:1730,col:'#B8860B'},{n:'Kaolinite',pct:14,wl:2160,col:'#9a9a8e'},{n:'Smectite',pct:12,wl:2210,col:'#9a9a8e'}],fluid:'Oil',anom:true}],
-  3:[{id:'CP-CB-SDR06-1683',depth:1682.8,t:5.8,lith:'Kalol Sst. (viscous)',dec:'PAY',phi:13,sw:35,perm:18,sis:.65,lcs:.60,fpp:.68,osq:.64,minerals:[{n:'Quartz (SiO₂)',pct:52,wl:2200,col:'#D4C8A8'},{n:'Oil (C-H)',pct:24,wl:1730,col:'#B8860B'},{n:'Asphaltene',pct:14,wl:1760,col:'#3D3D3A'},{n:'Illite',pct:10,wl:2200,col:'#7a7a6e'}],fluid:'Viscous Oil',anom:true}],
-  4:[{id:'CP-CB-AKL18-1420',depth:1420.0,t:3.2,lith:'MBS Sst.',dec:'MARGINAL',phi:12,sw:45,perm:15,sis:.58,lcs:.55,fpp:.55,osq:.56,minerals:[{n:'Quartz (SiO₂)',pct:50,wl:2200,col:'#D4C8A8'},{n:'Brine (OH)',pct:22,wl:1900,col:'#6b8fa8'},{n:'Oil (C-H)',pct:16,wl:1730,col:'#B8860B'},{n:'Illite',pct:12,wl:2200,col:'#7a7a6e'}],fluid:'Oil/Water',anom:true},
-     {id:'CP-CB-AKL18-1424',depth:1423.8,t:2.2,lith:'MBS Sst.',dec:'PAY',phi:13,sw:38,perm:18,sis:.65,lcs:.60,fpp:.67,osq:.64,minerals:[{n:'Quartz (SiO₂)',pct:55,wl:2200,col:'#D4C8A8'},{n:'Oil (C-H)',pct:18,wl:1730,col:'#B8860B'},{n:'Kaolinite',pct:15,wl:2160,col:'#9a9a8e'},{n:'Chlorite',pct:12,wl:2250,col:'#4a7c59'}],fluid:'Oil',anom:false}]
+  0:[{id:'CP-CB01-1611',depth:1611.5,t:5.2,lith:'Kalol Sst.',dec:'PAY',phi:15,sw:25,perm:30,sis:.76,lcs:.68,fpp:.79,osq:.74,minerals:[{n:'Quartz (SiO₂)',pct:58,wl:2200,col:'#D4C8A8'},{n:'Oil (C-H)',pct:22,wl:1730,col:'#B8860B'},{n:'Illite',pct:12,wl:2200,col:'#7a7a6e'},{n:'Chlorite',pct:8,wl:2250,col:'#4a7c59'}],fluid:'Oil',anom:false},
+     {id:'CP-CB01-1617',depth:1617.5,t:6.8,lith:'Kalol Sst.',dec:'PAY',phi:16,sw:22,perm:35,sis:.80,lcs:.70,fpp:.82,osq:.78,minerals:[{n:'Quartz (SiO₂)',pct:62,wl:2200,col:'#D4C8A8'},{n:'Oil (C-H)',pct:20,wl:1730,col:'#B8860B'},{n:'Kaolinite',pct:10,wl:2160,col:'#9a9a8e'},{n:'Feldspar',pct:8,wl:2190,col:'#C4B48A'}],fluid:'Oil',anom:false}],
+  1:[{id:'CP-CB02-1538',depth:1538.0,t:4.0,lith:'Kalol Sst.',dec:'PAY',phi:14,sw:28,perm:25,sis:.74,lcs:.65,fpp:.76,osq:.72,minerals:[{n:'Quartz (SiO₂)',pct:60,wl:2200,col:'#D4C8A8'},{n:'Oil (C-H)',pct:18,wl:1730,col:'#B8860B'},{n:'Illite',pct:14,wl:2200,col:'#7a7a6e'},{n:'Chlorite',pct:8,wl:2250,col:'#4a7c59'}],fluid:'Oil',anom:false},
+     {id:'CP-CB02-1547',depth:1547.5,t:6.0,lith:'Kalol Sst.',dec:'PAY',phi:15,sw:26,perm:28,sis:.77,lcs:.67,fpp:.78,osq:.75,minerals:[{n:'Quartz (SiO₂)',pct:63,wl:2200,col:'#D4C8A8'},{n:'Oil (C-H)',pct:19,wl:1730,col:'#B8860B'},{n:'Kaolinite',pct:12,wl:2160,col:'#9a9a8e'},{n:'Calcite',pct:6,wl:2340,col:'#E8E4D8'}],fluid:'Oil',anom:false}],
+  2:[{id:'CP-CB03-1570',depth:1570.0,t:7.2,lith:'Kalol Sst.',dec:'PAY',phi:13,sw:35,perm:20,sis:.68,lcs:.62,fpp:.70,osq:.66,minerals:[{n:'Quartz (SiO₂)',pct:55,wl:2200,col:'#D4C8A8'},{n:'Oil (C-H)',pct:15,wl:1730,col:'#B8860B'},{n:'Illite',pct:18,wl:2200,col:'#7a7a6e'},{n:'Chlorite',pct:12,wl:2250,col:'#4a7c59'}],fluid:'Oil',anom:false},
+     {id:'CP-CB03-1578',depth:1577.8,t:6.5,lith:'Kalol Sst.',dec:'PAY',phi:14,sw:32,perm:22,sis:.72,lcs:.64,fpp:.73,osq:.70,minerals:[{n:'Quartz (SiO₂)',pct:58,wl:2200,col:'#D4C8A8'},{n:'Oil (C-H)',pct:16,wl:1730,col:'#B8860B'},{n:'Kaolinite',pct:14,wl:2160,col:'#9a9a8e'},{n:'Smectite',pct:12,wl:2210,col:'#9a9a8e'}],fluid:'Oil',anom:true}],
+  3:[{id:'CP-CB04-1683',depth:1682.8,t:5.8,lith:'Kalol Sst. (viscous)',dec:'PAY',phi:13,sw:35,perm:18,sis:.65,lcs:.60,fpp:.68,osq:.64,minerals:[{n:'Quartz (SiO₂)',pct:52,wl:2200,col:'#D4C8A8'},{n:'Oil (C-H)',pct:24,wl:1730,col:'#B8860B'},{n:'Asphaltene',pct:14,wl:1760,col:'#3D3D3A'},{n:'Illite',pct:10,wl:2200,col:'#7a7a6e'}],fluid:'Viscous Oil',anom:true}],
+  4:[{id:'CP-CB05-1420',depth:1420.0,t:3.2,lith:'MBS Sst.',dec:'MARGINAL',phi:12,sw:45,perm:15,sis:.58,lcs:.55,fpp:.55,osq:.56,minerals:[{n:'Quartz (SiO₂)',pct:50,wl:2200,col:'#D4C8A8'},{n:'Brine (OH)',pct:22,wl:1900,col:'#6b8fa8'},{n:'Oil (C-H)',pct:16,wl:1730,col:'#B8860B'},{n:'Illite',pct:12,wl:2200,col:'#7a7a6e'}],fluid:'Oil/Water',anom:true},
+     {id:'CP-CB05-1424',depth:1423.8,t:2.2,lith:'MBS Sst.',dec:'PAY',phi:13,sw:38,perm:18,sis:.65,lcs:.60,fpp:.67,osq:.64,minerals:[{n:'Quartz (SiO₂)',pct:55,wl:2200,col:'#D4C8A8'},{n:'Oil (C-H)',pct:18,wl:1730,col:'#B8860B'},{n:'Kaolinite',pct:15,wl:2160,col:'#9a9a8e'},{n:'Chlorite',pct:12,wl:2250,col:'#4a7c59'}],fluid:'Oil',anom:false}]
 };
 
 
@@ -833,7 +715,7 @@ let ACTIVE_DOM=DOM_SC;
 let ACTIVE_PLUGS=PLUGS;
 
 function setDataset(ds){
-  DATASET=ds; CW=0; specWI=0; specPI=0;
+  DATASET=ds; CW=0;
   if(ds==='mh'){
     ACTIVE_WELLS=WELLS; ACTIVE_EORS=EORS; ACTIVE_DOM=DOM_SC; ACTIVE_PLUGS=PLUGS;
     document.getElementById('ds-mh').classList.add('on');
@@ -854,15 +736,14 @@ function setDataset(ds){
   document.querySelectorAll('#wells-'+ds+' .w-btn').forEach((b,j)=>b.classList.toggle('on',j===0));
   render();
   if(document.getElementById('p-spectral').classList.contains('on')) renderSpectral();
-  renderLasSampleBtns();
 }
 
 
 /* ── MINE DATA ── */
 const MINES=[
-  {id:'JCF-01',name:'Jharia Coalfield',state:'Jharkhand',op:'BCCL/CIL',com:'Coal',sym:'C',unit:'Mt',pu:'₹/tonne',col:'#3D3D3A',price:{lo:8000,base:10900,hi:14000},res:2840,grade:45.2,den:1.35,insitu:8235,mrf:.72,prf:.88,frf:.634,recov:3310,roy:.14,dmf:.02,pmk:.01,gst:.05,capex:420,opex:85,methods:[{n:'Open cast',sc:.88,rec:.78,col:'#0F6E56'},{n:'Bord & pillar',sc:.72,rec:.62,col:'#185FA5'},{n:'Longwall',sc:.79,rec:.85,col:'#534AB7'},{n:'Block caving',sc:.61,rec:.90,col:'#854F0B'}],minerals:[{n:'Bituminous coal',pct:78,col:'#3D3D3A'},{n:'Shale bands',pct:12,col:'#888780'},{n:'Sandstone',pct:7,col:'#C4B48A'},{n:'Clay',pct:3,col:'#B8A87A'}],note:'Coal cores classified as Schedule I national energy asset under MMDR Amendment 2021.',restricted:false},
-  {id:'BAI-01',name:'Bailadila Iron Ore',state:'Chhattisgarh',op:'NMDC Ltd.',com:'Iron Ore',sym:'Fe',unit:'Mt',pu:'₹/tonne',col:'#993C1D',price:{lo:7000,base:9300,hi:12000},res:1200,grade:65.8,den:3.8,insitu:10640,mrf:.82,prf:.92,frf:.754,recov:5276,roy:.15,dmf:.02,pmk:.01,gst:.05,capex:380,opex:72,methods:[{n:'Open pit',sc:.92,rec:.85,col:'#0F6E56'},{n:'Terrace mining',sc:.78,rec:.78,col:'#185FA5'},{n:'Bench cut',sc:.71,rec:.72,col:'#534AB7'},{n:'Underground',sc:.55,rec:.68,col:'#854F0B'}],minerals:[{n:'Haematite (Fe₂O₃)',pct:82,col:'#993C1D'},{n:'Magnetite',pct:8,col:'#5F5E5A'},{n:'Goethite',pct:6,col:'#B8860B'},{n:'Gangue',pct:4,col:'#C4B48A'}],note:'Iron ore cores registered with IBM and NMDC geological repository.',restricted:false},
-  {id:'HTG-01',name:'Hutti Gold Mine',state:'Karnataka',op:'HGML',com:'Gold',sym:'Au',unit:'Kt ore',pu:'₹/gram',col:'#B8860B',price:{lo:12000,base:14500,hi:16000},res:12.4,grade:3.8,den:2.7,insitu:33.4,mrf:.75,prf:.90,frf:.675,recov:15.2,roy:.04,dmf:.02,pmk:.01,gst:.05,capex:620,opex:180,methods:[{n:'Sub-level stoping',sc:.85,rec:.82,col:'#0F6E56'},{n:'Cut & fill',sc:.79,rec:.78,col:'#185FA5'},{n:'Shrinkage stoping',sc:.68,rec:.70,col:'#534AB7'},{n:'Open pit',sc:.52,rec:.65,col:'#854F0B'}],minerals:[{n:'Free gold (Au)',pct:38,col:'#B8860B'},{n:'Pyrite (FeS₂)',pct:28,col:'#888780'},{n:'Quartz (SiO₂)',pct:22,col:'#E8E4D8'},{n:'Arsenopyrite',pct:12,col:'#5F5E5A'}],note:'Gold cores — RBI liaison required for export. SWIR confirms free-milling Au mineralisation.',restricted:false},
+  {id:'JCF-01',name:'Jharia Coalfield',state:'Jharkhand',op:'BCCL/CIL',com:'Coal',sym:'C',unit:'Mt',pu:'₹/tonne',col:'#3D3D3A',price:{lo:3500,base:5200,hi:7000},res:2840,grade:45.2,den:1.35,insitu:8235,mrf:.72,prf:.88,frf:.634,recov:3310,roy:.14,dmf:.02,pmk:.01,gst:.05,capex:420,opex:85,methods:[{n:'Open cast',sc:.88,rec:.78,col:'#0F6E56'},{n:'Bord & pillar',sc:.72,rec:.62,col:'#185FA5'},{n:'Longwall',sc:.79,rec:.85,col:'#534AB7'},{n:'Block caving',sc:.61,rec:.90,col:'#854F0B'}],minerals:[{n:'Bituminous coal',pct:78,col:'#3D3D3A'},{n:'Shale bands',pct:12,col:'#888780'},{n:'Sandstone',pct:7,col:'#C4B48A'},{n:'Clay',pct:3,col:'#B8A87A'}],note:'Coal cores classified as Schedule I national energy asset under MMDR Amendment 2021.',restricted:false},
+  {id:'BAI-01',name:'Bailadila Iron Ore',state:'Chhattisgarh',op:'NMDC Ltd.',com:'Iron Ore',sym:'Fe',unit:'Mt',pu:'₹/tonne',col:'#993C1D',price:{lo:2800,base:4500,hi:6500},res:1200,grade:65.8,den:3.8,insitu:10640,mrf:.82,prf:.92,frf:.754,recov:5276,roy:.15,dmf:.02,pmk:.01,gst:.05,capex:380,opex:72,methods:[{n:'Open pit',sc:.92,rec:.85,col:'#0F6E56'},{n:'Terrace mining',sc:.78,rec:.78,col:'#185FA5'},{n:'Bench cut',sc:.71,rec:.72,col:'#534AB7'},{n:'Underground',sc:.55,rec:.68,col:'#854F0B'}],minerals:[{n:'Haematite (Fe₂O₃)',pct:82,col:'#993C1D'},{n:'Magnetite',pct:8,col:'#5F5E5A'},{n:'Goethite',pct:6,col:'#B8860B'},{n:'Gangue',pct:4,col:'#C4B48A'}],note:'Iron ore cores registered with IBM and NMDC geological repository.',restricted:false},
+  {id:'HTG-01',name:'Hutti Gold Mine',state:'Karnataka',op:'HGML',com:'Gold',sym:'Au',unit:'Kt ore',pu:'₹/gram',col:'#B8860B',price:{lo:5800,base:7200,hi:9500},res:12.4,grade:3.8,den:2.7,insitu:33.4,mrf:.75,prf:.90,frf:.675,recov:15.2,roy:.04,dmf:.02,pmk:.01,gst:.05,capex:620,opex:180,methods:[{n:'Sub-level stoping',sc:.85,rec:.82,col:'#0F6E56'},{n:'Cut & fill',sc:.79,rec:.78,col:'#185FA5'},{n:'Shrinkage stoping',sc:.68,rec:.70,col:'#534AB7'},{n:'Open pit',sc:.52,rec:.65,col:'#854F0B'}],minerals:[{n:'Free gold (Au)',pct:38,col:'#B8860B'},{n:'Pyrite (FeS₂)',pct:28,col:'#888780'},{n:'Quartz (SiO₂)',pct:22,col:'#E8E4D8'},{n:'Arsenopyrite',pct:12,col:'#5F5E5A'}],note:'Gold cores — RBI liaison required for export. SWIR confirms free-milling Au mineralisation.',restricted:false},
   {id:'MLJ-01',name:'Malanjkhand Copper',state:'Madhya Pradesh',op:'HCL',com:'Copper',sym:'Cu',unit:'Mt ore',pu:'₹/kg',col:'#D85A30',price:{lo:580,base:780,hi:1050},res:188,grade:.92,den:2.9,insitu:1726,mrf:.80,prf:.88,frf:.704,recov:855,roy:.048,dmf:.02,pmk:.01,gst:.05,capex:580,opex:95,methods:[{n:'Open pit',sc:.90,rec:.82,col:'#0F6E56'},{n:'Block caving',sc:.76,rec:.88,col:'#185FA5'},{n:'SX-EW leaching',sc:.70,rec:.75,col:'#534AB7'},{n:'Underground',sc:.62,rec:.72,col:'#854F0B'}],minerals:[{n:'Chalcopyrite (CuFeS₂)',pct:58,col:'#D85A30'},{n:'Bornite',pct:18,col:'#B8860B'},{n:'Quartz',pct:14,col:'#E8E4D8'},{n:'Pyrite',pct:10,col:'#888780'}],note:'Copper listed under National Critical Minerals List 2023. Digital twins feed into KABIL database.',restricted:false},
   {id:'MON-01',name:'Kerala Monazite Sands',state:'Kerala/Tamil Nadu',op:'IREL (India)',com:'Rare Earth Elements',sym:'REE',unit:'Kt',pu:'₹/kg REO',col:'#534AB7',price:{lo:1800,base:3200,hi:5800},res:8.4,grade:8.5,den:4.8,insitu:714,mrf:.68,prf:.82,frf:.558,recov:271,roy:.12,dmf:.01,pmk:.00,gst:.05,capex:280,opex:65,methods:[{n:'Beach sand dredging',sc:.88,rec:.85,col:'#0F6E56'},{n:'Wet gravity sep.',sc:.82,rec:.80,col:'#185FA5'},{n:'Magnetic sep.',sc:.75,rec:.78,col:'#534AB7'},{n:'Solvent extraction',sc:.68,rec:.82,col:'#854F0B'}],minerals:[{n:'Monazite (Ce,La,Nd)',pct:42,col:'#534AB7'},{n:'Ilmenite (FeTiO₃)',pct:28,col:'#3D3D3A'},{n:'Zircon (ZrSiO₄)',pct:18,col:'#E8E4D8'},{n:'Rutile (TiO₂)',pct:12,col:'#B8860B'}],note:'STRATEGIC: Monazite contains thorium — regulated under Atomic Energy Act 1962. BARC/DAE oversight mandatory.',restricted:true},
   {id:'JAD-01',name:'Jaduguda Uranium Mine',state:'Jharkhand',op:'UCIL/DAE',com:'Uranium (U₃O₈)',sym:'U',unit:'t U₃O₈',pu:'₹/kg',col:'#3B6D11',price:{lo:3200,base:5800,hi:9200},res:78400,grade:.067,den:3.1,insitu:52.6,mrf:.65,prf:.85,frf:.553,recov:18.9,roy:.0,dmf:.0,pmk:.0,gst:.0,capex:920,opex:280,methods:[{n:'Underground (rad.)',sc:.85,rec:.78,col:'#0F6E56'},{n:'In-situ leaching',sc:.72,rec:.72,col:'#185FA5'},{n:'Heap leaching',sc:.65,rec:.68,col:'#534AB7'},{n:'Bioleaching',sc:.55,rec:.60,col:'#854F0B'}],minerals:[{n:'Uraninite (UO₂)',pct:62,col:'#3B6D11'},{n:'Pitchblende',pct:18,col:'#444441'},{n:'Coffinite',pct:12,col:'#888780'},{n:'Chlorite',pct:8,col:'#5DCAA5'}],note:'TOP SECRET — AERB/DAE regulated. NCA and AERB-cleared personnel only. BARC Secure DLT blockchain.',restricted:true},
@@ -875,126 +756,17 @@ const kCls=(v,hi,lo,dir='up')=>dir==='up'?(v>=hi?'g':v>=lo?'a':'r'):(v<=hi?'g':v
 const vCls=v=>v>0?'vg':'vr';
 /* ── LIVE DATA ── */
 async function fetchLive(){
-  let fx=84.5;
-  // Fetch live USD/INR exchange rate
-  const fxSources=[
+  let fx=83.5;
+  const sources=[
     ()=>fetch('https://open.er-api.com/v6/latest/USD',{mode:'cors'}).then(r=>r.json()).then(d=>d.rates.INR),
     ()=>fetch('https://api.frankfurter.app/latest?from=USD&to=INR',{mode:'cors'}).then(r=>r.json()).then(d=>d.rates.INR),
     ()=>fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json',{mode:'cors'}).then(r=>r.json()).then(d=>d.usd.inr)
   ];
-  for(const s of fxSources){try{const v=await s();if(v>70&&v<100){fx=v;break;}}catch(e){}}
-
-  // Fetch live commodity prices (USD) from multiple free sources
-  // Gold (XAU), Silver (XAG), Copper, Iron Ore (proxy via steel), Coal (proxy)
-  // Fetch Brent crude from AlphaVantage
-  let brent = 101; // fallback
-  try {
-    if(typeof AV_KEY !== 'undefined' && AV_KEY && AV_KEY !== 'your_alphavantage_key_here'){
-      const avBrent = await fetch(
-        `https://www.alphavantage.co/query?function=BRENT&interval=daily&apikey=${AV_KEY}`,
-        {mode:'cors'}
-      ).then(r=>r.json());
-      if(avBrent.data && avBrent.data.length > 0){
-        const latest = avBrent.data[0].value;
-        if(latest && !isNaN(parseFloat(latest))) brent = parseFloat(latest);
-      }
-    }
-  } catch(e){ console.warn('AlphaVantage Brent fetch failed, using fallback:', e); }
-
-  // Fetch Copper from AlphaVantage (USD/tonne)
-  let copperUSDt = 9500; // fallback
-  try {
-    if(typeof AV_KEY !== 'undefined' && AV_KEY && AV_KEY !== 'your_alphavantage_key_here'){
-      const avCopper = await fetch(
-        `https://www.alphavantage.co/query?function=COPPER&interval=monthly&apikey=${AV_KEY}`,
-        {mode:'cors'}
-      ).then(r=>r.json());
-      if(avCopper.data && avCopper.data.length > 0){
-        const latest = avCopper.data[0].value;
-        // AV returns copper in USD/tonne
-        if(latest && !isNaN(parseFloat(latest))){
-        // AlphaVantage returns copper in USD/lb — convert to USD/tonne (1 tonne = 2204.62 lb)
-        copperUSDt = parseFloat(latest) * 2204.62;
-      }
-      }
-    }
-  } catch(e){ console.warn('AlphaVantage Copper fetch failed, using fallback:', e); }
-
-  let goldUSD=3300, silverUSD=33, copperUSD=copperUSDt;
-
-  try {
-    const metals = await fetch('https://api.frankfurter.app/latest?from=XAU&to=USD,INR',{mode:'cors'}).then(r=>r.json());
-    if(metals.rates && metals.rates.USD) goldUSD = metals.rates.USD;
-  } catch(e){}
-
-  // Gold: USD/troy oz → ₹/gram (1 troy oz = 31.1035g) — currently ~₹14,500/gram
-  const goldINRgram = Math.round(goldUSD * fx / 31.1035);
-  const silverINRgram = Math.round(silverUSD * fx / 31.1035);
-  const copperINR = Math.round(copperUSD * fx);
-
-  // Brent now fetched live from AlphaVantage above (fallback $101)
-  // Coal: thermal ~$130/t
-  const coalINR = Math.round(130 * fx);
-  // Iron ore 62% Fe: ~$111/t (May 2026)
-  const ironINR = Math.round(111 * fx);
-  // Uranium U3O8: ~$65/lb
-  const uraniumINR = Math.round(65 * fx / 0.453);
-  // REE/Monazite: ~$800/t
-  const reeINR = Math.round(800 * fx);
-
-  // Update MINES live prices — ensure all values are floats
-  const livePrices = {
-    'Jharia Coalfield':    {base:parseFloat(coalINR),    lo:Math.round(coalINR*0.75),    hi:Math.round(coalINR*1.3)},
-    'Bailadila Iron Ore':  {base:parseFloat(ironINR),    lo:Math.round(ironINR*0.75),    hi:Math.round(ironINR*1.3)},
-    'Hutti Gold Mine':     {base:parseFloat(goldINRgram),lo:Math.round(goldINRgram*0.85),hi:Math.round(goldINRgram*1.2)},
-    'Malanjkhand Copper':  {base:parseFloat(copperINR),  lo:Math.round(copperINR*0.75),  hi:Math.round(copperINR*1.3)},
-    'Kerala Monazite':     {base:parseFloat(reeINR),     lo:Math.round(reeINR*0.7),      hi:Math.round(reeINR*1.4)},
-    'Jaduguda Uranium':    {base:parseFloat(uraniumINR), lo:Math.round(uraniumINR*0.75), hi:Math.round(uraniumINR*1.3)},
-  };
-  if(typeof MINES !== 'undefined'){
-    MINES.forEach(m=>{
-      if(livePrices[m.name]){
-        m.price=livePrices[m.name];
-        // Ensure all price values are valid numbers
-        Object.keys(m.price).forEach(k=>{
-          if(isNaN(m.price[k])||!isFinite(m.price[k])) m.price[k]=m.price.base||5000;
-        });
-      }
-    });
-  }
-
-  // Update OFFLINE_CORE prices too
-  if(typeof OFFLINE_CORE !== 'undefined'){
-    OFFLINE_CORE['JCF-01'].price = coalINR;
-    OFFLINE_CORE['BAI-01'].price = ironINR;
-    OFFLINE_CORE['HTG-01'].price = goldINRgram;
-    OFFLINE_CORE['MLJ-01'].price = Math.round(copperINR/1000); // ₹/kg
-    OFFLINE_CORE['MON-01'].price = reeINR;
-    OFFLINE_CORE['JAD-01'].price = uraniumINR;
-  }
-
-  const inr=Math.round(brent*fx);
+  for(const s of sources){try{const v=await s();if(v>70&&v<100){fx=v;break;}}catch(e){}}
+  const brent=78.5, inr=Math.round(brent*fx);
   document.getElementById('brent-val').textContent=INR(inr)+'/bbl';
   document.getElementById('fx-val').textContent=fx.toFixed(1);
   document.getElementById('oil-sl').value=Math.min(10000,Math.max(3500,inr));
-  const opEl=document.getElementById('i-op');
-  if(opEl&&(!opEl.dataset.userEdited)){opEl.value=inr;livePreview();}
-
-  // Update mining live price badges
-  const goldBadge=document.getElementById('live-gold');
-  const ironBadge=document.getElementById('live-iron');
-  const coalBadge=document.getElementById('live-coal');
-  const copperBadge=document.getElementById('live-copper');
-  if(goldBadge) goldBadge.textContent='Au ₹'+goldINRgram.toLocaleString()+'/g';
-  if(ironBadge) ironBadge.textContent='Fe ₹'+ironINR.toLocaleString()+'/t';
-  if(coalBadge) coalBadge.textContent='Coal ₹'+coalINR.toLocaleString()+'/t';
-  if(copperBadge) copperBadge.textContent='Cu ₹'+(Math.round(copperINR/1000)).toLocaleString()+'k/t';
-
-  // Re-render active mining panel with updated prices
-  if(typeof mode !== 'undefined' && mode !== 'petro' && typeof goMine === 'function'){
-    setTimeout(()=>goMine(curMinePanel), 100);
-  }
-
   document.getElementById('last-upd').textContent='Live '+new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
   document.getElementById('last-upd').style.color='#9FE1CB';
   document.getElementById('status-dot').style.background='#1D9E75';
@@ -1008,15 +780,13 @@ function setMode(m){
   const isPetro=m==='petro';
   document.getElementById('petro-btn').className='mode-btn'+(isPetro?' petro-on':'');
   document.getElementById('mine-btn').className='mode-btn'+(!isPetro?' mine-on':'');
-  // Toggle live price badges
-  ['mine-live-au','mine-live-fe','mine-live-coal','mine-live-cu'].forEach(id=>{
-    const el=document.getElementById(id);if(el)el.style.display=isPetro?'none':'flex';
-  });
   document.getElementById('petro-tabs').style.display=isPetro?'flex':'none';
   document.getElementById('mine-tabs').style.display=isPetro?'none':'flex';
   document.getElementById('well-bar').style.display=isPetro?'flex':'none';
   document.getElementById('mine-bar').style.display=isPetro?'none':'flex';
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+  // Hide all mining panels when switching to petroleum
+  ['overview','vol','recovery','mecon','mtwin'].forEach(p=>{const el=document.getElementById('p-m-'+p);if(el)el.style.display='none';});
   if(isPetro){document.getElementById('p-well').classList.add('on');setTabOn('well');}
   else{document.getElementById('p-m-overview').style.display='block';goMine('overview');}
 }
@@ -1030,12 +800,20 @@ function go(name){
 
 function setTabOn(name){document.querySelectorAll('#petro-tabs .tab').forEach(t=>t.classList.toggle('on',t.onclick&&t.onclick.toString().includes("'"+name+"'")));}
 
-function sw(i){CW=i;document.querySelectorAll('#wells-'+DATASET+' .w-btn').forEach((b,j)=>b.classList.toggle('on',j===i));render();}
+function sw(i){
+  CW=i;
+  document.querySelectorAll('#wells-'+DATASET+' .w-btn').forEach((b,j)=>b.classList.toggle('on',j===i));
+  render();
+  // If Your Well Data panel is visible and has data, auto-reload with new well
+  const panel=document.getElementById('p-input');
+  const wid=document.getElementById('i-wid');
+  if(panel&&panel.classList.contains('on')&&wid&&wid.value){loadSample();}
+}
 
 function goMine(panel){
   curMinePanel=panel;
   document.querySelectorAll('#mine-tabs .tab').forEach(t=>t.classList.toggle('on',t.onclick&&t.onclick.toString().includes("'"+panel+"'")));
-  ['overview','vol','recovery','mecon','mtwin','mexec','mcore'].forEach(p=>{const el=document.getElementById('p-m-'+p);if(el)el.style.display='none';});
+  ['overview','vol','recovery','mecon','mtwin'].forEach(p=>{const el=document.getElementById('p-m-'+p);if(el)el.style.display='none';});
   const el=document.getElementById('p-m-'+panel);
   if(el){el.style.display='block';}
   renderMinePanel(panel);
@@ -1110,21 +888,55 @@ function buildLog(w){
   },80);
 }
 /* ── EOR SCREENING ── */
-function renderEOR(){
-  const w=ACTIVE_WELLS[CW];
-  const best=Math.max(...ACTIVE_EORS.map(m=>m.upl*w.stoiip*m.peor));
-  document.getElementById('eor-bars').innerHTML=ACTIVE_EORS.map((m,i)=>{
-    const dn=Math.round(m.upl*w.stoiip*m.peor),pct=Math.round(dn/best*100),rank=i+1;
-    const rb=rank===1?'rb1':rank===2?'rb2':rank===3?'rb3':'rbn';
-    const cat=rank===1?'Best method':rank<=3?'Highly rec.':rank<=5?'Recommended':'Not rec.';
-    return `<div class="eor-r"><span class="rb ${rb}">#${rank}</span><span class="eor-n" style="color:${rank>5?'#AAA':'#2C2C2A'}">${m.n}</span><div class="eor-bw"><div class="eor-b" style="width:${pct}%;background:${m.col};opacity:${rank<=3?1:rank<=5?.7:.45};">${cat}</div></div><span class="eor-sc" style="color:${rank>5?'#AAA':m.col}">${(m.peor*100).toFixed(0)}%</span></div>`;
-  }).join('');
-  drawRadar();
-  const top=ACTIVE_EORS[0],dn=Math.round(top.upl*w.stoiip*top.peor/1000);
-  document.getElementById('eor-verdict').innerHTML=`<div class="verdict v-pu"><strong>HyperSenseIQ — ${top.n} EOR · Rank #1 · Best method for ${w.id}</strong><br>P_EOR: <span class="vpu">${(top.peor*100).toFixed(0)}%</span> · ΔN_eff: <span class="vpu">${dn} Kbbl</span> · CAPEX: <span class="vpu">₹${Math.round(top.capex*83.5)} Lakhs</span> · Deploy: <span class="vpu">2 months</span><div class="sbar-w"><div class="sbar" style="width:${(top.peor*100).toFixed(0)}%;background:#AB47BC;"></div></div></div>`;
+function calcWellEOR(w, eors){
+  // Adjust P_EOR per well based on key reservoir parameters
+  return eors.map(m=>{
+    let adj = m.peor;
+    const phi=w.phi||0.18, sw=w.sw||0.25, perm=w.perm||60, api=w.api||35, wc=w.wc||20;
+    if(m.n==='UST'){
+      // UST scores higher for tight rock (low perm), capillary-trapped oil (low phi, high Sw)
+      adj = Math.min(0.96, m.peor + (perm<30?0.08:perm<60?0.04:0) + (phi<0.15?0.05:0) - (wc>60?0.08:0));
+    } else if(m.n==='ASP'){
+      // ASP scores higher for sandstone, moderate perm, lower sw
+      adj = Math.min(0.95, m.peor + (perm>50&&perm<150?0.05:0) + (sw<0.30?0.04:0) - (wc>50?0.06:0));
+    } else if(m.n==='Polymer'||m.n==='POLY'){
+      // Polymer: penalised by high temp proxy (depth), high wc
+      adj = Math.min(0.90, m.peor + (perm>30?0.03:0) - (wc>50?0.05:0) - (w.dep>2000?0.04:0));
+    } else if(m.n==='CO₂ Misc.'||m.n==='CO2'){
+      // CO2: favours high API, deep reservoir
+      adj = Math.min(0.88, m.peor + (api>35?0.04:0) + (w.dep>1800?0.03:0) - (wc>60?0.07:0));
+    } else if(m.n==='Surfactant'||m.n==='SURF'){
+      adj = Math.min(0.86, m.peor - (perm<20?0.05:0) - (wc>50?0.04:0));
+    } else if(m.n==='Thermal'||m.n==='THM'){
+      // Thermal: only good for heavy oil, shallow
+      adj = Math.min(0.80, m.peor - (api>30?0.12:0) - (w.dep>1500?0.08:0));
+    } else if(m.n==='Microbial'||m.n==='MEOR'){
+      adj = Math.min(0.65, m.peor - (wc>60?0.05:0));
+    } else if(m.n==='WAG'){
+      adj = Math.min(0.82, m.peor + (perm>60?0.04:0));
+    }
+    return {...m, peor_adj: Math.max(0.20, adj)};
+  }).sort((a,b)=>b.peor_adj-a.peor_adj);
 }
 
-function drawRadar(){
+function renderEOR(){
+  const w=ACTIVE_WELLS[CW];
+  const ranked=calcWellEOR(w, ACTIVE_EORS);
+  const best=Math.max(...ranked.map(m=>m.upl*w.stoiip*m.peor_adj));
+  document.getElementById('eor-bars').innerHTML=ranked.map((m,i)=>{
+    const dn=Math.round(m.upl*w.stoiip*m.peor_adj),pct=Math.round(dn/best*100),rank=i+1;
+    const rb=rank===1?'rb1':rank===2?'rb2':rank===3?'rb3':'rbn';
+    const cat=rank===1?'Best method':rank<=3?'Highly rec.':rank<=5?'Recommended':'Not rec.';
+    return `<div class="eor-r"><span class="rb ${rb}">#${rank}</span><span class="eor-n" style="color:${rank>5?'#AAA':'#2C2C2A'}">${m.n}</span><div class="eor-bw"><div class="eor-b" style="width:${pct}%;background:${m.col};opacity:${rank<=3?1:rank<=5?.7:.45};">${cat}</div></div><span class="eor-sc" style="color:${rank>5?'#AAA':m.col}">${(m.peor_adj*100).toFixed(0)}%</span></div>`;
+  }).join('');
+  drawRadarForWell(ranked, w);
+  const top=ranked[0],dn=Math.round(top.upl*w.stoiip*top.peor_adj/1000);
+  document.getElementById('eor-verdict').innerHTML=`<div class="verdict v-pu"><strong>HyperSenseIQ — ${top.n} EOR · Rank #1 · Best method for ${w.id}</strong><br>P_EOR: <span class="vpu">${(top.peor_adj*100).toFixed(0)}%</span> · ΔN_eff: <span class="vpu">${dn} Kbbl</span> · CAPEX: <span class="vpu">₹${Math.round(top.capex*83.5)} Lakhs</span> · Deploy: <span class="vpu">2 months</span><div class="sbar-w"><div class="sbar" style="width:${(top.peor_adj*100).toFixed(0)}%;background:#AB47BC;"></div></div></div>`;
+}
+
+function drawRadar(){ drawRadarForWell(calcWellEOR(ACTIVE_WELLS[CW],ACTIVE_EORS),ACTIVE_WELLS[CW]); }
+
+function drawRadarForWell(ranked, w){
   const c=document.getElementById('radar-c');
   const ctx=c.getContext('2d'),W=c.width,H=c.height,cx=W/2,cy=H/2+5,R=Math.min(W,H)*.32;
   ctx.clearRect(0,0,W,H);
@@ -1140,7 +952,10 @@ function drawRadar(){
     ctx.fillStyle='#5F5E5A';ctx.font='9px system-ui';ctx.textAlign='center';ctx.textBaseline='middle';
     ctx.fillText(doms[i],cx+Math.cos(a)*(R+17),cy+Math.sin(a)*(R+17));
   });
-  const m=ACTIVE_EORS[0],scores=doms.map(d=>ACTIVE_DOM[d][0]);
+  // Use top-ranked method's domain scores, scaled by its peor_adj vs base peor
+  const m=ranked[0];
+  const scale=m.peor_adj/m.peor;
+  const scores=doms.map(d=>Math.min(1,(ACTIVE_DOM[d][0]||0.5)*scale));
   ctx.beginPath();angles.forEach((a,i)=>{const x=cx+Math.cos(a)*R*scores[i],y=cy+Math.sin(a)*R*scores[i];i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
   ctx.closePath();ctx.fillStyle=m.col+'25';ctx.fill();ctx.strokeStyle=m.col;ctx.lineWidth=2;ctx.stroke();
   angles.forEach((a,i)=>{ctx.beginPath();ctx.arc(cx+Math.cos(a)*R*scores[i],cy+Math.sin(a)*R*scores[i],3,0,Math.PI*2);ctx.fillStyle=m.col;ctx.fill();});
@@ -1246,17 +1061,6 @@ function drawCF(di,op,dr,capex,ramp){
 function specWellChange(){specWI=parseInt(document.getElementById('spec-well-sel').value);specPI=0;renderSpectral();}
 
 function renderSpectral(){
-  // Rebuild dropdown from active wells
-  const sel = document.getElementById('spec-well-sel');
-  if (sel) {
-    const currentVal = parseInt(sel.value) || 0;
-    sel.innerHTML = ACTIVE_WELLS.map((w, i) =>
-      `<option value="${i}" ${i === specWI ? 'selected' : ''}>${w.id} · ${w.depth}</option>`
-    ).join('');
-    // Keep specWI in bounds for new dataset
-    if (specWI >= ACTIVE_WELLS.length) specWI = 0;
-    sel.value = specWI;
-  }
   const plugs=ACTIVE_PLUGS[specWI]||[];
   document.getElementById('plug-count').textContent=plugs.length;
   buildFlagpole(plugs);buildGallery(plugs);updateSpecScores(plugs);
@@ -1442,7 +1246,7 @@ function renderExec(){
     const npv=(w.oip*.12*.35*op/1e7*3.5-.9*83.5/100).toFixed(1),nvCls=parseFloat(npv)>0?'vg':'vr';
     return `<div class="port-row ${rowCls}"><div class="pc"><div class="pc-l">Well</div><span style="font-weight:500;font-size:11px;">${w.id}</span></div><div class="pc"><span class="pb ${stCls}">${w.status}</span></div><div class="pc"><div class="pc-l">Rate</div><span class="${rCls}" style="font-size:11px;font-weight:500;">${r} bbl/d</span></div><div class="pc"><div class="pc-l">WC</div><span class="${w.wc>60?'vr':w.wc>35?'va':'vg'}" style="font-size:11px;font-weight:500;">${w.wc}%</span></div><div class="pc"><div class="pc-l">OIP</div><span style="font-size:11px;">${w.oip} MMbbl</span></div><div class="pc"><div class="pc-l">Best EOR</div><span class="vpu" style="font-size:11px;font-weight:500;">UST</span></div><div class="pc"><div class="pc-l">NPV est.</div><span class="${nvCls}" style="font-size:11px;font-weight:500;">${parseFloat(npv)>0?'+':''}₹${npv} Cr</span></div></div>`;
   }).join('');
-  document.getElementById('exec-v').innerHTML=DATASET==='cb'?`<div class="verdict v-g"><strong>HyperSenseIQ — Cambay Basin · 5-well UST candidate portfolio</strong><br>Total OIP: <span class="vg">${tOIP.toFixed(1)} MMbbl</span> · Avg WC: <span class="va">${avgWC}%</span><br><br>All 5 wells rank <span class="vpu">UST EOR</span> as optimal intervention — P_EOR <strong>0.879</strong> · Tight Kalol sandstone, medium-gravity crude, capillary-trapped oil: ideal UST profile.<br><br>Priority ranking (per UST Study): CB-MHJ-05 (K-IX+X) → CB-SDR-01 (K-IX+X, zero WC) → CB-SDR-05 (K-VIII+IX) → CB-SDR-06 (viscous K-IX) → CB-AKL-18 (MBS)<br><br>Portfolio NPV: <span class="vg">+₹${tNPV.toFixed(0)} Cr</span> at ${INR(op)}/bbl<div class="sbar-w" style="margin-top:7px;"><div class="sbar" style="width:87%;background:var(--g-mid);"></div></div><div style="font-size:10px;color:var(--g-dark);margin-top:3px;">Techno-Economic Score: 87.9% — Validated vs SPE/Energies/SciReports</div><div style="font-size:9px;color:#5A7A94;margin-top:5px;font-style:italic;">Well data sourced from ONGC Cambay Basin UST candidate study · Kalol Sandstone K-VIII/IX/X · Representative reservoir parameters · Reference dataset</div></div>`:`<div class="verdict v-g"><strong>HyperSenseIQ — Mumbai High North · 5-well portfolio</strong><br>Total OIP: <span class="vg">${tOIP.toFixed(1)} MMbbl</span> · Avg WC: <span class="va">${avgWC}%</span><br><br>All 5 wells rank <span class="vpu">UST EOR</span> as optimal first-stage intervention — 2-month deployment, lowest CAPEX, zero chemical risk.<br><br>Portfolio NPV: <span class="vg">+₹${tNPV.toFixed(0)} Cr</span> at ${INR(op)}/bbl · Payback: <span class="vg">&lt; 2 years per well</span><div class="sbar-w" style="margin-top:7px;"><div class="sbar" style="width:82%;background:var(--g-mid);"></div></div><div style="font-size:10px;color:var(--g-dark);margin-top:3px;">Techno-Economic Score: 82% — High Value</div></div>`;
+  document.getElementById('exec-v').innerHTML=DATASET==='cb'?`<div class="verdict v-g"><strong>HyperSenseIQ — Cambay Basin Kalol Sandstone · 5-well synthetic portfolio</strong><br>Total OIP: <span class="vg">${tOIP.toFixed(1)} MMbbl</span> · Avg WC: <span class="va">${avgWC}%</span><br><br>All 5 wells rank <span class="vpu">UST EOR</span> as optimal intervention — P_EOR <strong>0.879</strong> · Tight Kalol sandstone, medium-gravity crude, capillary-trapped oil: ideal UST profile.<br><br>Priority ranking: CB-01 (Mahelaj-type) → CB-02 (clean oil) → CB-03 → CB-04 (viscous) → CB-05<br><br>Portfolio NPV: <span class="vg">+₹${tNPV.toFixed(0)} Cr</span> at ${INR(op)}/bbl<div class="sbar-w" style="margin-top:7px;"><div class="sbar" style="width:87%;background:var(--g-mid);"></div></div><div style="font-size:10px;color:var(--g-dark);margin-top:3px;">Techno-Economic Score: 87.9% — Validated vs SPE/Energies/SciReports</div><div style="font-size:9px;color:#5A7A94;margin-top:5px;font-style:italic;">Synthetic dataset · Representative Cambay Basin Kalol sandstone parameters · Not derived from any specific licensed block</div></div>`:`<div class="verdict v-g"><strong>HyperSenseIQ — Mumbai High North · 5-well portfolio</strong><br>Total OIP: <span class="vg">${tOIP.toFixed(1)} MMbbl</span> · Avg WC: <span class="va">${avgWC}%</span><br><br>All 5 wells rank <span class="vpu">UST EOR</span> as optimal first-stage intervention — 2-month deployment, lowest CAPEX, zero chemical risk.<br><br>Portfolio NPV: <span class="vg">+₹${tNPV.toFixed(0)} Cr</span> at ${INR(op)}/bbl · Payback: <span class="vg">&lt; 2 years per well</span><div class="sbar-w" style="margin-top:7px;"><div class="sbar" style="width:82%;background:var(--g-mid);"></div></div><div style="font-size:10px;color:var(--g-dark);margin-top:3px;">Techno-Economic Score: 82% — High Value</div></div>`;
 }
 
 /* ── MINING MODULE ── */
@@ -1456,25 +1260,17 @@ function renderMinePanel(panel){
   document.getElementById('m-title').textContent=`HyperSenseIQ Mining — ${m.name}`;
   document.getElementById('m-sub').textContent=`${m.com} · ${m.state} · ${m.op}${m.restricted?' · RESTRICTED':''}`;
   const navIds=['overview','vol','recovery','mecon','mtwin'];
-  ['mine-nav-btns','mine-nav2','mine-nav3','mine-nav4','mine-nav5','mine-nav6'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=buildMineNav(navIds);});
+  ['mine-nav-btns','mine-nav2','mine-nav3','mine-nav4','mine-nav5'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=buildMineNav(navIds);});
   if(panel==='overview')renderMineOverview(m);
   else if(panel==='vol')renderMineVol(m);
   else if(panel==='recovery')renderMineRec(m);
   else if(panel==='mecon'){renderMineEcon(m);updateMineEcon();}
   else if(panel==='mtwin')renderMineTwin(m);
-  else if(panel==='mexec')renderMineExec();
-  else if(panel==='mcore')renderCoreSampleBtns();
 }
 
 function renderMineOverview(m){
   const top=m.methods[0];
-  const safePrice = parseFloat(m.price.base)||10900;
-  const roy = parseFloat(m.roy)||0;
-  const dmf = parseFloat(m.dmf)||0;
-  const pmk = parseFloat(m.pmk)||0;
-  const capex = parseFloat(m.capex)||100;
-  const npvRaw = (m.recov*safePrice*(1-roy-dmf-pmk)*0.85-parseFloat(m.opex||85)*40-capex)/100;
-  const npvEst = (isNaN(npvRaw)||!isFinite(npvRaw)) ? '0' : npvRaw.toFixed(0);
+  const npvEst=((m.recov*m.price.base*(1-m.roy-m.dmf-m.pmk)*0.85-top.opex*40-top.capex)/100).toFixed(0);
   document.getElementById('m-kpis').innerHTML=`
     <div class="kpi g"><div class="kpi-l">In-situ resource</div><div class="kpi-v">${m.insitu.toFixed(0)}<span style="font-size:12px;font-weight:400"> ${m.unit}</span></div><div class="kpi-s">${m.com} · ${m.grade}% grade</div></div>
     <div class="kpi n"><div class="kpi-l">Recoverable reserve</div><div class="kpi-v">${m.recov.toFixed(1)}<span style="font-size:12px;font-weight:400"> ${m.unit}</span></div><div class="kpi-s">RF ${(m.frf*100).toFixed(0)}% combined</div></div>
@@ -1526,134 +1322,18 @@ function renderMineRec(m){
   document.getElementById('m-verdict').innerHTML=`<div class="verdict ${top.sc>.80?'v-g':'v-a'}"><strong>HyperSenseIQ mining — ${m.name} · ${m.com}</strong><br>${top.n} is the optimal method (score: ${(top.sc*100).toFixed(0)}%). Recoverable reserve: ${m.recov.toFixed(1)} ${m.unit} at ${(top.rec*100).toFixed(0)}% recovery. CAPEX ₹${m.capex} Cr. Mine life ~${Math.round(m.recov/2.5)} years.<div class="sbar-w" style="margin-top:6px;"><div class="sbar" style="width:${(top.sc*100).toFixed(0)}%;background:var(--g-mid);"></div></div></div>`;
 }
 
-function renderMineEcon(m){
-  document.getElementById('m-price-disp').textContent=`${m.pu} — Base: ${INR(m.price.base)}`;
-  document.getElementById('m-disc-v').textContent='12%';
-  document.getElementById('m-disc-sl').value=12;
-}
+function renderMineEcon(m){}
 function updateMineEcon(){
   const m=MINES[CM];if(!m)return;
   const dr=parseFloat(document.getElementById('m-disc-sl').value)/100;
   document.getElementById('m-disc-v').textContent=Math.round(dr*100)+'%';
-  document.getElementById('m-price-disp').textContent=`${m.pu} — Base: ${INR(m.price.base)}`;
-
-  // Mine life & annual production
-  const mineLife=Math.max(5,Math.round(m.recov/(m.insitu*0.04)));
-  const annProd=m.recov/mineLife;
-
-  // NPV calculator — proper MMDR deductions
-  function calcNPV(price){
-    let npv=-m.capex;
-    for(let yr=1;yr<=mineLife;yr++){
-      const rev=annProd*price;
-      const roy=rev*m.roy, dmf=rev*(m.dmf||0), pmk=rev*(m.pmk||0);
-      const gst=(rev-roy-dmf-pmk)*(m.gst||0);
-      const ebitda=rev-roy-dmf-pmk-gst-m.opex;
-      const tax=Math.max(0,ebitda*0.2517);
-      npv+=(ebitda-tax)/Math.pow(1+dr,yr);
-    }
-    return npv;
-  }
-  const nvL=calcNPV(m.price.lo),nvB=calcNPV(m.price.base),nvH=calcNPV(m.price.hi);
-  const vCls=v=>v>0?'vg':v>-50?'va':'vr';
-
-  // Scenario cards
-  document.getElementById('m-scens').innerHTML=
-    `<div class="scen sc-l"><div class="sc-lbl">Low — ${INR(m.price.lo)}</div><div class="sc-val ${vCls(nvL)}">${nvL>0?'+':''}₹${nvL.toFixed(0)} Cr</div><div class="sc-sub">NPV (${mineLife}yr)</div></div>`+
-    `<div class="scen sc-b"><div class="sc-lbl">Base — ${INR(m.price.base)}</div><div class="sc-val ${vCls(nvB)}">${nvB>0?'+':''}₹${nvB.toFixed(0)} Cr</div><div class="sc-sub">NPV (${mineLife}yr)</div></div>`+
-    `<div class="scen sc-h"><div class="sc-lbl">High — ${INR(m.price.hi)}</div><div class="sc-val vg">+₹${nvH.toFixed(0)} Cr</div><div class="sc-sub">NPV (${mineLife}yr)</div></div>`;
-
-  // Full MMDR fiscal waterfall
-  const p=m.price.base, annRev=annProd*p;
-  const royAmt=annRev*m.roy, dmfAmt=annRev*(m.dmf||0), pmkAmt=annRev*(m.pmk||0);
-  const gstAmt=(annRev-royAmt-dmfAmt-pmkAmt)*(m.gst||0);
-  const netRev=annRev-royAmt-dmfAmt-pmkAmt-gstAmt;
-  const ebitda=netRev-m.opex, taxAmt=Math.max(0,ebitda*0.2517), pat=ebitda-taxAmt;
-
-  document.getElementById('m-fiscal').innerHTML=[
-    ['Mine / Operator',`${m.id} · ${m.op}`,'vn'],
-    ['Annual production',`${annProd.toFixed(2)} ${m.unit}/yr`,'vn'],
-    ['Annual gross revenue',`${INR(annRev)} Cr/yr`,'vg'],
-    m.roy>0?[`State royalty — MMDR ${(m.roy*100).toFixed(0)}%`,`− ${INR(royAmt)} Cr/yr`,'vr']:['Royalty','Exempt (Atomic Energy Act)','va'],
-    ...(m.dmf>0?[[`DMF contribution ${(m.dmf*100).toFixed(0)}%`,`− ${INR(dmfAmt)} Cr/yr`,'vr']]:[]),
-    ...(m.pmk>0?[[`NMET/PMK ${(m.pmk*100).toFixed(1)}%`,`− ${INR(pmkAmt)} Cr/yr`,'vr']]:[]),
-    ...(m.gst>0?[[`GST ${(m.gst*100).toFixed(0)}%`,`− ${INR(gstAmt)} Cr/yr`,'vr']]:[]),
-    ['Net operator revenue',`${INR(netRev)} Cr/yr`,'vg'],
-    ['Annual OPEX',`− ₹${m.opex} Cr/yr`,'vr'],
-    ['EBITDA',`${INR(ebitda)} Cr/yr`,ebitda>0?'vg':'vr'],
-    ['Corporate tax (25.17%)',`− ${INR(taxAmt)} Cr/yr`,'vr'],
-    ['PAT (annual)',`${INR(pat)} Cr/yr`,pat>0?'vg':'vr'],
-    ['Project CAPEX',`₹${m.capex} Cr`,'vr'],
-    ['Mine life (est.)',`${mineLife} years`,'vn'],
-    [`NPV @ ${Math.round(dr*100)}% (base)`,`${nvB>0?'+':''}₹${nvB.toFixed(0)} Cr`,vCls(nvB)],
-  ].map(([l,v,c])=>`<div class="fr ${c==='vr'?'fr-neg':c==='vg'?'fr-hl':''}"><span class="fl">${l}</span><span class="fv ${c}">${v}</span></div>`).join('');
-
-  // ── CASHFLOW CANVAS ──
-  setTimeout(()=>{
-    const canvas=document.getElementById('m-cf-c');if(!canvas)return;
-    const par=canvas.parentElement;
-    canvas.width=par.clientWidth||400; canvas.height=par.clientHeight||175;
-    const ctx=canvas.getContext('2d');
-    const W=canvas.width,H=canvas.height,pad={t:14,r:16,b:32,l:52};
-    const cW=W-pad.l-pad.r,cH=H-pad.t-pad.b;
-    ctx.clearRect(0,0,W,H);
-
-    // Build annual FCF and cumulative NPV series
-    const cfs=[-m.capex]; let cumNPV=-m.capex; const cumCFs=[-m.capex];
-    for(let yr=1;yr<=mineLife;yr++){
-      const rev=annProd*m.price.base;
-      const roy=rev*m.roy,dmf=rev*(m.dmf||0),pmk=rev*(m.pmk||0);
-      const gst=(rev-roy-dmf-pmk)*(m.gst||0);
-      const ebitda=rev-roy-dmf-pmk-gst-m.opex;
-      const fcf=ebitda-Math.max(0,ebitda*0.2517);
-      cfs.push(fcf); cumNPV+=fcf/Math.pow(1+dr,yr); cumCFs.push(cumNPV);
-    }
-    const allV=[...cfs,...cumCFs];
-    const maxV=Math.max(...allV)*1.15,minV=Math.min(...allV,0)*1.15,range=maxV-minV;
-    const toY=v=>pad.t+cH-((v-minV)/range)*cH;
-    const toX=i=>pad.l+(i/mineLife)*cW;
-    const barW=Math.max(5,(cW/(mineLife+1))*0.5);
-
-    // Zero line
-    ctx.strokeStyle='#CCC';ctx.lineWidth=0.5;
-    ctx.beginPath();ctx.moveTo(pad.l,toY(0));ctx.lineTo(pad.l+cW,toY(0));ctx.stroke();
-
-    // Annual FCF bars
-    cfs.forEach((v,i)=>{
-      const x=toX(i)-barW/2,yT=toY(Math.max(v,0)),yB=toY(Math.min(v,0));
-      ctx.fillStyle=v>=0?'#1D9E75':'#E24B4A';
-      ctx.fillRect(x,yT,barW,Math.max(2,Math.abs(yB-yT)));
-    });
-
-    // Cumulative NPV line
-    ctx.beginPath();ctx.strokeStyle='#AB47BC';ctx.lineWidth=2;
-    cumCFs.forEach((v,i)=>i===0?ctx.moveTo(toX(i),toY(v)):ctx.lineTo(toX(i),toY(v)));
-    ctx.stroke();
-
-    // Payback year marker
-    const pbYr=cumCFs.findIndex(v=>v>=0);
-    if(pbYr>0){
-      ctx.strokeStyle='rgba(239,159,39,0.6)';ctx.lineWidth=1;ctx.setLineDash([3,3]);
-      ctx.beginPath();ctx.moveTo(toX(pbYr),pad.t);ctx.lineTo(toX(pbYr),pad.t+cH);ctx.stroke();
-      ctx.setLineDash([]);
-      ctx.fillStyle='#EF9F27';ctx.font='8px system-ui';ctx.textAlign='center';
-      ctx.fillText('Payback',toX(pbYr),pad.t+9);
-    }
-
-    // Axes labels
-    ctx.fillStyle='#AAA';ctx.font='9px system-ui';ctx.textAlign='center';
-    for(let i=0;i<=mineLife;i+=Math.ceil(mineLife/5)) ctx.fillText('Yr'+i,toX(i),H-6);
-    ctx.textAlign='right';
-    [0,Math.round(maxV*0.5),Math.round(maxV)].forEach(v=>ctx.fillText((v>=0?'+':'')+v.toFixed(0),pad.l-4,toY(v)+3));
-
-    // Legend
-    ctx.font='9px system-ui';ctx.textAlign='left';
-    ctx.fillStyle='#1D9E75';ctx.fillRect(pad.l,pad.t,10,8);
-    ctx.fillStyle='#666';ctx.fillText('Annual FCF (₹Cr)',pad.l+14,pad.t+7);
-    ctx.strokeStyle='#AB47BC';ctx.lineWidth=2;ctx.setLineDash([]);
-    ctx.beginPath();ctx.moveTo(pad.l+130,pad.t+4);ctx.lineTo(pad.l+144,pad.t+4);ctx.stroke();
-    ctx.fillStyle='#666';ctx.fillText('Cumulative NPV',pad.l+148,pad.t+7);
-  },60);
+  document.getElementById('m-price-disp').textContent=`${m.pu}: ${INR(m.price.base)}`;
+  const top=m.methods[0],annO=m.recov*1e6/Math.max(1,Math.round(m.recov/2.5));
+  const npvOf=price=>{let n=-top.capex;const ramp=[.5,.8,1,1,.9,.8,.7];for(let yr=1;yr<=7;yr++){const rev=annO*price/1e10;const net=rev*(1-m.roy-m.dmf-m.pmk)*(1-m.gst)*.85-m.opex;n+=net/Math.pow(1+dr,yr);}return n;};
+  const [nvL,nvB,nvH]=[m.price.lo,m.price.base,m.price.hi].map(npvOf);
+  document.getElementById('m-scens').innerHTML=`<div class="scen sc-l"><div class="sc-lbl">Low — ${INR(m.price.lo)}</div><div class="sc-val ${vCls(nvL)}">${nvL>0?'+':''}₹${nvL.toFixed(0)} Cr</div><div class="sc-sub">NPV (7yr)</div></div><div class="scen sc-b"><div class="sc-lbl">Base — ${INR(m.price.base)}</div><div class="sc-val ${vCls(nvB)}">${nvB>0?'+':''}₹${nvB.toFixed(0)} Cr</div><div class="sc-sub">NPV (7yr)</div></div><div class="scen sc-h"><div class="sc-lbl">High — ${INR(m.price.hi)}</div><div class="sc-val vb">+₹${nvH.toFixed(0)} Cr</div><div class="sc-sub">NPV (7yr)</div></div>`;
+  const annRev=annO*m.price.base/1e10,royAmt=annRev*m.roy,dmfAmt=annRev*m.dmf,netRev=(annRev-royAmt-dmfAmt)*(1-m.gst)*.85;
+  document.getElementById('m-fiscal').innerHTML=`<div class="fr"><span class="fl">Mine / operator</span><span class="fv">${m.id} · ${m.op}</span></div><div class="fr"><span class="fl">Annual gross revenue</span><span class="fv vg">${INR(annRev)} Cr/yr</span></div>${m.roy>0?`<div class="fr fr-neg"><span class="fl">State royalty (MMDR) ${(m.roy*100).toFixed(0)}%</span><span class="fv vr">− ${INR(royAmt)} Cr/yr</span></div>`:'<div class="fr"><span class="fl">Royalty</span><span class="fv va">Exempt (Atomic Energy)</span></div>'}${m.dmf>0?`<div class="fr fr-neg"><span class="fl">DMF fund ${(m.dmf*100).toFixed(0)}%</span><span class="fv vr">− ${INR(dmfAmt)} Cr/yr</span></div>`:''}<div class="fr fr-hl"><span class="fl" style="font-weight:500;">Net operator revenue</span><span class="fv vg" style="font-size:13px;">${INR(netRev)} Cr/yr</span></div><div class="fr"><span class="fl">Project CAPEX</span><span class="fv vr">₹${top.capex} Cr</span></div><div class="fr ${nvB>0?'fr-hl':'fr-neg'}"><span class="fl" style="font-weight:500;">NPV @ ${Math.round(dr*100)}%</span><span class="fv ${vCls(nvB)}" style="font-size:13px;">${nvB>0?'+':''}₹${nvB.toFixed(0)} Cr</span></div><div class="fr"><span class="fl">Mine life</span><span class="fv va">${Math.round(m.recov/2.5)} years</span></div>`;
 }
 
 function renderMineTwin(m){
@@ -1664,453 +1344,29 @@ function renderMineTwin(m){
   const repos=R?[['BARC','r','RESTRICTED'],['AERB','r','RESTRICTED'],['DAE','g','ACTIVE'],['MoM','r','NO ACCESS'],['NIC DLT','r','CLASSIFIED'],['IBM','r','RESTRICTED'],['KABIL','r','NO ACCESS'],['World Bank','r','PROHIBITED']]:[['IBM','g','ACTIVE'],['GSI','g','ACTIVE'],['MoM','g','ACTIVE'],['NIC DLT','g','ACTIVE'],['KABIL','g','ACTIVE'],['World Bank','a','FUTURE'],['IEA','a','FUTURE'],['IOGP','p','PLANNED']];
   document.getElementById('m-tw-repos').innerHTML=`<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:7px;">${repos.map(([n,c,s])=>`<div style="background:var(--${c}-bg);border:0.5px solid;border-color:var(--${c}-mid);border-radius:5px;padding:7px 9px;"><div style="font-size:10px;font-weight:500;color:var(--${c}-dark);margin-bottom:2px;">${s}</div><div style="font-size:10px;color:var(--gray);">${n}</div></div>`).join('')}</div>`;
 }
-/* ── MINING EXECUTIVE VIEW ── */
-function renderMineExec(){
-  const dr=0.12;
-  const mineData=MINES.map(m=>{
-    const mineLife=Math.max(5,Math.round(m.recov/(m.insitu*0.04)));
-    const annProd=m.recov/mineLife;
-    let npv=-m.capex;
-    for(let yr=1;yr<=mineLife;yr++){
-      const rev=annProd*m.price.base,roy=rev*m.roy,dmf=rev*(m.dmf||0),pmk=rev*(m.pmk||0);
-      const gst=(rev-roy-dmf-pmk)*(m.gst||0),ebitda=rev-roy-dmf-pmk-gst-m.opex;
-      npv+=(ebitda-Math.max(0,ebitda*0.2517))/Math.pow(1+dr,yr);
-    }
-    return {...m,npv,mineLife,annProd,annRev:annProd*m.price.base};
-  });
-
-  const ranked=[...mineData].sort((a,b)=>b.npv-a.npv);
-  const totalInsitu=mineData.reduce((s,m)=>s+m.insitu,0);
-  const totalRecov=mineData.reduce((s,m)=>s+m.recov,0);
-  const totalNPV=mineData.reduce((s,m)=>s+m.npv,0);
-  const totalCapex=mineData.reduce((s,m)=>s+m.capex,0);
-  const topMine=ranked[0];
-  const criticalCount=mineData.filter(m=>m.restricted).length;
-
-  // KPIs
-  document.getElementById('m-exec-kpis').innerHTML=
-    `<div class="kpi g"><div class="kpi-l">Portfolio NPV</div><div class="kpi-v">${totalNPV>0?'+':''}₹${totalNPV.toFixed(0)}<span style="font-size:12px"> Cr</span></div><div class="kpi-s">6 mines · 12% discount</div></div>`+
-    `<div class="kpi n"><div class="kpi-l">Total in-situ resource</div><div class="kpi-v">${totalInsitu.toFixed(0)}<span style="font-size:12px"> Mt</span></div><div class="kpi-s">Across all commodities</div></div>`+
-    `<div class="kpi g"><div class="kpi-l">Total recoverable</div><div class="kpi-v">${totalRecov.toFixed(0)}<span style="font-size:12px"> Mt</span></div><div class="kpi-s">Post mining & process RF</div></div>`+
-    `<div class="kpi a"><div class="kpi-l">Total CAPEX required</div><div class="kpi-v">₹${totalCapex}<span style="font-size:12px"> Cr</span></div><div class="kpi-s">All 6 projects combined</div></div>`+
-    `<div class="kpi p"><div class="kpi-l">Top ranked mine</div><div class="kpi-v" style="font-size:14px;">${topMine.name.split(' ')[0]}</div><div class="kpi-s">NPV +₹${topMine.npv.toFixed(0)} Cr</div></div>`+
-    `<div class="kpi r"><div class="kpi-l">Strategic / restricted</div><div class="kpi-v">${criticalCount}<span style="font-size:12px"> mines</span></div><div class="kpi-s">DAE / AEA regulated</div></div>`;
-
-  // Portfolio ranking table
-  const rankColors=['#E8D87A','#9FE1CB','#AB47BC','#EF9F27','#5DCAA5','#E24B4A'];
-  document.getElementById('m-exec-rank').innerHTML=
-    `<table style="width:100%;border-collapse:collapse;font-size:10px;"><thead><tr style="border-bottom:1px solid var(--border);">
-    <th style="padding:4px;text-align:left;">#</th><th style="padding:4px;text-align:left;">Mine</th>
-    <th style="padding:4px;text-align:left;">Commodity</th><th style="padding:4px;">Grade</th>
-    <th style="padding:4px;text-align:left;">Best method</th><th style="padding:4px;text-align:right;">NPV ₹Cr</th>
-    <th style="padding:4px;text-align:center;">Life</th></tr></thead><tbody>`+
-    ranked.map((m,i)=>{
-      const best=m.methods[0];
-      const npvCls=m.npv>500?'color:#1D9E75':m.npv>0?'color:#EF9F27':'color:#E24B4A';
-      const lock=m.restricted?' 🔒':'';
-      return `<tr style="border-bottom:0.5px solid var(--border);${i%2===0?'background:rgba(255,255,255,.02)':''}">
-        <td style="padding:5px 4px;"><span style="color:${rankColors[i]};font-weight:600;">#${i+1}</span></td>
-        <td style="padding:5px 4px;">${m.name}${lock}<br><span style="color:#888;font-size:9px;">${m.state}</span></td>
-        <td style="padding:5px 4px;">${m.com}</td>
-        <td style="padding:5px 4px;text-align:center;">${m.grade}%</td>
-        <td style="padding:5px 4px;font-size:9px;">${best.n}</td>
-        <td style="padding:5px 4px;text-align:right;font-weight:600;${npvCls}">${m.npv>0?'+':''}₹${m.npv.toFixed(0)}</td>
-        <td style="padding:5px 4px;text-align:center;">${m.mineLife}yr</td>
-      </tr>`;
-    }).join('')+`</tbody></table>`;
-
-  // Strategic minerals
-  const critMinerals=[
-    {name:'Kerala Monazite',com:'REE / Thorium',act:'Atomic Energy Act 1962',body:'BARC / DAE / AERB',status:'Restricted',col:'vr'},
-    {name:'Jaduguda Uranium',com:'U₃O₈',act:'Atomic Energy Act 1962',body:'UCIL / DAE / NCA',status:'Classified',col:'vr'},
-    {name:'Malanjkhand Cu',com:'Copper',act:'Critical Minerals List 2023',body:'HCL / KABIL',status:'Strategic',col:'va'},
-    {name:'Hutti Gold',com:'Au',act:'FEMA / RBI Export controls',body:'HGML / RBI liaison',status:'Monitored',col:'va'},
-  ];
-  document.getElementById('m-exec-strat').innerHTML=
-    critMinerals.map(c=>`
-      <div style="border:0.5px solid var(--border);border-radius:5px;padding:8px 10px;margin-bottom:7px;
-           background:${c.col==='vr'?'rgba(226,75,74,0.08)':'rgba(239,159,39,0.08)'};">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
-          <span style="font-size:11px;font-weight:500;color:${c.col==='vr'?'#E24B4A':'#EF9F27'};">${c.name}</span>
-          <span style="font-size:9px;padding:2px 6px;border-radius:3px;
-            background:${c.col==='vr'?'#E24B4A':'#EF9F27'};color:white;">${c.status}</span>
-        </div>
-        <div style="font-size:10px;color:var(--gray);">${c.com} · ${c.act}</div>
-        <div style="font-size:10px;color:var(--gray);margin-top:2px;">Oversight: ${c.body}</div>
-      </div>`).join('')+
-    `<div style="font-size:9px;color:#5A7A94;margin-top:6px;font-style:italic;">
-      Critical Minerals List 2023 · MoM · IBM · KABIL · National Critical Minerals Mission</div>`;
-
-  // Executive verdict
-  const top3=ranked.slice(0,3);
-  const totalScore=totalNPV>2000?88:totalNPV>500?74:58;
-  const vCls=totalNPV>0?'v-g':'v-a';
-  document.getElementById('m-exec-verdict').innerHTML=
-    `<div class="verdict ${vCls}">
-      <strong>HyperSenseIQ Mining Intelligence — 6-mine India portfolio · ${totalNPV>0?'Positive':'Marginal'} NPV</strong><br>
-      Total in-situ: <span class="vg">${totalInsitu.toFixed(0)} Mt</span> · Recoverable: <span class="vg">${totalRecov.toFixed(0)} Mt</span> · Portfolio NPV: <span class="vg">${totalNPV>0?'+':''}₹${totalNPV.toFixed(0)} Cr</span><br><br>
-      <strong>Priority investment sequence:</strong><br>
-      ${top3.map((m,i)=>`<span style="color:${rankColors[i]}">#${i+1}</span> ${m.name} (${m.com}) — NPV +₹${m.npv.toFixed(0)} Cr · Best: ${m.methods[0].n} · ${m.mineLife}yr life`).join('<br>')}
-      <br><br>
-      <span style="color:#E24B4A;font-size:10px;">⚠️ Kerala Monazite &amp; Jaduguda Uranium — Atomic Energy Act regulated. DAE/AERB clearance mandatory before any development.</span>
-      <div class="sbar-w" style="margin-top:8px;"><div class="sbar" style="width:${totalScore}%;background:var(--g-mid);"></div></div>
-      <div style="font-size:10px;color:var(--g-dark);margin-top:3px;">Portfolio Techno-Economic Score: ${totalScore}% · MMDR Act 2021 · IBM · Critical Minerals Mission 2023</div>
-    </div>`;
-}
-
-
-const OFFLINE_CORE = {
-  'JCF-01': {
-    id:'JCF-01', name:'Jharia Coalfield — Block A', loc:'Dhanbad, Jharkhand', com:'Bituminous Coal', op:'BCCL / CIL',
-    grade:45.2, den:1.35, insitu:2840, mrf:72, prf:88, thick:28, dep:95, age:32,
-    price:10900, roy:14, capex:420, opex:85,
-    assay:[
-      {from:80,to:95,grade:48.2,lith:'Bituminous coal — A grade',ash:18.4,moisture:6.2},
-      {from:95,to:108,grade:42.1,lith:'Banded coal with shale',ash:24.1,moisture:7.8},
-      {from:108,to:120,grade:38.4,lith:'Semi-soft coking coal',ash:28.6,moisture:9.1},
-    ],
-    note:'Gondwana Barakar Formation · Bord & pillar legacy working · Methane drainage required'
-  },
-  'BAI-01': {
-    id:'BAI-01', name:'Bailadila — Deposit 14', loc:'Dantewada, Chhattisgarh', com:'Iron Ore (Haematite)', op:'NMDC Ltd.',
-    grade:65.8, den:3.8, insitu:1200, mrf:82, prf:92, thick:45, dep:210, age:28,
-    price:9300, roy:15, capex:380, opex:72,
-    assay:[
-      {from:180,to:210,grade:67.4,lith:'Massive haematite ore',fe:67.4,sio2:2.1,al2o3:1.8},
-      {from:210,to:240,grade:64.2,lith:'Laminated haematite',fe:64.2,sio2:3.8,al2o3:2.4},
-      {from:240,to:265,grade:58.6,lith:'Goethitic ore — beneficiation needed',fe:58.6,sio2:6.2,al2o3:3.1},
-    ],
-    note:'Eastern Ghats Mobile Belt · Open pit bench mining · IBM registered Grade A ore'
-  },
-  'HTG-01': {
-    id:'HTG-01', name:'Hutti Gold — Level 9', loc:'Raichur, Karnataka', com:'Gold (Au) — Quartz Reef', op:'HGML',
-    grade:3.8, den:2.7, insitu:33.4, mrf:75, prf:90, thick:8, dep:680, age:45,
-    price:14500, roy:4, capex:620, opex:180,
-    assay:[
-      {from:650,to:662,grade:4.8,lith:'Auriferous quartz reef — pay shoot',au:4.8,ag:12.4,s:2.1},
-      {from:662,to:671,grade:3.2,lith:'Altered greenstone — disseminated Au',au:3.2,ag:8.6,s:1.4},
-      {from:671,to:685,grade:2.1,lith:'Footwall greenstone — low grade',au:2.1,ag:4.2,s:0.8},
-    ],
-    note:'Dharwar Craton · Sub-level stoping · RBI export liaison mandatory · Free-milling Au'
-  },
-  'MLJ-01': {
-    id:'MLJ-01', name:'Malanjkhand — Main Pit Extension', loc:'Balaghat, Madhya Pradesh', com:'Copper (Cu) — Porphyry', op:'HCL',
-    grade:0.92, den:2.9, insitu:1726, mrf:80, prf:88, thick:320, dep:420, age:38,
-    price:780, roy:4.8, capex:580, opex:95,
-    assay:[
-      {from:380,to:410,grade:1.14,lith:'Chalcopyrite-rich porphyry',cu:1.14,mo:0.012,au:0.08},
-      {from:410,to:445,grade:0.88,lith:'Disseminated chalcopyrite',cu:0.88,mo:0.008,au:0.04},
-      {from:445,to:465,grade:0.62,lith:'Low grade porphyry — SX-EW candidate',cu:0.62,mo:0.004,au:0.02},
-    ],
-    note:'Satpura Gondwana · Largest Cu deposit India · KABIL strategic reserve · Critical Minerals 2023'
-  },
-  'MON-01': {
-    id:'MON-01', name:'Chavara Beach Sands', loc:'Kollam, Kerala', com:'Monazite / REE — Beach Placer', op:'IREL (India)',
-    grade:8.5, den:4.8, insitu:714, mrf:68, prf:82, thick:4, dep:8, age:55,
-    price:3200, roy:12, capex:280, opex:65,
-    assay:[
-      {from:2,to:5,grade:9.8,lith:'Heavy mineral sand — high monazite',mono:9.8,ilm:28.4,zir:18.2},
-      {from:5,to:8,grade:8.1,lith:'Mixed placer horizon',mono:8.1,ilm:24.6,zir:16.8},
-      {from:8,to:12,grade:5.4,lith:'Low grade tail sand',mono:5.4,ilm:18.2,zir:12.4},
-    ],
-    note:'⚠️ RESTRICTED — Atomic Energy Act 1962 · Thorium content regulated · BARC/DAE clearance mandatory'
-  },
-  'JAD-01': {
-    id:'JAD-01', name:'Jaduguda — Deep Extension Zone', loc:'Singhbhum, Jharkhand', com:'Uranium (U₃O₈) — Precambrian', op:'UCIL / DAE',
-    grade:0.067, den:3.1, insitu:52.6, mrf:65, prf:85, thick:15, dep:850, age:62,
-    price:5800, roy:0, capex:920, opex:280,
-    assay:[
-      {from:820,to:845,grade:0.082,lith:'Uraninite-bearing chlorite schist',u3o8:0.082,th:0.12,pb:0.004},
-      {from:845,to:868,grade:0.061,lith:'Pitchblende vein — primary ore',u3o8:0.061,th:0.09,pb:0.003},
-      {from:868,to:890,grade:0.038,lith:'Low grade peripheral zone',u3o8:0.038,th:0.06,pb:0.001},
-    ],
-    note:'🔒 TOP SECRET — AERB/NCA/DAE regulated · No civilian access · BARC Secure DLT only'
-  }
-};
-
-function renderCoreSampleBtns(){
-  const el = document.getElementById('core-sample-btns');
-  if(!el) return;
-  const label = 'Load sample assay:';
-  el.innerHTML = `<span style="font-size:9px;color:#5A7A94;align-self:center;margin-right:2px;">${label}</span>` +
-    Object.keys(OFFLINE_CORE).map(id =>
-      `<button onclick="loadCoreSample('${id}')"
-        style="font-size:9px;padding:3px 8px;border-radius:4px;border:0.5px solid rgba(232,216,122,.4);
-               background:rgba(232,216,122,.08);color:#E8D87A;cursor:pointer;">${id}</button>`
-    ).join('');
-}
-
-function loadCoreSample(id){
-  const d = OFFLINE_CORE[id]; if(!d) return;
-  setCoreStatus(`✅ ${d.name} · ${d.com} · Offline assay data loaded`, 'ok');
-  // Build result card
-  const rows = [
-    ['Mine / Deposit', d.name],
-    ['Location', d.loc],
-    ['Commodity', d.com],
-    ['Operator', d.op],
-    ['Avg grade', d.grade + '% ' + (d.grade < 10 ? d.com.split(' ')[0] : '')],
-    ['In-situ resource', d.insitu.toLocaleString() + ' Mt'],
-    ['Deposit depth', d.dep + ' m'],
-    ['Ore thickness', d.thick + ' m'],
-    ['Mining RF', d.mrf + '%'],
-    ['Process RF', d.prf + '%'],
-    ['Best assay interval', `${d.assay[0].from}–${d.assay[0].to}m · Grade: ${d.assay[0].grade}%`],
-    ['Lithology (top)', d.assay[0].lith],
-  ];
-  document.getElementById('core-result-rows').innerHTML =
-    rows.map(([l,v]) => `<div class="fr"><span class="fl" style="color:var(--gray)">${l}</span><span class="fv" style="color:var(--p-text);font-size:10px;">${v}</span></div>`).join('');
-  document.getElementById('core-result').style.display = 'block';
-  // Store for apply
-  window._coreParams = d;
-}
-
-function setCoreStatus(msg, type){
-  const el = document.getElementById('core-status');
-  if(!msg){el.style.display='none';el.textContent='';return;}
-  el.style.display='block'; el.textContent=msg;
-  el.style.color = type==='ok'?'var(--g-text)':'var(--r-dark)';
-}
-
-function applyCoreParams(){
-  const d = window._coreParams; if(!d) return;
-  const map = {
-    'm-i-id':d.id, 'm-i-loc':d.loc, 'm-i-com':d.com, 'm-i-op':d.op,
-    'm-i-grade':d.grade, 'm-i-den':d.den, 'm-i-insitu':d.insitu,
-    'm-i-mrf':d.mrf, 'm-i-prf':d.prf, 'm-i-thick':d.thick,
-    'm-i-dep':d.dep, 'm-i-age':d.age,
-    'm-i-price':d.price, 'm-i-roy':d.roy,
-    'm-i-capex':d.capex, 'm-i-opex':d.opex
-  };
-  Object.entries(map).forEach(([id,val])=>{const el=document.getElementById(id);if(el)el.value=val;});
-  mineLivePreview(); mineValidate();
-  setCoreStatus(`✅ All parameters applied from ${d.id} — press Run Mining Analysis`, 'ok');
-  setTimeout(()=>{
-    const btn=document.getElementById('mine-analyse-btn');
-    if(btn) btn.scrollIntoView({behavior:'smooth',block:'center'});
-  },300);
-}
-
-function clearMineInp(){
-  ['id','loc','com','op','grade','den','insitu','mrf','prf','thick','dep','age','price','roy','capex','opex']
-    .forEach(k=>{const el=document.getElementById('m-i-'+k);if(el)el.value='';});
-  document.getElementById('mine-inp-preview').style.display='none';
-  document.getElementById('mine-inp-results').style.display='none';
-  document.getElementById('core-result').style.display='none';
-  setCoreStatus('','');
-  mineValidate();
-}
-
-function loadMineSample(){ loadCoreSample('JCF-01'); }
-
-function mGV(id){const el=document.getElementById('m-i-'+id);return el?parseFloat(el.value)||el.value:'';}
-
-function mineValidate(){
-  const req=['grade','den','insitu','dep','price','capex','opex'];
-  const ok=req.every(id=>{const el=document.getElementById('m-i-'+id);return el&&el.value&&!isNaN(parseFloat(el.value));});
-  const btn=document.getElementById('mine-analyse-btn'),hint=document.getElementById('mine-inp-hint');
-  if(ok){
-    btn.disabled=false;btn.style.opacity='1';btn.style.cursor='pointer';
-    hint.textContent='All fields filled — click to run mining analysis';hint.style.color='var(--g-text)';
-  } else {
-    btn.disabled=true;btn.style.opacity='0.5';btn.style.cursor='default';
-    const missing=[];
-    const checks={grade:'Grade',den:'Density',insitu:'In-situ resource',dep:'Deposit depth',price:'Commodity price',capex:'CAPEX',opex:'OPEX'};
-    Object.entries(checks).forEach(([k,l])=>{const el=document.getElementById('m-i-'+k);if(!el||!el.value||isNaN(parseFloat(el.value)))missing.push(l);});
-    hint.textContent=missing.length?'Still needed: '+missing.join(' · '):'Fill required fields';
-    hint.style.color='#EF9F27';
-  }
-}
-
-function mineLivePreview(){
-  const grade=parseFloat(document.getElementById('m-i-grade').value)||0;
-  const den=parseFloat(document.getElementById('m-i-den').value)||0;
-  const insitu=parseFloat(document.getElementById('m-i-insitu').value)||0;
-  const mrf=(parseFloat(document.getElementById('m-i-mrf').value)||72)/100;
-  const prf=(parseFloat(document.getElementById('m-i-prf').value)||88)/100;
-  const price=parseFloat(document.getElementById('m-i-price').value)||0;
-  if(!grade||!insitu) return;
-  document.getElementById('mine-inp-preview').style.display='block';
-  const recov=insitu*mrf*prf;
-  const annProd=recov/Math.max(5,Math.round(recov/2.5));
-  const annRev=annProd*price;
-  const grCl=grade>60?'#1D9E75':grade>30?'#EF9F27':'#E24B4A';
-  document.getElementById('mine-preview-kpis').innerHTML=
-    `<div style="background:rgba(255,255,255,.06);border-radius:5px;padding:7px;border:0.5px solid rgba(255,255,255,.1);"><div style="font-size:9px;color:#E8D87A;margin-bottom:2px;">Recoverable resource</div><div style="font-size:14px;font-weight:500;color:#9FE1CB;">${recov.toFixed(1)}<span style="font-size:9px;"> Mt</span></div></div>`+
-    `<div style="background:rgba(255,255,255,.06);border-radius:5px;padding:7px;border:0.5px solid rgba(255,255,255,.1);"><div style="font-size:9px;color:#E8D87A;margin-bottom:2px;">Grade</div><div style="font-size:14px;font-weight:500;color:${grCl};">${grade}<span style="font-size:9px;">%</span></div></div>`+
-    `<div style="background:rgba(255,255,255,.06);border-radius:5px;padding:7px;border:0.5px solid rgba(255,255,255,.1);"><div style="font-size:9px;color:#E8D87A;margin-bottom:2px;">Annual production</div><div style="font-size:14px;font-weight:500;color:#E8D87A;">${annProd.toFixed(1)}<span style="font-size:9px;"> Mt/yr</span></div></div>`+
-    `<div style="background:rgba(255,255,255,.06);border-radius:5px;padding:7px;border:0.5px solid rgba(255,255,255,.1);"><div style="font-size:9px;color:#E8D87A;margin-bottom:2px;">Annual revenue (est.)</div><div style="font-size:14px;font-weight:500;color:#1D9E75;">₹${annRev.toFixed(0)}<span style="font-size:9px;"> Cr/yr</span></div></div>`+
-    `<div style="background:rgba(255,255,255,.06);border-radius:5px;padding:7px;border:0.5px solid rgba(255,255,255,.1);"><div style="font-size:9px;color:#E8D87A;margin-bottom:2px;">Total RF</div><div style="font-size:14px;font-weight:500;color:#9FE1CB;">${(mrf*prf*100).toFixed(1)}<span style="font-size:9px;">%</span></div></div>`;
-  mineValidate();
-}
-
-function resetMineBtn(){
-  const btn=document.getElementById('mine-analyse-btn');
-  if(btn){btn.textContent='Run HyperSenseIQ Mining Analysis';btn.disabled=false;btn.style.opacity='1';}
-}
-
-function runMineAnalysis(){
-  const btn=document.getElementById('mine-analyse-btn');
-  btn.textContent='Analysing...';btn.disabled=true;btn.style.opacity='0.7';
-  setTimeout(()=>{
-    try{
-    const grade=mGV('grade'),den=mGV('den'),insitu=mGV('insitu');
-    const mrf=mGV('mrf')/100||0.72,prf=mGV('prf')/100||0.88;
-    const dep=mGV('dep'),thick=mGV('thick')||20,age=mGV('age')||10;
-    const price=mGV('price'),roy=mGV('roy')/100||0.14;
-    const capex=mGV('capex'),opex=mGV('opex');
-    const com=mGV('com')||'Commodity', id=mGV('id')||'CUSTOM-MINE';
-    const dr=0.12;
-
-    const recov=insitu*mrf*prf;
-    const mineLife=Math.max(5,Math.round(recov/Math.max(0.1,recov*0.04)));
-    const annProd=recov/mineLife;
-    const annRev=annProd*price;
-    const royAmt=annRev*roy,opexAmt=parseFloat(opex);
-    const ebitda=annRev-royAmt-opexAmt,tax=Math.max(0,ebitda*0.2517),pat=ebitda-tax;
-
-    // NPV
-    let npv=-parseFloat(capex);
-    for(let yr=1;yr<=mineLife;yr++){
-      const rev=annProd*price,ry=rev*roy,eb=rev-ry-opexAmt;
-      npv+=(eb-Math.max(0,eb*0.2517))/Math.pow(1+dr,yr);
-    }
-
-    // Extraction method scoring — based on depth, grade, thickness
-    const methods=[
-      {n:'Open pit / Open cast',sc:dep<300?0.92:dep<500?0.72:0.45,rec:0.85,capexM:0.6,col:'#0F6E56'},
-      {n:'Sub-level stoping',sc:dep>400&&thick<20?0.88:0.65,rec:0.80,capexM:1.2,col:'#185FA5'},
-      {n:'Block caving',sc:insitu>500&&dep>300?0.82:0.55,rec:0.90,capexM:1.8,col:'#534AB7'},
-      {n:'Longwall / Bench cut',sc:thick>20&&dep<400?0.78:0.58,rec:0.85,capexM:0.9,col:'#854F0B'},
-      {n:'Heap leaching / SX-EW',sc:grade<2?0.85:0.45,rec:0.75,capexM:0.5,col:'#0A7A9E'},
-    ].sort((a,b)=>b.sc-a.sc);
-    const topM=methods[0];
-
-    // Results
-    document.getElementById('mine-inp-results').style.display='block';
-    document.getElementById('mine-res-name').textContent=`${id} · ${com} · ${dep}m depth · ${mineLife}yr mine life`;
-
-    const nvCls=npv>0?'g':'r';
-    document.getElementById('mine-res-kpis').innerHTML=
-      `<div class="kpi g"><div class="kpi-l">Recoverable resource</div><div class="kpi-v">${recov.toFixed(1)}<span style="font-size:12px"> Mt</span></div><div class="kpi-s">Mining RF ${(mrf*100).toFixed(0)}% · Process RF ${(prf*100).toFixed(0)}%</div></div>`+
-      `<div class="kpi n"><div class="kpi-l">Annual production</div><div class="kpi-v">${annProd.toFixed(1)}<span style="font-size:12px"> Mt/yr</span></div><div class="kpi-s">Over ${mineLife}yr mine life</div></div>`+
-      `<div class="kpi a"><div class="kpi-l">Annual revenue</div><div class="kpi-v">₹${annRev.toFixed(0)}<span style="font-size:12px"> Cr</span></div><div class="kpi-s">@ ₹${price.toLocaleString()}/unit</div></div>`+
-      `<div class="kpi ${nvCls}"><div class="kpi-l">Project NPV</div><div class="kpi-v">${npv>0?'+':''}₹${npv.toFixed(0)}<span style="font-size:12px"> Cr</span></div><div class="kpi-s">@ 12% discount</div></div>`+
-      `<div class="kpi p"><div class="kpi-l">Best method</div><div class="kpi-v" style="font-size:14px;">${topM.n.split('/')[0].trim()}</div><div class="kpi-s">Score: ${(topM.sc*100).toFixed(0)}%</div></div>`;
-
-    document.getElementById('mine-res-vol').innerHTML=[
-      ['In-situ resource',insitu.toLocaleString()+' Mt','vg'],
-      ['Contained grade',grade+'%','va'],
-      ['Ore density',den+' t/m³','vn'],
-      ['Ore thickness',thick+' m','vn'],
-      ['Mining RF',(mrf*100).toFixed(0)+'%','va'],
-      ['Process RF',(prf*100).toFixed(0)+'%','va'],
-      ['Total RF',(mrf*prf*100).toFixed(1)+'%','vn'],
-      ['Recoverable',recov.toFixed(1)+' Mt','vg'],
-      ['Annual production',annProd.toFixed(2)+' Mt/yr','vn'],
-      ['Mine life',mineLife+' years','vn'],
-    ].map(([l,v,c])=>`<div class="fr"><span class="fl">${l}</span><span class="fv ${c}">${v}</span></div>`).join('');
-
-    document.getElementById('mine-res-methods').innerHTML=methods.map((m,i)=>{
-      const rank=i+1,rb=rank===1?'rb1':rank===2?'rb2':'rb3';
-      const pct=Math.round(m.sc/methods[0].sc*100);
-      return `<div class="eor-r" style="margin-bottom:8px;">
-        <span class="rb ${rb}">#${rank}</span>
-        <span class="eor-n" style="font-size:10px;">${m.n}</span>
-        <div class="eor-bw"><div class="eor-b" style="width:${pct}%;background:${m.col};">${rank===1?'Recommended':''}</div></div>
-        <span class="eor-sc" style="color:${m.col}">${(m.sc*100).toFixed(0)}%</span>
-      </div><div style="font-size:9px;color:var(--gray);padding-left:30px;margin-bottom:5px;">Recovery: ${(m.rec*100).toFixed(0)}% · CAPEX factor: ${m.capexM}×</div>`;
-    }).join('');
-
-    // MMDR Economics
-    document.getElementById('mine-res-econ').innerHTML=[
-      ['Commodity price','₹'+parseFloat(price).toLocaleString()+'/unit','vg'],
-      [`Royalty (MMDR) ${(roy*100).toFixed(1)}%`,'− ₹'+royAmt.toFixed(0)+' Cr/yr','vr'],
-      ['Annual OPEX','− ₹'+opexAmt+' Cr/yr','vr'],
-      ['EBITDA','₹'+ebitda.toFixed(0)+' Cr/yr',ebitda>0?'vg':'vr'],
-      ['Corporate tax (25.17%)','− ₹'+tax.toFixed(0)+' Cr/yr','vr'],
-      ['PAT (annual)','₹'+pat.toFixed(0)+' Cr/yr',pat>0?'vg':'vr'],
-      ['Project CAPEX','₹'+capex+' Cr','vr'],
-      ['NPV @ 12%',(npv>0?'+':'')+'₹'+npv.toFixed(0)+' Cr',npv>0?'vg':'vr'],
-    ].map(([l,v,c])=>`<div class="fr ${c==='vr'?'fr-neg':c==='vg'?'fr-hl':''}"><span class="fl">${l}</span><span class="fv ${c}">${v}</span></div>`).join('');
-
-    // Production curve canvas
-    setTimeout(()=>{
-      try{
-      const canvas=document.getElementById('mine-res-chart');if(!canvas)return;
-      const par=canvas.parentElement;
-      canvas.width=par.clientWidth||400;canvas.height=par.clientHeight||170;
-      const ctx=canvas.getContext('2d');
-      const W=canvas.width,H=canvas.height,pad={t:14,r:16,b:32,l:52};
-      const cW=W-pad.l-pad.r,cH=H-pad.t-pad.b;
-      ctx.clearRect(0,0,W,H);
-      const ramp=[0.4,0.7,0.9,1.0,1.0,1.0,0.95,0.90,0.80,0.65,0.50,0.35,0.20,0.10,0.05];
-      const yrs=Math.max(2,Math.min(mineLife,15));
-      const prods=ramp.slice(0,yrs).map(r=>annProd*r);
-      const maxP=Math.max(...prods,1)*1.15;
-      const toY=v=>pad.t+cH-(v/maxP)*cH;
-      const toX=i=>pad.l+(yrs>1?(i/(yrs-1))*cW:cW/2);
-      const barW=Math.max(5,(cW/yrs)*0.6);
-      prods.forEach((v,i)=>{
-        ctx.fillStyle=i<2?'#EF9F27':i<yrs-3?'#1D9E75':'#E24B4A';
-        const x=toX(i)-barW/2;
-        ctx.fillRect(x,toY(v),barW,Math.max(2,cH-(toY(v)-pad.t)));
-      });
-      ctx.strokeStyle='rgba(232,216,122,0.5)';ctx.lineWidth=1;ctx.setLineDash([3,3]);
-      ctx.beginPath();ctx.moveTo(pad.l,toY(annProd));ctx.lineTo(pad.l+cW,toY(annProd));ctx.stroke();
-      ctx.setLineDash([]);
-      ctx.fillStyle='#AAA';ctx.font='9px system-ui';ctx.textAlign='center';
-      for(let i=0;i<yrs;i+=Math.ceil(yrs/5)) ctx.fillText('Yr'+(i+1),toX(i),H-6);
-      ctx.textAlign='right';
-      [0,annProd*0.5,annProd].forEach(v=>ctx.fillText(v.toFixed(1),pad.l-4,toY(v)+3));
-      ctx.fillStyle='#E8D87A';ctx.textAlign='left';ctx.font='8px system-ui';
-      ctx.fillText('Peak: '+annProd.toFixed(1)+' Mt/yr',pad.l+4,pad.t+10);
-      }catch(e){console.warn('Canvas error:',e);}
-    },60);
-
-    // Verdict
-    const cat=npv>200?'High Value':npv>0?'Marginal':'Uneconomic';
-    const vCls2=cat==='High Value'?'v-g':cat==='Marginal'?'v-a':'v-r';
-    document.getElementById('mine-res-verdict').innerHTML=
-      `<div class="verdict ${vCls2}">
-        <strong>HyperSenseIQ Mining — ${id} · ${com} · ${cat}</strong><br>
-        Recoverable: <span class="vg">${recov.toFixed(1)} Mt</span> · Mine life: <span class="vg">${mineLife} years</span> · PAT: <span class="${pat>0?'vg':'vr'}">₹${pat.toFixed(0)} Cr/yr</span><br>
-        Best extraction: <strong>${topM.n}</strong> · Score: ${(topM.sc*100).toFixed(0)}% · Recovery: ${(topM.rec*100).toFixed(0)}%<br>
-        NPV @ 12%: <span class="${npv>0?'vg':'vr'}">${npv>0?'+':''}₹${npv.toFixed(0)} Cr</span>
-        <div class="sbar-w" style="margin-top:7px;"><div class="sbar" style="width:${Math.min(100,(topM.sc*100).toFixed(0))}%;background:${npv>0?'var(--g-mid)':'var(--a-mid)'};"></div></div>
-        <div style="font-size:10px;color:var(--g-dark);margin-top:3px;">MMDR Act 2021 · IBM rates · India critical minerals framework</div>
-      </div>`;
-
-    btn.textContent = 'Run HyperSenseIQ Mining Analysis';
-    btn.disabled = false;
-    btn.className = '';
-    setTimeout(()=>{
-      document.getElementById('mine-inp-results').scrollIntoView({behavior:'smooth',block:'start'});
-    },100);
-    }catch(err){
-      console.error('Mining analysis error:', err);
-      resetMineBtn();
-      document.getElementById('mine-inp-hint').textContent='Analysis error — check console. '+err.message;
-      document.getElementById('mine-inp-hint').style.color='#E24B4A';
-    }
-  },1200);
-}
-
-function handleCoreDrop(e){
-  e.preventDefault();
-  document.getElementById('core-drop-zone').classList.remove('drag');
-  const file=e.dataTransfer.files[0];
-  if(file) handleCoreFile(file);
-}
-
-function handleCoreFile(file){
-  if(!file) return;
-  setCoreStatus(`📂 ${file.name} uploaded — HyperSenseIQ will process assay data when backend is connected`, 'ok');
-}
-
-
+/* ── YOUR WELL DATA ── */
 const SAMPLE={wid:'MH-A-101',fld:'Mumbai High North',qi:740,di:.30,wc:32,age:9,phi:.20,sw:.22,perm:78,pay:7.5,api:38,dep:1856,op:6500,dr:12,eq:85,hor:5};
-function loadSample(){Object.entries(SAMPLE).forEach(([k,v])=>{const el=document.getElementById('i-'+k);if(el)el.value=v;});livePreview();validateInp();}
+function loadSample(){
+  // Load from currently selected well if available, else fall back to SAMPLE constant
+  const w=ACTIVE_WELLS&&ACTIVE_WELLS[CW]?ACTIVE_WELLS[CW]:null;
+  if(w){
+    const depthStr=w.depth||'1842–1857m';
+    const depNum=parseFloat(depthStr)||1842;
+    const fields={
+      wid:w.id, fld:w.form||w.field||'Mumbai High North',
+      qi:w.qi, di:w.Di||w.di,
+      wc:w.wc, age:w.age||8,
+      phi:w.phi, sw:w.sw,
+      perm:w.perm, pay:w.pay||(w.zones?w.zones.filter(z=>z.dec==='PAY').reduce((a,z)=>a+z.t,0).toFixed(1):7.5),
+      api:w.api||38, dep:depNum,
+      op:6500, dr:12, eq:85, hor:5
+    };
+    Object.entries(fields).forEach(([k,v])=>{const el=document.getElementById('i-'+k);if(el&&v!=null)el.value=v;});
+  } else {
+    Object.entries(SAMPLE).forEach(([k,v])=>{const el=document.getElementById('i-'+k);if(el)el.value=v;});
+  }
+  livePreview();validateInp();
+}
 function clearInp(){['wid','fld','qi','di','wc','age','phi','sw','perm','pay','api','dep','op','dr','eq','hor'].forEach(k=>{const el=document.getElementById('i-'+k);if(el)el.value='';});document.getElementById('inp-preview').style.display='none';document.getElementById('inp-results').style.display='none';validateInp();}
 function gV(id){const el=document.getElementById('i-'+id);return el?parseFloat(el.value)||el.value:'';}
 function validateInp(){
@@ -2118,14 +1374,7 @@ function validateInp(){
   const ok=req.every(id=>{const el=document.getElementById('i-'+id);return el&&el.value&&!isNaN(parseFloat(el.value));});
   const btn=document.getElementById('analyse-btn'),hint=document.getElementById('inp-hint');
   if(ok){btn.disabled=false;btn.className='';btn.classList.add('ready');btn.textContent='Run HyperSenseIQ Analysis';hint.textContent='All fields filled — click to analyse';hint.style.color='var(--g-text)';}
-  else{
-    btn.disabled=true;btn.className='disabled-btn';btn.textContent='Run HyperSenseIQ Analysis';
-    const missing=[];
-    const checks={qi:'Initial rate qi',di:'Decline rate Di',phi:'Porosity φ',sw:'Water saturation Sw',perm:'Permeability',dep:'Depth TVD'};
-    Object.entries(checks).forEach(([k,label])=>{const el=document.getElementById('i-'+k);if(!el||!el.value||isNaN(parseFloat(el.value)))missing.push(label);});
-    hint.textContent = missing.length ? 'Still needed: ' + missing.join(' · ') : 'Fill required fields to enable analysis';
-    hint.style.color='#EF9F27';
-  }
+  else{btn.disabled=true;btn.className='disabled-btn';btn.textContent='Run HyperSenseIQ Analysis';hint.textContent='Required: qi, Di, φ, Sw, permeability, depth';hint.style.color='#AAA';}
 }
 function livePreview(){
   const qi=parseFloat(document.getElementById('i-qi').value)||0,di=parseFloat(document.getElementById('i-di').value)||0;
@@ -2157,133 +1406,11 @@ async function runAnalysis(){
   document.getElementById('res-eor').innerHTML=scores.map((m,i)=>{const rank=i+1,rb=rank===1?'rb1':rank===2?'rb2':'rb3',pct=Math.round(m.peor/scores[0].peor*100);return `<div class="eor-r" style="margin-bottom:8px;"><span class="rb ${rb}">#${rank}</span><span class="eor-n" style="font-size:11px;">${m.n}</span><div class="eor-bw"><div class="eor-b" style="width:${pct}%;background:${m.col};">${rank===1?'Best method':'Highly rec.'}</div></div><span class="eor-sc" style="color:${m.col}">${(m.peor*100).toFixed(0)}%</span></div><div style="font-size:10px;color:var(--gray);padding-left:30px;margin-bottom:5px;">CAPEX: ₹${Math.round(m.capex*83.5)} Lakhs · ΔN: ${Math.round(m.peor*m.upl*st/1000)} Kbbl</div>`;}).join('');
   const cat=npv>5&&w.dr<.25?'High Value':npv>0?'Marginal':'Uneconomic',vCls2=cat==='High Value'?'v-g':cat==='Marginal'?'v-a':'v-r';
   document.getElementById('res-verdict').innerHTML=`<div class="verdict ${vCls2}"><strong>HyperSenseIQ — ${w.id} · ${cat} · Best EOR: ${top.n}</strong><br>Current rate: <span style="font-weight:500;">${cr} bbl/d</span> · STOIIP: <span style="font-weight:500;">${st.toLocaleString()} STB</span> · RF ${(rf*100).toFixed(0)}%<br>${top.n} EOR: P_EOR ${(top.peor*100).toFixed(0)}% · ΔN ${Math.round(top.peor*top.upl*st/1000)} Kbbl · NPV ${npv>0?'+':''}₹${npv.toFixed(1)} Cr<div class="sbar-w" style="margin-top:6px;"><div class="sbar" style="width:${(top.peor*100).toFixed(0)}%;background:${npv>0?'var(--g-mid)':'var(--a-mid)'};"></div></div></div>`;
-
-  /* ── DECLINE CURVE CANVAS ── */
-  setTimeout(() => {
-    const canvas = document.getElementById('res-dec');
-    if (!canvas) return;
-    const parent = canvas.parentElement;
-    canvas.width  = parent.clientWidth  || 400;
-    canvas.height = parent.clientHeight || 170;
-    const ctx = canvas.getContext('2d');
-    const W = canvas.width, H = canvas.height;
-    const pad = {t:14, r:16, b:32, l:44};
-    const cW = W - pad.l - pad.r, cH = H - pad.t - pad.b;
-    ctx.clearRect(0, 0, W, H);
-
-    // Generate decline data — Arps harmonic b=0.5, 10 years
-    const years = 10, pts = 40;
-    const baseRates = [], eorRates = [], labels = [];
-    for (let i = 0; i <= pts; i++) {
-      const t = (i / pts) * years;
-      labels.push(t.toFixed(1));
-      const base = w.qi / Math.pow(1 + 0.5 * w.Di * t, 2);
-      baseRates.push(Math.max(0, base));
-      // EOR kicks in at year 1, adds top.peor * upl boost decaying over horizon
-      const eorBoost = t >= 1 && t <= (1 + w.hor)
-        ? di * top.peor * Math.exp(-(t - 1) * 0.3)
-        : 0;
-      eorRates.push(Math.max(0, base + eorBoost));
-    }
-    const maxRate = Math.max(...eorRates, w.qi) * 1.1;
-
-    function toX(i) { return pad.l + (i / pts) * cW; }
-    function toY(v) { return pad.t + cH - (v / maxRate) * cH; }
-
-    // Grid lines
-    ctx.strokeStyle = '#E8E6E0'; ctx.lineWidth = 0.5;
-    for (let g = 0; g <= 4; g++) {
-      const y = pad.t + (g / 4) * cH;
-      ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(pad.l + cW, y); ctx.stroke();
-      ctx.fillStyle = '#AAA'; ctx.font = '9px system-ui'; ctx.textAlign = 'right';
-      ctx.fillText(Math.round(maxRate * (1 - g / 4)), pad.l - 4, y + 3);
-    }
-    // X axis labels
-    ctx.fillStyle = '#AAA'; ctx.font = '9px system-ui'; ctx.textAlign = 'center';
-    [0, 2, 4, 6, 8, 10].forEach(yr => {
-      const i = Math.round((yr / years) * pts);
-      ctx.fillText('Yr ' + yr, toX(i), H - 6);
-    });
-
-    // EOR fill area
-    ctx.beginPath();
-    ctx.moveTo(toX(0), toY(baseRates[0]));
-    for (let i = 1; i <= pts; i++) ctx.lineTo(toX(i), toY(eorRates[i]));
-    for (let i = pts; i >= 0; i--) ctx.lineTo(toX(i), toY(baseRates[i]));
-    ctx.closePath();
-    ctx.fillStyle = 'rgba(171,71,188,0.12)'; ctx.fill();
-
-    // Base decline line
-    ctx.beginPath(); ctx.strokeStyle = '#EF9F27'; ctx.lineWidth = 1.5;
-    baseRates.forEach((v, i) => i === 0 ? ctx.moveTo(toX(i), toY(v)) : ctx.lineTo(toX(i), toY(v)));
-    ctx.stroke();
-
-    // EOR line
-    ctx.beginPath(); ctx.strokeStyle = '#AB47BC'; ctx.lineWidth = 2;
-    eorRates.forEach((v, i) => i === 0 ? ctx.moveTo(toX(i), toY(v)) : ctx.lineTo(toX(i), toY(v)));
-    ctx.stroke();
-
-    // Current rate dot
-    ctx.beginPath(); ctx.arc(toX(Math.round((w.age / years) * pts)), toY(cr), 4, 0, Math.PI * 2);
-    ctx.fillStyle = '#1D9E75'; ctx.fill();
-
-    // Legend
-    ctx.font = '9px system-ui'; ctx.textAlign = 'left';
-    [[`#EF9F27`,'Base decline'],[`#AB47BC`,`+ ${top.n} EOR`],[`#1D9E75`,'Current rate']].forEach(([col, lbl], idx) => {
-      ctx.fillStyle = col; ctx.fillRect(pad.l + idx * 110, pad.t + 2, 10, 2);
-      ctx.fillStyle = '#666'; ctx.fillText(lbl, pad.l + idx * 110 + 14, pad.t + 6);
-    });
-  }, 50);
-
-  /* ── INDIA FISCAL ECONOMICS ── */
-  const royalty = 0.125, oidCess = 4500, saed = 3500;
-  const grossRevPerBbl = w.op;
-  const netRevPerBbl = grossRevPerBbl - (grossRevPerBbl * royalty) - (oidCess / 6.29) - (saed / 6.29);
-  const eorProdBbls = di * 365 * w.hor * 0.85;
-  const grossRevCr = (eorProdBbls * grossRevPerBbl / 1e7).toFixed(1);
-  const netRevCr   = (eorProdBbls * netRevPerBbl   / 1e7).toFixed(1);
-  const capexCr    = (top.capex * 83.5 / 100).toFixed(2);
-  const opexCr     = (top.opex  * 83.5 / 100 * w.hor).toFixed(2);
-  const ebitdaCr   = (parseFloat(netRevCr) - parseFloat(capexCr) - parseFloat(opexCr)).toFixed(1);
-  const tax        = Math.max(0, parseFloat(ebitdaCr) * 0.2517).toFixed(1);
-  const patCr      = (parseFloat(ebitdaCr) - parseFloat(tax)).toFixed(1);
-  document.getElementById('res-econ').innerHTML = `
-    <div class="fr fr-hl"><span class="fl">Crude price</span><span class="fv vg">₹${w.op.toLocaleString()}/bbl</span></div>
-    <div class="fr"><span class="fl">Royalty (12.5%)</span><span class="fv va">−₹${Math.round(w.op*0.125)}/bbl</span></div>
-    <div class="fr"><span class="fl">OID Cess</span><span class="fv va">−₹${Math.round(oidCess/6.29)}/bbl</span></div>
-    <div class="fr"><span class="fl">SAED</span><span class="fv va">−₹${Math.round(saed/6.29)}/bbl</span></div>
-    <div class="fr fr-hl"><span class="fl">Net realisation</span><span class="fv vg">₹${Math.round(netRevPerBbl)}/bbl</span></div>
-    <div class="fr"><span class="fl">EOR incremental production (${w.hor}yr)</span><span class="fv">${Math.round(eorProdBbls).toLocaleString()} bbl</span></div>
-    <div class="fr"><span class="fl">Gross revenue</span><span class="fv vg">₹${grossRevCr} Cr</span></div>
-    <div class="fr"><span class="fl">Net revenue (post levies)</span><span class="fv vg">₹${netRevCr} Cr</span></div>
-    <div class="fr"><span class="fl">CAPEX (${top.n})</span><span class="fv vr">−₹${capexCr} Cr</span></div>
-    <div class="fr"><span class="fl">OPEX (${w.hor}yr)</span><span class="fv vr">−₹${opexCr} Cr</span></div>
-    <div class="fr fr-hl"><span class="fl">EBITDA</span><span class="fv ${parseFloat(ebitdaCr)>0?'vg':'vr'}">₹${ebitdaCr} Cr</span></div>
-    <div class="fr"><span class="fl">Corporate tax (25.17%)</span><span class="fv va">−₹${tax} Cr</span></div>
-    <div class="fr fr-hl"><span class="fl font-weight:600">PAT (ONGC ${(w.eq*100).toFixed(0)}% equity)</span><span class="fv ${parseFloat(patCr)>0?'vg':'vr'}" style="font-size:13px;">₹${patCr} Cr</span></div>`;
-
   document.getElementById('inp-results').style.display='block';
   document.getElementById('inp-results').scrollIntoView({behavior:'smooth',block:'start'});
   btn.className='';btn.classList.add('ready');btn.textContent='Re-run Analysis';btn.disabled=false;
 }
 
-
-/* ── LAS SAMPLE BUTTON RENDERER ── */
-function renderLasSampleBtns() {
-  const isCB = DATASET === 'cb';
-  const wells = isCB
-    ? ['CB-MHJ-05','CB-SDR-01','CB-SDR-05','CB-SDR-06','CB-AKL-18']
-    : ['MH-N-01','MH-N-02','MH-N-03','MH-N-04','MH-N-05'];
-  const label = isCB ? 'Cambay Basin sample:' : 'Mumbai High sample:';
-  const el = document.getElementById('las-sample-btns');
-  if (!el) return;
-  el.innerHTML = `<span style="font-size:9px;color:#5A7A94;align-self:center;margin-right:2px;">${label}</span>`
-    + wells.map(w =>
-        `<button onclick="loadSampleLas('${w}')"
-          style="font-size:9px;padding:3px 8px;border-radius:4px;border:0.5px solid rgba(171,71,188,.4);
-                 background:rgba(171,71,188,.08);color:#CE93D8;cursor:pointer;">${w}</button>`
-      ).join('');
-}
 
 /* ── LAS FILE UPLOAD MODULE ── */
 const BACKEND_URL = 'http://localhost:8000';  // Change to Render URL for production
@@ -2291,8 +1418,6 @@ let lasParams = null;  // Stores parsed LAS parameters
 
 function setLasStatus(msg, type='') {
   const el = document.getElementById('las-status');
-  if (!msg) { el.style.display='none'; el.innerHTML=''; el.className='las-status'; return; }
-  el.style.display='block';
   el.innerHTML = msg;
   el.className = 'las-status ' + (type==='err'?'las-err':type==='ok'?'las-ok':'');
 }
@@ -2322,164 +1447,20 @@ async function handleLasFile(file) {
     showLasResult(data);
   } catch(e) {
     if (e.message.includes('fetch') || e.message.includes('Failed')) {
-      setLasStatus('📋 Live LAS parsing requires the HyperSenseIQ backend service. Please use the sample wells below or enter parameters manually.', 'err');
+      setLasStatus('⚠️ Backend not running. Start with: <code>python3 main.py</code> in the backend folder', 'err');
     } else {
       setLasStatus('Error: ' + e.message, 'err');
     }
   }
 }
 
-/* ── OFFLINE LAS DATA — CB WELLS (no backend required) ── */
-const OFFLINE_LAS = {
-  'CB-MHJ-05': {
-    message: 'CB-MHJ-05 — Kalol K-IX+X · Offline reference data',
-    hypersenseiq: {
-      well_id:'CB-MHJ-05', field:'Cambay Basin', formation:'Kalol Sandstone K-IX+X',
-      formation_top_m:1610, formation_base_m:1625,
-      gross_thickness_m:15.0, net_thickness_m:12.0, net_gross:0.80,
-      porosity:0.15, water_saturation:0.10, permeability_md:30,
-      hc_saturation:0.90, n_pay_levels:2,
-      data_quality:'wireline_interpreted',
-      note:'Permeability log-derived estimate — Kalol Ss tight reservoir; core calibration recommended'
-    },
-    petrophysics:{ n_depths:120 }
-  },
-  'CB-SDR-01': {
-    message: 'CB-SDR-01 — Kalol K-IX+X · Offline reference data',
-    hypersenseiq: {
-      well_id:'CB-SDR-01', field:'Cambay Basin', formation:'Kalol Sandstone K-IX+X',
-      formation_top_m:1537, formation_base_m:1554,
-      gross_thickness_m:17.0, net_thickness_m:13.5, net_gross:0.79,
-      porosity:0.14, water_saturation:0.05, permeability_md:25,
-      hc_saturation:0.95, n_pay_levels:2,
-      data_quality:'wireline_interpreted',
-      note:'Zero water cut well — K-IX+X combined completion; permeability log-derived estimate'
-    },
-    petrophysics:{ n_depths:135 }
-  },
-  'CB-SDR-05': {
-    message: 'CB-SDR-05 — Kalol K-VIII+IX · Offline reference data',
-    hypersenseiq: {
-      well_id:'CB-SDR-05', field:'Cambay Basin', formation:'Kalol Sandstone K-VIII+IX',
-      formation_top_m:1570, formation_base_m:1590,
-      gross_thickness_m:20.0, net_thickness_m:14.0, net_gross:0.70,
-      porosity:0.13, water_saturation:0.30, permeability_md:20,
-      hc_saturation:0.70, n_pay_levels:2,
-      data_quality:'wireline_interpreted',
-      note:'Declining well — K-VIII+IX completion post HF; permeability log-derived estimate'
-    },
-    petrophysics:{ n_depths:158 }
-  },
-  'CB-SDR-06': {
-    message: 'CB-SDR-06 — Kalol K-IX · Offline reference data',
-    hypersenseiq: {
-      well_id:'CB-SDR-06', field:'Cambay Basin', formation:'Kalol Sandstone K-IX',
-      formation_top_m:1682, formation_base_m:1689,
-      gross_thickness_m:7.0, net_thickness_m:5.8, net_gross:0.83,
-      porosity:0.13, water_saturation:0.30, permeability_md:18,
-      hc_saturation:0.70, n_pay_levels:1,
-      data_quality:'wireline_interpreted',
-      note:'Viscous oil — SRP installed; permeability log-derived estimate; PVT data required for accurate RF'
-    },
-    petrophysics:{ n_depths:56 }
-  },
-  'CB-AKL-18': {
-    message: 'CB-AKL-18 — MBS (Main Bassein Sandstone) · Offline reference data',
-    hypersenseiq: {
-      well_id:'CB-AKL-18', field:'Cambay Basin', formation:'MBS Main Bassein Sandstone',
-      formation_top_m:1420, formation_base_m:1426,
-      gross_thickness_m:6.0, net_thickness_m:3.2, net_gross:0.53,
-      porosity:0.12, water_saturation:0.40, permeability_md:15,
-      hc_saturation:0.60, n_pay_levels:1,
-      data_quality:'wireline_interpreted',
-      note:'High water cut MBS well — intermittent production history; permeability log-derived estimate'
-    },
-    petrophysics:{ n_depths:48 }
-  },
-  'MH-N-01': {
-    message: 'MH-N-01 — Bassein Limestone · Mumbai High North · Reference data',
-    hypersenseiq: {
-      well_id:'MH-N-01', field:'Mumbai High North', formation:'Bassein Limestone',
-      formation_top_m:1842, formation_base_m:1857,
-      gross_thickness_m:15.0, net_thickness_m:11.2, net_gross:0.75,
-      porosity:0.22, water_saturation:0.18, permeability_md:85,
-      hc_saturation:0.82, n_pay_levels:3,
-      data_quality:'wireline_interpreted',
-      note:'Permeability log-derived estimate — Bassein carbonate; FMI and core calibration recommended'
-    },
-    petrophysics:{ n_depths:180 }
-  },
-  'MH-N-02': {
-    message: 'MH-N-02 — Bassein Limestone · Mumbai High North · Reference data',
-    hypersenseiq: {
-      well_id:'MH-N-02', field:'Mumbai High North', formation:'Bassein Limestone',
-      formation_top_m:1910, formation_base_m:1930,
-      gross_thickness_m:20.0, net_thickness_m:13.5, net_gross:0.68,
-      porosity:0.18, water_saturation:0.28, permeability_md:62,
-      hc_saturation:0.72, n_pay_levels:2,
-      data_quality:'wireline_interpreted',
-      note:'Declining well — elevated water cut; permeability log-derived estimate'
-    },
-    petrophysics:{ n_depths:195 }
-  },
-  'MH-N-03': {
-    message: 'MH-N-03 — Mukta Formation · Mumbai High North · Reference data',
-    hypersenseiq: {
-      well_id:'MH-N-03', field:'Mumbai High North', formation:'Mukta Formation',
-      formation_top_m:1870, formation_base_m:1892,
-      gross_thickness_m:22.0, net_thickness_m:16.8, net_gross:0.76,
-      porosity:0.25, water_saturation:0.16, permeability_md:110,
-      hc_saturation:0.84, n_pay_levels:4,
-      data_quality:'wireline_interpreted',
-      note:'High quality pay — Mukta Fm.; permeability log-derived estimate; PVT data recommended'
-    },
-    petrophysics:{ n_depths:210 }
-  },
-  'MH-N-04': {
-    message: 'MH-N-04 — Bassein Limestone · Mumbai High North · Reference data',
-    hypersenseiq: {
-      well_id:'MH-N-04', field:'Mumbai High North', formation:'Bassein Limestone',
-      formation_top_m:1955, formation_base_m:1972,
-      gross_thickness_m:17.0, net_thickness_m:10.2, net_gross:0.60,
-      porosity:0.16, water_saturation:0.52, permeability_md:45,
-      hc_saturation:0.48, n_pay_levels:2,
-      data_quality:'wireline_interpreted',
-      note:'High water cut well — Sw 52%; EOR candidate; permeability log-derived estimate'
-    },
-    petrophysics:{ n_depths:165 }
-  },
-  'MH-N-05': {
-    message: 'MH-N-05 — Bassein Limestone · Mumbai High North · Reference data',
-    hypersenseiq: {
-      well_id:'MH-N-05', field:'Mumbai High North', formation:'Bassein Limestone',
-      formation_top_m:1988, formation_base_m:2005,
-      gross_thickness_m:17.0, net_thickness_m:12.5, net_gross:0.74,
-      porosity:0.20, water_saturation:0.22, permeability_md:74,
-      hc_saturation:0.78, n_pay_levels:3,
-      data_quality:'wireline_interpreted',
-      note:'Declining well — good reservoir quality; permeability log-derived estimate'
-    },
-    petrophysics:{ n_depths:175 }
-  }
-};
-
 async function loadSampleLas(wellId) {
   setLasStatus('<span class="las-spinner"></span> Loading sample LAS...', '');
-
-  // Serve CB wells offline — no backend needed
-  if (OFFLINE_LAS[wellId]) {
-    setTimeout(() => {
-      showLasResult(OFFLINE_LAS[wellId], wellId + '_sample.las');
-      setLasStatus('✅ ' + OFFLINE_LAS[wellId].message, 'ok');
-    }, 400);
-    return;
-  }
-
-  // MH wells — try backend
   try {
     const resp = await fetch(BACKEND_URL + '/api/sample-las/' + wellId);
     if (!resp.ok) throw new Error('Sample not found');
     const text = await resp.text();
+    // Parse via text endpoint
     const resp2 = await fetch(BACKEND_URL + '/api/parse-las-text', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
@@ -2488,7 +1469,7 @@ async function loadSampleLas(wellId) {
     const data = await resp2.json();
     showLasResult(data, wellId + '_sample.las');
   } catch(e) {
-    setLasStatus('📋 MH well LAS parsing requires the HyperSenseIQ backend service. Please contact your HyperSenseIQ administrator or use the manual parameter entry below.', 'err');
+    setLasStatus('⚠️ Backend not running — start it first: <code>python3 main.py</code>', 'err');
   }
 }
 
@@ -2520,65 +1501,35 @@ function showLasResult(data, filename) {
 }
 
 function applyLasParams() {
-  if (!lasParams) {
-    setLasStatus('⚠️ No LAS data loaded — please upload or load a sample LAS file first', 'err');
-    return;
-  }
+  if (!lasParams) return;
   const p = lasParams;
-
-  // Try to find matching well in active dataset for production defaults
-  const matchedWell = ACTIVE_WELLS.find(w => w.id === p.well_id);
-
-  // Reservoir params from LAS
-  const lasFields = {
-    'i-wid':  p.well_id,
-    'i-fld':  p.field,
-    'i-phi':  p.porosity.toFixed(4),
-    'i-sw':   p.water_saturation.toFixed(4),
-    'i-perm': p.permeability_md.toFixed(0),
-    'i-pay':  p.net_thickness_m.toFixed(1),
-    'i-dep':  p.formation_top_m.toFixed(1),
+  // Map to the input fields in the Your Well Data form
+  const fields = {
+    'inp-phi':   (p.porosity * 100).toFixed(2),
+    'inp-sw':    (p.water_saturation * 100).toFixed(2),
+    'inp-perm':  p.permeability_md.toFixed(0),
+    'inp-ng':    (p.net_gross * 100).toFixed(1),
+    'inp-thick': p.gross_thickness_m.toFixed(1),
+    'inp-top':   p.formation_top_m.toFixed(1),
+    'inp-wname': p.well_id,
   };
-
-  // Production defaults — from matched well if found, else sensible field defaults
-  const prodFields = {
-    'i-qi':  matchedWell ? matchedWell.qi  : 500,
-    'i-di':  matchedWell ? matchedWell.Di  : 0.25,
-    'i-wc':  matchedWell ? matchedWell.wc  : 30,
-    'i-age': matchedWell ? 8               : 8,
-    'i-api': matchedWell ? 38              : 38,
-  };
-
-  let lasApplied = 0, prodApplied = 0;
-
-  Object.entries(lasFields).forEach(([id, val]) => {
+  let applied = 0;
+  Object.entries(fields).forEach(([id, val]) => {
     const el = document.getElementById(id);
-    if (el) { el.value = val; lasApplied++; }
+    if (el) { el.value = val; applied++; }
   });
-
-  // Only fill production fields if they are currently empty
-  Object.entries(prodFields).forEach(([id, val]) => {
-    const el = document.getElementById(id);
-    if (el && !el.value) { el.value = val; prodApplied++; }
-  });
-
-  livePreview();
-  validateInp();
-
-  const src = matchedWell ? `matched to ${matchedWell.id}` : 'field defaults';
-  setLasStatus(
-    `✅ ${lasApplied} LAS parameters applied · ${prodApplied} production defaults set (${src}) — review & run analysis`,
-    'ok'
-  );
-
+  // Trigger analysis
+  if (typeof runInpAnalysis === 'function') runInpAnalysis();
+  setLasStatus(`✅ ${applied} parameters applied — analysis updated`, 'ok');
+  // Scroll to results
   setTimeout(() => {
-    const btn = document.getElementById('analyse-btn');
-    if (btn) btn.scrollIntoView({behavior:'smooth', block:'center'});
-  }, 400);
+    const res = document.getElementById('inp-results');
+    if (res) res.scrollIntoView({behavior:'smooth', block:'start'});
+  }, 300);
 }
 
 /* ── INIT ── */
-setTimeout(()=>{render();fetchLive();renderLasSampleBtns();setLasStatus('','');document.getElementById('las-result').classList.remove('show');},100);
+setTimeout(()=>{render();fetchLive();},100);
 setInterval(fetchLive,15*60*1000);
 window.addEventListener('resize',()=>{renderDecline();ec();});
 </script>
