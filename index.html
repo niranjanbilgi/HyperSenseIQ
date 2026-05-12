@@ -640,13 +640,13 @@ const WELLS_CB=[
           {z:'MBS Pay B',d:'1423.8',t:2.2,lith:'MBS Sst.',fluid:'Oil',phi:13,sw:38,dec:'PAY'}]}
 ];
 const EORS_CB=[
-  {n:'UST',col:'#AB47BC',peor:.879,upl:.50,capex:.8,opex:.2},
-  {n:'CO₂ Misc.',col:'#8E44AD',peor:.62,upl:.38,capex:6.5,opex:1.8},
-  {n:'Polymer',col:'#1D9E75',peor:.58,upl:.28,capex:2.8,opex:.9},
-  {n:'ASP',col:'#0A7A9E',peor:.56,upl:.32,capex:4.2,opex:1.1},
-  {n:'Surfactant',col:'#27AE60',peor:.54,upl:.25,capex:3.1,opex:1.0},
-  {n:'Thermal',col:'#E67E22',peor:.38,upl:.20,capex:5.8,opex:2.1},
-  {n:'Microbial',col:'#888',peor:.42,upl:.12,capex:1.5,opex:.6},
+  {n:'UST',       col:'#AB47BC',peor:.50,upl:.50,capex:.8, opex:.2},
+  {n:'CO₂ Misc.', col:'#8E44AD',peor:.50,upl:.38,capex:6.5,opex:1.8},
+  {n:'Polymer',   col:'#1D9E75',peor:.50,upl:.28,capex:2.8,opex:.9},
+  {n:'ASP',       col:'#0A7A9E',peor:.50,upl:.32,capex:4.2,opex:1.1},
+  {n:'Surfactant',col:'#27AE60',peor:.50,upl:.25,capex:3.1,opex:1.0},
+  {n:'Thermal',   col:'#E67E22',peor:.50,upl:.20,capex:5.8,opex:2.1},
+  {n:'Microbial', col:'#888',   peor:.50,upl:.12,capex:1.5,opex:.6},
 ];
 const DOM_SC_CB={Physics:[.85,.70,.65,.60,.60,.40,.45],Mechanical:[.92,.65,.60,.55,.60,.35,.50],Geological:[.75,.60,.55,.55,.55,.40,.50],Chemical:[.95,.55,.65,.70,.65,.35,.55],Operational:[.85,.45,.55,.50,.55,.30,.60],Economic:[.95,.60,.70,.65,.65,.45,.55]};
 const PLUGS_CB={
@@ -664,13 +664,13 @@ const PLUGS_CB={
 
 /* ── EOR DATA ── */
 const EORS=[
-  {n:'UST',col:'#AB47BC',peor:.82,upl:.42,capex:.9,opex:.3},
-  {n:'ASP',col:'#0A7A9E',peor:.85,upl:.45,capex:4.2,opex:1.1},
-  {n:'Polymer',col:'#1D9E75',peor:.78,upl:.32,capex:2.8,opex:.9},
-  {n:'CO₂ Misc.',col:'#8E44AD',peor:.72,upl:.38,capex:6.5,opex:1.8},
-  {n:'Surfactant',col:'#27AE60',peor:.70,upl:.30,capex:3.1,opex:1.0},
-  {n:'Thermal',col:'#E67E22',peor:.65,upl:.28,capex:5.8,opex:2.1},
-  {n:'Microbial',col:'#888',peor:.48,upl:.15,capex:1.5,opex:.6},
+  {n:'UST',       col:'#AB47BC',peor:.50,upl:.42,capex:.9, opex:.3},
+  {n:'ASP',       col:'#0A7A9E',peor:.50,upl:.45,capex:4.2,opex:1.1},
+  {n:'Polymer',   col:'#1D9E75',peor:.50,upl:.32,capex:2.8,opex:.9},
+  {n:'CO₂ Misc.', col:'#8E44AD',peor:.50,upl:.38,capex:6.5,opex:1.8},
+  {n:'Surfactant',col:'#27AE60',peor:.50,upl:.30,capex:3.1,opex:1.0},
+  {n:'Thermal',   col:'#E67E22',peor:.50,upl:.28,capex:5.8,opex:2.1},
+  {n:'Microbial', col:'#888',   peor:.50,upl:.15,capex:1.5,opex:.6},
 ];
 const DOM_SC={Physics:[.85,.88,.80,.82,.74,.55,.42],Mechanical:[.92,.80,.75,.65,.70,.60,.55],Geological:[.88,.82,.76,.70,.68,.62,.50],Chemical:[.60,.90,.72,.75,.78,.50,.45],Operational:[.95,.72,.80,.55,.65,.58,.52],Economic:[.88,.78,.74,.65,.60,.55,.48]};
 
@@ -880,33 +880,72 @@ function buildLog(w){
 }
 /* ── EOR SCREENING ── */
 function calcWellEOR(w, eors){
-  // Adjust P_EOR per well based on key reservoir parameters
+  const phi  = w.phi  || 0.18;
+  const sw   = w.sw   || 0.25;
+  const perm = w.perm || 60;
+  const wc   = w.wc   || 20;
+  const dep  = w.dep  || (w.depth ? parseFloat(w.depth) : 1800);
+  const isViscous = (w.status||'').toLowerCase().includes('viscous') ||
+    (w.zones||[]).some(z=>(z.fluid||'').toLowerCase().includes('viscous'));
+  const clayMins = (w.zones||[]).flatMap(z=>z.minerals||[])
+    .filter(mn=>/(illite|smectite|chlorite|kaolinite)/i.test(mn.n||''));
+  const highClay = clayMins.length >= 3;
+  const api = isViscous ? 24 : (w.api || 38);
   return eors.map(m=>{
-    let adj = m.peor;
-    const phi=w.phi||0.18, sw=w.sw||0.25, perm=w.perm||60, api=w.api||35, wc=w.wc||20;
-    if(m.n==='UST'){
-      // UST scores higher for tight rock (low perm), capillary-trapped oil (low phi, high Sw)
-      adj = Math.min(0.96, m.peor + (perm<30?0.08:perm<60?0.04:0) + (phi<0.15?0.05:0) - (wc>60?0.08:0));
-    } else if(m.n==='ASP'){
-      // ASP scores higher for sandstone, moderate perm, lower sw
-      adj = Math.min(0.95, m.peor + (perm>50&&perm<150?0.05:0) + (sw<0.30?0.04:0) - (wc>50?0.06:0));
-    } else if(m.n==='Polymer'||m.n==='POLY'){
-      // Polymer: penalised by high temp proxy (depth), high wc
-      adj = Math.min(0.90, m.peor + (perm>30?0.03:0) - (wc>50?0.05:0) - (w.dep>2000?0.04:0));
-    } else if(m.n==='CO₂ Misc.'||m.n==='CO2'){
-      // CO2: favours high API, deep reservoir
-      adj = Math.min(0.88, m.peor + (api>35?0.04:0) + (w.dep>1800?0.03:0) - (wc>60?0.07:0));
-    } else if(m.n==='Surfactant'||m.n==='SURF'){
-      adj = Math.min(0.86, m.peor - (perm<20?0.05:0) - (wc>50?0.04:0));
-    } else if(m.n==='Thermal'||m.n==='THM'){
-      // Thermal: only good for heavy oil, shallow
-      adj = Math.min(0.80, m.peor - (api>30?0.12:0) - (w.dep>1500?0.08:0));
-    } else if(m.n==='Microbial'||m.n==='MEOR'){
-      adj = Math.min(0.65, m.peor - (wc>60?0.05:0));
-    } else if(m.n==='WAG'){
-      adj = Math.min(0.82, m.peor + (perm>60?0.04:0));
+    let adj = m.peor;  // neutral 0.50 base
+    const n = m.n;
+    if(n==='UST'){
+      // Tight perm = ideal for ultrasound; capillary-trapped oil (low phi, moderate Sw)
+      adj = 0.50
+        + (perm<15?0.38:perm<25?0.32:perm<40?0.25:perm<60?0.18:perm<100?0.08:0.00)
+        + (phi<0.12?0.08:phi<0.15?0.05:phi<0.18?0.02:0)
+        + (wc>60?-0.15:wc>45?-0.10:wc>30?-0.05:wc<10?0.04:0.02)
+        + (isViscous?-0.05:0);
+    } else if(n==='ASP'){
+      // Needs good perm, low salinity, sandstone, moderate sw, low clay
+      adj = 0.50
+        + (perm>60&&perm<150?0.22:perm>40?0.15:perm>25?0.08:perm>15?0.02:-0.08)
+        + (sw<0.20?0.10:sw<0.30?0.06:sw<0.40?0.02:-0.05)
+        + (highClay?-0.18:-0.00)
+        + (wc>60?-0.15:wc>40?-0.10:wc>25?-0.05:0.03);
+    } else if(n==='Polymer'||n==='POLY'){
+      adj = 0.50
+        + (perm>50?0.18:perm>30?0.12:perm>20?0.06:perm>12?0.01:-0.08)
+        + (highClay?-0.14:0)
+        + (wc>60?-0.15:wc>40?-0.10:wc>25?-0.05:wc<10?0.06:0.02)
+        + (dep>2000?-0.10:dep>1700?-0.05:0);
+    } else if(n.startsWith('CO')){
+      // CO2 needs high API crude (light oil), deep reservoir for MMP, low wc
+      adj = 0.50
+        + (api>40?0.18:api>36?0.12:api>32?0.06:api>28?0.00:-0.10)
+        + (dep>2000?0.10:dep>1700?0.06:dep>1400?0.02:-0.05)
+        + (wc>60?-0.18:wc>40?-0.10:wc>20?-0.04:0.02)
+        + (-0.08); // India CO2 supply constraint penalty
+    } else if(n==='Surfactant'||n==='SURF'){
+      adj = 0.50
+        + (highClay?-0.22:-0.05)
+        + (perm>40?0.12:perm>25?0.06:perm>15?0.00:-0.10)
+        + (wc>50?-0.12:wc>30?-0.06:0.02)
+        + (sw<0.25?0.08:sw<0.35?0.04:-0.02);
+    } else if(n==='Thermal'||n==='THM'){
+      // Only viable for heavy/viscous crude, shallow depth
+      adj = 0.50
+        + (isViscous?0.30:0)
+        + (api<22?0.22:api<28?0.10:api<32?0.00:api>35?-0.22:-0.10)
+        + (dep<1200?0.08:dep<1600?0.02:dep>2000?-0.15:-0.08);
+    } else if(n==='Microbial'||n==='MEOR'){
+      adj = 0.50
+        + (perm>25&&perm<100?0.08:0)
+        + (wc>60?-0.12:wc>40?-0.06:0.02)
+        + (-0.08); // emerging technology penalty
+    } else if(n==='WAG'){
+      adj = 0.50
+        + (perm>80?0.15:perm>50?0.10:perm>30?0.04:-0.05)
+        + (api>36?0.08:api>30?0.03:-0.05)
+        + (wc>50?-0.10:wc>30?-0.05:0.02)
+        + (-0.06); // gas supply constraint in India
     }
-    return {...m, peor_adj: Math.max(0.20, adj)};
+    return {...m, peor_adj: Math.min(0.97, Math.max(0.15, adj))};
   }).sort((a,b)=>b.peor_adj-a.peor_adj);
 }
 
