@@ -474,16 +474,7 @@ input[type=range]{accent-color:var(--g-mid);}
       <div class="las-upload-sub">LAS 2.0 · Wireline or Interpreted · Max 50MB</div>
     </div>
     <div style="text-align:center;margin:-4px 0 8px;">
-      <button onclick="loadSampleLas('MH-N-01')"
-        style="font-size:9px;padding:3px 8px;border-radius:4px;border:0.5px solid rgba(171,71,188,.4);
-               background:rgba(171,71,188,.08);color:#CE93D8;cursor:pointer;margin-right:4px;">
-        Try: MH-N-01 sample LAS
-      </button>
-      <button onclick="loadSampleLas('MH-N-04')"
-        style="font-size:9px;padding:3px 8px;border-radius:4px;border:0.5px solid rgba(171,71,188,.4);
-               background:rgba(171,71,188,.08);color:#CE93D8;cursor:pointer;">
-        Try: MH-N-04 sample LAS
-      </button>
+      <span style="font-size:9px;color:#5A7A94;font-style:italic;">Upload any LAS 2.0 wireline file to auto-populate parameters · or use the form below</span>
     </div>
     <div id="las-status" class="las-status"></div>
     <div id="las-result" class="las-result">
@@ -1447,7 +1438,7 @@ async function handleLasFile(file) {
     showLasResult(data);
   } catch(e) {
     if (e.message.includes('fetch') || e.message.includes('Failed')) {
-      setLasStatus('⚠️ Backend not running. Start with: <code>python3 main.py</code> in the backend folder', 'err');
+      setLasStatus('⚠️ LAS analysis requires the local backend. Use the manual form below to enter well parameters directly.', 'err');
     } else {
       setLasStatus('Error: ' + e.message, 'err');
     }
@@ -1469,7 +1460,7 @@ async function loadSampleLas(wellId) {
     const data = await resp2.json();
     showLasResult(data, wellId + '_sample.las');
   } catch(e) {
-    setLasStatus('⚠️ Backend not running — start it first: <code>python3 main.py</code>', 'err');
+    setLasStatus('⚠️ Sample LAS preview requires the local backend. Enter parameters manually in the form below, or use \'Load selected well\' to load a dataset well.', 'err');
   }
 }
 
