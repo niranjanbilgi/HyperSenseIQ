@@ -226,6 +226,7 @@ input[type=range]{accent-color:var(--g-mid);}
     <div class="tab spec-tab" onclick="go('spectral')">Spectral</div>
     <div class="tab" onclick="go('twin')">Digital twin</div>
     <div class="tab" onclick="go('exec')">Executive view</div>
+    <div class="tab" onclick="go('drill')" style="color:#EF9F27;" id="tab-drill">Drilling physics ⚙</div>
     <div class="tab inp-tab" onclick="go('input')">Your well data</div>
   </div>
   <div class="tabs" id="mine-tabs" style="display:none;">
@@ -273,6 +274,7 @@ input[type=range]{accent-color:var(--g-mid);}
   <button class="w-btn" onclick="setMine(3)">Malanjkhand <span class="ws ws-d">Copper</span></button>
   <button class="w-btn" onclick="setMine(4)">Kerala Monazite <span class="ws ws-w">Rare Earths</span></button>
   <button class="w-btn" onclick="setMine(5)">Jaduguda <span class="ws ws-w">Uranium</span></button>
+  <div id="mine-live-strip" style="margin-left:auto;display:flex;align-items:center;gap:6px;flex-wrap:wrap;"></div>
 </div>
 
 <!-- PETROLEUM PANELS -->
@@ -445,12 +447,153 @@ input[type=range]{accent-color:var(--g-mid);}
   </div>
 </div>
 
+<div class="panel" id="p-drill">
+  <!-- HEADER BANNER -->
+  <div style="background:linear-gradient(135deg,#1a1200,#0c1a2a);border-radius:8px;padding:12px 16px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+    <div>
+      <div style="color:#EF9F27;font-size:13px;font-weight:600;letter-spacing:.04em;">⚙ DRILLING PHYSICS SUBMODEL — Sheet 20·21·22</div>
+      <div style="color:#7A9AAD;font-size:10px;margin-top:3px;">Derives UCS · Cohesion · Friction Angle · Tensile Strength from drilling signals via Mohr–Coulomb inversion</div>
+    </div>
+    <div style="text-align:right;">
+      <div style="color:#5DCAA5;font-size:10px;">Architecture: COMPLETE</div>
+      <div style="color:#888;font-size:9px;">ML Fusion (Sheet 22) → Camp 3</div>
+    </div>
+  </div>
+
+  <!-- PHYSICS EQUATIONS REFERENCE -->
+  <div class="cols2" style="margin-bottom:12px;">
+    <div class="card">
+      <div class="ct">Physics equations (Mohr–Coulomb · PDC bit · Rock Cutting Analysis)</div>
+      <table class="dt" style="font-size:10px;">
+        <tr><th style="color:#EF9F27;">Parameter</th><th>Equation</th><th>Notes</th></tr>
+        <tr><td style="color:#9FE1CB;">Cutting depth d</td><td>d = V / (N × 60) × 1000 mm</td><td>V=ROP m/hr, N=RPM</td></tr>
+        <tr><td style="color:#9FE1CB;">Cutting force F<sub>C</sub></td><td>F<sub>C</sub> = 2πM / (m · S · 2πR) N</td><td>M=Torque, m=blades, R=bit radius</td></tr>
+        <tr><td style="color:#9FE1CB;">Cohesion c</td><td>c = F<sub>C</sub> / (2d · cos(φ′+α)) MPa</td><td>φ′=RCZ friction, α=rake angle</td></tr>
+        <tr><td style="color:#9FE1CB;">Friction angle φ</td><td>φ ≈ 0.95 × φ′ degrees</td><td>First-pass; iterative solver in Camp 3</td></tr>
+        <tr><td style="color:#9FE1CB;">UCS q<sub>c</sub></td><td>q<sub>c</sub> = 2c·cos(φ) / (1 − sin(φ)) MPa</td><td>Standard Mohr–Coulomb UCS</td></tr>
+        <tr><td style="color:#9FE1CB;">Tensile strength T</td><td>T ≈ UCS / 10 MPa</td><td>Brazilian test empirical</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <div class="ct">Fusion engine — Sheet 22 weight control</div>
+      <div style="padding:10px 0;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+          <label style="color:#9FE1CB;font-size:11px;min-width:130px;">Physics weight w<sub>p</sub></label>
+          <input type="range" id="wp-slider" min="0" max="1" step="0.05" value="0.8" style="flex:1;" oninput="updateFusion()">
+          <span id="wp-val" style="color:#EF9F27;font-size:12px;font-weight:600;min-width:32px;">0.80</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+          <label style="color:#9FE1CB;font-size:11px;min-width:130px;">ML weight w<sub>ml</sub></label>
+          <div style="flex:1;background:rgba(255,255,255,.06);border-radius:4px;height:6px;position:relative;"><div id="wml-bar" style="position:absolute;left:0;top:0;height:100%;background:#AB47BC;border-radius:4px;width:20%;"></div></div>
+          <span id="wml-val" style="color:#AB47BC;font-size:12px;font-weight:600;min-width:32px;">0.20</span>
+        </div>
+        <div id="fusion-check" style="font-size:10px;color:#5DCAA5;padding:6px 10px;background:rgba(93,202,165,.08);border-radius:4px;border:0.5px solid rgba(93,202,165,.2);">✅ Weights sum to 1.0 — Fusion engine valid</div>
+        <div style="margin-top:10px;font-size:9px;color:#888;">ML columns (Sheet 21) show Camp 3 placeholders. Physics columns are live from Sheet 20 equations. Final UCS/c/φ/T auto-blend when ML is deployed.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DRILLING DATA TABLE — interactive input + live physics output -->
+  <div class="card" style="margin-bottom:12px;">
+    <div class="ct">Drilling sensor inputs → Rock parameter outputs (Sheet 20 · MH-N-01 synthetic data)</div>
+    <div style="overflow-x:auto;">
+      <table class="dt" id="drill-table" style="font-size:10px;min-width:900px;">
+        <thead>
+          <tr>
+            <th style="color:#EF9F27;">Depth (m)</th>
+            <th style="color:#5DCAA5;">Torque M (N·m)</th>
+            <th style="color:#5DCAA5;">WOB (kN)</th>
+            <th style="color:#5DCAA5;">ROP (m/hr)</th>
+            <th style="color:#5DCAA5;">RPM</th>
+            <th style="color:#7A9AAD;">Bit R (m)</th>
+            <th style="color:#7A9AAD;">Rake α (°)</th>
+            <th style="color:#7A9AAD;">RCZ φ′ (°)</th>
+            <th style="color:#7A9AAD;">Blades m</th>
+            <th style="color:#9F9;">d (mm)</th>
+            <th style="color:#9F9;">F<sub>C</sub> (N)</th>
+            <th style="color:#9FE1CB;font-weight:700;">c (MPa)</th>
+            <th style="color:#9FE1CB;font-weight:700;">φ (°)</th>
+            <th style="color:#9FE1CB;font-weight:700;">UCS (MPa)</th>
+            <th style="color:#9FE1CB;font-weight:700;">T (MPa)</th>
+            <th>Zone</th>
+          </tr>
+        </thead>
+        <tbody id="drill-tbody"></tbody>
+      </table>
+    </div>
+    <div style="margin-top:8px;font-size:9px;color:#5DCAA5;">🟢 Green columns = physics-computed outputs · Blue columns = sensor inputs · Edit any cell to recalculate live</div>
+  </div>
+
+  <!-- ROCK PARAMETER VISUALISATION -->
+  <div class="cols2" style="margin-bottom:12px;">
+    <div class="card">
+      <div class="ct">UCS profile by depth (MPa)</div>
+      <canvas id="drill-ucs-chart" height="160" style="width:100%;"></canvas>
+    </div>
+    <div class="card">
+      <div class="ct">Fusion output — final rock parameters (Sheet 22)</div>
+      <div id="fusion-output"></div>
+    </div>
+  </div>
+
+  <!-- ML ARCHITECTURE (Sheet 21 reference) -->
+  <div class="card">
+    <div class="ct">ML Rock Parameter Submodel — Sheet 21 · Architecture reference (Camp 3)</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;margin-top:8px;">
+      <div style="background:rgba(171,71,188,.1);border:0.5px solid #AB47BC44;border-radius:6px;padding:10px;">
+        <div style="color:#AB47BC;font-size:10px;font-weight:600;">ANN</div>
+        <div style="color:#888;font-size:9px;margin-top:3px;">Input → 2–4 dense layers → UCS, c, φ, T. Best for complex formations.</div>
+        <div style="color:#EF9F27;font-size:9px;margin-top:4px;">Status: Camp 3 placeholder</div>
+      </div>
+      <div style="background:rgba(29,158,117,.1);border:0.5px solid #1D9E7544;border-radius:6px;padding:10px;">
+        <div style="color:#1D9E75;font-size:10px;font-weight:600;">XGBoost</div>
+        <div style="color:#888;font-size:9px;margin-top:3px;">Gradient boosted trees. Fast, handles missing data; best for UCS/porosity.</div>
+        <div style="color:#EF9F27;font-size:9px;margin-top:4px;">Status: Camp 3 placeholder</div>
+      </div>
+      <div style="background:rgba(10,122,158,.1);border:0.5px solid #0A7A9E44;border-radius:6px;padding:10px;">
+        <div style="color:#0A7A9E;font-size:10px;font-weight:600;">CNN</div>
+        <div style="color:#888;font-size:9px;margin-top:3px;">Feature extraction from torque/vibration time-series waveforms.</div>
+        <div style="color:#EF9F27;font-size:9px;margin-top:4px;">Status: Camp 3 placeholder</div>
+      </div>
+      <div style="background:rgba(39,174,96,.1);border:0.5px solid #27AE6044;border-radius:6px;padding:10px;">
+        <div style="color:#27AE60;font-size:10px;font-weight:600;">Random Forest</div>
+        <div style="color:#888;font-size:9px;margin-top:3px;">Ensemble trees; handles heterogeneity; feature importance ranking.</div>
+        <div style="color:#EF9F27;font-size:9px;margin-top:4px;">Status: Camp 3 placeholder</div>
+      </div>
+      <div style="background:rgba(230,126,34,.1);border:0.5px solid #E67E2244;border-radius:6px;padding:10px;">
+        <div style="color:#E67E22;font-size:10px;font-weight:600;">Hybrid PSO-SVR</div>
+        <div style="color:#888;font-size:9px;margin-top:3px;">Particle Swarm tunes SVR. Highest accuracy for friction angle φ.</div>
+        <div style="color:#EF9F27;font-size:9px;margin-top:4px;">Status: Camp 3 placeholder</div>
+      </div>
+      <div style="background:rgba(159,225,203,.08);border:0.5px solid #9FE1CB44;border-radius:6px;padding:10px;">
+        <div style="color:#9FE1CB;font-size:10px;font-weight:600;">Fusion → Sheet 22</div>
+        <div style="color:#888;font-size:9px;margin-top:3px;">P_final = w_p × P_physics + w_ml × P_ml. Dynamic weighting by data quality.</div>
+        <div style="color:#5DCAA5;font-size:9px;margin-top:4px;">Architecture live · Slider above</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WIRING MAP -->
+  <div class="card" style="margin-top:10px;">
+    <div class="ct">Downstream wiring map — where final parameters feed (pending Camp 3 sign-off)</div>
+    <table class="dt" style="font-size:10px;">
+      <tr><th>Output</th><th>Target sheet</th><th>Field</th><th>Status</th></tr>
+      <tr><td style="color:#9FE1CB;">Final UCS (MPa)</td><td>15_Inputs_Mining</td><td>UCS — geomechanics section</td><td style="color:#EF9F27;">Pending Camp 3</td></tr>
+      <tr><td style="color:#9FE1CB;">Final c (MPa)</td><td>15_Inputs_Mining</td><td>Cohesion</td><td style="color:#EF9F27;">Pending Camp 3</td></tr>
+      <tr><td style="color:#9FE1CB;">Final φ (°)</td><td>15_Inputs_Mining</td><td>Friction Angle</td><td style="color:#EF9F27;">Pending Camp 3</td></tr>
+      <tr><td style="color:#9FE1CB;">Final T (MPa)</td><td>15_Inputs_Mining</td><td>Tensile Strength</td><td style="color:#EF9F27;">Pending Camp 3</td></tr>
+      <tr><td style="color:#9FE1CB;">Final UCS (MPa)</td><td>07_Decision_Matrix</td><td>New column G_d — geomechanical score</td><td style="color:#EF9F27;">Pending Camp 3</td></tr>
+      <tr><td style="color:#9FE1CB;">Final UCS (MPa)</td><td>19_DigitalTwin_CorePlug</td><td>Section C — UCS-k permeability cross-validation</td><td style="color:#EF9F27;">Pending Camp 3</td></tr>
+    </table>
+  </div>
+</div>
+
 <div class="panel" id="p-input">
   <div style="background:linear-gradient(135deg,#1a1a0c,#0c2a1a);border-radius:8px;padding:12px 16px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
     <div><div style="color:#E8D87A;font-size:13px;font-weight:500;">Your Well Data — HyperSenseIQ live analysis</div>
     <div style="color:#5DCAA5;font-size:10px;margin-top:2px;">Enter real parameters · AI analyses instantly · All tabs update with your data</div></div>
     <div style="display:flex;gap:6px;">
-      <button onclick="loadSample()" style="font-size:11px;padding:6px 12px;border-radius:5px;border:0.5px solid #5DCAA5;background:rgba(29,158,117,.2);color:#9FE1CB;cursor:pointer;">⬇ Load selected well</button>
+      <button onclick="loadSample()" style="font-size:11px;padding:6px 12px;border-radius:5px;border:0.5px solid #5DCAA5;background:rgba(29,158,117,.2);color:#9FE1CB;cursor:pointer;">Load ONGC sample</button>
       <button onclick="clearInp()" style="font-size:11px;padding:6px 12px;border-radius:5px;border:0.5px solid rgba(255,255,255,.15);background:transparent;color:#6A8FAD;cursor:pointer;">Clear</button>
     </div>
   </div>
@@ -474,7 +617,16 @@ input[type=range]{accent-color:var(--g-mid);}
       <div class="las-upload-sub">LAS 2.0 · Wireline or Interpreted · Max 50MB</div>
     </div>
     <div style="text-align:center;margin:-4px 0 8px;">
-      <span style="font-size:9px;color:#5A7A94;font-style:italic;">Upload any LAS 2.0 wireline file to auto-populate parameters · or use the form below</span>
+      <button onclick="loadSampleLas('MH-N-01')"
+        style="font-size:9px;padding:3px 8px;border-radius:4px;border:0.5px solid rgba(171,71,188,.4);
+               background:rgba(171,71,188,.08);color:#CE93D8;cursor:pointer;margin-right:4px;">
+        Try: MH-N-01 sample LAS
+      </button>
+      <button onclick="loadSampleLas('MH-N-04')"
+        style="font-size:9px;padding:3px 8px;border-radius:4px;border:0.5px solid rgba(171,71,188,.4);
+               background:rgba(171,71,188,.08);color:#CE93D8;cursor:pointer;">
+        Try: MH-N-04 sample LAS
+      </button>
     </div>
     <div id="las-status" class="las-status"></div>
     <div id="las-result" class="las-result">
@@ -640,13 +792,13 @@ const WELLS_CB=[
           {z:'MBS Pay B',d:'1423.8',t:2.2,lith:'MBS Sst.',fluid:'Oil',phi:13,sw:38,dec:'PAY'}]}
 ];
 const EORS_CB=[
-  {n:'UST',       col:'#AB47BC',peor:.50,upl:.50,capex:.8, opex:.2},
-  {n:'CO₂ Misc.', col:'#8E44AD',peor:.50,upl:.38,capex:6.5,opex:1.8},
-  {n:'Polymer',   col:'#1D9E75',peor:.50,upl:.28,capex:2.8,opex:.9},
-  {n:'ASP',       col:'#0A7A9E',peor:.50,upl:.32,capex:4.2,opex:1.1},
-  {n:'Surfactant',col:'#27AE60',peor:.50,upl:.25,capex:3.1,opex:1.0},
-  {n:'Thermal',   col:'#E67E22',peor:.50,upl:.20,capex:5.8,opex:2.1},
-  {n:'Microbial', col:'#888',   peor:.50,upl:.12,capex:1.5,opex:.6},
+  {n:'UST',col:'#AB47BC',peor:.879,upl:.50,capex:.8,opex:.2},
+  {n:'CO₂ Misc.',col:'#8E44AD',peor:.62,upl:.38,capex:6.5,opex:1.8},
+  {n:'Polymer',col:'#1D9E75',peor:.58,upl:.28,capex:2.8,opex:.9},
+  {n:'ASP',col:'#0A7A9E',peor:.56,upl:.32,capex:4.2,opex:1.1},
+  {n:'Surfactant',col:'#27AE60',peor:.54,upl:.25,capex:3.1,opex:1.0},
+  {n:'Thermal',col:'#E67E22',peor:.38,upl:.20,capex:5.8,opex:2.1},
+  {n:'Microbial',col:'#888',peor:.42,upl:.12,capex:1.5,opex:.6},
 ];
 const DOM_SC_CB={Physics:[.85,.70,.65,.60,.60,.40,.45],Mechanical:[.92,.65,.60,.55,.60,.35,.50],Geological:[.75,.60,.55,.55,.55,.40,.50],Chemical:[.95,.55,.65,.70,.65,.35,.55],Operational:[.85,.45,.55,.50,.55,.30,.60],Economic:[.95,.60,.70,.65,.65,.45,.55]};
 const PLUGS_CB={
@@ -664,13 +816,13 @@ const PLUGS_CB={
 
 /* ── EOR DATA ── */
 const EORS=[
-  {n:'UST',       col:'#AB47BC',peor:.50,upl:.42,capex:.9, opex:.3},
-  {n:'ASP',       col:'#0A7A9E',peor:.50,upl:.45,capex:4.2,opex:1.1},
-  {n:'Polymer',   col:'#1D9E75',peor:.50,upl:.32,capex:2.8,opex:.9},
-  {n:'CO₂ Misc.', col:'#8E44AD',peor:.50,upl:.38,capex:6.5,opex:1.8},
-  {n:'Surfactant',col:'#27AE60',peor:.50,upl:.30,capex:3.1,opex:1.0},
-  {n:'Thermal',   col:'#E67E22',peor:.50,upl:.28,capex:5.8,opex:2.1},
-  {n:'Microbial', col:'#888',   peor:.50,upl:.15,capex:1.5,opex:.6},
+  {n:'UST',col:'#AB47BC',peor:.82,upl:.42,capex:.9,opex:.3},
+  {n:'ASP',col:'#0A7A9E',peor:.85,upl:.45,capex:4.2,opex:1.1},
+  {n:'Polymer',col:'#1D9E75',peor:.78,upl:.32,capex:2.8,opex:.9},
+  {n:'CO₂ Misc.',col:'#8E44AD',peor:.72,upl:.38,capex:6.5,opex:1.8},
+  {n:'Surfactant',col:'#27AE60',peor:.70,upl:.30,capex:3.1,opex:1.0},
+  {n:'Thermal',col:'#E67E22',peor:.65,upl:.28,capex:5.8,opex:2.1},
+  {n:'Microbial',col:'#888',peor:.48,upl:.15,capex:1.5,opex:.6},
 ];
 const DOM_SC={Physics:[.85,.88,.80,.82,.74,.55,.42],Mechanical:[.92,.80,.75,.65,.70,.60,.55],Geological:[.88,.82,.76,.70,.68,.62,.50],Chemical:[.60,.90,.72,.75,.78,.50,.45],Operational:[.95,.72,.80,.55,.65,.58,.52],Economic:[.88,.78,.74,.65,.60,.55,.48]};
 
@@ -747,51 +899,62 @@ const kCls=(v,hi,lo,dir='up')=>dir==='up'?(v>=hi?'g':v>=lo?'a':'r'):(v<=hi?'g':v
 const vCls=v=>v>0?'vg':'vr';
 /* ── LIVE DATA ── */
 async function fetchLive(){
-  // ── Step 1: Fetch live USD/INR forex rate ─────────────────────────────────
-  let fx=83.5;
+  let fx=83.5, brentUSD=78.5;
+  // FX fetch
   const fxSources=[
     ()=>fetch('https://open.er-api.com/v6/latest/USD',{mode:'cors'}).then(r=>r.json()).then(d=>d.rates.INR),
     ()=>fetch('https://api.frankfurter.app/latest?from=USD&to=INR',{mode:'cors'}).then(r=>r.json()).then(d=>d.rates.INR),
     ()=>fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json',{mode:'cors'}).then(r=>r.json()).then(d=>d.usd.inr)
   ];
   for(const s of fxSources){try{const v=await s();if(v>70&&v<100){fx=v;break;}}catch(e){}}
-
-  // ── Step 2: Fetch live Brent crude price (USD/bbl) ───────────────────────
-  // Multiple CORS-enabled free sources tried in order
-  let brent=78.5; // fallback if all sources fail
+  // Brent fetch — try multiple proxy sources
   const brentSources=[
-    // Yahoo Finance via allorigins proxy (no API key needed)
-    ()=>fetch('https://api.allorigins.win/raw?url='+encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/BZ=F?interval=1d&range=1d'),{mode:'cors'})
-          .then(r=>r.json())
-          .then(d=>d.chart.result[0].meta.regularMarketPrice),
-    // Alternative: Yahoo Finance direct (works in some browsers)
-    ()=>fetch('https://query2.finance.yahoo.com/v8/finance/chart/BZ=F?interval=1d&range=1d',{mode:'cors'})
-          .then(r=>r.json())
-          .then(d=>d.chart.result[0].meta.regularMarketPrice),
-    // Fallback: stooq.com CSV (Brent front month)
-    ()=>fetch('https://api.allorigins.win/raw?url='+encodeURIComponent('https://stooq.com/q/l/?s=@bco.uk&f=sd2t2ohlcv&e=csv'),{mode:'cors'})
-          .then(r=>r.text())
-          .then(t=>{const rows=t.trim().split('\n');const cols=rows[1].split(',');const price=parseFloat(cols[4]);if(isNaN(price))throw new Error('no price');return price;})
+    ()=>fetch('https://query1.finance.yahoo.com/v8/finance/chart/BZ=F?interval=1d&range=1d',{mode:'cors'}).then(r=>r.json()).then(d=>d.chart.result[0].meta.regularMarketPrice),
+    ()=>fetch('https://query2.finance.yahoo.com/v8/finance/chart/BZ=F?interval=1d&range=1d',{mode:'cors'}).then(r=>r.json()).then(d=>d.chart.result[0].meta.regularMarketPrice),
+    ()=>fetch('https://api.allorigins.win/get?url='+encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/BZ%3DF?interval=1d&range=1d'),{mode:'cors'}).then(r=>r.json()).then(d=>JSON.parse(d.contents).chart.result[0].meta.regularMarketPrice),
   ];
-  for(const s of brentSources){
-    try{
-      const v=await s();
-      if(v>40&&v<200){brent=v;break;}  // sanity check: Brent between $40-$200
-    }catch(e){}
-  }
-
-  // ── Step 3: Compute INR price and update UI ───────────────────────────────
-  const inr=Math.round(brent*fx);
-  document.getElementById('brent-val').textContent=INR(inr)+'/bbl';
+  for(const s of brentSources){try{const v=await s();if(v>40&&v<200){brentUSD=v;break;}}catch(e){}}
+  // Commodity prices — copper ($/t), iron ore ($/t), gold ($/oz), silver ($/oz), aluminium ($/t)
+  const MINE_SYMBOLS={Cu:'HG=F',Au:'GC=F',Si:'SI=F',Al:'ALI=F'};
+  const getYF=sym=>fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${sym}?interval=1d&range=1d`,{mode:'cors'}).then(r=>r.json()).then(d=>d.chart.result[0].meta.regularMarketPrice).catch(()=>null);
+  const [cuUSD,auUSD]=await Promise.all([getYF('HG=F'),getYF('GC=F')]);
+  // Update Brent display
+  const brentINR=Math.round(brentUSD*fx);
+  document.getElementById('brent-val').textContent=INR(brentINR)+'/bbl';
   document.getElementById('fx-val').textContent=fx.toFixed(1);
-  document.getElementById('oil-sl').value=Math.min(10000,Math.max(3500,inr));
+  document.getElementById('oil-sl').value=Math.min(10000,Math.max(3500,brentINR));
   document.getElementById('last-upd').textContent='Live '+new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
   document.getElementById('last-upd').style.color='#9FE1CB';
   document.getElementById('status-dot').style.background='#1D9E75';
   document.getElementById('status-dot').style.animation='pulse 2s infinite';
-  // Store fetched values for use in economics calculations
-  window._liveBrent=brent; window._liveFx=fx;
+  // Update commodity prices in MINE_DATA
+  if(cuUSD&&cuUSD>1){
+    // HG=F is in $/lb, convert to ₹/kg: ×2204.62/2000×fx (COMEX copper $/lb)
+    const cuINRkg=Math.round(cuUSD*2.20462*fx/1000*1000); // $/lb → ₹/kg
+    MINES.forEach(m=>{if(m.sym==='Cu'){m.price.base=cuINRkg;m.price.lo=Math.round(cuINRkg*.8);m.price.hi=Math.round(cuINRkg*1.3);}});
+  }
+  if(auUSD&&auUSD>500){
+    // GC=F is $/troy oz → ₹/troy oz
+    const auINRoz=Math.round(auUSD*fx);
+    MINES.forEach(m=>{if(m.sym==='Au'){m.price.base=auINRoz;m.price.lo=Math.round(auINRoz*.85);m.price.hi=Math.round(auINRoz*1.2);}});
+  }
+  // Refresh live price badges in mine bar
+  updateMinePriceBadges(fx,brentUSD,cuUSD,auUSD);
   ec();
+}
+
+function updateMinePriceBadges(fx,brentUSD,cuUSD,auUSD){
+  const strip=document.getElementById('mine-live-strip');
+  if(!strip)return;
+  const items=[];
+  if(brentUSD){items.push(`<span style="color:#5DCAA5;font-weight:500;">Brent</span> $${brentUSD.toFixed(1)}/bbl`);}
+  if(cuUSD){
+    const cukg=(cuUSD*2.20462).toFixed(2);
+    items.push(`<span style="color:#D85A30;font-weight:500;">Copper</span> $${cukg}/kg`);
+  }
+  if(auUSD){items.push(`<span style="color:#FFD700;font-weight:500;">Gold</span> $${auUSD.toFixed(0)}/oz`);}
+  items.push(`<span style="color:#7A9AAD;">₹/$</span> ${fx.toFixed(1)}`);
+  strip.innerHTML=items.map(i=>`<span style="font-size:10px;color:#9FE1CB;white-space:nowrap;">${i}</span>`).join('<span style="color:#2a4a5a;margin:0 4px;">·</span>');
 }
 
 /* ── NAVIGATION ── */
@@ -805,8 +968,6 @@ function setMode(m){
   document.getElementById('well-bar').style.display=isPetro?'flex':'none';
   document.getElementById('mine-bar').style.display=isPetro?'none':'flex';
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
-  // Hide all mining panels when switching to petroleum
-  ['overview','vol','recovery','mecon','mtwin'].forEach(p=>{const el=document.getElementById('p-m-'+p);if(el)el.style.display='none';});
   if(isPetro){document.getElementById('p-well').classList.add('on');setTabOn('well');}
   else{document.getElementById('p-m-overview').style.display='block';goMine('overview');}
 }
@@ -815,22 +976,14 @@ function go(name){
   document.querySelectorAll('#petro-tabs .tab').forEach(t=>t.classList.toggle('on',t.onclick&&t.onclick.toString().includes("'"+name+"'")));
   document.querySelectorAll('.panel').forEach(p=>{p.classList.remove('on');if(p.id.startsWith('p-m-'))p.style.display='none';});
   document.getElementById('p-'+name).classList.add('on');
-  if(name==='spectral')setTimeout(renderSpectral,80);else render();
+  if(name==='spectral')setTimeout(renderSpectral,80);
+  else if(name==='drill')requestAnimationFrame(()=>requestAnimationFrame(renderDrill));
+  else requestAnimationFrame(()=>requestAnimationFrame(render));
 }
 
 function setTabOn(name){document.querySelectorAll('#petro-tabs .tab').forEach(t=>t.classList.toggle('on',t.onclick&&t.onclick.toString().includes("'"+name+"'")));}
 
-function sw(i){
-  CW=i;
-  document.querySelectorAll('#wells-'+DATASET+' .w-btn').forEach((b,j)=>b.classList.toggle('on',j===i));
-  render();
-  // If Your Well Data panel is visible, auto-reload with new well and re-run analysis
-  const panel=document.getElementById('p-input');
-  const wid=document.getElementById('i-wid');
-  if(panel&&panel.classList.contains('on')){
-    loadSample();
-  }
-}
+function sw(i){CW=i;document.querySelectorAll('#wells-'+DATASET+' .w-btn').forEach((b,j)=>b.classList.toggle('on',j===i));render();}
 
 function goMine(panel){
   curMinePanel=panel;
@@ -910,94 +1063,21 @@ function buildLog(w){
   },80);
 }
 /* ── EOR SCREENING ── */
-function calcWellEOR(w, eors){
-  const phi  = w.phi  || 0.18;
-  const sw   = w.sw   || 0.25;
-  const perm = w.perm || 60;
-  const wc   = w.wc   || 20;
-  const dep  = w.dep  || (w.depth ? parseFloat(w.depth) : 1800);
-  const isViscous = (w.status||'').toLowerCase().includes('viscous') ||
-    (w.zones||[]).some(z=>(z.fluid||'').toLowerCase().includes('viscous'));
-  const clayMins = (w.zones||[]).flatMap(z=>z.minerals||[])
-    .filter(mn=>/(illite|smectite|chlorite|kaolinite)/i.test(mn.n||''));
-  const highClay = clayMins.length >= 3;
-  const api = isViscous ? 24 : (w.api || 38);
-  return eors.map(m=>{
-    let adj = m.peor;  // neutral 0.50 base
-    const n = m.n;
-    if(n==='UST'){
-      // Tight perm = ideal for ultrasound; capillary-trapped oil (low phi, moderate Sw)
-      adj = 0.50
-        + (perm<15?0.38:perm<25?0.32:perm<40?0.25:perm<60?0.18:perm<100?0.08:0.00)
-        + (phi<0.12?0.08:phi<0.15?0.05:phi<0.18?0.02:0)
-        + (wc>60?-0.15:wc>45?-0.10:wc>30?-0.05:wc<10?0.04:0.02)
-        + (isViscous?-0.05:0);
-    } else if(n==='ASP'){
-      // Needs good perm, low salinity, sandstone, moderate sw, low clay
-      adj = 0.50
-        + (perm>60&&perm<150?0.22:perm>40?0.15:perm>25?0.08:perm>15?0.02:-0.08)
-        + (sw<0.20?0.10:sw<0.30?0.06:sw<0.40?0.02:-0.05)
-        + (highClay?-0.18:-0.00)
-        + (wc>60?-0.15:wc>40?-0.10:wc>25?-0.05:0.03);
-    } else if(n==='Polymer'||n==='POLY'){
-      adj = 0.50
-        + (perm>50?0.18:perm>30?0.12:perm>20?0.06:perm>12?0.01:-0.08)
-        + (highClay?-0.14:0)
-        + (wc>60?-0.15:wc>40?-0.10:wc>25?-0.05:wc<10?0.06:0.02)
-        + (dep>2000?-0.10:dep>1700?-0.05:0);
-    } else if(n.startsWith('CO')){
-      // CO2 needs high API crude (light oil), deep reservoir for MMP, low wc
-      adj = 0.50
-        + (api>40?0.18:api>36?0.12:api>32?0.06:api>28?0.00:-0.10)
-        + (dep>2000?0.10:dep>1700?0.06:dep>1400?0.02:-0.05)
-        + (wc>60?-0.18:wc>40?-0.10:wc>20?-0.04:0.02)
-        + (-0.08); // India CO2 supply constraint penalty
-    } else if(n==='Surfactant'||n==='SURF'){
-      adj = 0.50
-        + (highClay?-0.22:-0.05)
-        + (perm>40?0.12:perm>25?0.06:perm>15?0.00:-0.10)
-        + (wc>50?-0.12:wc>30?-0.06:0.02)
-        + (sw<0.25?0.08:sw<0.35?0.04:-0.02);
-    } else if(n==='Thermal'||n==='THM'){
-      // Only viable for heavy/viscous crude, shallow depth
-      adj = 0.50
-        + (isViscous?0.30:0)
-        + (api<22?0.22:api<28?0.10:api<32?0.00:api>35?-0.22:-0.10)
-        + (dep<1200?0.08:dep<1600?0.02:dep>2000?-0.15:-0.08);
-    } else if(n==='Microbial'||n==='MEOR'){
-      adj = 0.50
-        + (perm>25&&perm<100?0.08:0)
-        + (wc>60?-0.12:wc>40?-0.06:0.02)
-        + (-0.08); // emerging technology penalty
-    } else if(n==='WAG'){
-      adj = 0.50
-        + (perm>80?0.15:perm>50?0.10:perm>30?0.04:-0.05)
-        + (api>36?0.08:api>30?0.03:-0.05)
-        + (wc>50?-0.10:wc>30?-0.05:0.02)
-        + (-0.06); // gas supply constraint in India
-    }
-    return {...m, peor_adj: Math.min(0.97, Math.max(0.15, adj))};
-  }).sort((a,b)=>b.peor_adj-a.peor_adj);
-}
-
 function renderEOR(){
   const w=ACTIVE_WELLS[CW];
-  const ranked=calcWellEOR(w, ACTIVE_EORS);
-  const best=Math.max(...ranked.map(m=>m.upl*w.stoiip*m.peor_adj));
-  document.getElementById('eor-bars').innerHTML=ranked.map((m,i)=>{
-    const dn=Math.round(m.upl*w.stoiip*m.peor_adj),pct=Math.round(dn/best*100),rank=i+1;
+  const best=Math.max(...ACTIVE_EORS.map(m=>m.upl*w.stoiip*m.peor));
+  document.getElementById('eor-bars').innerHTML=ACTIVE_EORS.map((m,i)=>{
+    const dn=Math.round(m.upl*w.stoiip*m.peor),pct=Math.round(dn/best*100),rank=i+1;
     const rb=rank===1?'rb1':rank===2?'rb2':rank===3?'rb3':'rbn';
     const cat=rank===1?'Best method':rank<=3?'Highly rec.':rank<=5?'Recommended':'Not rec.';
-    return `<div class="eor-r"><span class="rb ${rb}">#${rank}</span><span class="eor-n" style="color:${rank>5?'#AAA':'#2C2C2A'}">${m.n}</span><div class="eor-bw"><div class="eor-b" style="width:${pct}%;background:${m.col};opacity:${rank<=3?1:rank<=5?.7:.45};">${cat}</div></div><span class="eor-sc" style="color:${rank>5?'#AAA':m.col}">${(m.peor_adj*100).toFixed(0)}%</span></div>`;
+    return `<div class="eor-r"><span class="rb ${rb}">#${rank}</span><span class="eor-n" style="color:${rank>5?'#AAA':'#2C2C2A'}">${m.n}</span><div class="eor-bw"><div class="eor-b" style="width:${pct}%;background:${m.col};opacity:${rank<=3?1:rank<=5?.7:.45};">${cat}</div></div><span class="eor-sc" style="color:${rank>5?'#AAA':m.col}">${(m.peor*100).toFixed(0)}%</span></div>`;
   }).join('');
-  drawRadarForWell(ranked, w);
-  const top=ranked[0],dn=Math.round(top.upl*w.stoiip*top.peor_adj/1000);
-  document.getElementById('eor-verdict').innerHTML=`<div class="verdict v-pu"><strong>HyperSenseIQ — ${top.n} EOR · Rank #1 · Best method for ${w.id}</strong><br>P_EOR: <span class="vpu">${(top.peor_adj*100).toFixed(0)}%</span> · ΔN_eff: <span class="vpu">${dn} Kbbl</span> · CAPEX: <span class="vpu">₹${Math.round(top.capex*83.5)} Lakhs</span> · Deploy: <span class="vpu">2 months</span><div class="sbar-w"><div class="sbar" style="width:${(top.peor_adj*100).toFixed(0)}%;background:#AB47BC;"></div></div></div>`;
+  drawRadar();
+  const top=ACTIVE_EORS[0],dn=Math.round(top.upl*w.stoiip*top.peor/1000);
+  document.getElementById('eor-verdict').innerHTML=`<div class="verdict v-pu"><strong>HyperSenseIQ — ${top.n} EOR · Rank #1 · Best method for ${w.id}</strong><br>P_EOR: <span class="vpu">${(top.peor*100).toFixed(0)}%</span> · ΔN_eff: <span class="vpu">${dn} Kbbl</span> · CAPEX: <span class="vpu">₹${Math.round(top.capex*83.5)} Lakhs</span> · Deploy: <span class="vpu">2 months</span><div class="sbar-w"><div class="sbar" style="width:${(top.peor*100).toFixed(0)}%;background:#AB47BC;"></div></div></div>`;
 }
 
-function drawRadar(){ drawRadarForWell(calcWellEOR(ACTIVE_WELLS[CW],ACTIVE_EORS),ACTIVE_WELLS[CW]); }
-
-function drawRadarForWell(ranked, w){
+function drawRadar(){
   const c=document.getElementById('radar-c');
   const ctx=c.getContext('2d'),W=c.width,H=c.height,cx=W/2,cy=H/2+5,R=Math.min(W,H)*.32;
   ctx.clearRect(0,0,W,H);
@@ -1013,10 +1093,7 @@ function drawRadarForWell(ranked, w){
     ctx.fillStyle='#5F5E5A';ctx.font='9px system-ui';ctx.textAlign='center';ctx.textBaseline='middle';
     ctx.fillText(doms[i],cx+Math.cos(a)*(R+17),cy+Math.sin(a)*(R+17));
   });
-  // Use top-ranked method's domain scores, scaled by its peor_adj vs base peor
-  const m=ranked[0];
-  const scale=m.peor_adj/m.peor;
-  const scores=doms.map(d=>Math.min(1,(ACTIVE_DOM[d][0]||0.5)*scale));
+  const m=ACTIVE_EORS[0],scores=doms.map(d=>ACTIVE_DOM[d][0]);
   ctx.beginPath();angles.forEach((a,i)=>{const x=cx+Math.cos(a)*R*scores[i],y=cy+Math.sin(a)*R*scores[i];i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
   ctx.closePath();ctx.fillStyle=m.col+'25';ctx.fill();ctx.strokeStyle=m.col;ctx.lineWidth=2;ctx.stroke();
   angles.forEach((a,i)=>{ctx.beginPath();ctx.arc(cx+Math.cos(a)*R*scores[i],cy+Math.sin(a)*R*scores[i],3,0,Math.PI*2);ctx.fillStyle=m.col;ctx.fill();});
@@ -1028,7 +1105,8 @@ function drawRadarForWell(ranked, w){
 function renderDecline(){
   const w=ACTIVE_WELLS[CW],c=document.getElementById('dec-c');
   if(!c)return;
-  c.width=c.parentElement.clientWidth||380;c.height=175;
+  const pw=c.parentElement.clientWidth||c.closest('.card')?.clientWidth||380;
+  c.width=pw;c.height=175;
   const ctx=c.getContext('2d'),CW2=c.width,CH=c.height;
   ctx.clearRect(0,0,CW2,CH);
   const PAD={l:38,r:8,t:12,b:26},W2=CW2-PAD.l-PAD.r,H=CH-PAD.t-PAD.b;
@@ -1094,7 +1172,7 @@ function ec(){
 
 function drawCF(di,op,dr,capex,ramp){
   const c=document.getElementById('cf-c');if(!c)return;
-  c.width=c.parentElement.clientWidth||320;c.height=175;
+  c.width=c.parentElement.clientWidth||c.closest('.card')?.clientWidth||320;c.height=175;
   const ctx=c.getContext('2d'),CW2=c.width,CH=c.height;
   ctx.clearRect(0,0,CW2,CH);
   const PAD={l:36,r:8,t:12,b:26},W2=CW2-PAD.l-PAD.r,H=CH-PAD.t-PAD.b;
@@ -1407,29 +1485,7 @@ function renderMineTwin(m){
 }
 /* ── YOUR WELL DATA ── */
 const SAMPLE={wid:'MH-A-101',fld:'Mumbai High North',qi:740,di:.30,wc:32,age:9,phi:.20,sw:.22,perm:78,pay:7.5,api:38,dep:1856,op:6500,dr:12,eq:85,hor:5};
-function loadSample(){
-  // Load from currently selected well if available, else fall back to SAMPLE constant
-  const w=ACTIVE_WELLS&&ACTIVE_WELLS[CW]?ACTIVE_WELLS[CW]:null;
-  if(w){
-    const depthStr=w.depth||'1842–1857m';
-    const depNum=parseFloat(depthStr)||1842;
-    const fields={
-      wid:w.id, fld:w.form||w.field||'Mumbai High North',
-      qi:w.qi, di:w.Di||w.di,
-      wc:w.wc, age:w.age||8,
-      phi:w.phi, sw:w.sw,
-      perm:w.perm, pay:w.pay||(w.zones?w.zones.filter(z=>z.dec==='PAY').reduce((a,z)=>a+z.t,0).toFixed(1):7.5),
-      api:w.api||38, dep:depNum,
-      op:6500, dr:12, eq:85, hor:5
-    };
-    Object.entries(fields).forEach(([k,v])=>{const el=document.getElementById('i-'+k);if(el&&v!=null)el.value=v;});
-  } else {
-    Object.entries(SAMPLE).forEach(([k,v])=>{const el=document.getElementById('i-'+k);if(el)el.value=v;});
-  }
-  livePreview();validateInp();
-  // Auto-run full analysis when a well is loaded
-  setTimeout(()=>{ if(document.getElementById('i-qi').value) runAnalysis(); }, 200);
-}
+function loadSample(){Object.entries(SAMPLE).forEach(([k,v])=>{const el=document.getElementById('i-'+k);if(el)el.value=v;});livePreview();validateInp();}
 function clearInp(){['wid','fld','qi','di','wc','age','phi','sw','perm','pay','api','dep','op','dr','eq','hor'].forEach(k=>{const el=document.getElementById('i-'+k);if(el)el.value='';});document.getElementById('inp-preview').style.display='none';document.getElementById('inp-results').style.display='none';validateInp();}
 function gV(id){const el=document.getElementById('i-'+id);return el?parseFloat(el.value)||el.value:'';}
 function validateInp(){
@@ -1510,7 +1566,7 @@ async function handleLasFile(file) {
     showLasResult(data);
   } catch(e) {
     if (e.message.includes('fetch') || e.message.includes('Failed')) {
-      setLasStatus('⚠️ LAS analysis requires the local backend. Use the manual form below to enter well parameters directly.', 'err');
+      setLasStatus('⚠️ Backend not running. Start with: <code>python3 main.py</code> in the backend folder', 'err');
     } else {
       setLasStatus('Error: ' + e.message, 'err');
     }
@@ -1532,7 +1588,7 @@ async function loadSampleLas(wellId) {
     const data = await resp2.json();
     showLasResult(data, wellId + '_sample.las');
   } catch(e) {
-    setLasStatus('⚠️ Sample LAS preview requires the local backend. Enter parameters manually in the form below, or use \'Load selected well\' to load a dataset well.', 'err');
+    setLasStatus('⚠️ Backend not running — start it first: <code>python3 main.py</code>', 'err');
   }
 }
 
@@ -1592,9 +1648,122 @@ function applyLasParams() {
 }
 
 /* ── INIT ── */
-setTimeout(()=>{render();fetchLive();},100);
+requestAnimationFrame(()=>requestAnimationFrame(()=>{render();fetchLive();}));
 setInterval(fetchLive,15*60*1000);
-window.addEventListener('resize',()=>{renderDecline();ec();});
+/* ── DRILLING PHYSICS MODULE (Sheets 20-21-22) ── */
+const DRILL_DATA=[
+  {depth:1842.0,M:4800,WOB:120,V:18.5,N:85,R:0.108,alpha:15,phi_rcz:28,m:5,S:0.65,zone:'Pay Zone A · Bioclastic Lst.'},
+  {depth:1843.0,M:5100,WOB:135,V:16.2,N:85,R:0.108,alpha:15,phi_rcz:28,m:5,S:0.65,zone:'Pay Zone A cont.'},
+  {depth:1844.9,M:6200,WOB:160,V:12.1,N:90,R:0.108,alpha:15,phi_rcz:30,m:5,S:0.68,zone:'Tight Streak · Calcite-cement'},
+  {depth:1845.7,M:4900,WOB:125,V:17.8,N:85,R:0.108,alpha:15,phi_rcz:28,m:5,S:0.65,zone:'Pay Zone B · Oolitic Lst.'},
+  {depth:1848.3,M:5800,WOB:148,V:14.3,N:88,R:0.108,alpha:15,phi_rcz:29,m:5,S:0.66,zone:'Stylolite zone'},
+];
+
+function drillPhysics(row){
+  const d_mm = (row.V/(row.N*60))*1000;
+  const Fc = (2*Math.PI*row.M)/(row.m*row.S*2*Math.PI*row.R);
+  const alpha_r=row.alpha*Math.PI/180, phi_r=row.phi_rcz*Math.PI/180;
+  const c=Fc/(2*(d_mm/1000)*Math.cos(phi_r+alpha_r))/1e6;
+  const phi_out=0.95*row.phi_rcz;
+  const phi_o=phi_out*Math.PI/180;
+  const ucs=2*c*Math.cos(phi_o)/(1-Math.sin(phi_o));
+  const T=ucs/10;
+  return {d_mm,Fc,c,phi_out,ucs,T};
+}
+
+function renderDrill(){
+  const tbody=document.getElementById('drill-tbody');
+  if(!tbody)return;
+  tbody.innerHTML='';
+  DRILL_DATA.forEach((row,i)=>{
+    const p=drillPhysics(row);
+    const hardness=p.ucs>50?'r':p.ucs>35?'a':'g';
+    tbody.innerHTML+=`<tr>
+      <td style="color:#EF9F27;">${row.depth}</td>
+      <td><input style="width:60px;background:rgba(93,202,165,.08);border:0.5px solid #2a4a3a;color:#9FE1CB;padding:2px 4px;border-radius:3px;" value="${row.M}" onchange="DRILL_DATA[${i}].M=+this.value;refreshDrill()"></td>
+      <td><input style="width:48px;background:rgba(93,202,165,.08);border:0.5px solid #2a4a3a;color:#9FE1CB;padding:2px 4px;border-radius:3px;" value="${row.WOB}" onchange="DRILL_DATA[${i}].WOB=+this.value;refreshDrill()"></td>
+      <td><input style="width:48px;background:rgba(93,202,165,.08);border:0.5px solid #2a4a3a;color:#9FE1CB;padding:2px 4px;border-radius:3px;" value="${row.V}" onchange="DRILL_DATA[${i}].V=+this.value;refreshDrill()"></td>
+      <td><input style="width:40px;background:rgba(93,202,165,.08);border:0.5px solid #2a4a3a;color:#9FE1CB;padding:2px 4px;border-radius:3px;" value="${row.N}" onchange="DRILL_DATA[${i}].N=+this.value;refreshDrill()"></td>
+      <td style="color:#5A7A94;">${row.R}</td>
+      <td style="color:#5A7A94;">${row.alpha}</td>
+      <td style="color:#5A7A94;">${row.phi_rcz}</td>
+      <td style="color:#5A7A94;">${row.m}</td>
+      <td style="color:#aef;">${p.d_mm.toFixed(3)}</td>
+      <td style="color:#aef;">${p.Fc.toFixed(0)}</td>
+      <td style="color:#5DCAA5;font-weight:600;">${p.c.toFixed(2)}</td>
+      <td style="color:#5DCAA5;font-weight:600;">${p.phi_out.toFixed(1)}</td>
+      <td class="kpi-v" style="color:${p.ucs>50?'#EF5350':p.ucs>35?'#EF9F27':'#5DCAA5'};font-weight:700;">${p.ucs.toFixed(1)}</td>
+      <td style="color:#9FE1CB;">${p.T.toFixed(2)}</td>
+      <td style="color:#7A9AAD;font-size:9px;">${row.zone}</td>
+    </tr>`;
+  });
+  drawUCSChart();
+  renderFusionOutput();
+}
+
+function refreshDrill(){renderDrill();}
+
+function drawUCSChart(){
+  const c=document.getElementById('drill-ucs-chart');
+  if(!c)return;
+  c.width=c.parentElement.clientWidth-24||400;c.height=160;
+  const ctx=c.getContext('2d'),W=c.width,H=160;
+  ctx.clearRect(0,0,W,H);ctx.fillStyle='#080C16';ctx.fillRect(0,0,W,H);
+  const vals=DRILL_DATA.map(r=>drillPhysics(r));
+  const ucsList=vals.map(v=>v.ucs);
+  const maxU=Math.max(...ucsList)*1.2||100;
+  const PAD={l:40,r:10,t:10,b:20},Wc=W-PAD.l-PAD.r,Hc=H-PAD.t-PAD.b;
+  const bw=Wc/ucsList.length-4;
+  ucsList.forEach((u,i)=>{
+    const x=PAD.l+i*(Wc/ucsList.length)+2;
+    const bh=u/maxU*Hc;
+    const col=u>50?'#EF5350':u>35?'#EF9F27':'#5DCAA5';
+    ctx.fillStyle=col+'99';ctx.fillRect(x,PAD.t+Hc-bh,bw,bh);
+    ctx.fillStyle=col;ctx.fillRect(x,PAD.t+Hc-bh,bw,2);
+    ctx.fillStyle='rgba(255,255,255,.5)';ctx.font='8px system-ui';ctx.textAlign='center';
+    ctx.fillText(u.toFixed(0),x+bw/2,PAD.t+Hc-bh-4);
+    ctx.fillStyle='#5A7A94';ctx.font='8px system-ui';
+    ctx.fillText(DRILL_DATA[i].depth,x+bw/2,H-4);
+  });
+  // Y axis label
+  ctx.fillStyle='#7A9AAD';ctx.font='9px system-ui';ctx.textAlign='right';
+  ctx.fillText('MPa',PAD.l-2,PAD.t+6);
+  ctx.strokeStyle='rgba(255,255,255,.06)';ctx.lineWidth=.5;
+  [25,50,75].forEach(v=>{const y=PAD.t+Hc-v/maxU*Hc;ctx.beginPath();ctx.moveTo(PAD.l,y);ctx.lineTo(W-PAD.r,y);ctx.stroke();ctx.fillStyle='rgba(255,255,255,.3)';ctx.fillText(v,PAD.l-2,y+3);});
+}
+
+function renderFusionOutput(){
+  const wp=parseFloat(document.getElementById('wp-slider').value);
+  const wml=1-wp;
+  const vals=DRILL_DATA.map(r=>drillPhysics(r));
+  const avgUCS=vals.reduce((a,v)=>a+v.ucs,0)/vals.length;
+  const avgC=vals.reduce((a,v)=>a+v.c,0)/vals.length;
+  const avgPhi=vals.reduce((a,v)=>a+v.phi_out,0)/vals.length;
+  const avgT=vals.reduce((a,v)=>a+v.T,0)/vals.length;
+  // ML placeholders: Camp 3 — show as dashes
+  const el=document.getElementById('fusion-output');
+  if(!el)return;
+  el.innerHTML=`
+    <table class="dt" style="font-size:11px;">
+      <tr><th>Parameter</th><th>Physics (w=${wp.toFixed(2)})</th><th style="color:#AB47BC;">ML (Camp 3)</th><th style="color:#9FE1CB;font-weight:700;">FINAL (fused)</th></tr>
+      <tr><td>UCS (MPa)</td><td style="color:#EF9F27;">${avgUCS.toFixed(1)}</td><td style="color:#AB47BC;">— pending</td><td style="color:#9FE1CB;font-weight:700;">${(wp*avgUCS).toFixed(1)} + ML</td></tr>
+      <tr><td>Cohesion c (MPa)</td><td style="color:#EF9F27;">${avgC.toFixed(2)}</td><td style="color:#AB47BC;">— pending</td><td style="color:#9FE1CB;font-weight:700;">${(wp*avgC).toFixed(2)} + ML</td></tr>
+      <tr><td>Friction angle φ (°)</td><td style="color:#EF9F27;">${avgPhi.toFixed(1)}</td><td style="color:#AB47BC;">— pending</td><td style="color:#9FE1CB;font-weight:700;">${(wp*avgPhi).toFixed(1)} + ML</td></tr>
+      <tr><td>Tensile strength T (MPa)</td><td style="color:#EF9F27;">${avgT.toFixed(2)}</td><td style="color:#AB47BC;">— pending</td><td style="color:#9FE1CB;font-weight:700;">${(wp*avgT).toFixed(2)} + ML</td></tr>
+    </table>
+    <div style="margin-top:8px;font-size:9px;color:#888;">Avg across ${vals.length} depth points · Well MH-N-01 · ML columns activate when Camp 3 Python backend is deployed</div>`;
+}
+
+function updateFusion(){
+  const wp=parseFloat(document.getElementById('wp-slider').value);
+  const wml=1-wp;
+  document.getElementById('wp-val').textContent=wp.toFixed(2);
+  document.getElementById('wml-val').textContent=wml.toFixed(2);
+  document.getElementById('wml-bar').style.width=(wml*100)+'%';
+  renderFusionOutput();
+}
+
+window.addEventListener('resize',()=>{renderDecline();ec();if(document.getElementById('p-drill')&&document.getElementById('p-drill').classList.contains('on'))drawUCSChart();});
 </script>
 </body>
 </html>
