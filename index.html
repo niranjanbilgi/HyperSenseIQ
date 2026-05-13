@@ -824,10 +824,12 @@ function sw(i){
   CW=i;
   document.querySelectorAll('#wells-'+DATASET+' .w-btn').forEach((b,j)=>b.classList.toggle('on',j===i));
   render();
-  // If Your Well Data panel is visible and has data, auto-reload with new well
+  // If Your Well Data panel is visible, auto-reload with new well and re-run analysis
   const panel=document.getElementById('p-input');
   const wid=document.getElementById('i-wid');
-  if(panel&&panel.classList.contains('on')&&wid&&wid.value){loadSample();}
+  if(panel&&panel.classList.contains('on')){
+    loadSample();
+  }
 }
 
 function goMine(panel){
@@ -1425,6 +1427,8 @@ function loadSample(){
     Object.entries(SAMPLE).forEach(([k,v])=>{const el=document.getElementById('i-'+k);if(el)el.value=v;});
   }
   livePreview();validateInp();
+  // Auto-run full analysis when a well is loaded
+  setTimeout(()=>{ if(document.getElementById('i-qi').value) runAnalysis(); }, 200);
 }
 function clearInp(){['wid','fld','qi','di','wc','age','phi','sw','perm','pay','api','dep','op','dr','eq','hor'].forEach(k=>{const el=document.getElementById('i-'+k);if(el)el.value='';});document.getElementById('inp-preview').style.display='none';document.getElementById('inp-results').style.display='none';validateInp();}
 function gV(id){const el=document.getElementById('i-'+id);return el?parseFloat(el.value)||el.value:'';}
