@@ -452,7 +452,7 @@ input[type=range]{accent-color:var(--g-mid);}
   <div style="background:linear-gradient(135deg,#1a1200,#0c1a2a);border-radius:8px;padding:12px 16px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
     <div>
       <div style="color:#EF9F27;font-size:13px;font-weight:600;letter-spacing:.04em;">⚙ Drilling Physics — Real-time rock strength from sensor data</div>
-      <div style="color:#7A9AAD;font-size:10px;margin-top:3px;">Edit any sensor value below · UCS · Cohesion · Friction Angle · Tensile Strength update instantly · MH-N-01 · Bassein Limestone</div>
+      <div id="drill-hdr-sub" style="color:#7A9AAD;font-size:10px;margin-top:3px;">Edit any sensor value below · UCS · Cohesion · Friction Angle · Tensile Strength update instantly</div>
     </div>
     <div style="display:flex;align-items:center;gap:12px;">
       <div style="text-align:right;">
@@ -494,7 +494,7 @@ input[type=range]{accent-color:var(--g-mid);}
   <!-- CHARTS ROW -->
   <div class="cols2" style="margin-bottom:12px;">
     <div class="card">
-      <div class="ct">UCS profile by depth — Bassein Limestone MH-N-01</div>
+      <div class="ct"><span id="drill-ucs-title">UCS profile by depth</span></div>
       <canvas id="drill-ucs-chart" height="160" style="width:100%;"></canvas>
     </div>
     <div class="card">
@@ -816,6 +816,7 @@ function setDataset(ds){
   document.querySelectorAll('#wells-'+ds+' .w-btn').forEach((b,j)=>b.classList.toggle('on',j===0));
   render();
   if(document.getElementById('p-spectral').classList.contains('on')) renderSpectral();
+  if(document.getElementById('p-drill').classList.contains('on')) renderDrill();
 }
 
 
@@ -945,7 +946,7 @@ function go(name){
 
 function setTabOn(name){document.querySelectorAll('#petro-tabs .tab').forEach(t=>t.classList.toggle('on',t.onclick&&t.onclick.toString().includes("'"+name+"'")));}
 
-function sw(i){CW=i;document.querySelectorAll('#wells-'+DATASET+' .w-btn').forEach((b,j)=>b.classList.toggle('on',j===i));render();}
+function sw(i){CW=i;document.querySelectorAll('#wells-'+DATASET+' .w-btn').forEach((b,j)=>b.classList.toggle('on',j===i));render();if(document.getElementById('p-drill').classList.contains('on'))renderDrill();}
 
 function goMine(panel){
   curMinePanel=panel;
@@ -1685,19 +1686,33 @@ setInterval(fetchLive,15*60*1000);
 // Drilling data — keyed by dataset+well, seeded from active well zones
 function getDrillData(){
   const w=ACTIVE_WELLS[CW];
-  // Build synthetic EDR data from well's zones (physics-plausible)
-  const hardness={'PAY':1,'MARGINAL':1.3,'NON-PAY':1.6};
-  return w.zones.slice(0,5).map(z=>{
-    const h=hardness[z.dec]||1;
-    const phi_rcz=z.dec==='PAY'?28:z.dec==='MARGINAL'?29:31;
+  const isCB=(DATASET==='cb');
+  // Formation-specific bit and physics parameters
+  // MH Bassein Limestone: harder carbonate, PDC 5-blade, larger bit
+  // Cambay Kalol Sandstone: softer clastic, PDC 5-blade, smaller bit
+  const R    =isCB?0.095:0.108;   // bit radius m
+  const alpha=isCB?13:15;          // rake angle °
+  const m    =5;                    // blades
+  const hardness={'PAY':1.0,'MARGINAL':1.35,'NON-PAY':1.65};
+  // Deterministic seed per well+zone index (no Math.random)
+  const seed=(wi,zi)=>((wi*7+zi*13)%10)/10; // 0–0.9 deterministic spread
+  const wi=CW;
+  return w.zones.slice(0,5).map((z,zi)=>{
+    const h=hardness[z.dec]||1.0;
+    const s=seed(wi,zi);
+    // phi_rcz: carbonate higher friction than sandstone
+    const phi_rcz=isCB
+      ?(z.dec==='PAY'?26:z.dec==='MARGINAL'?27:29)   // Kalol Sst
+      :(z.dec==='PAY'?28:z.dec==='MARGINAL'?30:32);   // Bassein Lst
     return {
-      depth:parseFloat(z.d),
-      M:Math.round((4800+Math.random()*400)*h),
-      WOB:Math.round((120+Math.random()*30)*h),
-      V:Math.round((18-Math.random()*5)/h*10)/10,
-      N:85+Math.round(Math.random()*6),
-      R:0.108,alpha:15,phi_rcz,m:5,S:0.65+Math.random()*.04,
-      zone:z.z+' · '+z.lith
+      depth: parseFloat(z.d),
+      M:     Math.round((isCB?3800:4800)*h + s*300),   // Torque N·m
+      WOB:   Math.round((isCB?95:120)*h    + s*20),    // kN
+      V:     Math.round(((isCB?22:18)-s*4)/h*10)/10,   // ROP m/hr
+      N:     80+Math.round(s*10),                        // RPM
+      R, alpha, phi_rcz, m,
+      S:     0.62+s*.06,                                 // blade spacing m
+      zone:  z.z+' · '+z.lith,
     };
   });
 }
@@ -1718,6 +1733,12 @@ function drillPhysics(row){
 function renderDrill(){
   DRILL_DATA=getDrillData();
   const w=ACTIVE_WELLS[CW];
+  const isCB=(DATASET==='cb');
+  // Update panel header dynamically
+  const hdr=document.getElementById('drill-hdr-sub');
+  if(hdr)hdr.textContent=`Edit any sensor value below · UCS · Cohesion · Friction Angle · Tensile Strength update instantly · ${w.id} · ${w.form}`;
+  const ttl=document.getElementById('drill-ucs-title');
+  if(ttl)ttl.textContent=`UCS profile by depth — ${w.form} · ${w.id}`;
   const tbody=document.getElementById('drill-tbody');
   if(!tbody)return;
   tbody.innerHTML='';
