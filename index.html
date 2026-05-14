@@ -836,49 +836,36 @@ const kCls=(v,hi,lo,dir='up')=>dir==='up'?(v>=hi?'g':v>=lo?'a':'r'):(v<=hi?'g':v
 const vCls=v=>v>0?'vg':'vr';
 /* ── LIVE DATA ── */
 async function fetchLive(){
-  let fx=84.0, brentUSD=82.0, cuUSD=null, auUSD=null;
+  const CKEY='d49ca3e9-4ea9-427e-9625-2a8a2811cae0';
+  let fx=84.0, brentUSD=82.0, auUSD=null, cuUSD=null;
 
-  // Show loading state immediately
-  document.getElementById('last-upd').textContent='updating...';
-  document.getElementById('status-dot').style.background='#EF9F27';
+  // ── FX: USD→INR ──────────────────────────────────────────────────────
+  const fxSources=[
+    ()=>fetch('https://open.er-api.com/v6/latest/USD',{mode:'cors'}).then(r=>r.json()).then(d=>d.rates.INR),
+    ()=>fetch('https://api.frankfurter.app/latest?from=USD&to=INR',{mode:'cors'}).then(r=>r.json()).then(d=>d.rates.INR),
+    ()=>fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json',{mode:'cors'}).then(r=>r.json()).then(d=>d.usd.inr),
+  ];
+  for(const s of fxSources){try{const v=await s();if(v>75&&v<105){fx=v;break;}}catch(e){}}
 
-  // ── FX (USD→INR) — multiple free APIs ──
-  const fxTry=async()=>{
-    const srcs=[
-      ()=>fetch('https://open.er-api.com/v6/latest/USD').then(r=>r.json()).then(d=>d.rates.INR),
-      ()=>fetch('https://api.frankfurter.app/latest?from=USD&to=INR').then(r=>r.json()).then(d=>d.rates.INR),
-      ()=>fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json').then(r=>r.json()).then(d=>d.usd.inr),
-    ];
-    for(const s of srcs){try{const v=await Promise.race([s(),new Promise((_,r)=>setTimeout(()=>r('timeout'),4000))]);if(v>75&&v<100)return v;}catch(e){}}
-    return null;
-  };
+  // ── Commodity prices: commoditypriceapi.com v2 ────────────────────────
+  // Confirmed symbols from commoditypriceapi.com/symbols:
+  // BRENTOIL-FUT = Brent crude futures $/bbl | XAU = Gold $/troy oz | HG-SPOT = Copper $/lb
+  try{
+    const r=await fetch(
+      'https://api.commoditypriceapi.com/v2/rates/latest?apiKey='+CKEY+'&symbols=BRENTOIL-FUT,XAU,HG-SPOT',
+      {mode:'cors'}
+    );
+    const d=await r.json();
+    if(d.success&&d.rates){
+      if(d.rates['BRENTOIL-FUT']&&d.rates['BRENTOIL-FUT']>20) brentUSD=d.rates['BRENTOIL-FUT'];
+      if(d.rates['XAU']&&d.rates['XAU']>500)                  auUSD   =d.rates['XAU'];
+      if(d.rates['HG-SPOT']&&d.rates['HG-SPOT']>1)            cuUSD   =d.rates['HG-SPOT'];
+    }
+  }catch(e){
+    // silent — fallback values already set above
+  }
 
-  // ── Oil/commodity price via allorigins CORS proxy ──
-  const yf=sym=>{
-    const url='https://query1.finance.yahoo.com/v8/finance/chart/'+encodeURIComponent(sym)+'?interval=1d&range=1d';
-    const proxy='https://api.allorigins.win/get?url='+encodeURIComponent(url);
-    return fetch(proxy,{cache:'no-store'}).then(r=>r.json()).then(d=>{
-      const c=JSON.parse(d.contents);
-      return c.chart.result[0].meta.regularMarketPrice;
-    });
-  };
-
-  // Run FX + prices in parallel with 6s timeout each
-  const withTimeout=(p,ms=6000)=>Promise.race([p,new Promise((_,r)=>setTimeout(()=>r('timeout'),ms))]);
-
-  const [fxR,brentR,cuR,auR]=await Promise.allSettled([
-    withTimeout(fxTry()),
-    withTimeout(yf('BZ=F')),
-    withTimeout(yf('HG=F')),
-    withTimeout(yf('GC=F')),
-  ]);
-
-  if(fxR.status==='fulfilled'&&fxR.value&&fxR.value>75)fx=fxR.value;
-  if(brentR.status==='fulfilled'&&brentR.value>40&&brentR.value<200)brentUSD=brentR.value;
-  if(cuR.status==='fulfilled'&&cuR.value>1)cuUSD=cuR.value;
-  if(auR.status==='fulfilled'&&auR.value>500)auUSD=auR.value;
-
-  // ── Update UI ──
+  // ── Nav strip ─────────────────────────────────────────────────────────
   const brentINR=Math.round(brentUSD*fx);
   document.getElementById('brent-val').textContent=INR(brentINR)+'/bbl';
   document.getElementById('fx-val').textContent=fx.toFixed(1);
@@ -889,17 +876,28 @@ async function fetchLive(){
   document.getElementById('status-dot').style.background='#1D9E75';
   document.getElementById('status-dot').style.animation='pulse 2s infinite';
 
-  // ── Update commodity prices in MINES data ──
-  if(cuUSD){
-    const cuINRkg=Math.round(cuUSD*2.20462*fx); // COMEX $/lb → ₹/kg
-    MINES.forEach(m=>{if(m.sym==='Cu'){m.price.base=cuINRkg;m.price.lo=Math.round(cuINRkg*.78);m.price.hi=Math.round(cuINRkg*1.28);}});
-  }
+  // ── Mine commodity prices ─────────────────────────────────────────────
   if(auUSD){
     const auINRg=Math.round(auUSD*fx/31.1035); // $/troy oz → ₹/gram
-    MINES.forEach(m=>{if(m.sym==='Au'&&m.pu==='₹/gram'){m.price.base=auINRg;m.price.lo=Math.round(auINRg*.85);m.price.hi=Math.round(auINRg*1.2);}});
+    MINES.forEach(m=>{
+      if(m.sym==='Au'&&m.pu==='₹/gram'){
+        m.price.base=auINRg;
+        m.price.lo=Math.round(auINRg*.85);
+        m.price.hi=Math.round(auINRg*1.2);
+      }
+    });
+  }
+  if(cuUSD){
+    const cuINRkg=Math.round(cuUSD*2.20462*fx); // $/lb → ₹/kg
+    MINES.forEach(m=>{
+      if(m.sym==='Cu'){
+        m.price.base=cuINRkg;
+        m.price.lo=Math.round(cuINRkg*.78);
+        m.price.hi=Math.round(cuINRkg*1.28);
+      }
+    });
   }
 
-  // ── Mine bar live strip ──
   updateMinePriceBadges(fx,brentUSD,cuUSD,auUSD);
   ec();
 }
@@ -908,17 +906,17 @@ function updateMinePriceBadges(fx,brentUSD,cuUSD,auUSD){
   const strip=document.getElementById('mine-live-strip');
   if(!strip)return;
   const items=[];
-  items.push(`<span style="color:#5DCAA5;font-weight:500;">Brent</span> $${brentUSD.toFixed(1)}/bbl · ₹${Math.round(brentUSD*fx).toLocaleString('en-IN')}`);
+  items.push(`<span style="color:#5DCAA5;font-weight:500;">Brent</span> $${brentUSD.toFixed(1)} · ₹${Math.round(brentUSD*fx).toLocaleString('en-IN')}/bbl`);
   if(cuUSD){
-    const cukg=(cuUSD*2.20462).toFixed(2);
-    items.push(`<span style="color:#D85A30;font-weight:500;">Copper</span> $${cukg}/kg`);
+    const cuINRkg=Math.round(cuUSD*2.20462*fx);
+    items.push(`<span style="color:#D85A30;font-weight:500;">Copper</span> ₹${cuINRkg.toLocaleString('en-IN')}/kg`);
   }
   if(auUSD){
-    const auGram=(auUSD*fx/31.1035).toFixed(0);
-    items.push(`<span style="color:#FFD700;font-weight:500;">Gold</span> ₹${parseInt(auGram).toLocaleString('en-IN')}/g`);
+    const auINRg=Math.round(auUSD*fx/31.1035);
+    items.push(`<span style="color:#FFD700;font-weight:500;">Gold</span> ₹${auINRg.toLocaleString('en-IN')}/g`);
   }
   items.push(`<span style="color:#7A9AAD;">₹/$</span> ${fx.toFixed(1)}`);
-  strip.innerHTML=items.map(i=>`<span style="font-size:10px;color:#9FE1CB;white-space:nowrap;">${i}</span>`).join('<span style="color:#2a4a5a;margin:0 5px;">·</span>');
+  strip.innerHTML=items.map(i=>`<span style="font-size:10px;color:#9FE1CB;white-space:nowrap;">${i}</span>`).join('<span style="color:#2a4a5a;margin:0 6px;">·</span>');
 }
 
 /* ── NAVIGATION ── */
@@ -1800,7 +1798,6 @@ function renderFusionOutput(){
       Averaged across ${vals.length} depth points · Well MH-N-01 · Bassein Limestone<br>
       <span style="color:#EF9F27;">Geomechanical interpretation:</span> ${avgUCS>50?'Competent carbonate — perforation gun selection critical. High UCS may require oriented perforating.':avgUCS>35?'Moderate strength — standard completion viable. Monitor for sand production at WC >40%.':'Soft formation — consider sand control. Low UCS increases perforation tunnel stability risk.'}
     </div>`;
-}
 }
 
 function updateFusion(){
