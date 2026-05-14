@@ -594,6 +594,9 @@ input[type=range]{accent-color:var(--g-mid);}
     <div style="color:#5DCAA5;font-size:10px;margin-top:2px;">Enter real parameters · AI analyses instantly · All tabs update with your data</div></div>
     <div style="display:flex;gap:6px;">
       <button onclick="loadSample()" style="font-size:11px;padding:6px 12px;border-radius:5px;border:0.5px solid #5DCAA5;background:rgba(29,158,117,.2);color:#9FE1CB;cursor:pointer;">Load ONGC sample</button>
+      <button onclick="loadSampleLas('MH-N-01')" style="font-size:11px;padding:6px 12px;border-radius:5px;border:0.5px solid rgba(171,71,188,.4);background:rgba(171,71,188,.15);color:#CE93D8;cursor:pointer;">MH-N-01</button>
+      <button onclick="loadSampleLas('MH-N-03')" style="font-size:11px;padding:6px 12px;border-radius:5px;border:0.5px solid rgba(171,71,188,.4);background:rgba(171,71,188,.15);color:#CE93D8;cursor:pointer;">MH-N-03</button>
+      <button onclick="loadSampleLas('MH-N-04')" style="font-size:11px;padding:6px 12px;border-radius:5px;border:0.5px solid rgba(239,159,39,.4);background:rgba(239,159,39,.12);color:#FAC775;cursor:pointer;">MH-N-04</button>
       <button onclick="clearInp()" style="font-size:11px;padding:6px 12px;border-radius:5px;border:0.5px solid rgba(255,255,255,.15);background:transparent;color:#6A8FAD;cursor:pointer;">Clear</button>
     </div>
   </div>
@@ -1527,6 +1530,54 @@ async function runAnalysis(){
   document.getElementById('res-verdict').innerHTML=`<div class="verdict ${vCls2}"><strong>HyperSenseIQ — ${w.id} · ${cat} · Best EOR: ${top.n}</strong><br>Current rate: <span style="font-weight:500;">${cr} bbl/d</span> · STOIIP: <span style="font-weight:500;">${st.toLocaleString()} STB</span> · RF ${(rf*100).toFixed(0)}%<br>${top.n} EOR: P_EOR ${(top.peor*100).toFixed(0)}% · ΔN ${Math.round(top.peor*top.upl*st/1000)} Kbbl · NPV ${npv>0?'+':''}₹${npv.toFixed(1)} Cr<div class="sbar-w" style="margin-top:6px;"><div class="sbar" style="width:${(top.peor*100).toFixed(0)}%;background:${npv>0?'var(--g-mid)':'var(--a-mid)'};"></div></div></div>`;
   document.getElementById('inp-results').style.display='block';
   document.getElementById('inp-results').scrollIntoView({behavior:'smooth',block:'start'});
+  // Draw decline canvas and economics after DOM is visible
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    const dc=document.getElementById('res-dec');
+    if(dc){
+      const pw=dc.parentElement.clientWidth||440;
+      dc.width=pw;dc.height=170;
+      const ctx=dc.getContext('2d'),W=pw,H=170;
+      ctx.clearRect(0,0,W,H);ctx.fillStyle='#0A1220';ctx.fillRect(0,0,W,H);
+      const PAD={l:40,r:10,t:14,b:28},W2=W-PAD.l-PAD.r,Hh=H-PAD.t-PAD.b;
+      const YEARS=15,maxQ=w.qi*1.15;
+      const tx=t=>PAD.l+t/YEARS*W2,ty=q=>PAD.t+Hh-(Math.max(0,q)/maxQ)*Hh;
+      const arpsW=t=>w.qi/Math.pow(1+0.5*w.Di*t,2);
+      const eorFn=t=>{const b=arpsW(t);return t<w.age?b:b*(1+top.upl*.9*Math.exp(-.18*(t-w.age)));};
+      ctx.strokeStyle='rgba(255,255,255,.06)';ctx.lineWidth=.5;
+      for(let i=1;i<=4;i++){const q=maxQ*i/4;ctx.beginPath();ctx.moveTo(PAD.l,ty(q));ctx.lineTo(PAD.l+W2,ty(q));ctx.stroke();ctx.fillStyle='rgba(160,180,160,.5)';ctx.font='8px system-ui';ctx.textAlign='right';ctx.fillText(Math.round(q),PAD.l-2,ty(q)+3);}
+      for(let t=0;t<=YEARS;t+=3){ctx.beginPath();ctx.moveTo(tx(t),PAD.t);ctx.lineTo(tx(t),PAD.t+Hh);ctx.stroke();ctx.fillStyle='rgba(160,180,200,.4)';ctx.font='8px system-ui';ctx.textAlign='center';ctx.fillText('Y'+t,tx(t),PAD.t+Hh+14);}
+      ctx.beginPath();for(let i=0;i<=120;i++){const t=i/120*YEARS;if(i===0)ctx.moveTo(tx(t),ty(eorFn(t)));else ctx.lineTo(tx(t),ty(eorFn(t)));}
+      for(let i=120;i>=0;i--){const t=i/120*YEARS;ctx.lineTo(tx(t),ty(arpsW(t)));}
+      ctx.closePath();ctx.fillStyle='rgba(171,71,188,.12)';ctx.fill();
+      [[arpsW,'#6B3FD4',1.5],[eorFn,'#AB47BC',2]].forEach(([fn,col,lw])=>{ctx.beginPath();ctx.strokeStyle=col;ctx.lineWidth=lw;for(let i=0;i<=120;i++){const t=i/120*YEARS,q=fn(t);if(i===0)ctx.moveTo(tx(t),ty(q));else ctx.lineTo(tx(t),ty(q));}ctx.stroke();});
+      ctx.beginPath();ctx.strokeStyle='#F0A500';ctx.lineWidth=1;ctx.setLineDash([3,2]);ctx.moveTo(tx(w.age),PAD.t);ctx.lineTo(tx(w.age),PAD.t+Hh);ctx.stroke();ctx.setLineDash([]);
+      ctx.fillStyle='#F0A500';ctx.font='bold 8px system-ui';ctx.textAlign='center';ctx.fillText('NOW',tx(w.age),PAD.t+8);
+      ctx.fillStyle='rgba(180,180,180,.6)';ctx.font='8px system-ui';ctx.textAlign='right';ctx.fillText('bbl/d',PAD.l-2,PAD.t+4);
+      ctx.strokeStyle='rgba(255,255,255,.1)';ctx.lineWidth=.5;ctx.strokeRect(PAD.l,PAD.t,W2,Hh);
+    }
+    const econ=document.getElementById('res-econ');
+    if(econ){
+      const INR2=v=>'\u20b9'+Math.round(v).toLocaleString('en-IN');
+      const grossRev=(cr*365*w.op/1e7).toFixed(1);
+      const royalty=(cr*365*w.op*.10/1e7).toFixed(1);
+      const cess=(cr*365*614/1e7).toFixed(2);
+      const netRev=(cr*365*w.op*.875*w.eq/1e7).toFixed(1);
+      const capexCr=(top.capex*83.5/100).toFixed(1);
+      const payback=npv>0?Math.max(1,Math.round(parseFloat(capexCr)/(parseFloat(netRev)/w.hor*.8)))+' yr (est.)':'Uneconomic';
+      econ.innerHTML=[
+        ['Crude price (\u20b9/bbl)',INR2(w.op),'vn'],
+        ['Current production rate',cr+' bbl/d','vg'],
+        ['Gross revenue (annual)','\u20b9'+grossRev+' Cr/yr','vg'],
+        ['Offshore royalty (10%)','\u2212 \u20b9'+royalty+' Cr/yr','vr'],
+        ['OID cess (\u20b9614/bbl)','\u2212 \u20b9'+cess+' Cr/yr','vr'],
+        ['Operator share ('+Math.round(w.eq*100)+'%)','\u20b9'+netRev+' Cr/yr','vg'],
+        [top.n+' EOR CAPEX','\u20b9'+capexCr+' Cr','vr'],
+        ['NPV ('+w.hor+'yr @ '+(w.dr*100).toFixed(0)+'%)',(npv>0?'+':'')+' \u20b9'+npv.toFixed(1)+' Cr',npv>0?'vg':'vr'],
+        ['Payback period',payback,npv>0?'va':'vr'],
+        ['Project category',cat,cat==='High Value'?'vg':cat==='Marginal'?'va':'vr'],
+      ].map(([l,v,c])=>'<div class="fr"><span class="fl">'+l+'</span><span class="fv '+c+'">'+v+'</span></div>').join('');
+    }
+  }));
   btn.className='';btn.classList.add('ready');btn.textContent='Re-run Analysis';btn.disabled=false;
 }
 
@@ -1574,22 +1625,41 @@ async function handleLasFile(file) {
 }
 
 async function loadSampleLas(wellId) {
-  setLasStatus('<span class="las-spinner"></span> Loading sample LAS...', '');
-  try {
-    const resp = await fetch(BACKEND_URL + '/api/sample-las/' + wellId);
-    if (!resp.ok) throw new Error('Sample not found');
-    const text = await resp.text();
-    // Parse via text endpoint
-    const resp2 = await fetch(BACKEND_URL + '/api/parse-las-text', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({content: text})
-    });
-    const data = await resp2.json();
-    showLasResult(data, wellId + '_sample.las');
-  } catch(e) {
-    setLasStatus('⚠️ Backend not running — start it first: <code>python3 main.py</code>', 'err');
-  }
+  // Client-side only — no backend needed. Pull data from ACTIVE_WELLS.
+  setLasStatus('<span class="las-spinner"></span> Loading sample...', '');
+  await new Promise(r=>setTimeout(r,400)); // brief UX delay
+  // Find in MH dataset (always use MH for sample LAS)
+  const mh={
+    'MH-N-01':{qi:820,Di:.28,phi:.22,sw:.18,perm:85,pay:8.1,wc:18,dep:1842,api:38,wid:'MH-N-01',fld:'Mumbai High North',form:'Bassein Limestone',top:1842,base:1857,ng:.78},
+    'MH-N-02':{qi:680,Di:.32,phi:.18,sw:.28,perm:62,pay:6.0,wc:35,dep:1910,api:36,wid:'MH-N-02',fld:'Mumbai High North',form:'Bassein Limestone',top:1910,base:1930,ng:.65},
+    'MH-N-03':{qi:940,Di:.24,phi:.25,sw:.16,perm:110,pay:12.3,wc:14,dep:1870,api:40,wid:'MH-N-03',fld:'Mumbai High North',form:'Mukta Formation',top:1870,base:1892,ng:.86},
+    'MH-N-04':{qi:510,Di:.38,phi:.16,sw:.52,perm:45,pay:5.7,wc:68,dep:1955,api:34,wid:'MH-N-04',fld:'Mumbai High North',form:'Bassein Limestone',top:1955,base:1972,ng:.55},
+    'MH-N-05':{qi:590,Di:.35,phi:.20,sw:.22,perm:74,pay:7.5,wc:28,dep:1988,api:37,wid:'MH-N-05',fld:'Mumbai High North',form:'Bassein Limestone',top:1988,base:2005,ng:.72},
+  };
+  const p=mh[wellId]||mh['MH-N-01'];
+  const gross=p.base-p.top;
+  const net=gross*p.ng;
+  const hc=1-p.sw;
+  const nPay=Math.round(4+p.phi*8);
+  // Build showLasResult-compatible object
+  const fakeData={
+    message:`${wellId} — synthetic LAS parsed (client-side · no backend required)`,
+    petrophysics:{n_depths:Math.round(gross*10)},
+    hypersenseiq:{
+      well_id:p.wid, field:p.fld, formation:p.form,
+      formation_top_m:p.top, formation_base_m:p.base,
+      gross_thickness_m:gross, net_thickness_m:net, net_gross:p.ng,
+      porosity:p.phi, water_saturation:p.sw, permeability_md:p.perm,
+      hc_saturation:hc, n_pay_levels:nPay,
+      data_quality:'synthetic_representative',
+      note:'Synthetic representative parameters for '+wellId+'. Replace with actual LAS for production use.'
+    }
+  };
+  showLasResult(fakeData, wellId+'_synthetic.las');
+  // Also pre-fill the form fields directly
+  const fieldMap={wid:p.wid,fld:p.fld,qi:p.qi,di:p.Di,phi:p.phi,sw:p.sw,perm:p.perm,pay:p.pay,wc:p.wc,age:8,api:p.api,dep:p.dep,op:6500,dr:12,eq:85,hor:5};
+  Object.entries(fieldMap).forEach(([k,v])=>{const el=document.getElementById('i-'+k);if(el)el.value=v;});
+  livePreview(); validateInp();
 }
 
 function showLasResult(data, filename) {
@@ -1622,28 +1692,27 @@ function showLasResult(data, filename) {
 function applyLasParams() {
   if (!lasParams) return;
   const p = lasParams;
-  // Map to the input fields in the Your Well Data form
   const fields = {
-    'inp-phi':   (p.porosity * 100).toFixed(2),
-    'inp-sw':    (p.water_saturation * 100).toFixed(2),
-    'inp-perm':  p.permeability_md.toFixed(0),
-    'inp-ng':    (p.net_gross * 100).toFixed(1),
-    'inp-thick': p.gross_thickness_m.toFixed(1),
-    'inp-top':   p.formation_top_m.toFixed(1),
-    'inp-wname': p.well_id,
+    'i-phi':   (p.porosity).toFixed(3),
+    'i-sw':    (p.water_saturation).toFixed(3),
+    'i-perm':  p.permeability_md.toFixed(0),
+    'i-pay':   p.net_thickness_m.toFixed(1),
+    'i-dep':   p.formation_top_m.toFixed(0),
+    'i-wid':   p.well_id,
+    'i-fld':   p.field,
   };
   let applied = 0;
   Object.entries(fields).forEach(([id, val]) => {
     const el = document.getElementById(id);
     if (el) { el.value = val; applied++; }
   });
-  // Trigger analysis
-  if (typeof runInpAnalysis === 'function') runInpAnalysis();
-  setLasStatus(`✅ ${applied} parameters applied — analysis updated`, 'ok');
-  // Scroll to results
+  livePreview(); validateInp();
+  setLasStatus(`✅ ${applied} parameters applied to form below`, 'ok');
   setTimeout(() => {
-    const res = document.getElementById('inp-results');
-    if (res) res.scrollIntoView({behavior:'smooth', block:'start'});
+    const btn = document.getElementById('analyse-btn');
+    if (btn && !btn.disabled) {
+      document.getElementById('inp-results')?.scrollIntoView({behavior:'smooth', block:'start'});
+    }
   }, 300);
 }
 
@@ -1651,13 +1720,26 @@ function applyLasParams() {
 requestAnimationFrame(()=>requestAnimationFrame(()=>{render();fetchLive();}));
 setInterval(fetchLive,15*60*1000);
 /* ── DRILLING PHYSICS MODULE (Sheets 20-21-22) ── */
-const DRILL_DATA=[
-  {depth:1842.0,M:4800,WOB:120,V:18.5,N:85,R:0.108,alpha:15,phi_rcz:28,m:5,S:0.65,zone:'Pay Zone A · Bioclastic Lst.'},
-  {depth:1843.0,M:5100,WOB:135,V:16.2,N:85,R:0.108,alpha:15,phi_rcz:28,m:5,S:0.65,zone:'Pay Zone A cont.'},
-  {depth:1844.9,M:6200,WOB:160,V:12.1,N:90,R:0.108,alpha:15,phi_rcz:30,m:5,S:0.68,zone:'Tight Streak · Calcite-cement'},
-  {depth:1845.7,M:4900,WOB:125,V:17.8,N:85,R:0.108,alpha:15,phi_rcz:28,m:5,S:0.65,zone:'Pay Zone B · Oolitic Lst.'},
-  {depth:1848.3,M:5800,WOB:148,V:14.3,N:88,R:0.108,alpha:15,phi_rcz:29,m:5,S:0.66,zone:'Stylolite zone'},
-];
+// Drilling data — keyed by dataset+well, seeded from active well zones
+function getDrillData(){
+  const w=ACTIVE_WELLS[CW];
+  // Build synthetic EDR data from well's zones (physics-plausible)
+  const hardness={'PAY':1,'MARGINAL':1.3,'NON-PAY':1.6};
+  return w.zones.slice(0,5).map(z=>{
+    const h=hardness[z.dec]||1;
+    const phi_rcz=z.dec==='PAY'?28:z.dec==='MARGINAL'?29:31;
+    return {
+      depth:parseFloat(z.d),
+      M:Math.round((4800+Math.random()*400)*h),
+      WOB:Math.round((120+Math.random()*30)*h),
+      V:Math.round((18-Math.random()*5)/h*10)/10,
+      N:85+Math.round(Math.random()*6),
+      R:0.108,alpha:15,phi_rcz,m:5,S:0.65+Math.random()*.04,
+      zone:z.z+' · '+z.lith
+    };
+  });
+}
+let DRILL_DATA=[];
 
 function drillPhysics(row){
   const d_mm = (row.V/(row.N*60))*1000;
@@ -1672,6 +1754,8 @@ function drillPhysics(row){
 }
 
 function renderDrill(){
+  DRILL_DATA=getDrillData();
+  const w=ACTIVE_WELLS[CW];
   const tbody=document.getElementById('drill-tbody');
   if(!tbody)return;
   tbody.innerHTML='';
