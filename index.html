@@ -448,143 +448,78 @@ input[type=range]{accent-color:var(--g-mid);}
 </div>
 
 <div class="panel" id="p-drill">
-  <!-- HEADER BANNER -->
+  <!-- HEADER -->
   <div style="background:linear-gradient(135deg,#1a1200,#0c1a2a);border-radius:8px;padding:12px 16px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
     <div>
-      <div style="color:#EF9F27;font-size:13px;font-weight:600;letter-spacing:.04em;">⚙ DRILLING PHYSICS SUBMODEL — Sheet 20·21·22</div>
-      <div style="color:#7A9AAD;font-size:10px;margin-top:3px;">Derives UCS · Cohesion · Friction Angle · Tensile Strength from drilling signals via Mohr–Coulomb inversion</div>
+      <div style="color:#EF9F27;font-size:13px;font-weight:600;letter-spacing:.04em;">⚙ Drilling Physics — Real-time rock strength from sensor data</div>
+      <div style="color:#7A9AAD;font-size:10px;margin-top:3px;">Edit any sensor value below · UCS · Cohesion · Friction Angle · Tensile Strength update instantly · MH-N-01 · Bassein Limestone</div>
     </div>
-    <div style="text-align:right;">
-      <div style="color:#5DCAA5;font-size:10px;">Architecture: COMPLETE</div>
-      <div style="color:#888;font-size:9px;">ML Fusion (Sheet 22) → Camp 3</div>
-    </div>
-  </div>
-
-  <!-- PHYSICS EQUATIONS REFERENCE -->
-  <div class="cols2" style="margin-bottom:12px;">
-    <div class="card">
-      <div class="ct">Physics equations (Mohr–Coulomb · PDC bit · Rock Cutting Analysis)</div>
-      <table class="dt" style="font-size:10px;">
-        <tr><th style="color:#EF9F27;">Parameter</th><th>Equation</th><th>Notes</th></tr>
-        <tr><td style="color:#9FE1CB;">Cutting depth d</td><td>d = V / (N × 60) × 1000 mm</td><td>V=ROP m/hr, N=RPM</td></tr>
-        <tr><td style="color:#9FE1CB;">Cutting force F<sub>C</sub></td><td>F<sub>C</sub> = 2πM / (m · S · 2πR) N</td><td>M=Torque, m=blades, R=bit radius</td></tr>
-        <tr><td style="color:#9FE1CB;">Cohesion c</td><td>c = F<sub>C</sub> / (2d · cos(φ′+α)) MPa</td><td>φ′=RCZ friction, α=rake angle</td></tr>
-        <tr><td style="color:#9FE1CB;">Friction angle φ</td><td>φ ≈ 0.95 × φ′ degrees</td><td>First-pass; iterative solver in Camp 3</td></tr>
-        <tr><td style="color:#9FE1CB;">UCS q<sub>c</sub></td><td>q<sub>c</sub> = 2c·cos(φ) / (1 − sin(φ)) MPa</td><td>Standard Mohr–Coulomb UCS</td></tr>
-        <tr><td style="color:#9FE1CB;">Tensile strength T</td><td>T ≈ UCS / 10 MPa</td><td>Brazilian test empirical</td></tr>
-      </table>
-    </div>
-    <div class="card">
-      <div class="ct">Fusion engine — Sheet 22 weight control</div>
-      <div style="padding:10px 0;">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
-          <label style="color:#9FE1CB;font-size:11px;min-width:130px;">Physics weight w<sub>p</sub></label>
-          <input type="range" id="wp-slider" min="0" max="1" step="0.05" value="0.8" style="flex:1;" oninput="updateFusion()">
-          <span id="wp-val" style="color:#EF9F27;font-size:12px;font-weight:600;min-width:32px;">0.80</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
-          <label style="color:#9FE1CB;font-size:11px;min-width:130px;">ML weight w<sub>ml</sub></label>
-          <div style="flex:1;background:rgba(255,255,255,.06);border-radius:4px;height:6px;position:relative;"><div id="wml-bar" style="position:absolute;left:0;top:0;height:100%;background:#AB47BC;border-radius:4px;width:20%;"></div></div>
-          <span id="wml-val" style="color:#AB47BC;font-size:12px;font-weight:600;min-width:32px;">0.20</span>
-        </div>
-        <div id="fusion-check" style="font-size:10px;color:#5DCAA5;padding:6px 10px;background:rgba(93,202,165,.08);border-radius:4px;border:0.5px solid rgba(93,202,165,.2);">✅ Weights sum to 1.0 — Fusion engine valid</div>
-        <div style="margin-top:10px;font-size:9px;color:#888;">ML columns (Sheet 21) show Camp 3 placeholders. Physics columns are live from Sheet 20 equations. Final UCS/c/φ/T auto-blend when ML is deployed.</div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div style="text-align:right;">
+        <div style="color:#5DCAA5;font-size:10px;">Physics: Mohr–Coulomb · PDC bit</div>
+        <div style="color:#888;font-size:9px;">ML fusion active when Camp 3 deploys</div>
       </div>
     </div>
   </div>
 
-  <!-- DRILLING DATA TABLE — interactive input + live physics output -->
+  <!-- LIVE DATA TABLE -->
   <div class="card" style="margin-bottom:12px;">
-    <div class="ct">Drilling sensor inputs → Rock parameter outputs (Sheet 20 · MH-N-01 synthetic data)</div>
+    <div class="ct">Live sensor inputs (editable) → Rock strength outputs</div>
     <div style="overflow-x:auto;">
-      <table class="dt" id="drill-table" style="font-size:10px;min-width:900px;">
+      <table class="dt" id="drill-table" style="font-size:10px;min-width:820px;">
         <thead>
           <tr>
             <th style="color:#EF9F27;">Depth (m)</th>
-            <th style="color:#5DCAA5;">Torque M (N·m)</th>
+            <th style="color:#5DCAA5;">Torque (N·m)</th>
             <th style="color:#5DCAA5;">WOB (kN)</th>
             <th style="color:#5DCAA5;">ROP (m/hr)</th>
             <th style="color:#5DCAA5;">RPM</th>
-            <th style="color:#7A9AAD;">Bit R (m)</th>
-            <th style="color:#7A9AAD;">Rake α (°)</th>
-            <th style="color:#7A9AAD;">RCZ φ′ (°)</th>
-            <th style="color:#7A9AAD;">Blades m</th>
-            <th style="color:#9F9;">d (mm)</th>
-            <th style="color:#9F9;">F<sub>C</sub> (N)</th>
-            <th style="color:#9FE1CB;font-weight:700;">c (MPa)</th>
-            <th style="color:#9FE1CB;font-weight:700;">φ (°)</th>
+            <th style="color:#7A9AAD;">Cut depth d (mm)</th>
+            <th style="color:#7A9AAD;">Cut force Fc (N)</th>
+            <th style="color:#9FE1CB;font-weight:700;">Cohesion c (MPa)</th>
+            <th style="color:#9FE1CB;font-weight:700;">Friction φ (°)</th>
             <th style="color:#9FE1CB;font-weight:700;">UCS (MPa)</th>
-            <th style="color:#9FE1CB;font-weight:700;">T (MPa)</th>
-            <th>Zone</th>
+            <th style="color:#9FE1CB;font-weight:700;">Tensile T (MPa)</th>
+            <th style="color:#5A7A94;">Formation</th>
           </tr>
         </thead>
         <tbody id="drill-tbody"></tbody>
       </table>
     </div>
-    <div style="margin-top:8px;font-size:9px;color:#5DCAA5;">🟢 Green columns = physics-computed outputs · Blue columns = sensor inputs · Edit any cell to recalculate live</div>
+    <div style="margin-top:6px;display:flex;gap:16px;font-size:9px;">
+      <span style="color:#5DCAA5;">● Edit teal columns → outputs recalculate</span>
+      <span style="color:#EF9F27;">● UCS colour: green &lt;35 · amber 35–50 · red &gt;50 MPa</span>
+    </div>
   </div>
 
-  <!-- ROCK PARAMETER VISUALISATION -->
+  <!-- CHARTS ROW -->
   <div class="cols2" style="margin-bottom:12px;">
     <div class="card">
-      <div class="ct">UCS profile by depth (MPa)</div>
+      <div class="ct">UCS profile by depth — Bassein Limestone MH-N-01</div>
       <canvas id="drill-ucs-chart" height="160" style="width:100%;"></canvas>
     </div>
     <div class="card">
-      <div class="ct">Fusion output — final rock parameters (Sheet 22)</div>
+      <div class="ct">Rock strength summary — averaged across interval</div>
       <div id="fusion-output"></div>
     </div>
   </div>
 
-  <!-- ML ARCHITECTURE (Sheet 21 reference) -->
+  <!-- PHYSICS-ML BLEND CONTROL -->
   <div class="card">
-    <div class="ct">ML Rock Parameter Submodel — Sheet 21 · Architecture reference (Camp 3)</div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;margin-top:8px;">
-      <div style="background:rgba(171,71,188,.1);border:0.5px solid #AB47BC44;border-radius:6px;padding:10px;">
-        <div style="color:#AB47BC;font-size:10px;font-weight:600;">ANN</div>
-        <div style="color:#888;font-size:9px;margin-top:3px;">Input → 2–4 dense layers → UCS, c, φ, T. Best for complex formations.</div>
-        <div style="color:#EF9F27;font-size:9px;margin-top:4px;">Status: Camp 3 placeholder</div>
+    <div class="ct">Physics–ML blend · adjust when ML model deploys</div>
+    <div style="padding:10px 0 4px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+        <label style="color:#9FE1CB;font-size:11px;min-width:140px;">Physics weight w<sub>p</sub></label>
+        <input type="range" id="wp-slider" min="0" max="1" step="0.05" value="0.8" style="flex:1;" oninput="updateFusion()">
+        <span id="wp-val" style="color:#EF9F27;font-size:12px;font-weight:600;min-width:36px;">0.80</span>
       </div>
-      <div style="background:rgba(29,158,117,.1);border:0.5px solid #1D9E7544;border-radius:6px;padding:10px;">
-        <div style="color:#1D9E75;font-size:10px;font-weight:600;">XGBoost</div>
-        <div style="color:#888;font-size:9px;margin-top:3px;">Gradient boosted trees. Fast, handles missing data; best for UCS/porosity.</div>
-        <div style="color:#EF9F27;font-size:9px;margin-top:4px;">Status: Camp 3 placeholder</div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+        <label style="color:#9FE1CB;font-size:11px;min-width:140px;">ML weight w<sub>ml</sub></label>
+        <div style="flex:1;background:rgba(255,255,255,.06);border-radius:4px;height:6px;position:relative;"><div id="wml-bar" style="position:absolute;left:0;top:0;height:100%;background:#AB47BC;border-radius:4px;width:20%;"></div></div>
+        <span id="wml-val" style="color:#AB47BC;font-size:12px;font-weight:600;min-width:36px;">0.20</span>
       </div>
-      <div style="background:rgba(10,122,158,.1);border:0.5px solid #0A7A9E44;border-radius:6px;padding:10px;">
-        <div style="color:#0A7A9E;font-size:10px;font-weight:600;">CNN</div>
-        <div style="color:#888;font-size:9px;margin-top:3px;">Feature extraction from torque/vibration time-series waveforms.</div>
-        <div style="color:#EF9F27;font-size:9px;margin-top:4px;">Status: Camp 3 placeholder</div>
-      </div>
-      <div style="background:rgba(39,174,96,.1);border:0.5px solid #27AE6044;border-radius:6px;padding:10px;">
-        <div style="color:#27AE60;font-size:10px;font-weight:600;">Random Forest</div>
-        <div style="color:#888;font-size:9px;margin-top:3px;">Ensemble trees; handles heterogeneity; feature importance ranking.</div>
-        <div style="color:#EF9F27;font-size:9px;margin-top:4px;">Status: Camp 3 placeholder</div>
-      </div>
-      <div style="background:rgba(230,126,34,.1);border:0.5px solid #E67E2244;border-radius:6px;padding:10px;">
-        <div style="color:#E67E22;font-size:10px;font-weight:600;">Hybrid PSO-SVR</div>
-        <div style="color:#888;font-size:9px;margin-top:3px;">Particle Swarm tunes SVR. Highest accuracy for friction angle φ.</div>
-        <div style="color:#EF9F27;font-size:9px;margin-top:4px;">Status: Camp 3 placeholder</div>
-      </div>
-      <div style="background:rgba(159,225,203,.08);border:0.5px solid #9FE1CB44;border-radius:6px;padding:10px;">
-        <div style="color:#9FE1CB;font-size:10px;font-weight:600;">Fusion → Sheet 22</div>
-        <div style="color:#888;font-size:9px;margin-top:3px;">P_final = w_p × P_physics + w_ml × P_ml. Dynamic weighting by data quality.</div>
-        <div style="color:#5DCAA5;font-size:9px;margin-top:4px;">Architecture live · Slider above</div>
-      </div>
+      <div style="font-size:9px;color:#5A7A94;">ML columns activate when Camp 3 Python backend is deployed. Until then physics weight = 1.0 effective.</div>
     </div>
-  </div>
-
-  <!-- WIRING MAP -->
-  <div class="card" style="margin-top:10px;">
-    <div class="ct">Downstream wiring map — where final parameters feed (pending Camp 3 sign-off)</div>
-    <table class="dt" style="font-size:10px;">
-      <tr><th>Output</th><th>Target sheet</th><th>Field</th><th>Status</th></tr>
-      <tr><td style="color:#9FE1CB;">Final UCS (MPa)</td><td>15_Inputs_Mining</td><td>UCS — geomechanics section</td><td style="color:#EF9F27;">Pending Camp 3</td></tr>
-      <tr><td style="color:#9FE1CB;">Final c (MPa)</td><td>15_Inputs_Mining</td><td>Cohesion</td><td style="color:#EF9F27;">Pending Camp 3</td></tr>
-      <tr><td style="color:#9FE1CB;">Final φ (°)</td><td>15_Inputs_Mining</td><td>Friction Angle</td><td style="color:#EF9F27;">Pending Camp 3</td></tr>
-      <tr><td style="color:#9FE1CB;">Final T (MPa)</td><td>15_Inputs_Mining</td><td>Tensile Strength</td><td style="color:#EF9F27;">Pending Camp 3</td></tr>
-      <tr><td style="color:#9FE1CB;">Final UCS (MPa)</td><td>07_Decision_Matrix</td><td>New column G_d — geomechanical score</td><td style="color:#EF9F27;">Pending Camp 3</td></tr>
-      <tr><td style="color:#9FE1CB;">Final UCS (MPa)</td><td>19_DigitalTwin_CorePlug</td><td>Section C — UCS-k permeability cross-validation</td><td style="color:#EF9F27;">Pending Camp 3</td></tr>
-    </table>
   </div>
 </div>
 
@@ -910,16 +845,16 @@ async function fetchLive(){
     ()=>fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json',{mode:'cors'}).then(r=>r.json()).then(d=>d.usd.inr)
   ];
   for(const s of fxSources){try{const v=await s();if(v>70&&v<100){fx=v;break;}}catch(e){}}
-  // Brent fetch — try multiple proxy sources
+  // Brent fetch — try CORS-friendly proxies
   const brentSources=[
-    ()=>fetch('https://query1.finance.yahoo.com/v8/finance/chart/BZ=F?interval=1d&range=1d',{mode:'cors'}).then(r=>r.json()).then(d=>d.chart.result[0].meta.regularMarketPrice),
-    ()=>fetch('https://query2.finance.yahoo.com/v8/finance/chart/BZ=F?interval=1d&range=1d',{mode:'cors'}).then(r=>r.json()).then(d=>d.chart.result[0].meta.regularMarketPrice),
     ()=>fetch('https://api.allorigins.win/get?url='+encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/BZ%3DF?interval=1d&range=1d'),{mode:'cors'}).then(r=>r.json()).then(d=>JSON.parse(d.contents).chart.result[0].meta.regularMarketPrice),
+    ()=>fetch('https://corsproxy.io/?'+encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/BZ%3DF?interval=1d&range=1d'),{mode:'cors'}).then(r=>r.json()).then(d=>d.chart.result[0].meta.regularMarketPrice),
+    ()=>fetch('https://api.allorigins.win/get?url='+encodeURIComponent('https://query2.finance.yahoo.com/v8/finance/chart/BZ%3DF?interval=1d&range=1d'),{mode:'cors'}).then(r=>r.json()).then(d=>JSON.parse(d.contents).chart.result[0].meta.regularMarketPrice),
   ];
   for(const s of brentSources){try{const v=await s();if(v>40&&v<200){brentUSD=v;break;}}catch(e){}}
   // Commodity prices — copper ($/t), iron ore ($/t), gold ($/oz), silver ($/oz), aluminium ($/t)
   const MINE_SYMBOLS={Cu:'HG=F',Au:'GC=F',Si:'SI=F',Al:'ALI=F'};
-  const getYF=sym=>fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${sym}?interval=1d&range=1d`,{mode:'cors'}).then(r=>r.json()).then(d=>d.chart.result[0].meta.regularMarketPrice).catch(()=>null);
+  const getYF=sym=>fetch('https://api.allorigins.win/get?url='+encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/'+sym+'?interval=1d&range=1d'),{mode:'cors'}).then(r=>r.json()).then(d=>JSON.parse(d.contents).chart.result[0].meta.regularMarketPrice).catch(()=>null);
   const [cuUSD,auUSD]=await Promise.all([getYF('HG=F'),getYF('GC=F')]);
   // Update Brent display
   const brentINR=Math.round(brentUSD*fx);
@@ -1530,13 +1465,14 @@ async function runAnalysis(){
   document.getElementById('res-verdict').innerHTML=`<div class="verdict ${vCls2}"><strong>HyperSenseIQ — ${w.id} · ${cat} · Best EOR: ${top.n}</strong><br>Current rate: <span style="font-weight:500;">${cr} bbl/d</span> · STOIIP: <span style="font-weight:500;">${st.toLocaleString()} STB</span> · RF ${(rf*100).toFixed(0)}%<br>${top.n} EOR: P_EOR ${(top.peor*100).toFixed(0)}% · ΔN ${Math.round(top.peor*top.upl*st/1000)} Kbbl · NPV ${npv>0?'+':''}₹${npv.toFixed(1)} Cr<div class="sbar-w" style="margin-top:6px;"><div class="sbar" style="width:${(top.peor*100).toFixed(0)}%;background:${npv>0?'var(--g-mid)':'var(--a-mid)'};"></div></div></div>`;
   document.getElementById('inp-results').style.display='block';
   document.getElementById('inp-results').scrollIntoView({behavior:'smooth',block:'start'});
-  // Draw decline canvas and economics after DOM is visible
-  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+  // Draw after layout settles - use 250ms to ensure cards have width
+  setTimeout(()=>{
     const dc=document.getElementById('res-dec');
     if(dc){
-      const pw=dc.parentElement.clientWidth||440;
-      dc.width=pw;dc.height=170;
-      const ctx=dc.getContext('2d'),W=pw,H=170;
+      const card=dc.closest('.card');
+      const pw=(card?card.clientWidth:0)||dc.parentElement.clientWidth||460;
+      dc.width=pw-24;dc.height=170;
+      const ctx=dc.getContext('2d'),W=dc.width,H=170;
       ctx.clearRect(0,0,W,H);ctx.fillStyle='#0A1220';ctx.fillRect(0,0,W,H);
       const PAD={l:40,r:10,t:14,b:28},W2=W-PAD.l-PAD.r,Hh=H-PAD.t-PAD.b;
       const YEARS=15,maxQ=w.qi*1.15;
@@ -1549,15 +1485,17 @@ async function runAnalysis(){
       ctx.beginPath();for(let i=0;i<=120;i++){const t=i/120*YEARS;if(i===0)ctx.moveTo(tx(t),ty(eorFn(t)));else ctx.lineTo(tx(t),ty(eorFn(t)));}
       for(let i=120;i>=0;i--){const t=i/120*YEARS;ctx.lineTo(tx(t),ty(arpsW(t)));}
       ctx.closePath();ctx.fillStyle='rgba(171,71,188,.12)';ctx.fill();
-      [[arpsW,'#6B3FD4',1.5],[eorFn,'#AB47BC',2]].forEach(([fn,col,lw])=>{ctx.beginPath();ctx.strokeStyle=col;ctx.lineWidth=lw;for(let i=0;i<=120;i++){const t=i/120*YEARS,q=fn(t);if(i===0)ctx.moveTo(tx(t),ty(q));else ctx.lineTo(tx(t),ty(q));}ctx.stroke();});
+      [[arpsW,'#6B3FD4',1.5],[eorFn,top.col||'#AB47BC',2]].forEach(([fn,col,lw])=>{ctx.beginPath();ctx.strokeStyle=col;ctx.lineWidth=lw;for(let i=0;i<=120;i++){const t=i/120*YEARS,q=fn(t);if(i===0)ctx.moveTo(tx(t),ty(q));else ctx.lineTo(tx(t),ty(q));}ctx.stroke();});
       ctx.beginPath();ctx.strokeStyle='#F0A500';ctx.lineWidth=1;ctx.setLineDash([3,2]);ctx.moveTo(tx(w.age),PAD.t);ctx.lineTo(tx(w.age),PAD.t+Hh);ctx.stroke();ctx.setLineDash([]);
       ctx.fillStyle='#F0A500';ctx.font='bold 8px system-ui';ctx.textAlign='center';ctx.fillText('NOW',tx(w.age),PAD.t+8);
       ctx.fillStyle='rgba(180,180,180,.6)';ctx.font='8px system-ui';ctx.textAlign='right';ctx.fillText('bbl/d',PAD.l-2,PAD.t+4);
+      // Legend
+      [[top.col||'#AB47BC','EOR uplift ('+top.n+')'],[' #6B3FD4','Base decline']].forEach(([col,lbl],li)=>{ctx.fillStyle=col;ctx.fillRect(PAD.l+li*110,PAD.t+Hh+18,10,4);ctx.fillStyle='rgba(200,220,200,.7)';ctx.font='8px system-ui';ctx.textAlign='left';ctx.fillText(lbl,PAD.l+li*110+13,PAD.t+Hh+22);});
       ctx.strokeStyle='rgba(255,255,255,.1)';ctx.lineWidth=.5;ctx.strokeRect(PAD.l,PAD.t,W2,Hh);
     }
     const econ=document.getElementById('res-econ');
     if(econ){
-      const INR2=v=>'\u20b9'+Math.round(v).toLocaleString('en-IN');
+      const INR2=v=>'₹'+Math.round(v).toLocaleString('en-IN');
       const grossRev=(cr*365*w.op/1e7).toFixed(1);
       const royalty=(cr*365*w.op*.10/1e7).toFixed(1);
       const cess=(cr*365*614/1e7).toFixed(2);
@@ -1565,19 +1503,19 @@ async function runAnalysis(){
       const capexCr=(top.capex*83.5/100).toFixed(1);
       const payback=npv>0?Math.max(1,Math.round(parseFloat(capexCr)/(parseFloat(netRev)/w.hor*.8)))+' yr (est.)':'Uneconomic';
       econ.innerHTML=[
-        ['Crude price (\u20b9/bbl)',INR2(w.op),'vn'],
+        ['Crude price (₹/bbl)',INR2(w.op),'vn'],
         ['Current production rate',cr+' bbl/d','vg'],
-        ['Gross revenue (annual)','\u20b9'+grossRev+' Cr/yr','vg'],
-        ['Offshore royalty (10%)','\u2212 \u20b9'+royalty+' Cr/yr','vr'],
-        ['OID cess (\u20b9614/bbl)','\u2212 \u20b9'+cess+' Cr/yr','vr'],
-        ['Operator share ('+Math.round(w.eq*100)+'%)','\u20b9'+netRev+' Cr/yr','vg'],
-        [top.n+' EOR CAPEX','\u20b9'+capexCr+' Cr','vr'],
-        ['NPV ('+w.hor+'yr @ '+(w.dr*100).toFixed(0)+'%)',(npv>0?'+':'')+' \u20b9'+npv.toFixed(1)+' Cr',npv>0?'vg':'vr'],
+        ['Gross revenue (annual)','₹'+grossRev+' Cr/yr','vg'],
+        ['Offshore royalty (10%)','− ₹'+royalty+' Cr/yr','vr'],
+        ['OID cess (₹614/bbl)','− ₹'+cess+' Cr/yr','vr'],
+        ['Operator share ('+Math.round(w.eq*100)+'%)','₹'+netRev+' Cr/yr','vg'],
+        [top.n+' EOR CAPEX','₹'+capexCr+' Cr','vr'],
+        ['NPV ('+w.hor+'yr @ '+(w.dr*100).toFixed(0)+'%)',(npv>0?'+':'')+' ₹'+npv.toFixed(1)+' Cr',npv>0?'vg':'vr'],
         ['Payback period',payback,npv>0?'va':'vr'],
         ['Project category',cat,cat==='High Value'?'vg':cat==='Marginal'?'va':'vr'],
       ].map(([l,v,c])=>'<div class="fr"><span class="fl">'+l+'</span><span class="fv '+c+'">'+v+'</span></div>').join('');
     }
-  }));
+  },250);
   btn.className='';btn.classList.add('ready');btn.textContent='Re-run Analysis';btn.disabled=false;
 }
 
@@ -1817,25 +1755,26 @@ function drawUCSChart(){
 }
 
 function renderFusionOutput(){
-  const wp=parseFloat(document.getElementById('wp-slider').value);
-  const wml=1-wp;
   const vals=DRILL_DATA.map(r=>drillPhysics(r));
   const avgUCS=vals.reduce((a,v)=>a+v.ucs,0)/vals.length;
   const avgC=vals.reduce((a,v)=>a+v.c,0)/vals.length;
   const avgPhi=vals.reduce((a,v)=>a+v.phi_out,0)/vals.length;
   const avgT=vals.reduce((a,v)=>a+v.T,0)/vals.length;
-  // ML placeholders: Camp 3 — show as dashes
+  const ucsClass=avgUCS>50?'vr':avgUCS>35?'va':'vg';
   const el=document.getElementById('fusion-output');
   if(!el)return;
   el.innerHTML=`
-    <table class="dt" style="font-size:11px;">
-      <tr><th>Parameter</th><th>Physics (w=${wp.toFixed(2)})</th><th style="color:#AB47BC;">ML (Camp 3)</th><th style="color:#9FE1CB;font-weight:700;">FINAL (fused)</th></tr>
-      <tr><td>UCS (MPa)</td><td style="color:#EF9F27;">${avgUCS.toFixed(1)}</td><td style="color:#AB47BC;">— pending</td><td style="color:#9FE1CB;font-weight:700;">${(wp*avgUCS).toFixed(1)} + ML</td></tr>
-      <tr><td>Cohesion c (MPa)</td><td style="color:#EF9F27;">${avgC.toFixed(2)}</td><td style="color:#AB47BC;">— pending</td><td style="color:#9FE1CB;font-weight:700;">${(wp*avgC).toFixed(2)} + ML</td></tr>
-      <tr><td>Friction angle φ (°)</td><td style="color:#EF9F27;">${avgPhi.toFixed(1)}</td><td style="color:#AB47BC;">— pending</td><td style="color:#9FE1CB;font-weight:700;">${(wp*avgPhi).toFixed(1)} + ML</td></tr>
-      <tr><td>Tensile strength T (MPa)</td><td style="color:#EF9F27;">${avgT.toFixed(2)}</td><td style="color:#AB47BC;">— pending</td><td style="color:#9FE1CB;font-weight:700;">${(wp*avgT).toFixed(2)} + ML</td></tr>
-    </table>
-    <div style="margin-top:8px;font-size:9px;color:#888;">Avg across ${vals.length} depth points · Well MH-N-01 · ML columns activate when Camp 3 Python backend is deployed</div>`;
+    <div class="kpis" style="grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:10px;">
+      <div class="kpi ${ucsClass}"><div class="kpi-l">Avg UCS</div><div class="kpi-v">${avgUCS.toFixed(0)}<span style="font-size:11px;font-weight:400"> MPa</span></div><div class="kpi-s">${avgUCS>50?'Hard — drilling challenge':avgUCS>35?'Moderate':'Soft — easy drilling'}</div></div>
+      <div class="kpi n"><div class="kpi-l">Avg Cohesion c</div><div class="kpi-v">${avgC.toFixed(1)}<span style="font-size:11px;font-weight:400"> MPa</span></div><div class="kpi-s">Shear strength</div></div>
+      <div class="kpi n"><div class="kpi-l">Friction angle φ</div><div class="kpi-v">${avgPhi.toFixed(1)}<span style="font-size:11px;font-weight:400">°</span></div><div class="kpi-s">Internal friction</div></div>
+      <div class="kpi n"><div class="kpi-l">Tensile strength T</div><div class="kpi-v">${avgT.toFixed(1)}<span style="font-size:11px;font-weight:400"> MPa</span></div><div class="kpi-s">Fracture threshold</div></div>
+    </div>
+    <div style="font-size:9px;color:#5A7A94;padding:6px 8px;background:rgba(255,255,255,.04);border-radius:4px;">
+      Averaged across ${vals.length} depth points · Well MH-N-01 · Bassein Limestone<br>
+      <span style="color:#EF9F27;">Geomechanical interpretation:</span> ${avgUCS>50?'Competent carbonate — perforation gun selection critical. High UCS may require oriented perforating.':avgUCS>35?'Moderate strength — standard completion viable. Monitor for sand production at WC >40%.':'Soft formation — consider sand control. Low UCS increases perforation tunnel stability risk.'}
+    </div>`;
+}
 }
 
 function updateFusion(){
