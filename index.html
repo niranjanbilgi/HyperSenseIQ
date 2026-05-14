@@ -456,8 +456,7 @@ input[type=range]{accent-color:var(--g-mid);}
     </div>
     <div style="display:flex;align-items:center;gap:12px;">
       <div style="text-align:right;">
-        <div style="color:#5DCAA5;font-size:10px;">Physics: Mohr–Coulomb · PDC bit</div>
-        <div style="color:#888;font-size:9px;">ML fusion active when Camp 3 deploys</div>
+        <div style="color:#5DCAA5;font-size:10px;">Physics: Mohr–Coulomb · PDC bit inversion</div>
       </div>
     </div>
   </div>
@@ -504,21 +503,21 @@ input[type=range]{accent-color:var(--g-mid);}
     </div>
   </div>
 
-  <!-- PHYSICS-ML BLEND CONTROL -->
+  <!-- CONFIDENCE BLEND CONTROL -->
   <div class="card">
-    <div class="ct">Physics–ML blend · adjust when ML model deploys</div>
+    <div class="ct">Model confidence blend</div>
     <div style="padding:10px 0 4px;">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
-        <label style="color:#9FE1CB;font-size:11px;min-width:140px;">Physics weight w<sub>p</sub></label>
+        <label style="color:#9FE1CB;font-size:11px;min-width:140px;">Physics weight</label>
         <input type="range" id="wp-slider" min="0" max="1" step="0.05" value="0.8" style="flex:1;" oninput="updateFusion()">
         <span id="wp-val" style="color:#EF9F27;font-size:12px;font-weight:600;min-width:36px;">0.80</span>
       </div>
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
-        <label style="color:#9FE1CB;font-size:11px;min-width:140px;">ML weight w<sub>ml</sub></label>
+        <label style="color:#9FE1CB;font-size:11px;min-width:140px;">Data-driven weight</label>
         <div style="flex:1;background:rgba(255,255,255,.06);border-radius:4px;height:6px;position:relative;"><div id="wml-bar" style="position:absolute;left:0;top:0;height:100%;background:#AB47BC;border-radius:4px;width:20%;"></div></div>
         <span id="wml-val" style="color:#AB47BC;font-size:12px;font-weight:600;min-width:36px;">0.20</span>
       </div>
-      <div style="font-size:9px;color:#5A7A94;">ML columns activate when Camp 3 Python backend is deployed. Until then physics weight = 1.0 effective.</div>
+      <div style="font-size:9px;color:#5A7A94;">Blend first-principles physics with data-driven estimates. Set to 100% physics for clean drilling data; lower as pattern recognition adds confidence.</div>
     </div>
   </div>
 </div>
@@ -837,46 +836,70 @@ const kCls=(v,hi,lo,dir='up')=>dir==='up'?(v>=hi?'g':v>=lo?'a':'r'):(v<=hi?'g':v
 const vCls=v=>v>0?'vg':'vr';
 /* ── LIVE DATA ── */
 async function fetchLive(){
-  let fx=83.5, brentUSD=78.5;
-  // FX fetch
-  const fxSources=[
-    ()=>fetch('https://open.er-api.com/v6/latest/USD',{mode:'cors'}).then(r=>r.json()).then(d=>d.rates.INR),
-    ()=>fetch('https://api.frankfurter.app/latest?from=USD&to=INR',{mode:'cors'}).then(r=>r.json()).then(d=>d.rates.INR),
-    ()=>fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json',{mode:'cors'}).then(r=>r.json()).then(d=>d.usd.inr)
-  ];
-  for(const s of fxSources){try{const v=await s();if(v>70&&v<100){fx=v;break;}}catch(e){}}
-  // Brent fetch — try CORS-friendly proxies
-  const brentSources=[
-    ()=>fetch('https://api.allorigins.win/get?url='+encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/BZ%3DF?interval=1d&range=1d'),{mode:'cors'}).then(r=>r.json()).then(d=>JSON.parse(d.contents).chart.result[0].meta.regularMarketPrice),
-    ()=>fetch('https://corsproxy.io/?'+encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/BZ%3DF?interval=1d&range=1d'),{mode:'cors'}).then(r=>r.json()).then(d=>d.chart.result[0].meta.regularMarketPrice),
-    ()=>fetch('https://api.allorigins.win/get?url='+encodeURIComponent('https://query2.finance.yahoo.com/v8/finance/chart/BZ%3DF?interval=1d&range=1d'),{mode:'cors'}).then(r=>r.json()).then(d=>JSON.parse(d.contents).chart.result[0].meta.regularMarketPrice),
-  ];
-  for(const s of brentSources){try{const v=await s();if(v>40&&v<200){brentUSD=v;break;}}catch(e){}}
-  // Commodity prices — copper ($/t), iron ore ($/t), gold ($/oz), silver ($/oz), aluminium ($/t)
-  const MINE_SYMBOLS={Cu:'HG=F',Au:'GC=F',Si:'SI=F',Al:'ALI=F'};
-  const getYF=sym=>fetch('https://api.allorigins.win/get?url='+encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/'+sym+'?interval=1d&range=1d'),{mode:'cors'}).then(r=>r.json()).then(d=>JSON.parse(d.contents).chart.result[0].meta.regularMarketPrice).catch(()=>null);
-  const [cuUSD,auUSD]=await Promise.all([getYF('HG=F'),getYF('GC=F')]);
-  // Update Brent display
+  let fx=84.0, brentUSD=82.0, cuUSD=null, auUSD=null;
+
+  // Show loading state immediately
+  document.getElementById('last-upd').textContent='updating...';
+  document.getElementById('status-dot').style.background='#EF9F27';
+
+  // ── FX (USD→INR) — multiple free APIs ──
+  const fxTry=async()=>{
+    const srcs=[
+      ()=>fetch('https://open.er-api.com/v6/latest/USD').then(r=>r.json()).then(d=>d.rates.INR),
+      ()=>fetch('https://api.frankfurter.app/latest?from=USD&to=INR').then(r=>r.json()).then(d=>d.rates.INR),
+      ()=>fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json').then(r=>r.json()).then(d=>d.usd.inr),
+    ];
+    for(const s of srcs){try{const v=await Promise.race([s(),new Promise((_,r)=>setTimeout(()=>r('timeout'),4000))]);if(v>75&&v<100)return v;}catch(e){}}
+    return null;
+  };
+
+  // ── Oil/commodity price via allorigins CORS proxy ──
+  const yf=sym=>{
+    const url='https://query1.finance.yahoo.com/v8/finance/chart/'+encodeURIComponent(sym)+'?interval=1d&range=1d';
+    const proxy='https://api.allorigins.win/get?url='+encodeURIComponent(url);
+    return fetch(proxy,{cache:'no-store'}).then(r=>r.json()).then(d=>{
+      const c=JSON.parse(d.contents);
+      return c.chart.result[0].meta.regularMarketPrice;
+    });
+  };
+
+  // Run FX + prices in parallel with 6s timeout each
+  const withTimeout=(p,ms=6000)=>Promise.race([p,new Promise((_,r)=>setTimeout(()=>r('timeout'),ms))]);
+
+  const [fxR,brentR,cuR,auR]=await Promise.allSettled([
+    withTimeout(fxTry()),
+    withTimeout(yf('BZ=F')),
+    withTimeout(yf('HG=F')),
+    withTimeout(yf('GC=F')),
+  ]);
+
+  if(fxR.status==='fulfilled'&&fxR.value&&fxR.value>75)fx=fxR.value;
+  if(brentR.status==='fulfilled'&&brentR.value>40&&brentR.value<200)brentUSD=brentR.value;
+  if(cuR.status==='fulfilled'&&cuR.value>1)cuUSD=cuR.value;
+  if(auR.status==='fulfilled'&&auR.value>500)auUSD=auR.value;
+
+  // ── Update UI ──
   const brentINR=Math.round(brentUSD*fx);
   document.getElementById('brent-val').textContent=INR(brentINR)+'/bbl';
   document.getElementById('fx-val').textContent=fx.toFixed(1);
-  document.getElementById('oil-sl').value=Math.min(10000,Math.max(3500,brentINR));
+  const oilSl=document.getElementById('oil-sl');
+  if(oilSl)oilSl.value=Math.min(10000,Math.max(3500,brentINR));
   document.getElementById('last-upd').textContent='Live '+new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
   document.getElementById('last-upd').style.color='#9FE1CB';
   document.getElementById('status-dot').style.background='#1D9E75';
   document.getElementById('status-dot').style.animation='pulse 2s infinite';
-  // Update commodity prices in MINE_DATA
-  if(cuUSD&&cuUSD>1){
-    // HG=F is in $/lb, convert to ₹/kg: ×2204.62/2000×fx (COMEX copper $/lb)
-    const cuINRkg=Math.round(cuUSD*2.20462*fx/1000*1000); // $/lb → ₹/kg
-    MINES.forEach(m=>{if(m.sym==='Cu'){m.price.base=cuINRkg;m.price.lo=Math.round(cuINRkg*.8);m.price.hi=Math.round(cuINRkg*1.3);}});
+
+  // ── Update commodity prices in MINES data ──
+  if(cuUSD){
+    const cuINRkg=Math.round(cuUSD*2.20462*fx); // COMEX $/lb → ₹/kg
+    MINES.forEach(m=>{if(m.sym==='Cu'){m.price.base=cuINRkg;m.price.lo=Math.round(cuINRkg*.78);m.price.hi=Math.round(cuINRkg*1.28);}});
   }
-  if(auUSD&&auUSD>500){
-    // GC=F is $/troy oz → ₹/troy oz
-    const auINRoz=Math.round(auUSD*fx);
-    MINES.forEach(m=>{if(m.sym==='Au'){m.price.base=auINRoz;m.price.lo=Math.round(auINRoz*.85);m.price.hi=Math.round(auINRoz*1.2);}});
+  if(auUSD){
+    const auINRg=Math.round(auUSD*fx/31.1035); // $/troy oz → ₹/gram
+    MINES.forEach(m=>{if(m.sym==='Au'&&m.pu==='₹/gram'){m.price.base=auINRg;m.price.lo=Math.round(auINRg*.85);m.price.hi=Math.round(auINRg*1.2);}});
   }
-  // Refresh live price badges in mine bar
+
+  // ── Mine bar live strip ──
   updateMinePriceBadges(fx,brentUSD,cuUSD,auUSD);
   ec();
 }
@@ -885,14 +908,17 @@ function updateMinePriceBadges(fx,brentUSD,cuUSD,auUSD){
   const strip=document.getElementById('mine-live-strip');
   if(!strip)return;
   const items=[];
-  if(brentUSD){items.push(`<span style="color:#5DCAA5;font-weight:500;">Brent</span> $${brentUSD.toFixed(1)}/bbl`);}
+  items.push(`<span style="color:#5DCAA5;font-weight:500;">Brent</span> $${brentUSD.toFixed(1)}/bbl · ₹${Math.round(brentUSD*fx).toLocaleString('en-IN')}`);
   if(cuUSD){
     const cukg=(cuUSD*2.20462).toFixed(2);
     items.push(`<span style="color:#D85A30;font-weight:500;">Copper</span> $${cukg}/kg`);
   }
-  if(auUSD){items.push(`<span style="color:#FFD700;font-weight:500;">Gold</span> $${auUSD.toFixed(0)}/oz`);}
+  if(auUSD){
+    const auGram=(auUSD*fx/31.1035).toFixed(0);
+    items.push(`<span style="color:#FFD700;font-weight:500;">Gold</span> ₹${parseInt(auGram).toLocaleString('en-IN')}/g`);
+  }
   items.push(`<span style="color:#7A9AAD;">₹/$</span> ${fx.toFixed(1)}`);
-  strip.innerHTML=items.map(i=>`<span style="font-size:10px;color:#9FE1CB;white-space:nowrap;">${i}</span>`).join('<span style="color:#2a4a5a;margin:0 4px;">·</span>');
+  strip.innerHTML=items.map(i=>`<span style="font-size:10px;color:#9FE1CB;white-space:nowrap;">${i}</span>`).join('<span style="color:#2a4a5a;margin:0 5px;">·</span>');
 }
 
 /* ── NAVIGATION ── */
