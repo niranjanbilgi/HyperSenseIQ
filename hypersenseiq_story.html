@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HyperSenseIQ — See Beyond the Surface</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:100%;height:100%;overflow:hidden;background:#06101E;}
+body{font-family:'Nunito',sans-serif;display:flex;align-items:center;justify-content:center;}
+#stage{width:100vw;height:100vh;background:linear-gradient(180deg,#0D1F3C 0%,#0A1628 55%,#061018 100%);position:relative;overflow:hidden;}
+.scene{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity 0.6s;}
+.scene.active{opacity:1;pointer-events:all;}
+.star{position:absolute;background:#fff;border-radius:50%;animation:twinkle 3s infinite;}
+@keyframes twinkle{0%,100%{opacity:.9;}50%{opacity:.1;}}
+@keyframes slideUp{from{transform:translateY(40px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+@keyframes slideIn{from{transform:translateX(-50px);opacity:0;}to{transform:translateX(0);opacity:1;}}
+@keyframes slideInR{from{transform:translateX(50px);opacity:0;}to{transform:translateX(0);opacity:1;}}
+@keyframes popIn{from{transform:scale(.3);opacity:0;}to{transform:scale(1);opacity:1;}}
+@keyframes bounceIn{from{transform:translateY(-30px) scale(.5);opacity:0;}to{transform:translateY(0) scale(1);opacity:1;}}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+@keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.06);}}
+@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+@keyframes oilDrop{0%{transform:translateY(0);opacity:.9;}100%{transform:translateY(80px);opacity:0;}}
+@keyframes sheen{0%,100%{opacity:.35;}50%{opacity:.85;}}
+@keyframes gradShift{0%{background-position:0%}100%{background-position:300%}}
+.h1{font-family:'Fredoka One',sans-serif;font-size:clamp(26px,3.6vw,52px);color:#9FE1CB;letter-spacing:.02em;text-shadow:0 0 40px rgba(29,158,117,.5);}
+.h2{font-family:'Fredoka One',sans-serif;font-size:clamp(20px,2.8vw,38px);color:#9FE1CB;}
+.sub{font-size:clamp(12px,1.3vw,17px);color:#5A7A94;letter-spacing:.03em;margin-top:6px;}
+.brand-big{font-family:'Fredoka One',sans-serif;font-size:clamp(40px,7vw,96px);background:linear-gradient(135deg,#9FE1CB,#F0A500,#E24B4A,#9FE1CB);background-size:300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:gradShift 4s linear infinite;}
+.gsurface{position:absolute;left:0;right:0;background:linear-gradient(180deg,#3D6B2E,#2A4D1F);}
+.gsand{position:absolute;left:0;right:0;background:linear-gradient(180deg,#9B7B4A,#6B4A2A);}
+.grock{position:absolute;left:0;right:0;background:linear-gradient(180deg,#4A4A4A,#2A2A2A);}
+.goil{position:absolute;left:0;right:0;background:linear-gradient(180deg,#1A1200,#050300);}
+.bubble{position:absolute;background:#fff;border-radius:20px 20px 20px 6px;padding:clamp(12px,1.8vh,20px) clamp(14px,2vw,22px);font-weight:900;font-size:clamp(13px,1.5vw,20px);color:#0D1F3C;box-shadow:0 8px 40px rgba(0,0,0,.6);line-height:1.5;border:2px solid #E8E8E8;}
+.bubble.r{border-radius:20px 20px 6px 20px;}
+.bubble::after{content:'';position:absolute;bottom:-14px;left:22px;width:0;height:0;border:8px solid transparent;border-top-color:#fff;border-bottom:none;}
+.bubble.r::after{left:auto;right:22px;}
+.stat-card{background:rgba(13,110,90,.18);border:2px solid #0F6E56;border-radius:14px;padding:clamp(10px,1.5vh,18px) clamp(14px,2vw,22px);backdrop-filter:blur(4px);}
+.stat-num{font-family:'Fredoka One',sans-serif;font-size:clamp(22px,3.2vw,44px);color:#F0A500;}
+.stat-lbl{font-size:clamp(9px,.9vw,13px);color:#9FE1CB;font-weight:700;letter-spacing:.08em;text-transform:uppercase;}
+.feat-card{background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.12);border-radius:14px;padding:clamp(14px,2vh,22px) clamp(16px,2vw,24px);margin-bottom:12px;}
+.feat-title{font-family:'Fredoka One',sans-serif;font-size:clamp(16px,2vw,26px);color:#9FE1CB;margin-bottom:6px;}
+.feat-body{font-size:clamp(11px,1.2vw,16px);color:#8AABCC;line-height:1.65;}
+.eor-bar-wrap{margin-bottom:8px;}
+.eor-bar-label{font-size:clamp(12px,1.3vw,18px);font-weight:700;color:#E8D87A;margin-bottom:4px;}
+.eor-bar-track{height:clamp(20px,2.8vh,34px);background:rgba(255,255,255,.06);border-radius:17px;overflow:hidden;}
+.eor-bar-fill{height:100%;border-radius:17px;width:0;transition:width 1.4s cubic-bezier(.34,1.2,.64,1);display:flex;align-items:center;justify-content:flex-end;padding-right:10px;}
+.eor-bar-pct{font-size:clamp(11px,1.2vw,15px);font-weight:900;color:#fff;}
+.hc{display:inline-block;opacity:0;animation:fadeIn .05s forwards;font-family:monospace;font-size:clamp(11px,1.2vw,16px);}
+#prog{position:absolute;top:0;left:0;height:4px;background:linear-gradient(90deg,#1D9E75,#F0A500,#E24B4A);border-radius:0 2px 2px 0;transition:width .5s ease;z-index:100;}
+.slbl{position:absolute;top:16px;left:24px;font-size:clamp(9px,.9vw,12px);color:rgba(255,255,255,.28);font-weight:700;letter-spacing:.12em;text-transform:uppercase;z-index:50;}
+#nav{position:absolute;bottom:0;left:0;right:0;height:clamp(46px,6.5vh,65px);background:rgba(6,16,30,.88);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;gap:8px;border-top:1px solid rgba(255,255,255,.07);z-index:100;}
+.ndot{width:clamp(8px,.9vw,11px);height:clamp(8px,.9vw,11px);border-radius:50%;background:rgba(255,255,255,.2);cursor:pointer;transition:all .3s;flex-shrink:0;}
+.ndot.on{background:#1D9E75;transform:scale(1.35);}
+.nbtn{font-family:'Nunito',sans-serif;font-size:clamp(11px,1.2vw,16px);font-weight:700;padding:7px 20px;border-radius:22px;border:2px solid;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.nbtn.prev{border-color:#5A7A94;color:#5A7A94;background:transparent;}
+.nbtn.next{border-color:#1D9E75;color:#9FE1CB;background:rgba(29,158,117,.18);}
+.nbtn:disabled{opacity:.3;cursor:not-allowed;}
+.odrop{position:absolute;width:9px;height:14px;background:#1A0A00;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;opacity:0;}
+.scene-hdr{position:absolute;top:clamp(14px,2.5vh,28px);left:0;right:0;text-align:center;}
+.scene-body{position:absolute;top:clamp(90px,13vh,130px);left:0;right:0;bottom:clamp(46px,6.5vh,65px);}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:clamp(14px,1.8vw,28px);height:100%;padding:0 clamp(28px,3.5vw,55px);}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:clamp(12px,1.5vw,24px);height:100%;padding:0 clamp(22px,2.8vw,44px);}
+.vcenter{display:flex;flex-direction:column;gap:12px;justify-content:center;}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="prog" style="width:9.09%"></div>
+
+  <!-- Stars -->
+  <div class="star" style="width:2px;height:2px;top:3%;left:8%;animation-delay:.3s"></div>
+  <div class="star" style="width:1.5px;height:1.5px;top:6%;left:22%;animation-delay:.8s"></div>
+  <div class="star" style="width:2px;height:2px;top:2%;left:41%;animation-delay:1.2s"></div>
+  <div class="star" style="width:1px;height:1px;top:8%;left:58%;animation-delay:.5s"></div>
+  <div class="star" style="width:2px;height:2px;top:4%;left:73%;animation-delay:1s"></div>
+  <div class="star" style="width:1.5px;height:1.5px;top:3%;left:87%;animation-delay:.4s"></div>
+  <div class="star" style="width:1px;height:1px;top:7%;left:35%;animation-delay:1.3s"></div>
+  <div class="star" style="width:2px;height:2px;top:5%;left:53%;animation-delay:.9s"></div>
+
+  <!-- S1: THE PROBLEM -->
+  <div class="scene active" id="s1">
+    <div class="slbl">01 · The Problem</div>
+
+    <!-- ── ZONE 1: Title (top 12%) ── -->
+    <div style="position:absolute;top:0;left:0;right:0;height:12%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding-top:clamp(10px,1.5vh,22px);">
+      <div class="h1" style="animation:slideUp .7s .3s both;">India's Mature Oil Fields</div>
+      <div class="sub" style="animation:slideUp .7s .5s both;">The world's largest under-exploited reservoir opportunity</div>
+    </div>
+
+    <!-- ── ZONE 2: Stats + bubbles (12%→50%) ── -->
+    <div style="position:absolute;top:12%;left:0;right:0;height:38%;display:flex;align-items:center;justify-content:space-between;padding:0 3%;">
+
+      <!-- Left: ONGC bubble -->
+      <div class="bubble" style="flex:0 0 auto;max-width:clamp(200px,26vw,320px);animation:popIn .4s 2.8s cubic-bezier(.34,1.56,.64,1) both;position:relative;bottom:auto;left:auto;">
+        <span style="color:#E24B4A;font-size:clamp(22px,3vw,40px);font-family:'Fredoka One',sans-serif;">78%</span> of our oil<br>
+        is still trapped!<br>
+        <span style="color:#5A7A94;font-size:clamp(11px,1.2vw,15px);font-weight:400;">Mumbai High · 50+ years producing</span>
+      </div>
+
+      <!-- Centre: Big stat counter -->
+      <div style="text-align:center;flex:0 0 auto;animation:slideUp .6s 2.4s both;">
+        <div id="s1-ctr" style="font-family:'Fredoka One',sans-serif;font-size:clamp(80px,13vw,160px);color:#E24B4A;line-height:1;text-shadow:0 0 60px rgba(226,75,74,.8);">0%</div>
+        <div style="font-size:clamp(14px,1.8vw,24px);color:#9FE1CB;font-weight:700;">of ORIGINAL OIL</div>
+        <div style="font-size:clamp(12px,1.5vw,20px);color:#5A7A94;margin-top:4px;">still in the ground</div>
+        <div style="font-size:clamp(13px,1.6vw,21px);color:#F0A500;font-weight:700;margin-top:10px;">≈ 5 BILLION barrels</div>
+      </div>
+
+      <!-- Right: OIL India bubble -->
+      <div class="bubble r" style="flex:0 0 auto;max-width:clamp(190px,25vw,310px);animation:popIn .4s 3.1s cubic-bezier(.34,1.56,.64,1) both;position:relative;bottom:auto;right:auto;">
+        Same in Assam!<br>
+        <span style="color:#E24B4A;font-size:clamp(20px,2.8vw,38px);font-family:'Fredoka One',sans-serif;">85%</span> still underground<br>
+        <span style="color:#5A7A94;font-size:clamp(11px,1.2vw,15px);font-weight:400;">Kalol Sandstone · Cambay Basin</span>
+      </div>
+    </div>
+
+    <!-- ── ZONE 3: Ground scene (50%→100%) ── -->
+    <div style="position:absolute;top:50%;left:0;right:0;bottom:0;overflow:hidden;">
+
+      <!-- Sky part of zone 3 (engineers stand here) -->
+      <div style="position:absolute;top:0;left:0;right:0;height:35%;background:linear-gradient(180deg,transparent,rgba(6,16,30,.3));display:flex;align-items:flex-end;justify-content:space-around;padding:0 8%;">
+
+        <!-- Derrick -->
+        <div style="animation:slideUp .7s 1s both;transform-origin:bottom;flex-shrink:0;">
+          <svg width="clamp(50px,6vw,90px)" viewBox="0 0 80 130" style="width:clamp(50px,6vw,90px);height:auto;display:block;">
+            <line x1="40" y1="2" x2="5" y2="122" stroke="#9FE1CB" stroke-width="3" stroke-linecap="round"/>
+            <line x1="40" y1="2" x2="75" y2="122" stroke="#9FE1CB" stroke-width="3" stroke-linecap="round"/>
+            <line x1="14" y1="85" x2="66" y2="85" stroke="#5DCAA5" stroke-width="2"/>
+            <line x1="22" y1="55" x2="58" y2="55" stroke="#5DCAA5" stroke-width="2"/>
+            <line x1="30" y1="28" x2="50" y2="28" stroke="#5DCAA5" stroke-width="2"/>
+            <rect x="30" y="117" width="20" height="6" fill="#EF9F27" rx="2"/>
+            <line x1="40" y1="123" x2="40" y2="145" stroke="#EF9F27" stroke-width="2.5" stroke-dasharray="5,4"/>
+          </svg>
+        </div>
+
+        <!-- ONGC Engineer -->
+        <div style="animation:bounceIn .6s 1.9s cubic-bezier(.34,1.56,.64,1) both;flex-shrink:0;">
+          <svg width="clamp(70px,9vw,130px)" viewBox="0 0 100 145" style="width:clamp(70px,9vw,130px);height:auto;display:block;">
+            <ellipse cx="50" cy="26" rx="28" ry="10" fill="#F0A500"/><rect x="23" y="26" width="54" height="6" fill="#EF9F27" rx="2"/><ellipse cx="50" cy="32" rx="35" ry="6" fill="#E8971A"/><text x="50" y="30" text-anchor="middle" font-size="9" font-weight="900" fill="#0D1F3C" font-family="Nunito,sans-serif">ONGC</text>
+            <circle cx="50" cy="54" r="23" fill="#D4956A"/><circle cx="40" cy="49" r="7" fill="#fff"/><circle cx="60" cy="49" r="7" fill="#fff"/><circle cx="41" cy="50" r="4" fill="#2C1A08"/><circle cx="61" cy="50" r="4" fill="#2C1A08"/><circle cx="42" cy="49" r="1.5" fill="#fff"/><circle cx="62" cy="49" r="1.5" fill="#fff"/>
+            <path d="M34 42 Q40 37 46 42" stroke="#2C1A08" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M54 42 Q60 37 66 42" stroke="#2C1A08" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            <path d="M38 63 Q50 73 62 63" stroke="#2C1A08" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M41 64 Q50 71 59 64" fill="#fff"/>
+            <path d="M38 59 Q50 64 62 59" stroke="#2C1A08" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+            <rect x="26" y="76" width="48" height="48" fill="#F0620A" rx="9"/><rect x="26" y="86" width="48" height="5" fill="rgba(220,220,220,.75)" rx="2"/><rect x="26" y="108" width="48" height="5" fill="rgba(220,220,220,.75)" rx="2"/>
+            <rect x="56" y="79" width="15" height="11" fill="#fff" rx="2"/><text x="63" y="88" text-anchor="middle" font-size="6.5" font-weight="900" fill="#F0620A" font-family="Nunito,sans-serif">ONGC</text>
+            <path d="M42 76 L50 87 L58 76" fill="#CC4E08"/>
+            <rect x="4" y="79" width="24" height="10" fill="#F0620A" rx="6"/><rect x="5" y="83" width="22" height="3.5" fill="rgba(220,220,220,.75)" rx="1"/>
+            <rect x="0" y="85" width="25" height="33" fill="#E8D87A" rx="4"/><rect x="2" y="81" width="21" height="7" fill="#F0A500" rx="2"/>
+            <line x1="4" y1="92" x2="21" y2="92" stroke="#3D3D3B" stroke-width="2"/><line x1="4" y1="97" x2="21" y2="97" stroke="#3D3D3B" stroke-width="2"/><line x1="4" y1="102" x2="17" y2="102" stroke="#E24B4A" stroke-width="3"/>
+            <rect x="72" y="75" width="10" height="27" fill="#F0620A" rx="6" transform="rotate(-28 77 85)"/><circle cx="83" cy="64" r="8" fill="#D4956A"/><rect x="81" y="48" width="5" height="18" fill="#D4956A" rx="2.5"/>
+            <rect x="31" y="122" width="15" height="19" fill="#C84F00" rx="5"/><rect x="52" y="122" width="15" height="19" fill="#C84F00" rx="5"/>
+            <rect x="29" y="136" width="19" height="9" fill="#1A1A1A" rx="4"/><rect x="50" y="136" width="19" height="9" fill="#1A1A1A" rx="4"/>
+          </svg>
+        </div>
+
+        <!-- OIL India Engineer -->
+        <div style="animation:bounceIn .6s 2.2s cubic-bezier(.34,1.56,.64,1) both;flex-shrink:0;">
+          <svg width="clamp(65px,8.5vw,120px)" viewBox="0 0 90 138" style="width:clamp(65px,8.5vw,120px);height:auto;display:block;">
+            <ellipse cx="45" cy="24" rx="26" ry="9.5" fill="#CC1A1A"/><rect x="20" y="24" width="50" height="5.5" fill="#B31515" rx="2"/><ellipse cx="45" cy="29.5" rx="32" ry="5.5" fill="#A81010"/><text x="45" y="27" text-anchor="middle" font-size="8" font-weight="900" fill="#FFD700" font-family="Nunito,sans-serif">OIL</text>
+            <circle cx="45" cy="49" r="21" fill="#C07A50"/><ellipse cx="45" cy="30" rx="14" ry="6" fill="#1A0A00"/>
+            <circle cx="36" cy="44" r="7" fill="#fff"/><circle cx="54" cy="44" r="7" fill="#fff"/><circle cx="37" cy="45" r="4.5" fill="#1A0A00"/><circle cx="55" cy="45" r="4.5" fill="#1A0A00"/><circle cx="38" cy="44" r="1.5" fill="#fff"/><circle cx="56" cy="44" r="1.5" fill="#fff"/>
+            <path d="M31 37 Q36 32 41 37" stroke="#1A0A00" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M49 37 Q54 32 59 37" stroke="#1A0A00" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            <path d="M33 57 Q45 66 57 57" stroke="#1A0A00" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M36 58 Q45 64 54 58" fill="#fff"/>
+            <circle cx="19" cy="51" r="3.5" fill="#FFD700"/><circle cx="71" cy="51" r="3.5" fill="#FFD700"/>
+            <rect x="23" y="69" width="44" height="44" fill="#CC1A1A" rx="9"/><rect x="50" y="72" width="16" height="11" fill="#FFD700" rx="2"/><text x="58" y="81" text-anchor="middle" font-size="6" font-weight="900" fill="#CC1A1A" font-family="Nunito,sans-serif">OIL</text>
+            <rect x="23" y="79" width="44" height="5" fill="rgba(220,220,220,.75)" rx="2"/><rect x="23" y="101" width="44" height="5" fill="rgba(220,220,220,.75)" rx="2"/>
+            <path d="M37 69 L45 80 L53 69" fill="#A81010"/>
+            <rect x="4" y="71" width="21" height="10" fill="#CC1A1A" rx="6"/><rect x="5" y="75" width="19" height="3.5" fill="rgba(220,220,220,.75)" rx="1"/>
+            <rect x="1" y="77" width="22" height="30" fill="#1A2F4A" rx="5"/><rect x="3" y="79" width="18" height="24" fill="#0D1F3C" rx="3"/>
+            <line x1="5" y1="84" x2="19" y2="84" stroke="#9FE1CB" stroke-width="1.5"/><line x1="5" y1="89" x2="14" y2="89" stroke="#F0A500" stroke-width="2"/>
+            <rect x="65" y="70" width="21" height="10" fill="#CC1A1A" rx="6" transform="rotate(20 75 75)"/><circle cx="75" cy="63" r="7.5" fill="#C07A50"/><rect x="73" y="50" width="5" height="15" fill="#C07A50" rx="2.5"/>
+            <rect x="28" y="111" width="13" height="19" fill="#A81010" rx="5"/><rect x="49" y="111" width="13" height="19" fill="#A81010" rx="5"/>
+            <rect x="26" y="125" width="17" height="9" fill="#1A1A1A" rx="4"/><rect x="47" y="125" width="17" height="9" fill="#1A1A1A" rx="4"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Ground surface -->
+      <div class="gsurface" style="position:absolute;top:35%;height:9%;"></div>
+      <!-- Reservoir rock -->
+      <div class="gsand" style="position:absolute;top:44%;height:18%;"></div>
+      <!-- Tight formation -->
+      <div class="grock" style="position:absolute;top:62%;height:20%;"></div>
+      <!-- Oil zone -->
+      <div class="goil" style="position:absolute;top:82%;height:18%;"></div>
+      <!-- Oil glow -->
+      <div style="position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:30%;height:10%;background:radial-gradient(ellipse,rgba(240,165,0,.5) 0%,transparent 70%);animation:pulse 2.5s infinite;"></div>
+
+      <!-- Layer labels -->
+      <div style="position:absolute;right:1.5%;top:35%;font-size:clamp(10px,1.1vw,14px);font-weight:700;color:#8FBA6F;animation:fadeIn .5s 1.2s both;">▶ TOPSOIL / SEABED</div>
+      <div style="position:absolute;right:1.5%;top:44%;font-size:clamp(10px,1.1vw,14px);font-weight:700;color:#C4956A;animation:fadeIn .5s 1.5s both;">▶ RESERVOIR ROCK (BASSEIN LST.)</div>
+      <div style="position:absolute;right:1.5%;top:62%;font-size:clamp(10px,1.1vw,14px);font-weight:700;color:#888;animation:fadeIn .5s 1.8s both;">▶ TIGHT FORMATION</div>
+      <div style="position:absolute;right:1.5%;top:83%;font-size:clamp(10px,1.1vw,14px);font-weight:700;color:#F0A500;animation:fadeIn .5s 2.1s both;">▶ OIL-BEARING ZONE 🔥</div>
+    </div>
+  </div>
+
+  <!-- S2: INTELLIGENCE -->
+  <div class="scene" id="s2">
+    <div class="slbl">02 · The Intelligence</div>
+    <div class="scene-hdr" style="animation:slideUp .6s .2s both;"><div class="h1">LAS File In → Instant Reservoir Intelligence</div><div class="sub">Four wireline curves · SPE-validated physics · Zero manual calculation</div></div>
+    <div class="scene-body"><div class="two-col" style="align-items:center;">
+      <div class="vcenter" style="animation:slideIn .6s .5s both;">
+        <div style="background:#1A2F4A;border:2px solid #5DCAA5;border-radius:14px;padding:clamp(14px,2vh,24px) clamp(16px,2vw,26px);">
+          <div style="font-size:clamp(12px,1.3vw,17px);color:#5DCAA5;font-weight:700;letter-spacing:.06em;margin-bottom:10px;">📄 WIRELINE LOG FILE (LAS)</div>
+          <div style="font-family:monospace;font-size:clamp(12px,1.3vw,17px);color:#9FE1CB;line-height:1.9;">
+            ~VERS 2.0 &nbsp; ~WELL MH-N-01<br>
+            <span style="color:#F0A500;">GR &nbsp; 112 &nbsp; API &nbsp;&nbsp;&nbsp; Shale volume</span><br>
+            <span style="color:#5DCAA5;">RHOB &nbsp;2.31 g/cc &nbsp; Density/porosity</span><br>
+            <span style="color:#E24B4A;">NPHI &nbsp;0.22 frac &nbsp; Neutron porosity</span><br>
+            <span style="color:#AB47BC;">RT &nbsp;&nbsp; 18.4 ohm·m Water saturation</span><br>
+            <span style="color:#64B5F6;">DT &nbsp;&nbsp; 68.2 μs/ft &nbsp;Sonic/mechanical</span>
+          </div>
+        </div>
+        <div style="text-align:center;font-size:clamp(28px,4.5vw,56px);color:#1D9E75;animation:pulse 1.5s infinite;">→</div>
+        <div style="background:rgba(29,158,117,.15);border:2px solid #1D9E75;border-radius:14px;padding:clamp(14px,2vh,22px) clamp(16px,2vw,26px);">
+          <div style="font-family:'Fredoka One',sans-serif;font-size:clamp(20px,2.8vw,38px);color:#9FE1CB;text-align:center;margin-bottom:8px;">HyperSenseIQ</div>
+          <div style="font-size:clamp(11px,1.2vw,15px);color:#5DCAA5;text-align:center;letter-spacing:.05em;">PHYSICS ENGINE · SPE VALIDATED</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:12px;">
+            <span style="font-size:clamp(10px,1.1vw,14px);background:rgba(29,158,117,.2);border:1px solid #0F6E56;border-radius:6px;padding:3px 9px;color:#9FE1CB;">Archie Eq.</span>
+            <span style="font-size:clamp(10px,1.1vw,14px);background:rgba(107,63,212,.2);border:1px solid #534AB7;border-radius:6px;padding:3px 9px;color:#CE93D8;">Arps DCA</span>
+            <span style="font-size:clamp(10px,1.1vw,14px);background:rgba(240,165,0,.15);border:1px solid #854F0B;border-radius:6px;padding:3px 9px;color:#F0A500;">STOIIP</span>
+            <span style="font-size:clamp(10px,1.1vw,14px);background:rgba(226,75,74,.15);border:1px solid #A32D2D;border-radius:6px;padding:3px 9px;color:#F09595;">P_EOR</span>
+          </div>
+          <div style="font-size:clamp(26px,4vw,50px);text-align:center;margin-top:12px;animation:spin 3s linear infinite;display:inline-block;width:100%;">⚙️</div>
+        </div>
+      </div>
+      <div class="vcenter" style="animation:slideInR .6s 1.0s both;">
+        <div style="font-size:clamp(13px,1.5vw,19px);color:#F0A500;font-weight:700;letter-spacing:.06em;">✅ INSTANT OUTPUT — PAY ZONE MAP</div>
+        <div id="s2-zones" style="background:#1A2F4A;border-radius:12px;overflow:hidden;border:1.5px solid rgba(255,255,255,.1);flex:1;min-height:200px;display:flex;flex-direction:column;gap:4px;padding:10px;justify-content:center;"></div>
+        <div style="background:rgba(13,110,90,.15);border:1.5px solid #0F6E56;border-radius:12px;padding:clamp(10px,1.5vh,18px) clamp(14px,2vw,22px);">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div><div class="stat-num">7.9m</div><div class="stat-lbl">Net pay</div></div>
+            <div><div class="stat-num">22%</div><div class="stat-lbl">Avg Sw</div></div>
+            <div><div class="stat-num">4</div><div class="stat-lbl">Pay zones</div></div>
+            <div><div class="stat-num">7,593</div><div class="stat-lbl">STOIIP (STB)</div></div>
+          </div>
+        </div>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- S3: SIX DOMAINS -->
+  <div class="scene" id="s3">
+    <div class="slbl">03 · The Scoring Engine</div>
+    <div class="scene-hdr" style="animation:slideUp .6s .2s both;"><div class="h1">P_EOR — Six Domain Science</div><div class="sub">Every EOR method scored across Physics · Mechanical · Geological · Chemical · Operational · Economic</div></div>
+    <!-- Main content: radar + cards (no bottom overflow) -->
+    <div style="position:absolute;top:clamp(80px,12vh,120px);left:0;right:0;bottom:clamp(80px,12vh,110px);display:grid;grid-template-columns:1fr 1fr;gap:clamp(10px,1.5vw,24px);padding:0 clamp(24px,3vw,48px);">
+      <div style="display:flex;align-items:center;justify-content:center;animation:fadeIn .5s .5s both;">
+        <canvas id="radar" style="max-width:100%;max-height:100%;"></canvas>
+      </div>
+      <div id="domain-cards" style="display:flex;flex-direction:column;gap:6px;justify-content:center;animation:slideInR .5s .8s both;overflow:hidden;"></div>
+    </div>
+    <!-- Formula — anchored to bottom, never overlaps cards -->
+    <div style="position:absolute;bottom:clamp(46px,6.5vh,65px);left:50%;transform:translateX(-50%);text-align:center;animation:fadeIn .5s 2.5s both;background:rgba(29,158,117,.12);border:1.5px solid #0F6E56;border-radius:10px;padding:clamp(7px,1vh,12px) clamp(16px,2.5vw,30px);white-space:nowrap;">
+      <div style="font-size:clamp(10px,1.1vw,14px);color:#5DCAA5;font-weight:700;letter-spacing:.05em;">COMPOSITE FORMULA</div>
+      <div style="font-family:monospace;font-size:clamp(13px,1.6vw,22px);color:#9FE1CB;font-weight:700;margin-top:3px;">P_EOR = Σ(wₐ × sₘₐ) / Σ(wₐ)</div>
+      <div style="font-size:clamp(9px,1vw,13px);color:#5A7A94;margin-top:3px;">Patent-protected weights · Domain scores fully transparent</div>
+    </div>
+  </div>
+
+  <!-- S4: EOR BAR RACE -->
+  <div class="scene" id="s4">
+    <div class="slbl">04 · The Recommendation</div>
+    <div class="scene-hdr" style="animation:slideUp .5s .2s both;"><div class="h1">FFUS Ranking — Best EOR Method · Instant</div><div class="sub">8 methods · Ranked by ΔN_eff = STOIIP × uplift × P_EOR_adj × PHF</div></div>
+    <div class="scene-body"><div class="two-col" style="align-items:start;padding-top:8px;">
+      <div id="s4-bars" style="display:flex;flex-direction:column;gap:8px;justify-content:center;height:100%;animation:slideIn .5s .3s both;"></div>
+      <div style="display:flex;flex-direction:column;gap:16px;justify-content:center;align-items:center;padding:0 clamp(8px,1.5vw,22px);">
+        <div style="animation:popIn .5s 2.8s both;text-align:center;background:linear-gradient(135deg,rgba(240,165,0,.2),rgba(29,158,117,.2));border:2.5px solid #F0A500;border-radius:18px;padding:clamp(16px,2.5vh,30px) clamp(20px,3vw,40px);">
+          <div style="font-size:clamp(40px,6.5vw,80px);">🏆</div>
+          <div style="font-family:'Fredoka One',sans-serif;font-size:clamp(26px,3.8vw,52px);color:#F0A500;">UST wins!</div>
+          <div style="font-size:clamp(13px,1.6vw,21px);color:#9FE1CB;margin-top:8px;">Lowest CAPEX · 2-month deploy</div>
+          <div style="font-size:clamp(12px,1.4vw,18px);color:#5A7A94;margin-top:4px;">No injection infrastructure needed</div>
+          <div style="font-size:clamp(12px,1.4vw,18px);color:#5A7A94;">Works in tight pore throats</div>
+          <div style="margin-top:12px;font-family:'Fredoka One',sans-serif;font-size:clamp(20px,2.8vw,36px);color:#1D9E75;">₹75 Lakhs CAPEX</div>
+          <div style="font-size:clamp(12px,1.3vw,17px);color:#9FE1CB;">vs ₹351L for ASP flooding</div>
+        </div>
+        <div style="animation:bounceIn .5s 3.2s both;font-size:clamp(48px,8vw,100px);text-align:center;">🎉</div>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- S5: EOR COST CONFIGURATION -->
+  <div class="scene" id="s5">
+    <div class="slbl">05 · EOR Cost Intelligence</div>
+    <div class="scene-hdr" style="animation:slideUp .5s .2s both;"><div class="h1">EOR Cost Configuration — Your Numbers, Not Benchmarks</div><div class="sub">Override any CAPEX/OPEX · All NPV, IRR, payback recalculate instantly · CUSTOM badge tracks changes</div></div>
+    <div class="scene-body"><div class="two-col" style="align-items:center;">
+      <div class="vcenter" style="animation:slideIn .6s .5s both;">
+        <div style="font-size:clamp(14px,1.7vw,22px);color:#9FE1CB;font-weight:700;margin-bottom:8px;">📊 BENCHMARK vs YOUR COSTS</div>
+        <div id="s5-cost-table"></div>
+        <div style="background:rgba(240,165,0,.1);border:1.5px solid #EF9F27;border-radius:12px;padding:clamp(10px,1.5vh,18px) clamp(14px,2vw,22px);animation:fadeIn .5s 2.8s both;">
+          <div style="font-size:clamp(13px,1.5vw,19px);color:#EF9F27;font-weight:700;">⚡ CUSTOM badge appears — all NPV/IRR recalculates live</div>
+          <div style="font-size:clamp(11px,1.2vw,15px);color:#5A7A94;margin-top:4px;">Reset to SPE benchmark values at any time</div>
+        </div>
+      </div>
+      <div class="vcenter" style="animation:slideInR .6s .8s both;">
+        <div class="feat-card" style="border-left:4px solid #F0A500;">
+          <div style="font-size:clamp(28px,4vw,48px);">🎯</div>
+          <div class="feat-title">Per-well pricing</div>
+          <div class="feat-body">UST, MEOR, Microbial — priced per wellbore intervention. Adjusts automatically for your well count and depth.</div>
+        </div>
+        <div class="feat-card" style="border-left:4px solid #90CAF9;">
+          <div style="font-size:clamp(28px,4vw,48px);">🏭</div>
+          <div class="feat-title">Per-reservoir pricing</div>
+          <div class="feat-body">Polymer, ASP, CO₂, Thermal, Surfactant — field-scale costs reflecting pattern drilling, injection facilities, and ONGC procurement rates.</div>
+        </div>
+        <div class="feat-card" style="border-left:4px solid #1D9E75;">
+          <div style="font-size:clamp(28px,4vw,48px);">📈</div>
+          <div class="feat-title">Live NPV recalculation</div>
+          <div class="feat-body">Every edit instantly recalculates NPV, IRR, and payback using live Brent crude and India fiscal rules (royalty, OID Cess, GST, ONGC equity).</div>
+        </div>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- S6: INDIA FISCAL -->
+  <div class="scene" id="s6">
+    <div class="slbl">06 · India-Fiscal Economics</div>
+    <div class="scene-hdr" style="animation:slideUp .5s .2s both;"><div class="h1">Live Brent · India Fiscal · Instant NPV</div><div class="sub">Royalty · OID Cess · GST · ONGC equity — DGH-aligned fiscal rules · Live Brent from Stooq.com</div></div>
+    <div class="scene-body"><div class="three-col" style="align-items:center;">
+      <div class="vcenter" style="animation:slideIn .5s .5s both;gap:10px;">
+        <div style="background:rgba(240,165,0,.12);border:2px solid #F0A500;border-radius:14px;padding:clamp(14px,2vh,22px);text-align:center;">
+          <div style="font-size:clamp(13px,1.5vw,19px);color:#EF9F27;font-weight:700;letter-spacing:.05em;">● LIVE BRENT CRUDE</div>
+          <div id="s6-brent" style="font-family:'Fredoka One',sans-serif;font-size:clamp(32px,5.5vw,72px);color:#F0A500;margin-top:6px;">₹0</div>
+          <div style="font-size:clamp(11px,1.2vw,15px);color:#5A7A94;margin-top:4px;">Stooq.com · USD/INR 96.0</div>
+        </div>
+        <div style="background:rgba(226,75,74,.1);border:1.5px solid #E24B4A;border-radius:12px;padding:clamp(10px,1.5vh,16px);text-align:center;">
+          <div style="font-size:clamp(12px,1.4vw,18px);color:#E24B4A;font-weight:700;">STRESS −40%</div>
+          <div style="font-family:'Fredoka One',sans-serif;font-size:clamp(24px,3.8vw,48px);color:#E24B4A;">+₹8.2Cr</div>
+          <div style="font-size:clamp(11px,1.2vw,15px);color:#5A7A94;">Still positive NPV</div>
+        </div>
+        <div style="background:rgba(29,158,117,.15);border:2px solid #1D9E75;border-radius:12px;padding:clamp(10px,1.5vh,16px);text-align:center;">
+          <div style="font-size:clamp(12px,1.4vw,18px);color:#1D9E75;font-weight:700;">BASE CASE</div>
+          <div id="s6-npv" style="font-family:'Fredoka One',sans-serif;font-size:clamp(24px,3.8vw,48px);color:#1D9E75;">+₹0Cr</div>
+        </div>
+        <div style="background:rgba(240,165,0,.12);border:1.5px solid #F0A500;border-radius:12px;padding:clamp(10px,1.5vh,16px);text-align:center;">
+          <div style="font-size:clamp(12px,1.4vw,18px);color:#F0A500;font-weight:700;">UPSIDE +30%</div>
+          <div style="font-family:'Fredoka One',sans-serif;font-size:clamp(24px,3.8vw,48px);color:#F0A500;">+₹28.9Cr</div>
+        </div>
+      </div>
+      <div class="vcenter" style="animation:fadeIn .5s 1.0s both;gap:8px;">
+        <div style="font-size:clamp(14px,1.7vw,22px);color:#9FE1CB;font-weight:700;margin-bottom:6px;">INDIA FISCAL DEDUCTIONS</div>
+        <div id="s6-fiscal"></div>
+      </div>
+      <div class="vcenter" style="animation:slideInR .5s 1.5s both;align-items:center;">
+        <div style="background:rgba(29,158,117,.15);border:2px solid #1D9E75;border-radius:14px;padding:clamp(14px,2vh,24px);text-align:center;width:100%;">
+          <div style="font-size:clamp(18px,2.4vw,32px);color:#9FE1CB;font-weight:700;">Economic verdict</div>
+          <div style="font-family:'Fredoka One',sans-serif;font-size:clamp(26px,3.8vw,52px);color:#1D9E75;margin-top:10px;">HIGH VALUE</div>
+          <div style="font-size:clamp(13px,1.6vw,21px);color:#5A7A94;margin-top:8px;">IRR 28% · Payback &lt; 2yr</div>
+        </div>
+        <div style="font-size:clamp(60px,10vw,130px);">💰</div>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- S7: DRILLING PHYSICS -->
+  <div class="scene" id="s7">
+    <div class="slbl">07 · Drilling Physics</div>
+    <div class="scene-hdr" style="animation:slideUp .5s .2s both;"><div class="h1">Drilling Physics — Safe Window · EOR Connection</div><div class="sub">Pore pressure · Fracture gradient · ECD · Mud weight window · Wellbore stability — all five wells</div></div>
+    <div class="scene-body"><div class="two-col" style="align-items:start;padding-top:8px;">
+      <div class="vcenter" style="animation:slideIn .6s .5s both;gap:12px;">
+        <div style="background:#1A2F4A;border:1.5px solid rgba(255,255,255,.1);border-radius:12px;padding:clamp(12px,1.8vh,22px);">
+          <div style="font-size:clamp(14px,1.6vw,21px);color:#90CAF9;font-weight:700;margin-bottom:12px;">PRESSURE WINDOW — MH-N-01</div>
+          <div id="drill-bars"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div class="stat-card" style="text-align:center;"><div class="stat-num" style="color:#E24B4A;">20 MPa</div><div class="stat-lbl">Pore pressure</div></div>
+          <div class="stat-card" style="text-align:center;"><div class="stat-num" style="color:#1D9E75;">26 MPa</div><div class="stat-lbl">Fracture gradient</div></div>
+          <div class="stat-card" style="text-align:center;"><div class="stat-num" style="color:#F0A500;">1.08 SG</div><div class="stat-lbl">ECD nominal</div></div>
+          <div class="stat-card" style="text-align:center;"><div class="stat-num" style="color:#9FE1CB;">0.10 SG</div><div class="stat-lbl">Safe MW window</div></div>
+        </div>
+      </div>
+      <div class="vcenter" style="animation:slideInR .6s .8s both;">
+        <div class="feat-card" style="border-left:4px solid #90CAF9;">
+          <div style="font-size:clamp(26px,3.8vw,46px);">⚠️</div>
+          <div class="feat-title" style="color:#90CAF9;">Why it matters for EOR</div>
+          <div class="feat-body">Polymer, ASP, CO₂, and Steam injection must stay below the fracture gradient. Exceed it and you fracture the formation — creating thief zones that destroy sweep efficiency. HyperSenseIQ automatically flags the maximum safe injection pressure for every method.</div>
+        </div>
+        <div class="feat-card" style="border-left:4px solid #1D9E75;">
+          <div style="font-size:clamp(26px,3.8vw,46px);">🎯</div>
+          <div class="feat-title" style="color:#1D9E75;">UST advantage — zero injection pressure</div>
+          <div class="feat-body">Ultrasound-Assisted EOR operates entirely within the wellbore — far below any fracture gradient. The safest first EOR intervention for narrow-window wells. Recommended whenever PP-FG window is below 0.08 SG.</div>
+        </div>
+        <div class="feat-card" style="border-left:4px solid #F0A500;">
+          <div style="font-size:clamp(26px,3.8vw,46px);">🔬</div>
+          <div class="feat-title" style="color:#F0A500;">Connects to EOR recommendation</div>
+          <div class="feat-body">Drilling Physics module results flow directly into the EOR scoring chain. Narrow window → injection EOR scores penalised → UST promoted. Wide window → all methods eligible.</div>
+        </div>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- S8: DIGITAL TWIN -->
+  <div class="scene" id="s8">
+    <div class="slbl">08 · Digital Twin · Data Sovereignty</div>
+    <div class="scene-hdr" style="animation:slideUp .5s .2s both;"><div class="h1">Digital Twin — National Data Sovereignty</div><div class="sub">SHA-256 provenance · NIC-DLT Hyperledger Fabric · DGH compliant · No cloud upload · Ever</div></div>
+    <div class="scene-body"><div class="two-col" style="align-items:center;">
+      <div class="vcenter" style="animation:slideIn .6s .5s both;gap:14px;">
+        <div style="background:rgba(29,158,117,.1);border:1.5px solid #0F6E56;border-radius:12px;padding:clamp(12px,1.8vh,22px);">
+          <div style="font-size:clamp(13px,1.5vw,19px);color:#5DCAA5;font-weight:700;letter-spacing:.05em;margin-bottom:10px;">SHA-256 PROVENANCE HASH — GENERATING</div>
+          <div id="hash-disp" style="font-family:monospace;font-size:clamp(12px,1.3vw,17px);color:#9FE1CB;letter-spacing:.04em;line-height:1.9;word-break:break-all;min-height:60px;"></div>
+        </div>
+        <div id="chain-nodes" style="display:flex;align-items:center;justify-content:space-between;gap:0;"></div>
+        <div style="background:rgba(100,181,246,.1);border:1.5px solid #185FA5;border-radius:12px;padding:clamp(12px,1.8vh,22px);">
+          <div style="font-size:clamp(14px,1.6vw,21px);color:#90CAF9;font-weight:700;margin-bottom:6px;">🏛️ NIC-DLT (Hyperledger Fabric)</div>
+          <div style="font-size:clamp(12px,1.3vw,17px);color:#8AABCC;line-height:1.65;">Every well analysis becomes a permanent, tamper-proof entry in India's national geological record — accessible to ONGC, DGH, OIL India under PSC data governance rules.</div>
+        </div>
+      </div>
+      <div class="vcenter" style="animation:slideInR .6s .8s both;">
+        <div class="feat-card" style="border-left:4px solid #1D9E75;">
+          <div style="font-size:clamp(26px,3.8vw,46px);">🔐</div>
+          <div class="feat-title">Zero cloud exposure</div>
+          <div class="feat-body">All processing on a locally isolated instance. No third-party cloud storage. No external server transmission. Input data certified as destroyed on client instruction.</div>
+        </div>
+        <div class="feat-card" style="border-left:4px solid #90CAF9;">
+          <div style="font-size:clamp(26px,3.8vw,46px);">🔬</div>
+          <div class="feat-title">Spectral AI — what logs cannot see</div>
+          <div class="feat-body">SWIR hyperspectral analysis at 900–2500nm identifies calcite, oil C-H bonds, clay minerals, brine at pixel level. Pay/non-pay classification at millimetre resolution — what wireline logs miss entirely.</div>
+        </div>
+        <div class="feat-card" style="border-left:4px solid #F0A500;">
+          <div style="font-size:clamp(26px,3.8vw,46px);">📋</div>
+          <div class="feat-title">Digital Twin contents</div>
+          <div class="feat-body">Well ID · Depth interval · Formation · Mineralogy · Spectral scores · Pay zone declarations · P_EOR composite · NPV · SHA-256 fingerprint · Timestamp · Full provenance chain.</div>
+        </div>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- S9: WETTABILITY, THIEF ZONE, PHF -->
+  <div class="scene" id="s9">
+    <div class="slbl">09 · Hidden Reservoir Realities</div>
+    <div class="scene-hdr" style="animation:slideUp .5s .2s both;"><div class="h1">See What Others Miss — W_mod · TZ_pen · PHF</div><div class="sub">Three hidden factors that change every EOR recommendation and every NPV calculation</div></div>
+    <div class="scene-body"><div class="three-col" style="align-items:start;padding-top:10px;">
+      <div style="animation:slideIn .6s .4s both;">
+        <div style="border-top:4px solid #CE93D8;background:rgba(171,71,188,.07);border-radius:0 0 14px 14px;padding:clamp(14px,2vh,22px) clamp(14px,2vw,22px);height:100%;">
+          <div style="font-family:'Fredoka One',sans-serif;font-size:clamp(20px,2.8vw,38px);color:#CE93D8;margin-bottom:10px;">Wettability (W_mod)</div>
+          <div style="font-size:clamp(12px,1.4vw,18px);color:#8AABCC;line-height:1.7;margin-bottom:14px;">Oil-wet rock has oil coating the pore walls. EOR methods that dislodge that film recover dramatically more oil than models without wettability correction predict. Derived from Amott-Harvey proxy using φ, Sw, and API gravity.</div>
+          <div style="background:rgba(171,71,188,.12);border-radius:10px;padding:12px;">
+            <div style="font-size:clamp(12px,1.4vw,18px);color:#CE93D8;font-weight:700;">W_mod &gt;1.10 → oil-wet 🟢 EOR amplified</div>
+            <div style="font-size:clamp(12px,1.4vw,18px);color:#E8D87A;font-weight:700;margin-top:6px;">0.90–1.10 → mixed-wet ⚪ neutral</div>
+            <div style="font-size:clamp(12px,1.4vw,18px);color:#EF9F27;font-weight:700;margin-top:6px;">&lt;0.90 → water-wet 🟡 EOR reduced</div>
+          </div>
+        </div>
+      </div>
+      <div style="animation:fadeIn .6s .7s both;">
+        <div style="border-top:4px solid #EF9F27;background:rgba(239,159,39,.07);border-radius:0 0 14px 14px;padding:clamp(14px,2vh,22px) clamp(14px,2vw,22px);height:100%;">
+          <div style="font-family:'Fredoka One',sans-serif;font-size:clamp(20px,2.8vw,38px);color:#EF9F27;margin-bottom:10px;">Thief Zones (TZ_pen)</div>
+          <div style="font-size:clamp(12px,1.4vw,18px);color:#8AABCC;line-height:1.7;margin-bottom:14px;">High-permeability streaks steal injected EOR fluid — polymer, CO₂, steam — away from the target oil zone. 80% of your spend can bypass the oil entirely. HyperSenseIQ detects them from the k/φ ratio diagnostic.</div>
+          <div style="background:rgba(239,159,39,.12);border-radius:10px;padding:12px;">
+            <div style="font-size:clamp(12px,1.4vw,18px);color:#1D9E75;font-weight:700;">TZ_pen &lt;0.20 → safe 🟢 proceed</div>
+            <div style="font-size:clamp(12px,1.4vw,18px);color:#EF9F27;font-weight:700;margin-top:6px;">0.20–0.50 → treat first 🟡</div>
+            <div style="font-size:clamp(12px,1.4vw,18px);color:#E24B4A;font-weight:700;margin-top:6px;">&gt;0.50 → severe ⚠ UST only 🔴</div>
+          </div>
+          <div style="margin-top:12px;font-size:clamp(11px,1.2vw,16px);color:#5A7A94;">P_EOR_adj = P_EOR × W_mod × (1 − TZ_pen × 0.15)</div>
+        </div>
+      </div>
+      <div style="animation:slideInR .6s 1.0s both;">
+        <div style="border-top:4px solid #F0A500;background:rgba(240,165,0,.07);border-radius:0 0 14px 14px;padding:clamp(14px,2vh,22px) clamp(14px,2vw,22px);height:100%;">
+          <div style="font-family:'Fredoka One',sans-serif;font-size:clamp(20px,2.8vw,38px);color:#F0A500;margin-bottom:10px;">History Factor (PHF)</div>
+          <div style="font-size:clamp(12px,1.4vw,18px);color:#8AABCC;line-height:1.7;margin-bottom:14px;">PHF anchors projections to what the well actually produced over 24 months — not what the model predicted. Enter real monthly data in Section 4 of Your Well Data. Everything adjusts silently — decline curve, EOR uplift, NPV.</div>
+          <div style="background:rgba(240,165,0,.12);border-radius:10px;padding:12px;">
+            <div style="font-size:clamp(12px,1.4vw,18px);color:#1D9E75;font-weight:700;">PHF &gt;1.05 → outperforming 🟢</div>
+            <div style="font-size:clamp(12px,1.4vw,18px);color:#9FE1CB;font-weight:700;margin-top:6px;">0.92–1.05 → on track ⚪</div>
+            <div style="font-size:clamp(12px,1.4vw,18px);color:#E24B4A;font-weight:700;margin-top:6px;">&lt;0.92 → investigate ⚠ skin?</div>
+          </div>
+        </div>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- S10: EXECUTIVE VIEW -->
+  <div class="scene" id="s10">
+    <div class="slbl">10 · The Decision View</div>
+    <div class="scene-hdr" style="animation:slideUp .5s .2s both;"><div class="h1">Executive View — See Your Decision</div><div class="sub">Every well · Every factor · One screen · Colour-coded for instant action</div></div>
+    <div class="scene-body" style="padding:0 clamp(24px,3vw,50px);">
+      <div style="display:flex;flex-direction:column;gap:10px;height:100%;justify-content:center;">
+        <div style="display:grid;grid-template-columns:1fr .8fr .8fr .8fr .8fr .8fr .8fr 1fr;gap:8px;font-size:clamp(9px,.9vw,13px);color:#5A7A94;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:0 8px;animation:fadeIn .4s .3s both;">
+          <span>Well</span><span>Rate</span><span>PHF</span><span>W_mod</span><span>TZ_pen</span><span>P_EOR_adj</span><span>Best EOR</span><span>NPV est.</span>
+        </div>
+        <div id="s10-rows"></div>
+        <div style="animation:fadeIn .5s 3.5s both;text-align:center;padding-top:4px;">
+          <div style="font-size:clamp(13px,1.6vw,21px);color:#9FE1CB;font-weight:700;">🟢 Deploy EOR now &nbsp;·&nbsp; 🟡 Monitor · conformance treat first &nbsp;·&nbsp; ⭕ Investigate before spending</div>
+          <div style="font-size:clamp(11px,1.2vw,16px);color:#5A7A94;margin-top:4px;">* MH-N-04: TZ_pen=0.60 severe thief zone — conformance treatment before injection EOR · UST as safe first step</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S11: FINAL INVITATION -->
+  <div class="scene" id="s11">
+    <div class="slbl">11 · See Beyond the Surface</div>
+    <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(14px,2.2vh,28px);">
+      <div style="animation:slideUp .8s .3s both;text-align:center;">
+        <div class="brand-big">HyperSenseIQ</div>
+        <div style="font-family:'Fredoka One',sans-serif;font-size:clamp(18px,2.8vw,40px);color:#9FE1CB;letter-spacing:.06em;margin-top:6px;">See Beyond the Surface</div>
+      </div>
+      <div style="display:flex;gap:clamp(10px,1.4vw,20px);flex-wrap:wrap;justify-content:center;animation:slideUp .6s 1.0s both;">
+        <div style="background:rgba(29,158,117,.12);border:1.5px solid #0F6E56;border-radius:12px;padding:clamp(10px,1.5vh,20px) clamp(14px,2vw,28px);text-align:center;">
+          <div style="font-family:'Fredoka One',sans-serif;font-size:clamp(22px,3.5vw,52px);color:#F0A500;">6</div>
+          <div style="font-size:clamp(9px,.9vw,13px);color:#9FE1CB;font-weight:700;letter-spacing:.05em;">PLATFORM LAYERS</div>
+        </div>
+        <div style="background:rgba(29,158,117,.12);border:1.5px solid #0F6E56;border-radius:12px;padding:clamp(10px,1.5vh,20px) clamp(14px,2vw,28px);text-align:center;">
+          <div style="font-family:'Fredoka One',sans-serif;font-size:clamp(22px,3.5vw,52px);color:#F0A500;">8</div>
+          <div style="font-size:clamp(9px,.9vw,13px);color:#9FE1CB;font-weight:700;letter-spacing:.05em;">EOR METHODS</div>
+        </div>
+        <div style="background:rgba(29,158,117,.12);border:1.5px solid #0F6E56;border-radius:12px;padding:clamp(10px,1.5vh,20px) clamp(14px,2vw,28px);text-align:center;">
+          <div style="font-family:'Fredoka One',sans-serif;font-size:clamp(22px,3.5vw,52px);color:#F0A500;">0</div>
+          <div style="font-size:clamp(9px,.9vw,13px);color:#9FE1CB;font-weight:700;letter-spacing:.05em;">CLOUD UPLOAD</div>
+        </div>
+        <div style="background:rgba(29,158,117,.12);border:1.5px solid #0F6E56;border-radius:12px;padding:clamp(10px,1.5vh,20px) clamp(14px,2vw,28px);text-align:center;">
+          <div style="font-family:'Fredoka One',sans-serif;font-size:clamp(22px,3.5vw,52px);color:#F0A500;">SPE</div>
+          <div style="font-size:clamp(9px,.9vw,13px);color:#9FE1CB;font-weight:700;letter-spacing:.05em;">VALIDATED</div>
+        </div>
+        <div style="background:rgba(29,158,117,.12);border:1.5px solid #0F6E56;border-radius:12px;padding:clamp(10px,1.5vh,20px) clamp(14px,2vw,28px);text-align:center;">
+          <div style="font-family:'Fredoka One',sans-serif;font-size:clamp(22px,3.5vw,52px);color:#F0A500;">DGH</div>
+          <div style="font-size:clamp(9px,.9vw,13px);color:#9FE1CB;font-weight:700;letter-spacing:.05em;">COMPLIANT</div>
+        </div>
+      </div>
+      <div style="animation:slideUp .5s 1.6s both;text-align:center;">
+        <div style="font-size:clamp(13px,1.5vw,20px);color:#5A7A94;">Invented by</div>
+        <div style="font-family:'Fredoka One',sans-serif;font-size:clamp(22px,3.2vw,46px);color:#9FE1CB;margin-top:4px;">Niranjan Bilgi</div>
+        <div style="font-size:clamp(12px,1.4vw,18px);color:#5A7A94;margin-top:4px;">+91 9699165381 · niranjanbilgi@yahoo.com · Mumbai 400028</div>
+      </div>
+      <div style="display:flex;gap:clamp(12px,1.5vw,22px);animation:slideUp .5s 2.0s both;">
+        <button onclick="window.open('index.html','_blank')" style="font-family:'Fredoka One',sans-serif;font-size:clamp(16px,2.2vw,30px);padding:clamp(12px,1.8vh,22px) clamp(26px,4vw,52px);border-radius:32px;border:none;background:linear-gradient(135deg,#0F6E56,#1D9E75);color:#fff;cursor:pointer;box-shadow:0 8px 40px rgba(29,158,117,.5);">🚀 Open Platform</button>
+        <button onclick="goTo(0)" style="font-family:'Fredoka One',sans-serif;font-size:clamp(16px,2.2vw,30px);padding:clamp(12px,1.8vh,22px) clamp(26px,4vw,52px);border-radius:32px;border:2.5px solid #1D9E75;background:transparent;color:#9FE1CB;cursor:pointer;">↺ Watch Again</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <div id="nav">
+    <button class="nbtn prev" id="pb" onclick="prev()" disabled>← Prev</button>
+    <div class="ndot on" onclick="goTo(0)"></div>
+    <div class="ndot" onclick="goTo(1)"></div>
+    <div class="ndot" onclick="goTo(2)"></div>
+    <div class="ndot" onclick="goTo(3)"></div>
+    <div class="ndot" onclick="goTo(4)"></div>
+    <div class="ndot" onclick="goTo(5)"></div>
+    <div class="ndot" onclick="goTo(6)"></div>
+    <div class="ndot" onclick="goTo(7)"></div>
+    <div class="ndot" onclick="goTo(8)"></div>
+    <div class="ndot" onclick="goTo(9)"></div>
+    <div class="ndot" onclick="goTo(10)"></div>
+    <button class="nbtn next" id="nb" onclick="next()">Next →</button>
+  </div>
+</div>
+<script>
+const N=11;let cur=0;const done=new Array(N).fill(false);
+function goTo(n){document.querySelector('.scene.active').classList.remove('active');document.querySelectorAll('.ndot').forEach((d,i)=>d.classList.toggle('on',i===n));cur=n;document.getElementById('prog').style.width=((n+1)/N*100).toFixed(1)+'%';document.getElementById('pb').disabled=n===0;document.getElementById('nb').disabled=n===N-1;document.getElementById('s'+(n+1)).classList.add('active');if(!done[n]){done[n]=true;init(n);}}
+function next(){if(cur<N-1)goTo(cur+1);}
+function prev(){if(cur>0)goTo(cur-1);}
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' ')next();if(e.key==='ArrowLeft')prev();});
+function init(n){[null,initS2,initS3,initS4,initS5,initS6,initS7,initS8,null,initS10,null][n]?.();if(n===0)initS1();}
+function initS1(){setTimeout(()=>{let c=0;const el=document.getElementById('s1-ctr');const iv=setInterval(()=>{c+=2;if(c>=78){c=78;clearInterval(iv);}el.textContent=c+'%';},22);function drop(){const d=document.createElement('div');d.classList.add('odrop');d.style.left=(30+Math.random()*40)+'%';d.style.bottom='12%';d.style.animation='oilDrop '+(1+Math.random())+'s ease-in forwards';document.getElementById('s1').appendChild(d);setTimeout(()=>d.remove(),2200);}const di=setInterval(drop,600);setTimeout(()=>clearInterval(di),9000);},2600);}
+function initS2(){const zones=[{l:'Shale drape 1842m',c:'#E24B4A',h:11,d:1.2},{l:'✓ PAY A · φ=22% Sw=18%',c:'#1D9E75',h:16,d:1.6},{l:'Tight streak',c:'#EF9F27',h:9,d:2.0},{l:'✓ PAY B · φ=26% Sw=14%',c:'#1D9E75',h:18,d:2.4},{l:'✓ PAY C · φ=19% Sw=22%',c:'#1D9E75',h:14,d:2.8},{l:'Water zone Sw=88%',c:'#E24B4A',h:11,d:3.2},{l:'✓ PAY D · φ=20% Sw=20%',c:'#1D9E75',h:13,d:3.6}];const c=document.getElementById('s2-zones');c.innerHTML='';zones.forEach(z=>{const d=document.createElement('div');d.style.cssText='height:'+z.h+'%;background:'+z.c+'28;border-left:4px solid '+z.c+';border-radius:0 6px 6px 0;display:flex;align-items:center;padding:0 10px;opacity:0;animation:slideIn .4s '+z.d+'s both;';d.innerHTML='<span style="font-size:clamp(12px,1.3vw,17px);color:'+z.c+';font-weight:700;">'+z.l+'</span>';c.appendChild(d);});}
+function initS3(){const canvas=document.getElementById('radar');const size=Math.min(window.innerWidth*.44,window.innerHeight*.68,420);canvas.width=canvas.height=size;const ctx=canvas.getContext('2d');const cx=size/2,cy=size/2,maxR=size*.38;const domains=['Physics','Mechanical','Geological','Chemical','Operational','Economic'];const scores=[.91,.84,.87,.88,.92,.89];const colors=['#1D9E75','#F0A500','#E24B4A','#AB47BC','#64B5F6','#EF9F27'];const n=domains.length;let prog=0;function pt(i,r){const a=Math.PI*2*i/n-Math.PI/2;return{x:cx+r*Math.cos(a),y:cy+r*Math.sin(a)};}function frame(){ctx.clearRect(0,0,size,size);[.25,.5,.75,1].forEach(f=>{ctx.beginPath();for(let i=0;i<n;i++){const p=pt(i,maxR*f);i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y);}ctx.closePath();ctx.strokeStyle='rgba(255,255,255,.07)';ctx.lineWidth=1;ctx.stroke();});for(let i=0;i<n;i++){const p=pt(i,maxR);ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(p.x,p.y);ctx.strokeStyle='rgba(255,255,255,.1)';ctx.lineWidth=1;ctx.stroke();}const f=Math.min(prog/100,1);ctx.beginPath();for(let i=0;i<n;i++){const r=maxR*scores[i]*f;const p=pt(i,r);i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y);}ctx.closePath();ctx.fillStyle='rgba(29,158,117,.18)';ctx.fill();ctx.strokeStyle='#1D9E75';ctx.lineWidth=2.5;ctx.stroke();if(f>.3){for(let i=0;i<n;i++){const r=maxR*scores[i]*f;const p=pt(i,r);ctx.beginPath();ctx.arc(p.x,p.y,7,0,Math.PI*2);ctx.fillStyle=colors[i];ctx.fill();}}const fs=Math.max(12,size*.034);for(let i=0;i<n;i++){const p=pt(i,maxR+fs*1.8);ctx.fillStyle=colors[i];ctx.font='700 '+fs+'px Nunito,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(domains[i],p.x,p.y);}if(f>.7){ctx.fillStyle='#F0A500';ctx.font='700 '+(fs*1.1)+'px Fredoka One,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('P_EOR',cx,cy-fs*.8);ctx.fillStyle='#9FE1CB';ctx.font='700 '+(fs*1.6)+'px Fredoka One,sans-serif';ctx.fillText((0.88*f).toFixed(2),cx,cy+fs*.9);}prog+=1.8;if(prog<=100)requestAnimationFrame(frame);}
+const dc=document.getElementById('domain-cards');dc.innerHTML='';const descs=['φ · k · T · P · API · Sw · μ','Wellbore · surface equip.','Heterogeneity · thief zones','Compatibility · salinity','HSE · logistics · timing','CAPEX · OPEX · IRR · NPV'];domains.forEach((d,i)=>{const el=document.createElement('div');el.style.cssText='padding:clamp(6px,.9vh,11px) clamp(10px,1.3vw,16px);background:rgba(255,255,255,.04);border-left:4px solid '+colors[i]+';border-radius:0 8px 8px 0;animation:slideInR .4s '+(.8+i*.12)+'s both;opacity:0;animation-fill-mode:forwards;flex:1;display:flex;flex-direction:column;justify-content:center;min-height:0;';el.innerHTML='<div style="font-size:clamp(13px,1.5vw,20px);font-weight:700;color:'+colors[i]+';">'+d+'</div><div style="font-size:clamp(9px,.9vw,12px);color:#5A7A94;margin-top:1px;">'+descs[i]+'</div><div style="font-size:clamp(12px,1.4vw,18px);color:#9FE1CB;font-weight:700;margin-top:2px;">'+(scores[i]*100).toFixed(0)+'%</div>';dc.appendChild(el);});setTimeout(frame,500);}
+function initS4(){const methods=[{n:'🏆 #1 UST (Ultrasound-assisted)',p:88,c:'#F0A500',note:'₹75L · no injection infra · 2-month deploy',d:.3},{n:'#2 ASP (Alkaline-Surfactant-Polymer)',p:83,c:'#1D9E75',note:'₹351L · highest ΔN · chemical complex',d:.6},{n:'#3 Polymer flooding',p:76,c:'#AB47BC',note:'₹234L · good sweep · needs >20mD perm',d:.9},{n:'#4 CO₂ Miscible',p:71,c:'#64B5F6',note:'₹540L · MMP dependent · source needed',d:1.2},{n:'#5 Surfactant',p:68,c:'#9FE1CB',note:'₹260L · salinity sensitive',d:1.5},{n:'#6 Thermal',p:52,c:'#EF9F27',note:'API<20° preferred · less ideal here',d:1.8},{n:'#7 Microbial EOR',p:44,c:'#CE93D8',note:'Low CAPEX · variable results',d:2.1},{n:'#8 CO₂ Immiscible',p:38,c:'#888',note:'Below MMP · partial recovery only',d:2.4}];const c=document.getElementById('s4-bars');c.innerHTML='';methods.forEach(m=>{const w=document.createElement('div');w.classList.add('eor-bar-wrap');w.style.cssText='opacity:0;animation:slideIn .4s '+m.d+'s both;animation-fill-mode:forwards;';w.innerHTML='<div class="eor-bar-label" style="font-size:clamp(12px,1.3vw,18px);color:'+(m.p>=85?'#F0A500':'#E8D87A')+';font-weight:700;margin-bottom:4px;">'+m.n+'</div><div class="eor-bar-track"><div class="eor-bar-fill" id="bf'+m.p+'" style="background:linear-gradient(90deg,'+m.c+'99,'+m.c+');"><span class="eor-bar-pct">'+m.p+'%</span></div></div><div style="font-size:clamp(10px,1.1vw,15px);color:#5A7A94;margin-top:2px;">'+m.note+'</div>';c.appendChild(w);setTimeout(()=>{const bf=document.getElementById('bf'+m.p);if(bf)bf.style.width=m.p+'%';},m.d*1000+400);});}
+function initS5(){const rows=[{m:'UST',t:'Per-well',b:'₹90L',y:'₹75L',d:'−17%',g:true},{m:'MEOR',t:'Per-well',b:'₹120L',y:'₹100L',d:'−17%',g:true},{m:'Polymer',t:'Per-reservoir',b:'₹280L',y:'₹310L',d:'+11%',g:false},{m:'ASP',t:'Per-reservoir',b:'₹420L',y:'₹351L',d:'−16%',g:true},{m:'CO₂ Misc.',t:'Per-reservoir',b:'₹650L',y:'₹540L',d:'−17%',g:true},{m:'Thermal',t:'Per-reservoir',b:'₹580L',y:'₹580L',d:'—',g:null}];const c=document.getElementById('s5-cost-table');c.innerHTML='';c.style.cssText='display:grid;grid-template-columns:1.2fr .9fr .9fr .9fr .7fr;gap:6px;align-items:center;font-size:clamp(12px,1.3vw,17px);margin-bottom:14px;';['Method','Type','Benchmark','Your cost','Δ'].forEach(h=>{const el=document.createElement('div');el.style.cssText='color:#5A7A94;font-weight:700;font-size:clamp(9px,.9vw,13px);letter-spacing:.05em;text-transform:uppercase;padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,.1);';el.textContent=h;c.appendChild(el);});rows.forEach((r,i)=>{[r.m,r.t,r.b,r.y,r.d].forEach((v,j)=>{const el=document.createElement('div');const cs=['#9FE1CB','#5A7A94','#5A7A94','#F0A500',r.g===true?'#1D9E75':r.g===false?'#E24B4A':'#5A7A94'];el.style.cssText='color:'+cs[j]+';font-weight:'+(j===0||j===3?700:400)+';animation:fadeIn .3s '+(.5+i*.15)+'s both;opacity:0;animation-fill-mode:forwards;padding:5px 0;';el.textContent=v;c.appendChild(el);});});}
+function initS6(){let b=0;const bi=setInterval(()=>{b+=280;if(b>=10450){b=10450;clearInterval(bi);}document.getElementById('s6-brent').textContent='₹'+b.toLocaleString('en-IN');},14);setTimeout(()=>{let n=0;const ni=setInterval(()=>{n+=.5;if(n>=18.5){n=18.5;clearInterval(ni);}document.getElementById('s6-npv').textContent='+₹'+n.toFixed(1)+'Cr';},22);},700);const frows=[{l:'Gross revenue (peak yr)',v:'₹22.8 Cr',c:'#9FE1CB',d:1.2},{l:'Offshore royalty −10%',v:'−₹2.28 Cr',c:'#E24B4A',d:1.6},{l:'OID Cess',v:'−₹0.12 L/yr',c:'#EF9F27',d:1.9},{l:'GST on EOR services 18%',v:'−₹0.20 L',c:'#EF9F27',d:2.2},{l:'ONGC equity (85%)',v:'×0.85',c:'#9FE1CB',d:2.5},{l:'Net annual revenue',v:'₹11.4 Cr/yr',c:'#1D9E75',d:2.8},{l:'EOR CAPEX (one-time)',v:'₹75 Lakhs',c:'#E24B4A',d:3.1},{l:'Payback period',v:'< 2 years',c:'#1D9E75',d:3.4}];const fc=document.getElementById('s6-fiscal');fc.innerHTML='';frows.forEach(r=>{const d=document.createElement('div');d.style.cssText='display:flex;justify-content:space-between;padding:clamp(6px,.9vh,10px) 0;border-bottom:.5px solid rgba(255,255,255,.07);animation:slideIn .3s '+r.d+'s both;opacity:0;animation-fill-mode:forwards;';d.innerHTML='<span style="font-size:clamp(12px,1.4vw,18px);color:#5A7A94;">'+r.l+'</span><span style="font-size:clamp(13px,1.5vw,20px);font-weight:700;color:'+r.c+';">'+r.v+'</span>';fc.appendChild(d);});}
+function initS7(){const bars=[{l:'Pore Pressure (PP)',v:20,max:30,c:'#E24B4A'},{l:'ECD (equivalent circulating)',v:22,max:30,c:'#EF9F27'},{l:'Mud weight upper limit',v:24.2,max:30,c:'#9FE1CB'},{l:'Fracture Gradient (FG)',v:26,max:30,c:'#1D9E75'}];const c=document.getElementById('drill-bars');c.innerHTML='';bars.forEach((b,i)=>{const pct=(b.v/b.max*100).toFixed(0);const d=document.createElement('div');d.style.marginBottom='10px';d.innerHTML='<div style="display:flex;justify-content:space-between;margin-bottom:5px;"><span style="font-size:clamp(12px,1.4vw,18px);color:#8AABCC;">'+b.l+'</span><span style="font-size:clamp(13px,1.5vw,20px);font-weight:700;color:'+b.c+';">'+b.v+' MPa</span></div><div style="height:clamp(10px,1.5vh,18px);background:rgba(255,255,255,.06);border-radius:9px;overflow:hidden;"><div style="height:100%;width:0;background:'+b.c+';border-radius:9px;transition:width 1s '+(.5+i*.2)+'s ease-out;" class="db-'+i+'"></div></div>';c.appendChild(d);setTimeout(()=>{const el=d.querySelector('.db-'+i);if(el)el.style.width=pct+'%';},600+i*200);});const sw=document.createElement('div');sw.style.cssText='margin-top:12px;padding:10px 14px;background:rgba(29,158,117,.15);border:1.5px solid #1D9E75;border-radius:8px;';sw.innerHTML='<div style="font-size:clamp(12px,1.4vw,18px);color:#9FE1CB;font-weight:700;">✅ Safe MW window: 1.02–1.17 SG · EOR injection flagged safe</div>';c.appendChild(sw);}
+function initS8(){const hd=document.getElementById('hash-disp');hd.innerHTML='';const hash='a7f3e9b2d1c4f8a3e6b9d2c5f1a4e7b0d3c6f2a5e8b1d4c7f3a6e9b2d5c8f1a9e2b5d8';const pal=['#F0A500','#9FE1CB','#AB47BC','#64B5F6'];let i=0;const iv=setInterval(()=>{if(i>=hash.length){clearInterval(iv);return;}const s=document.createElement('span');s.className='hc';s.textContent=hash[i];s.style.color=pal[Math.floor(i/16)%4];s.style.animationDelay=(i*.04)+'s';hd.appendChild(s);i++;},40);const nodes=[{e:'📋',t:'Well Analysis',s:'MH-N-01 · 2026'},{e:'🔬',t:'Spectral AI',s:'SWIR · Confirmed'},{e:'💰',t:'Economics',s:'+₹18.5Cr NPV'},{e:'🏛️',t:'NIC-DLT',s:'National registry'}];const nc=document.getElementById('chain-nodes');nc.innerHTML='';nodes.forEach((nd,i)=>{const d=document.createElement('div');d.style.cssText='background:rgba(29,158,117,.12);border:1.5px solid #0F6E56;border-radius:10px;padding:clamp(8px,1.2vh,16px) clamp(10px,1.4vw,18px);text-align:center;animation:popIn .4s '+(3.2+i*.35)+'s both;opacity:0;animation-fill-mode:forwards;flex:1;margin:0 4px;';d.innerHTML='<div style="font-size:clamp(18px,3vw,36px);">'+nd.e+'</div><div style="font-size:clamp(12px,1.4vw,18px);font-weight:700;color:#9FE1CB;">'+nd.t+'</div><div style="font-size:clamp(10px,1.1vw,14px);color:#5A7A94;">'+nd.s+'</div>';nc.appendChild(d);if(i<nodes.length-1){const arr=document.createElement('div');arr.style.cssText='font-size:clamp(16px,2.5vw,30px);color:#1D9E75;flex-shrink:0;';arr.textContent='→';nc.appendChild(arr);}});}
+function initS10(){const rows=[{w:'MH-N-01',r:'182 bbl/d',phf:'1.00',wm:'1.12',tz:'0.10',peor:'90%',eor:'UST',npv:'+₹18.5Cr',cls:'g'},{w:'MH-N-02',r:'210 bbl/d',phf:'0.99',wm:'0.95',tz:'0.25',peor:'82%',eor:'Polymer',npv:'+₹14.2Cr',cls:'g'},{w:'MH-N-03',r:'245 bbl/d',phf:'1.00',wm:'1.18',tz:'0.05',peor:'94%',eor:'UST',npv:'+₹22.1Cr',cls:'g'},{w:'MH-N-04',r:'98 bbl/d',phf:'0.99',wm:'0.78',tz:'0.60',peor:'71%',eor:'UST*',npv:'+₹4.8Cr',cls:'a'},{w:'MH-N-05',r:'134 bbl/d',phf:'0.98',wm:'1.05',tz:'0.18',peor:'87%',eor:'ASP',npv:'+₹16.9Cr',cls:'g'}];const bgM={g:'rgba(29,158,117,.12)',a:'rgba(239,159,39,.1)',r:'rgba(226,75,74,.1)'};const brM={g:'#0F6E56',a:'#EF9F27',r:'#E24B4A'};const c=document.getElementById('s10-rows');c.innerHTML='';rows.forEach((r,i)=>{const d=document.createElement('div');d.style.cssText='display:grid;grid-template-columns:1fr .8fr .8fr .8fr .8fr .8fr .8fr 1fr;gap:8px;padding:clamp(10px,1.5vh,18px) clamp(10px,1.5vw,18px);border-radius:12px;background:'+bgM[r.cls]+';border:1.5px solid '+brM[r.cls]+';animation:slideIn .4s '+(.4+i*.18)+'s both;opacity:0;animation-fill-mode:forwards;align-items:center;';const cm={g:'#9FE1CB',a:'#EF9F27',r:'#F09595'};const cl=cm[r.cls];const fs='font-size:clamp(13px,1.5vw,20px);font-weight:700;';d.innerHTML='<span style="'+fs+'color:'+cl+';">'+r.w+'</span><span style="'+fs.replace('700','400')+'color:#9FE1CB;">'+r.r+'</span><span style="'+fs+'color:'+(parseFloat(r.phf)>=1?'#1D9E75':'#EF9F27')+';">'+r.phf+'×</span><span style="'+fs+'color:'+(parseFloat(r.wm)>1.1?'#1D9E75':parseFloat(r.wm)<0.9?'#EF9F27':'#9FE1CB')+';">'+r.wm+'</span><span style="'+fs+'color:'+(parseFloat(r.tz)>.5?'#E24B4A':parseFloat(r.tz)>.2?'#EF9F27':'#1D9E75')+';">'+r.tz+'</span><span style="'+fs+'color:#AB47BC;">'+r.peor+'</span><span style="'+fs+'color:#F0A500;">'+r.eor+'</span><span style="'+fs+'color:#1D9E75;">'+r.npv+'</span>';c.appendChild(d);});}
+setTimeout(()=>{done[0]=true;init(0);},500);
+</script>
+</body>
+</html>
