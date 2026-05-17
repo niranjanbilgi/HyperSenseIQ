@@ -314,6 +314,7 @@ input[type=range]{accent-color:var(--g-mid);}
       <div class="tab" onclick="go('wett')" style="color:#CE93D8;">Wettability · Thief Zone</div>
       <div class="tab" onclick="go('drill')" style="color:#90CAF9;">Drilling Physics</div>
       <div class="tab" onclick="go('faq')" style="color:#5DCAA5;">FAQ</div>
+      <div class="tab" onclick="window.open('hypersenseiq_story.html','_blank')" style="color:#F0A500;background:rgba(240,165,0,.12);border-bottom:2px solid #F0A500;font-weight:700;letter-spacing:.02em;" title="Open the animated explainer in a new tab">▶ Watch Intro</div>
     </div>
     <div class="tabs" id="mine-tabs" style="display:none;">
       <div class="tab on" onclick="goMine('overview')">Mine overview</div>
@@ -830,9 +831,16 @@ input[type=range]{accent-color:var(--g-mid);}
 
 <!-- FAQ PANEL -->
 <div class="panel" id="p-faq">
-  <div style="background:linear-gradient(135deg,#0b1f18,#142338);border-radius:8px;padding:12px 16px;margin-bottom:14px;">
-    <div style="color:#9FE1CB;font-size:13px;font-weight:500;">HyperSenseIQ — Complete User Guide & FAQ</div>
-    <div style="color:#5DCAA5;font-size:10px;margin-top:2px;">Everything explained from first principles · No prior knowledge assumed · Click any question to expand</div>
+  <div style="background:linear-gradient(135deg,#0b1f18,#142338);border-radius:8px;padding:12px 16px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;">
+    <div>
+      <div style="color:#9FE1CB;font-size:13px;font-weight:500;">HyperSenseIQ — Complete User Guide & FAQ</div>
+      <div style="color:#5DCAA5;font-size:10px;margin-top:2px;">Everything explained from first principles · No prior knowledge assumed · Click any question to expand</div>
+    </div>
+    <button onclick="window.open('hypersenseiq_story.html','_blank')"
+      style="flex-shrink:0;font-family:'Nunito',sans-serif;font-size:12px;font-weight:700;padding:8px 18px;border-radius:20px;border:1.5px solid #F0A500;background:rgba(240,165,0,.12);color:#F0A500;cursor:pointer;transition:all .2s;white-space:nowrap;margin-left:16px;"
+      onmouseover="this.style.background='rgba(240,165,0,.25)'" onmouseout="this.style.background='rgba(240,165,0,.12)'">
+      ▶ Watch animated intro
+    </button>
   </div>
   <!-- Category filter tabs -->
   <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;" id="faq-cats"></div>
