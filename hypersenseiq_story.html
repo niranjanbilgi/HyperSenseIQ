@@ -2,8 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HyperSenseIQ — See Beyond the Surface</title>
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GTPSNPP1NL"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-GTPSNPP1NL');
+</script>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -564,6 +570,256 @@ function initS7(){const bars=[{l:'Pore Pressure (PP)',v:20,max:30,c:'#E24B4A'},{
 function initS8(){const hd=document.getElementById('hash-disp');hd.innerHTML='';const hash='a7f3e9b2d1c4f8a3e6b9d2c5f1a4e7b0d3c6f2a5e8b1d4c7f3a6e9b2d5c8f1a9e2b5d8';const pal=['#F0A500','#9FE1CB','#AB47BC','#64B5F6'];let i=0;const iv=setInterval(()=>{if(i>=hash.length){clearInterval(iv);return;}const s=document.createElement('span');s.className='hc';s.textContent=hash[i];s.style.color=pal[Math.floor(i/16)%4];s.style.animationDelay=(i*.04)+'s';hd.appendChild(s);i++;},40);const nodes=[{e:'📋',t:'Well Analysis',s:'MH-N-01 · 2026'},{e:'🔬',t:'Spectral AI',s:'SWIR · Confirmed'},{e:'💰',t:'Economics',s:'+₹18.5Cr NPV'},{e:'🏛️',t:'NIC-DLT',s:'National registry'}];const nc=document.getElementById('chain-nodes');nc.innerHTML='';nodes.forEach((nd,i)=>{const d=document.createElement('div');d.style.cssText='background:rgba(29,158,117,.12);border:1.5px solid #0F6E56;border-radius:10px;padding:clamp(8px,1.2vh,16px) clamp(10px,1.4vw,18px);text-align:center;animation:popIn .4s '+(3.2+i*.35)+'s both;opacity:0;animation-fill-mode:forwards;flex:1;margin:0 4px;';d.innerHTML='<div style="font-size:clamp(18px,3vw,36px);">'+nd.e+'</div><div style="font-size:clamp(12px,1.4vw,18px);font-weight:700;color:#9FE1CB;">'+nd.t+'</div><div style="font-size:clamp(10px,1.1vw,14px);color:#5A7A94;">'+nd.s+'</div>';nc.appendChild(d);if(i<nodes.length-1){const arr=document.createElement('div');arr.style.cssText='font-size:clamp(16px,2.5vw,30px);color:#1D9E75;flex-shrink:0;';arr.textContent='→';nc.appendChild(arr);}});}
 function initS10(){const rows=[{w:'MH-N-01',r:'182 bbl/d',phf:'1.00',wm:'1.12',tz:'0.10',peor:'90%',eor:'UST',npv:'+₹18.5Cr',cls:'g'},{w:'MH-N-02',r:'210 bbl/d',phf:'0.99',wm:'0.95',tz:'0.25',peor:'82%',eor:'Polymer',npv:'+₹14.2Cr',cls:'g'},{w:'MH-N-03',r:'245 bbl/d',phf:'1.00',wm:'1.18',tz:'0.05',peor:'94%',eor:'UST',npv:'+₹22.1Cr',cls:'g'},{w:'MH-N-04',r:'98 bbl/d',phf:'0.99',wm:'0.78',tz:'0.60',peor:'71%',eor:'UST*',npv:'+₹4.8Cr',cls:'a'},{w:'MH-N-05',r:'134 bbl/d',phf:'0.98',wm:'1.05',tz:'0.18',peor:'87%',eor:'ASP',npv:'+₹16.9Cr',cls:'g'}];const bgM={g:'rgba(29,158,117,.12)',a:'rgba(239,159,39,.1)',r:'rgba(226,75,74,.1)'};const brM={g:'#0F6E56',a:'#EF9F27',r:'#E24B4A'};const c=document.getElementById('s10-rows');c.innerHTML='';rows.forEach((r,i)=>{const d=document.createElement('div');d.style.cssText='display:grid;grid-template-columns:1fr .8fr .8fr .8fr .8fr .8fr .8fr 1fr;gap:8px;padding:clamp(10px,1.5vh,18px) clamp(10px,1.5vw,18px);border-radius:12px;background:'+bgM[r.cls]+';border:1.5px solid '+brM[r.cls]+';animation:slideIn .4s '+(.4+i*.18)+'s both;opacity:0;animation-fill-mode:forwards;align-items:center;';const cm={g:'#9FE1CB',a:'#EF9F27',r:'#F09595'};const cl=cm[r.cls];const fs='font-size:clamp(13px,1.5vw,20px);font-weight:700;';d.innerHTML='<span style="'+fs+'color:'+cl+';">'+r.w+'</span><span style="'+fs.replace('700','400')+'color:#9FE1CB;">'+r.r+'</span><span style="'+fs+'color:'+(parseFloat(r.phf)>=1?'#1D9E75':'#EF9F27')+';">'+r.phf+'×</span><span style="'+fs+'color:'+(parseFloat(r.wm)>1.1?'#1D9E75':parseFloat(r.wm)<0.9?'#EF9F27':'#9FE1CB')+';">'+r.wm+'</span><span style="'+fs+'color:'+(parseFloat(r.tz)>.5?'#E24B4A':parseFloat(r.tz)>.2?'#EF9F27':'#1D9E75')+';">'+r.tz+'</span><span style="'+fs+'color:#AB47BC;">'+r.peor+'</span><span style="'+fs+'color:#F0A500;">'+r.eor+'</span><span style="'+fs+'color:#1D9E75;">'+r.npv+'</span>';c.appendChild(d);});}
 setTimeout(()=>{done[0]=true;init(0);},500);
+</script>
+<!-- ── HINDUSTANI AMBIENT MUSIC ENGINE ── -->
+<div id="music-btn" onclick="toggleMusic()" title="Toggle ambient music"
+  style="position:fixed;bottom:clamp(60px,9vh,80px);right:18px;z-index:200;
+    width:42px;height:42px;border-radius:50%;
+    background:rgba(13,110,90,0.25);border:1.5px solid #0D6E5A;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;transition:all .3s;backdrop-filter:blur(6px);"
+  onmouseover="this.style.background='rgba(13,110,90,0.5)'"
+  onmouseout="this.style.background='rgba(13,110,90,0.25)'">
+  <span id="music-icon" style="font-size:18px;">🎵</span>
+</div>
+<div id="music-label" style="position:fixed;bottom:clamp(60px,9vh,80px);right:66px;z-index:200;
+  font-family:Nunito,sans-serif;font-size:10px;color:#5DCAA5;
+  background:rgba(6,16,30,0.85);padding:4px 10px;border-radius:10px;
+  opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;">
+  Raga Yaman · ambient
+</div>
+
+<script>
+// ── HINDUSTANI AMBIENT — RAGA YAMAN (Kalyan Thaat) ───────────
+// Yaman is the evening raga of peace and contemplation.
+// Scale: Sa Re Ga Ma(tivra) Pa Dha Ni Sa — all shuddha except Ma which is tivra
+// Base frequency: D4 = 293.66 Hz as Sa (comfortable for ambient)
+
+let audioCtx = null;
+let musicPlaying = false;
+let masterGain = null;
+let scheduledNodes = [];
+let musicLoopTimer = null;
+
+const SA = 293.66;  // D4 as Sa
+
+// Yaman scale ratios (just intonation approximation)
+// Sa  Re   Ga   Ma#  Pa   Dha  Ni   Sa2
+const YAMAN = [1, 9/8, 5/4, 45/32, 3/2, 5/3, 15/8, 2];
+const NOTE_NAMES = ['Sa','Re','Ga','Ma♯','Pa','Dha','Ni','Sa\''];
+
+function freq(scaleIdx, octave=0) {
+  return SA * YAMAN[scaleIdx % 8] * Math.pow(2, Math.floor(scaleIdx/8) + octave);
+}
+
+// Create a sitar/sarod-like plucked tone
+function pluckNote(ctx, f, startTime, duration, gainVal=0.18, detune=0) {
+  const osc = ctx.createOscillator();
+  const osc2 = ctx.createOscillator();
+  const gain = ctx.createGain();
+  const filter = ctx.createBiquadFilter();
+
+  osc.type = 'sawtooth';
+  osc.frequency.value = f;
+  osc.detune.value = detune;
+
+  osc2.type = 'triangle';
+  osc2.frequency.value = f * 1.005; // slight chorus
+  osc2.detune.value = detune - 4;
+
+  filter.type = 'bandpass';
+  filter.frequency.value = f * 2.5;
+  filter.Q.value = 3;
+
+  // Pluck envelope: fast attack, exponential decay (like a plucked string)
+  gain.gain.setValueAtTime(0, startTime);
+  gain.gain.linearRampToValueAtTime(gainVal, startTime + 0.015);
+  gain.gain.exponentialRampToValueAtTime(gainVal * 0.3, startTime + duration * 0.3);
+  gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+
+  osc.connect(filter);
+  osc2.connect(filter);
+  filter.connect(gain);
+  gain.connect(masterGain);
+
+  osc.start(startTime);
+  osc.stop(startTime + duration + 0.1);
+  osc2.start(startTime);
+  osc2.stop(startTime + duration + 0.1);
+
+  scheduledNodes.push(osc, osc2, gain, filter);
+}
+
+// Tanpura drone — sustained Sa Pa Sa Sa
+function tanpura(ctx, startTime, duration) {
+  const droneNotes = [freq(0), freq(4), freq(0, 1), freq(0, 1)]; // Sa Pa SA SA
+  droneNotes.forEach((f, i) => {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    const filter = ctx.createBiquadFilter();
+
+    osc.type = 'sine';
+    osc.frequency.value = f;
+
+    // Add subtle harmonics
+    const osc2 = ctx.createOscillator();
+    osc2.type = 'triangle';
+    osc2.frequency.value = f * 2;
+    const g2 = ctx.createGain();
+    g2.gain.value = 0.06;
+
+    filter.type = 'lowpass';
+    filter.frequency.value = f * 4;
+
+    const stagger = i * (duration / 4);
+    gain.gain.setValueAtTime(0, startTime + stagger);
+    gain.gain.linearRampToValueAtTime(0.09, startTime + stagger + 0.8);
+    gain.gain.setValueAtTime(0.09, startTime + stagger + duration/4 - 0.5);
+    gain.gain.linearRampToValueAtTime(0, startTime + stagger + duration/4);
+
+    osc.connect(filter); osc2.connect(g2); g2.connect(filter);
+    filter.connect(gain); gain.connect(masterGain);
+    osc.start(startTime + stagger);
+    osc.stop(startTime + stagger + duration/4 + 0.2);
+    osc2.start(startTime + stagger);
+    osc2.stop(startTime + stagger + duration/4 + 0.2);
+    scheduledNodes.push(osc, osc2, gain, g2, filter);
+  });
+}
+
+// Tabla-like subtle pulse — just a very soft low thud
+function tablaThud(ctx, time, vol=0.12) {
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(140, time);
+  osc.frequency.exponentialRampToValueAtTime(60, time + 0.15);
+  gain.gain.setValueAtTime(vol, time);
+  gain.gain.exponentialRampToValueAtTime(0.001, time + 0.22);
+  osc.connect(gain); gain.connect(masterGain);
+  osc.start(time); osc.stop(time + 0.25);
+  scheduledNodes.push(osc, gain);
+}
+
+// Raga Yaman melodic phrases — alaap style, slow and contemplative
+const PHRASES = [
+  // Alaap phrase 1: Ni Re Ga Ma# Pa (ascending question)
+  [7, 0.8], [1, 0.6], [2, 0.7], [3, 1.2], [4, 1.5],
+  null, // pause
+  // Phrase 2: Pa Dha Ni SA (ascending to upper Sa)
+  [4, 0.6], [5, 0.7], [6, 0.8], [7, 2.0],
+  null,
+  // Phrase 3: SA Ni Dha Pa (gentle descent)
+  [7, 0.6], [6, 0.7], [5, 0.8], [4, 1.5],
+  null,
+  // Phrase 4: Pa Ma# Ga Re Sa (full descent, resolution)
+  [4, 0.5], [3, 0.6], [2, 0.7], [1, 0.8], [0, 2.5],
+  null, null,
+  // Phrase 5: Sa Ga Ma# Pa Dha Ni (Gamak — fast ornament)
+  [0, 0.3], [2, 0.3], [3, 0.4], [4, 0.4], [5, 0.5], [6, 1.2],
+  null,
+  // Phrase 6: Ni Dha Pa Ma# Ga Re Sa (descent with pause on Ga)
+  [6, 0.5], [5, 0.5], [4, 0.5], [3, 0.5], [2, 1.4], [1, 0.6], [0, 2.0],
+  null, null, null,
+];
+
+function scheduleMusicLoop(startTime) {
+  if(!musicPlaying) return;
+
+  const TEMPO = 2.2; // seconds per beat unit — very slow, contemplative
+  let t = startTime;
+
+  // Continuous tanpura drone underneath
+  tanpura(audioCtx, t, PHRASES.length * TEMPO * 1.5);
+
+  // Subtle tabla on beats 1 and 3 of each cycle
+  for(let b=0; b<8; b++) {
+    tablaThud(audioCtx, t + b * TEMPO * 2, b%2===0 ? 0.14 : 0.07);
+  }
+
+  // Melodic phrase
+  PHRASES.forEach(item => {
+    if(item === null) { t += TEMPO * 0.8; return; }
+    const [scaleIdx, dur] = item;
+    // Alternate between Sa octave and Pa octave for variety
+    const octave = scaleIdx >= 6 ? 0 : (scaleIdx <= 1 && Math.random()>.5 ? -1 : 0);
+    pluckNote(audioCtx, freq(scaleIdx, octave), t, dur * TEMPO * 0.9, 0.16);
+    // Occasional sympathetic string resonance
+    if(Math.random() > 0.7) {
+      pluckNote(audioCtx, freq(scaleIdx, octave) * 2, t + 0.05, dur * TEMPO * 0.4, 0.04, 8);
+    }
+    t += dur * TEMPO;
+  });
+
+  // Gentle fade and loop
+  const loopDuration = t - startTime + 3;
+  musicLoopTimer = setTimeout(() => {
+    if(musicPlaying) {
+      // Clean up old nodes
+      scheduledNodes = [];
+      scheduleMusicLoop(audioCtx.currentTime + 0.1);
+    }
+  }, loopDuration * 1000);
+}
+
+function startMusic() {
+  if(!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    masterGain = audioCtx.createGain();
+    // Add gentle reverb via convolver-style delay
+    const delay = audioCtx.createDelay(2.0);
+    const delayGain = audioCtx.createGain();
+    delay.delayTime.value = 0.35;
+    delayGain.gain.value = 0.18;
+    masterGain.connect(delay);
+    delay.connect(delayGain);
+    delayGain.connect(audioCtx.destination);
+    masterGain.connect(audioCtx.destination);
+  }
+  if(audioCtx.state === 'suspended') audioCtx.resume();
+  masterGain.gain.setValueAtTime(0, audioCtx.currentTime);
+  masterGain.gain.linearRampToValueAtTime(0.7, audioCtx.currentTime + 1.5);
+  musicPlaying = true;
+  scheduleMusicLoop(audioCtx.currentTime + 0.3);
+}
+
+function stopMusic() {
+  musicPlaying = false;
+  if(musicLoopTimer) clearTimeout(musicLoopTimer);
+  if(masterGain) {
+    masterGain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 1.2);
+  }
+  setTimeout(() => { scheduledNodes = []; }, 1500);
+}
+
+function toggleMusic() {
+  const btn = document.getElementById('music-btn');
+  const icon = document.getElementById('music-icon');
+  const lbl = document.getElementById('music-label');
+  if(musicPlaying) {
+    stopMusic();
+    icon.textContent = '🎵';
+    btn.style.opacity = '0.5';
+    lbl.style.opacity = '0';
+  } else {
+    startMusic();
+    icon.textContent = '🔇';
+    btn.style.opacity = '1';
+    btn.style.background = 'rgba(13,110,90,0.5)';
+    lbl.style.opacity = '1';
+    setTimeout(() => { lbl.style.opacity = '0'; }, 3000);
+  }
+}
+
+// Show music hint after 3 seconds
+setTimeout(() => {
+  const lbl = document.getElementById('music-label');
+  if(!musicPlaying && lbl) {
+    lbl.style.opacity = '1';
+    lbl.textContent = '🎵 Click for Raga Yaman';
+    setTimeout(() => { lbl.style.opacity = '0'; }, 4000);
+  }
+}, 3000);
 </script>
 </body>
 </html>
