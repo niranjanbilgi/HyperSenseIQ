@@ -549,7 +549,7 @@ input[type=range]{accent-color:var(--g-mid);}
     <div><div style="color:#E8D87A;font-size:13px;font-weight:500;">Your Well Data — HyperSenseIQ live analysis</div>
     <div style="color:#5DCAA5;font-size:10px;margin-top:2px;">Enter real parameters · AI analyses instantly · All tabs update with your data</div></div>
     <div style="display:flex;gap:6px;">
-      <button onclick="loadSample()" style="font-size:11px;padding:6px 12px;border-radius:5px;border:0.5px solid #5DCAA5;background:rgba(29,158,117,.2);color:#9FE1CB;cursor:pointer;">Load ONGC sample</button>
+      <button onclick="loadSample()" id="load-sample-btn" style="font-size:11px;padding:6px 12px;border-radius:5px;border:0.5px solid #5DCAA5;background:rgba(29,158,117,.2);color:#9FE1CB;cursor:pointer;">Load ONGC sample</button>
       <button onclick="clearInp()" style="font-size:11px;padding:6px 12px;border-radius:5px;border:0.5px solid rgba(255,255,255,.15);background:transparent;color:#6A8FAD;cursor:pointer;">Clear</button>
     </div>
   </div>
@@ -1111,6 +1111,16 @@ function setDataset(ds){
     document.getElementById('well-bar-label').textContent='Cambay Basin · Kalol Ss:';
   }
   document.querySelectorAll('#wells-'+ds+' .w-btn').forEach((b,j)=>b.classList.toggle('on',j===0));
+  // Clear Your Well Data form so stale data from previous dataset doesn't persist
+  ['wid','fld','qi','di','wc','age','phi','sw','perm','pay','api','dep','op','dr','eq','hor'].forEach(k=>{
+    const el=document.getElementById('i-'+k);if(el)el.value='';
+  });
+  const iprev=document.getElementById('inp-preview');if(iprev)iprev.style.display='none';
+  const ires=document.getElementById('inp-results');if(ires)ires.style.display='none';
+  // Update sample button label to match active dataset
+  const sBtn=document.getElementById('load-sample-btn');
+  if(sBtn)sBtn.textContent=ds==='cb'?'Load Cambay sample':'Load ONGC sample';
+  validateInp();
   render();
   // Refresh any active supplementary panels that are dataset-dependent
   if(document.getElementById('p-spectral').classList.contains('on')) renderSpectral();
@@ -1308,6 +1318,20 @@ function go(name){
   else if(name==='wett')renderWett();
   else if(name==='drill')renderDrill();
   else if(name==='prodlog')renderProdLog();
+  else if(name==='input'){
+    // Sync oil price field to live price
+    const iOp=document.getElementById('i-op');
+    if(iOp&&(!iOp.value||parseFloat(iOp.value)<3000)){
+      if(LIVE_PRICE_INR>0)iOp.value=LIVE_PRICE_INR;
+    }
+    if(iOp)iOp.placeholder='auto from live feed (₹'+Math.round(LIVE_PRICE_INR||7537).toLocaleString('en-IN')+')';
+    // Update sample button label to show current well
+    const w=ACTIVE_WELLS[CW];
+    const sBtn=document.getElementById('load-sample-btn');
+    if(sBtn)sBtn.textContent=w?'Load '+w.id+' data':(DATASET==='cb'?'Load Cambay sample':'Load ONGC sample');
+    validateInp();
+    render();
+  }
   else render();
 }
 
@@ -1315,10 +1339,23 @@ function setTabOn(name){document.querySelectorAll('#petro-tabs .tab').forEach(t=
 
 function sw(i){
   CW=i;
-  PRODLOG_WELL=i; // keep Production Log in sync with selected well
+  PRODLOG_WELL=i;
   document.querySelectorAll('#wells-'+DATASET+' .w-btn').forEach((b,j)=>b.classList.toggle('on',j===i));
   render();
   if(document.getElementById('p-prodlog').classList.contains('on')) renderProdLog();
+  // If Your Well Data tab is open, clear stale form data and update sample button
+  if(document.getElementById('p-input').classList.contains('on')){
+    ['wid','fld','qi','di','wc','age','phi','sw','perm','pay','api','dep','op','dr','eq','hor'].forEach(k=>{
+      const el=document.getElementById('i-'+k);if(el)el.value='';
+    });
+    const iprev=document.getElementById('inp-preview');if(iprev)iprev.style.display='none';
+    const ires=document.getElementById('inp-results');if(ires)ires.style.display='none';
+    // Update sample button to show which well's sample will load
+    const w=ACTIVE_WELLS[i];
+    const sBtn=document.getElementById('load-sample-btn');
+    if(sBtn&&w)sBtn.textContent='Load '+w.id+' sample';
+    validateInp();
+  }
 }
 
 function goMine(panel){
@@ -1849,8 +1886,41 @@ function renderMineTwin(m){
   document.getElementById('m-tw-repos').innerHTML=`<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:7px;">${repos.map(([n,c,s])=>`<div style="background:var(--${c}-bg);border:0.5px solid;border-color:var(--${c}-mid);border-radius:5px;padding:7px 9px;"><div style="font-size:10px;font-weight:500;color:var(--${c}-dark);margin-bottom:2px;">${s}</div><div style="font-size:10px;color:var(--gray);">${n}</div></div>`).join('')}</div>`;
 }
 /* ── YOUR WELL DATA ── */
-const SAMPLE={wid:'MH-A-101',fld:'Mumbai High North',qi:740,di:.30,wc:32,age:9,phi:.20,sw:.22,perm:78,pay:7.5,api:38,dep:1856,op:6500,dr:12,eq:85,hor:5};
-function loadSample(){Object.entries(SAMPLE).forEach(([k,v])=>{const el=document.getElementById('i-'+k);if(el)el.value=v;});livePreview();validateInp();}
+const SAMPLE={wid:'MH-A-101',fld:'Mumbai High North',qi:740,di:.30,wc:32,age:9,phi:.20,sw:.22,perm:78,pay:7.5,api:38,dep:1856,dr:12,eq:85,hor:5};
+const SAMPLE_CB={wid:'CB-A-101',fld:'Cambay Basin - Kalol Ss',qi:180,di:.28,wc:28,age:12,phi:.14,sw:.38,perm:18,pay:5.2,api:32,dep:1520,dr:12,eq:85,hor:5};
+// Note: op (oil price) intentionally excluded — always pulled from live feed
+function loadSample(){
+  // Load the ACTIVE selected well's actual parameters — not a generic sample
+  const w = ACTIVE_WELLS[CW];
+  // Clear all fields first
+  ['wid','fld','qi','di','wc','age','phi','sw','perm','pay','api','dep','op','dr','eq','hor'].forEach(k=>{
+    const el=document.getElementById('i-'+k);if(el)el.value='';
+  });
+  if(w){
+    // Map well object properties to form fields
+    const fldMap={
+      wid: w.id, fld: w.field||w.fm||'',
+      qi: w.qi, di: w.Di, wc: w.wc,
+      age: w.age, phi: w.phi, sw: w.sw,
+      perm: w.perm, pay: w.pay,
+      api: w.api||38, dep: w.dep||1800,
+      dr: 12, eq: 85, hor: 5
+    };
+    Object.entries(fldMap).forEach(([k,v])=>{
+      const el=document.getElementById('i-'+k);if(el&&v!==undefined)el.value=v;
+    });
+  } else {
+    // Fallback to generic sample if no well available
+    const sample = DATASET==='cb' ? SAMPLE_CB : SAMPLE;
+    Object.entries(sample).forEach(([k,v])=>{const el=document.getElementById('i-'+k);if(el)el.value=v;});
+  }
+  // Set oil price from live feed
+  const iOp=document.getElementById('i-op');
+  if(iOp&&LIVE_PRICE_INR>0)iOp.value=LIVE_PRICE_INR;
+  document.getElementById('inp-results').style.display='none';
+  document.getElementById('inp-preview').style.display='none';
+  livePreview();validateInp();
+}
 function clearInp(){['wid','fld','qi','di','wc','age','phi','sw','perm','pay','api','dep','op','dr','eq','hor'].forEach(k=>{const el=document.getElementById('i-'+k);if(el)el.value='';});document.getElementById('inp-preview').style.display='none';document.getElementById('inp-results').style.display='none';validateInp();}
 function gV(id){const el=document.getElementById('i-'+id);return el?parseFloat(el.value)||el.value:'';}
 function validateInp(){
