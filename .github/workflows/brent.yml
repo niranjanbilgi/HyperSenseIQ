@@ -1,6 +1,6 @@
-      - name: Fetch Brent price
-        run: |
-          RESPONSE=$(curl -s "https://www.alphavantage.co/query?function=BRENT&interval=1min&apikey=${{ secrets.AV_KEY }}")
-          PRICE=$(echo "$RESPONSE" | jq -r '.data[0].value')
-          TIMESTAMP=$(date +%s)
-          echo "{ \"symbol\": \"BRENTOIL\", \"price\": $PRICE, \"timestamp\": $TIMESTAMP }" > data/brent.json
+name: Update Brent Price
+
+on:
+  schedule:
+    - cron: "0 */2 * * *"
+  workflow_dispatch:
