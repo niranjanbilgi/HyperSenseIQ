@@ -1083,68 +1083,67 @@ const kCls=(v,hi,lo,dir='up')=>dir==='up'?(v>=hi?'g':v>=lo?'a':'r'):(v<=hi?'g':v
 const vCls=v=>v>0?'vg':'vr';
 /* ── LIVE DATA ── */
 let _brentLive=false;
-let _lastBrentINR=6300; // ~$65 × ₹96.8 — current May 2026 estimate
 
 async function fetchLive(){
-  // Single call to open.er-api.com returns BOTH FX rate AND XBR (Brent Crude)
-  // XBR is in the rates object: rates.XBR = barrels per USD (inverted)
-  // Brent USD/bbl = 1 / rates.XBR
-  // Brent INR/bbl = (1 / rates.XBR) * rates.INR
-  let inrPerBbl = _lastBrentINR;
-  let fx = 83.5;
+  let fx=83.5, inrPerBbl=null;
 
+  // ── FX Rate (working reliably) ──
+  const fxSources=[
+    ()=>fetch('https://open.er-api.com/v6/latest/USD').then(r=>r.json()).then(d=>{const v=d.rates?.INR;if(v>70&&v<110)return v;throw 0;}),
+    ()=>fetch('https://api.frankfurter.app/latest?from=USD&to=INR').then(r=>r.json()).then(d=>{const v=d.rates?.INR;if(v>70&&v<110)return v;throw 0;}),
+    ()=>fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json').then(r=>r.json()).then(d=>{const v=d.usd?.inr;if(v>70&&v<110)return v;throw 0;}),
+  ];
+  for(const s of fxSources){try{fx=await s();break;}catch(e){}}
+
+  // ── Brent Price: fetch from same-origin GitHub-hosted JSON (updated by Action) ──
   try{
-    const r = await fetch('https://open.er-api.com/v6/latest/USD',
-      {signal: AbortSignal.timeout(6000)});
+    const r=await fetch('./data/brent.json?t='+Date.now(),{signal:AbortSignal.timeout(4000)});
     if(r.ok){
-      const d = await r.json();
-      const inr = d?.rates?.INR;
-      const xbr = d?.rates?.XBR; // barrels per USD
-      if(inr > 70 && inr < 110) fx = inr;
-      if(xbr > 0.001 && xbr < 0.1){
-        // XBR = barrels per USD → invert to get USD per barrel
-        const brentUSD = 1 / xbr;
-        if(brentUSD > 40 && brentUSD < 200){
-          inrPerBbl = Math.round(brentUSD * fx);
-          _lastBrentINR = inrPerBbl;
-          _brentLive = true;
-        }
+      const d=await r.json();
+      const p=parseFloat(d.price_usd);
+      if(p>40&&p<200){
+        inrPerBbl=Math.round(p*fx);
+        _brentLive=true;
       }
     }
   }catch(e){}
 
-  // Fallback: frankfurter for FX, then use last known Brent
-  if(!_brentLive){
+  // ── Fallback: FMP real API key ──
+  if(!inrPerBbl){
     try{
-      const r2 = await fetch('https://api.frankfurter.app/latest?from=USD&to=INR',
-        {signal: AbortSignal.timeout(5000)});
-      if(r2.ok){const d2=await r2.json(); if(d2.rates?.INR>70) fx=d2.rates.INR;}
+      const r=await fetch('https://financialmodelingprep.com/api/v3/quote/BRENTOIL?apikey=Bb9ej6lZUgsKFn0weNJ0OVbXOJfJRrtM',
+        {signal:AbortSignal.timeout(5000)});
+      if(r.ok){
+        const d=await r.json();
+        const p=parseFloat(d?.[0]?.price);
+        if(p>40&&p<200){inrPerBbl=Math.round(p*fx);_brentLive=true;}
+      }
     }catch(e){}
-    // Use last known Brent USD × live FX
-    inrPerBbl = Math.round((_lastBrentINR/_lastBrentINR||65) * fx);
-    inrPerBbl = _lastBrentINR; // keep last known
   }
+
+  // ── Final fallback: live FX × current market estimate ──
+  if(!inrPerBbl) inrPerBbl=Math.round(65*fx); // ~$65/bbl May 2026
 
   // ── Update UI ──
-  document.getElementById('brent-val').textContent = '₹'+inrPerBbl.toLocaleString('en-IN')+'/bbl';
-  document.getElementById('fx-val').textContent = fx.toFixed(1);
+  document.getElementById('brent-val').textContent='₹'+inrPerBbl.toLocaleString('en-IN')+'/bbl';
+  document.getElementById('fx-val').textContent=fx.toFixed(1);
 
-  // Sync to EOR price slider
-  const eorSl = document.getElementById('eor-price-sl');
-  const eorDisp = document.getElementById('eor-price-disp');
-  if(eorSl && inrPerBbl >= 3500 && inrPerBbl <= 12000){
-    eorSl.value = inrPerBbl;
-    if(eorDisp) eorDisp.textContent = '₹'+inrPerBbl.toLocaleString('en-IN');
-    if(typeof renderEOR === 'function') renderEOR();
+  // Sync EOR slider
+  const eorSl=document.getElementById('eor-price-sl');
+  const eorDisp=document.getElementById('eor-price-disp');
+  if(eorSl&&inrPerBbl>=3500&&inrPerBbl<=12000){
+    eorSl.value=inrPerBbl;
+    if(eorDisp)eorDisp.textContent='₹'+inrPerBbl.toLocaleString('en-IN');
+    if(typeof renderEOR==='function')renderEOR();
   }
 
-  // Dot — latched green once live
-  const now = new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
-  document.getElementById('last-upd').textContent = (_brentLive?'Live ':'Est. ')+now;
-  const ldot = document.querySelector('.ldot');
+  // Dot
+  const now=new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+  document.getElementById('last-upd').textContent=(_brentLive?'Live ':'FX-adj. ')+now;
+  const ldot=document.querySelector('.ldot');
   if(ldot){
-    ldot.style.background = _brentLive ? '#1D9E75' : '#EF9F27';
-    ldot.style.boxShadow = _brentLive ? '0 0 8px rgba(29,158,117,.8)' : '0 0 5px rgba(239,159,39,.5)';
+    ldot.style.background=_brentLive?'#1D9E75':'#EF9F27';
+    ldot.style.boxShadow=_brentLive?'0 0 8px rgba(29,158,117,.8)':'none';
   }
 }
 
