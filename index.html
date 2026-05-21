@@ -1090,22 +1090,52 @@ async function fetchLive(){
     ()=>fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json',{mode:'cors'}).then(r=>r.json()).then(d=>d.usd.inr)
   ];
   for(const s of sources){try{const v=await s();if(v>70&&v<100){fx=v;break;}}catch(e){}}
-  // Brent price — direct Yahoo Finance (works on https://GitHub Pages, not on file://)
+  // Brent crude price — multiple source fallback chain
   let brent=78.5;
-  try{
-    const r=await fetch('https://query1.finance.yahoo.com/v8/finance/chart/BZ=F?interval=1d&range=1d',
-      {signal:AbortSignal.timeout(4000)});
-    if(r.ok){
+  const brentSources=[
+    // Source 1: Stooq — reliable, CORS-open, no key needed
+    async()=>{
+      const r=await fetch('https://stooq.com/q/l/?s=brent.f&f=sd2t2ohlcv&h&e=json',
+        {signal:AbortSignal.timeout(5000)});
       const d=await r.json();
-      const p=d?.chart?.result?.[0]?.meta?.regularMarketPrice;
-      if(p&&p>40&&p<200)brent=p;
-    }
-  }catch(e){}
+      const p=parseFloat(d?.symbols?.['BRENT.F']?.close||d?.symbols?.['brent.f']?.close);
+      if(p>40&&p<200)return p; throw 0;
+    },
+    // Source 2: Financial Modeling Prep (free tier, no key for basic quotes)
+    async()=>{
+      const r=await fetch('https://financialmodelingprep.com/api/v3/quote/BCOUSD?apikey=demo',
+        {signal:AbortSignal.timeout(5000)});
+      const d=await r.json();
+      const p=parseFloat(d?.[0]?.price);
+      if(p>40&&p<200)return p; throw 0;
+    },
+    // Source 3: Twelve Data free tier
+    async()=>{
+      const r=await fetch('https://api.twelvedata.com/price?symbol=BZ%3AF&apikey=demo',
+        {signal:AbortSignal.timeout(5000)});
+      const d=await r.json();
+      const p=parseFloat(d?.price);
+      if(p>40&&p<200)return p; throw 0;
+    },
+  ];
+  for(const fn of brentSources){
+    try{brent=await fn();break;}catch(e){}
+  }
   const inr=Math.round(brent*fx);
   document.getElementById('brent-val').textContent='₹'+Math.round(inr).toLocaleString('en-IN')+'/bbl';
   document.getElementById('fx-val').textContent=fx.toFixed(1);
+  // Update the EOR price slider to match live price
+  const eorSl=document.getElementById('eor-price-sl');
+  const eorDisp=document.getElementById('eor-price-disp');
+  if(eorSl&&inr>=3500&&inr<=12000){
+    eorSl.value=inr;
+    if(eorDisp)eorDisp.textContent='₹'+Math.round(inr).toLocaleString('en-IN');
+  }
   document.getElementById('oil-sl').value=Math.min(10000,Math.max(3500,inr));
-  document.getElementById('last-upd').textContent='Live '+new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+  const gotLive = brent !== 78.5;
+  document.getElementById('last-upd').textContent=(gotLive?'Live ':'Est. ')+new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+  const ldot=document.querySelector('.ldot');
+  if(ldot)ldot.style.background=gotLive?'#1D9E75':'#EF9F27';
   document.getElementById('last-upd').style.color='#9FE1CB';
   document.getElementById('status-dot').style.background='#1D9E75';
   document.getElementById('status-dot').style.animation='pulse 2s infinite';
