@@ -4,6 +4,7 @@ on:
   schedule:
     - cron: "0 */2 * * *"
   workflow_dispatch:
+
 jobs:
   update-brent:
     runs-on: ubuntu-latest
@@ -25,3 +26,4 @@ jobs:
           git add data/brent.json
           git commit -m "Update Brent price" || echo "No changes to commit"
           git push
+
