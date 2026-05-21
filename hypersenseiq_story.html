@@ -2,824 +2,674 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-GTPSNPP1NL"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-GTPSNPP1NL');
-</script>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HyperSenseIQ — The Story</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-html,body{width:100%;height:100%;overflow:hidden;background:#06101E;}
-body{font-family:'Nunito',sans-serif;display:flex;align-items:center;justify-content:center;}
-#stage{width:100vw;height:100vh;background:linear-gradient(180deg,#0D1F3C 0%,#0A1628 55%,#061018 100%);position:relative;overflow:hidden;}
-.scene{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity 0.6s;}
-.scene.active{opacity:1;pointer-events:all;}
-.star{position:absolute;background:#fff;border-radius:50%;animation:twinkle 3s infinite;}
-@keyframes twinkle{0%,100%{opacity:.9;}50%{opacity:.1;}}
-@keyframes slideUp{from{transform:translateY(40px);opacity:0;}to{transform:translateY(0);opacity:1;}}
-@keyframes slideIn{from{transform:translateX(-50px);opacity:0;}to{transform:translateX(0);opacity:1;}}
-@keyframes slideInR{from{transform:translateX(50px);opacity:0;}to{transform:translateX(0);opacity:1;}}
-@keyframes popIn{from{transform:scale(.3);opacity:0;}to{transform:scale(1);opacity:1;}}
-@keyframes bounceIn{from{transform:translateY(-30px) scale(.5);opacity:0;}to{transform:translateY(0) scale(1);opacity:1;}}
-@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
-@keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.06);}}
-@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
-@keyframes oilDrop{0%{transform:translateY(0);opacity:.9;}100%{transform:translateY(80px);opacity:0;}}
-@keyframes sheen{0%,100%{opacity:.35;}50%{opacity:.85;}}
-@keyframes gradShift{0%{background-position:0%}100%{background-position:300%}}
-.h1{font-family:'Fredoka One',sans-serif;font-size:clamp(26px,3.6vw,52px);color:#9FE1CB;letter-spacing:.02em;text-shadow:0 0 40px rgba(29,158,117,.5);}
-.h2{font-family:'Fredoka One',sans-serif;font-size:clamp(20px,2.8vw,38px);color:#9FE1CB;}
-.sub{font-size:clamp(12px,1.3vw,17px);color:#5A7A94;letter-spacing:.03em;margin-top:6px;}
-.brand-big{font-family:'Fredoka One',sans-serif;font-size:clamp(40px,7vw,96px);background:linear-gradient(135deg,#9FE1CB,#F0A500,#E24B4A,#9FE1CB);background-size:300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:gradShift 4s linear infinite;}
-.gsurface{position:absolute;left:0;right:0;background:linear-gradient(180deg,#3D6B2E,#2A4D1F);}
-.gsand{position:absolute;left:0;right:0;background:linear-gradient(180deg,#9B7B4A,#6B4A2A);}
-.grock{position:absolute;left:0;right:0;background:linear-gradient(180deg,#4A4A4A,#2A2A2A);}
-.goil{position:absolute;left:0;right:0;background:linear-gradient(180deg,#1A1200,#050300);}
-.bubble{position:absolute;background:#fff;border-radius:20px 20px 20px 6px;padding:clamp(12px,1.8vh,20px) clamp(14px,2vw,22px);font-weight:900;font-size:clamp(13px,1.5vw,20px);color:#0D1F3C;box-shadow:0 8px 40px rgba(0,0,0,.6);line-height:1.5;border:2px solid #E8E8E8;}
-.bubble.r{border-radius:20px 20px 6px 20px;}
-.bubble::after{content:'';position:absolute;bottom:-14px;left:22px;width:0;height:0;border:8px solid transparent;border-top-color:#fff;border-bottom:none;}
-.bubble.r::after{left:auto;right:22px;}
-.stat-card{background:rgba(13,110,90,.18);border:2px solid #0F6E56;border-radius:14px;padding:clamp(10px,1.5vh,18px) clamp(14px,2vw,22px);backdrop-filter:blur(4px);}
-.stat-num{font-family:'Fredoka One',sans-serif;font-size:clamp(22px,3.2vw,44px);color:#F0A500;}
-.stat-lbl{font-size:clamp(9px,.9vw,13px);color:#9FE1CB;font-weight:700;letter-spacing:.08em;text-transform:uppercase;}
-.feat-card{background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.12);border-radius:14px;padding:clamp(14px,2vh,22px) clamp(16px,2vw,24px);margin-bottom:12px;}
-.feat-title{font-family:'Fredoka One',sans-serif;font-size:clamp(16px,2vw,26px);color:#9FE1CB;margin-bottom:6px;}
-.feat-body{font-size:clamp(11px,1.2vw,16px);color:#8AABCC;line-height:1.65;}
-.eor-bar-wrap{margin-bottom:8px;}
-.eor-bar-label{font-size:clamp(12px,1.3vw,18px);font-weight:700;color:#E8D87A;margin-bottom:4px;}
-.eor-bar-track{height:clamp(20px,2.8vh,34px);background:rgba(255,255,255,.06);border-radius:17px;overflow:hidden;}
-.eor-bar-fill{height:100%;border-radius:17px;width:0;transition:width 1.4s cubic-bezier(.34,1.2,.64,1);display:flex;align-items:center;justify-content:flex-end;padding-right:10px;}
-.eor-bar-pct{font-size:clamp(11px,1.2vw,15px);font-weight:900;color:#fff;}
-.hc{display:inline-block;opacity:0;animation:fadeIn .05s forwards;font-family:monospace;font-size:clamp(11px,1.2vw,16px);}
-#prog{position:absolute;top:0;left:0;height:4px;background:linear-gradient(90deg,#1D9E75,#F0A500,#E24B4A);border-radius:0 2px 2px 0;transition:width .5s ease;z-index:100;}
-.slbl{position:absolute;top:16px;left:24px;font-size:clamp(9px,.9vw,12px);color:rgba(255,255,255,.28);font-weight:700;letter-spacing:.12em;text-transform:uppercase;z-index:50;}
-#nav{position:absolute;bottom:0;left:0;right:0;height:clamp(46px,6.5vh,65px);background:rgba(6,16,30,.88);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;gap:8px;border-top:1px solid rgba(255,255,255,.07);z-index:100;}
-.ndot{width:clamp(8px,.9vw,11px);height:clamp(8px,.9vw,11px);border-radius:50%;background:rgba(255,255,255,.2);cursor:pointer;transition:all .3s;flex-shrink:0;}
-.ndot.on{background:#1D9E75;transform:scale(1.35);}
-.nbtn{font-family:'Nunito',sans-serif;font-size:clamp(11px,1.2vw,16px);font-weight:700;padding:7px 20px;border-radius:22px;border:2px solid;cursor:pointer;transition:all .2s;white-space:nowrap;}
-.nbtn.prev{border-color:#5A7A94;color:#5A7A94;background:transparent;}
-.nbtn.next{border-color:#1D9E75;color:#9FE1CB;background:rgba(29,158,117,.18);}
-.nbtn:disabled{opacity:.3;cursor:not-allowed;}
-.odrop{position:absolute;width:9px;height:14px;background:#1A0A00;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;opacity:0;}
-.scene-hdr{position:absolute;top:clamp(14px,2.5vh,28px);left:0;right:0;text-align:center;}
-.scene-body{position:absolute;top:clamp(90px,13vh,130px);left:0;right:0;bottom:clamp(46px,6.5vh,65px);}
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:clamp(14px,1.8vw,28px);height:100%;padding:0 clamp(28px,3.5vw,55px);}
-.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:clamp(12px,1.5vw,24px);height:100%;padding:0 clamp(22px,2.8vw,44px);}
-.vcenter{display:flex;flex-direction:column;gap:12px;justify-content:center;}
+:root{
+  --navy:#1A2F4A;
+  --teal:#0D6E5A;
+  --teal-mid:#1D9E75;
+  --teal-lt:#5DCAA5;
+  --amber:#EF9F27;
+  --purple:#7F77DD;
+  --red:#E24B4A;
+  --white:#F0EEE8;
+  --off:#B8BFC8;
+}
+
+html,body{height:100%;overflow:hidden;background:#0A1520;color:var(--white);
+  font-family:'DM Sans',sans-serif;}
+
+/* ── PROGRESS BAR ── */
+#progress-rail{position:fixed;top:0;left:0;right:0;height:2px;background:rgba(255,255,255,.08);z-index:100;}
+#progress-bar{height:2px;background:linear-gradient(90deg,var(--teal-mid),var(--teal-lt));width:0%;transition:width .6s ease;}
+
+/* ── NAV DOTS ── */
+#nav-dots{position:fixed;right:22px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:10px;z-index:100;}
+.dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.2);cursor:pointer;transition:all .3s;border:1px solid rgba(255,255,255,.15);}
+.dot.on{background:var(--teal-lt);transform:scale(1.4);box-shadow:0 0 8px rgba(93,202,165,.5);}
+.dot:hover{background:rgba(93,202,165,.5);}
+
+/* ── SCENE WRAPPER ── */
+#stage{position:fixed;inset:0;overflow:hidden;}
+.scene{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;
+  padding:60px 80px;opacity:0;pointer-events:none;transition:opacity .7s ease;text-align:center;}
+.scene.on{opacity:1;pointer-events:all;}
+
+/* ── SCENE BG TEXTURES ── */
+.scene::before{content:'';position:absolute;inset:0;z-index:0;pointer-events:none;}
+#s1::before{background:radial-gradient(ellipse 80% 60% at 20% 80%,rgba(13,110,90,.18) 0%,transparent 70%),
+  radial-gradient(ellipse 60% 40% at 80% 20%,rgba(26,47,74,.4) 0%,transparent 70%);}
+#s2::before{background:radial-gradient(ellipse 100% 80% at 50% 50%,rgba(13,110,90,.15) 0%,transparent 60%);}
+#s3::before{background:radial-gradient(ellipse 80% 60% at 80% 30%,rgba(29,158,117,.12) 0%,transparent 60%);}
+#s4::before{background:radial-gradient(ellipse 60% 80% at 20% 60%,rgba(127,119,221,.12) 0%,transparent 60%);}
+#s5::before{background:radial-gradient(ellipse 80% 60% at 70% 40%,rgba(239,159,39,.08) 0%,transparent 60%);}
+#s6::before{background:radial-gradient(ellipse 60% 80% at 30% 70%,rgba(13,110,90,.15) 0%,transparent 60%);}
+#s7::before{background:radial-gradient(ellipse 80% 60% at 60% 30%,rgba(29,158,117,.10) 0%,transparent 60%);}
+#s8::before{background:radial-gradient(ellipse 60% 60% at 40% 60%,rgba(239,159,39,.08) 0%,transparent 60%);}
+#s9::before{background:radial-gradient(ellipse 80% 80% at 50% 50%,rgba(127,119,221,.12) 0%,transparent 70%);}
+#s10::before{background:radial-gradient(ellipse 100% 60% at 50% 80%,rgba(13,110,90,.18) 0%,transparent 60%);}
+#s11::before{background:radial-gradient(ellipse 80% 80% at 50% 50%,rgba(29,158,117,.20) 0%,transparent 60%);}
+
+.scene>*{position:relative;z-index:1;}
+
+/* ── TYPOGRAPHY ── */
+.scene-num{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.25em;color:var(--teal-lt);
+  opacity:.6;margin-bottom:18px;text-transform:uppercase;}
+.scene-title{font-family:'Playfair Display',serif;font-size:clamp(28px,4vw,54px);
+  font-weight:700;line-height:1.15;margin-bottom:20px;
+  background:linear-gradient(135deg,var(--white) 0%,rgba(240,238,232,.7) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.scene-title em{font-style:italic;-webkit-text-fill-color:var(--teal-lt);}
+.scene-body{font-size:clamp(13px,1.6vw,17px);line-height:1.75;color:var(--off);
+  max-width:680px;font-weight:300;}
+.scene-body strong{color:var(--white);font-weight:500;}
+.scene-body .hl{color:var(--teal-lt);font-weight:500;}
+.scene-body .am{color:var(--amber);font-weight:500;}
+.scene-body .pu{color:var(--purple);font-weight:500;}
+
+/* ── DATA CARDS ── */
+.cards{display:flex;gap:14px;margin:28px 0;flex-wrap:wrap;justify-content:center;}
+.card{background:rgba(255,255,255,.04);border:0.5px solid rgba(255,255,255,.10);
+  border-radius:10px;padding:16px 20px;min-width:130px;text-align:center;
+  backdrop-filter:blur(8px);}
+.card-val{font-family:'DM Mono',monospace;font-size:22px;font-weight:500;color:var(--teal-lt);line-height:1;}
+.card-lbl{font-size:10px;color:var(--off);margin-top:5px;letter-spacing:.06em;}
+.card.am .card-val{color:var(--amber);}
+.card.pu .card-val{color:var(--purple);}
+.card.rd .card-val{color:var(--red);}
+
+/* ── FORMULA BLOCK ── */
+.formula{font-family:'DM Mono',monospace;font-size:clamp(11px,1.4vw,14px);
+  background:rgba(13,110,90,.15);border:0.5px solid rgba(29,158,117,.3);
+  border-radius:8px;padding:14px 22px;margin:20px auto;color:var(--teal-lt);
+  max-width:600px;line-height:1.6;}
+
+/* ── FLOW ── */
+.flow{display:flex;align-items:center;gap:10px;margin:24px 0;flex-wrap:wrap;justify-content:center;}
+.flow-node{background:rgba(29,158,117,.15);border:0.5px solid rgba(29,158,117,.4);
+  border-radius:6px;padding:8px 16px;font-size:12px;font-weight:500;color:var(--teal-lt);}
+.flow-node.pu{background:rgba(127,119,221,.15);border-color:rgba(127,119,221,.4);color:var(--purple);}
+.flow-node.am{background:rgba(239,159,39,.12);border-color:rgba(239,159,39,.35);color:var(--amber);}
+.flow-arrow{color:rgba(255,255,255,.25);font-size:16px;}
+
+/* ── QUOTE ── */
+.quote{font-family:'Playfair Display',serif;font-size:clamp(16px,2.2vw,26px);font-style:italic;
+  color:var(--white);margin:24px auto;max-width:580px;line-height:1.5;
+  border-left:2px solid var(--teal-mid);padding-left:22px;text-align:left;}
+.quote-attr{font-family:'DM Mono',monospace;font-size:10px;color:var(--teal-lt);
+  letter-spacing:.1em;margin-top:10px;font-style:normal;}
+
+/* ── FORMATION TABLE ── */
+.form-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:24px 0;width:100%;max-width:820px;}
+.form-card{background:rgba(255,255,255,.04);border:0.5px solid rgba(255,255,255,.10);
+  border-radius:10px;padding:16px;text-align:left;}
+.form-card h4{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.08em;color:var(--teal-lt);
+  margin-bottom:10px;text-transform:uppercase;}
+.form-card .fc-field{font-size:13px;font-weight:500;color:var(--white);margin-bottom:4px;}
+.form-card .fc-form{font-size:11px;color:var(--off);}
+.form-card .fc-stat{font-family:'DM Mono',monospace;font-size:11px;color:var(--amber);margin-top:8px;}
+.form-card.teal{border-color:rgba(29,158,117,.35);background:rgba(13,110,90,.10);}
+.form-card.pu{border-color:rgba(127,119,221,.35);background:rgba(127,119,221,.08);}
+.form-card.am{border-color:rgba(239,159,39,.35);background:rgba(239,159,39,.06);}
+
+/* ── EOR BARS ── */
+.eor-list{width:100%;max-width:560px;margin:20px auto;}
+.eor-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.eor-name{font-size:12px;width:110px;text-align:right;color:var(--off);flex-shrink:0;}
+.eor-bar-w{flex:1;height:22px;background:rgba(255,255,255,.05);border-radius:4px;overflow:hidden;}
+.eor-bar{height:22px;border-radius:4px;display:flex;align-items:center;
+  padding-left:8px;font-size:10px;font-weight:500;color:rgba(255,255,255,.9);transition:width 1s ease;}
+.eor-pct{font-family:'DM Mono',monospace;font-size:11px;color:var(--off);min-width:36px;}
+
+/* ── CHEM GAUGES ── */
+.gauge-row{display:flex;gap:20px;margin:20px 0;flex-wrap:wrap;justify-content:center;}
+.gauge{width:140px;text-align:center;}
+.gauge-ring{width:80px;height:80px;margin:0 auto 8px;position:relative;}
+.gauge-ring svg{transform:rotate(-90deg);}
+.gauge-ring .track{fill:none;stroke:rgba(255,255,255,.08);stroke-width:6;}
+.gauge-ring .fill{fill:none;stroke-width:6;stroke-linecap:round;transition:stroke-dashoffset 1.2s ease;}
+.gauge-val{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-family:'DM Mono',monospace;font-size:13px;font-weight:500;}
+.gauge-lbl{font-size:10px;color:var(--off);letter-spacing:.05em;}
+.gauge-flag{font-size:9px;margin-top:3px;font-weight:500;}
+
+/* ── CASING DIAGRAM ── */
+.casing-vis{display:flex;gap:30px;justify-content:center;margin:20px 0;align-items:flex-end;}
+.csg-col{text-align:center;}
+.csg-pipe{margin:0 auto 6px;background:rgba(29,158,117,.15);border:1.5px solid rgba(29,158,117,.4);
+  border-radius:3px;display:flex;align-items:flex-end;justify-content:center;
+  padding-bottom:4px;font-family:'DM Mono',monospace;font-size:9px;color:var(--teal-lt);}
+.csg-lbl{font-size:10px;color:var(--off);}
+.csg-grade{font-family:'DM Mono',monospace;font-size:10px;color:var(--amber);margin-top:2px;}
+
+/* ── SCENE 9 — BLOCKCHAIN GRID ── */
+.chain-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;width:100%;max-width:620px;margin:20px auto;}
+.chain-node{background:rgba(127,119,221,.10);border:0.5px solid rgba(127,119,221,.3);
+  border-radius:8px;padding:12px;text-align:center;}
+.chain-node .cn-id{font-family:'DM Mono',monospace;font-size:8px;color:var(--purple);letter-spacing:.05em;}
+.chain-node .cn-name{font-size:11px;color:var(--white);margin-top:4px;font-weight:500;}
+.chain-node .cn-status{font-size:9px;color:var(--teal-lt);margin-top:3px;}
+
+/* ── NAVIGATION ── */
+#nav{position:fixed;bottom:32px;left:50%;transform:translateX(-50%);
+  display:flex;align-items:center;gap:16px;z-index:100;
+  background:rgba(10,21,32,.7);backdrop-filter:blur(12px);
+  border:0.5px solid rgba(255,255,255,.08);border-radius:50px;
+  padding:10px 20px;}
+#nav button{background:none;border:none;color:var(--off);cursor:pointer;font-family:'DM Sans',sans-serif;
+  font-size:12px;padding:6px 14px;border-radius:20px;transition:all .2s;}
+#nav button:hover{background:rgba(29,158,117,.15);color:var(--teal-lt);}
+#nav button.primary{background:rgba(29,158,117,.2);border:0.5px solid rgba(29,158,117,.4);color:var(--teal-lt);}
+#scene-counter{font-family:'DM Mono',monospace;font-size:11px;color:var(--off);min-width:48px;text-align:center;}
+
+/* ── LOGO ── */
+#logo{position:fixed;top:20px;left:26px;display:flex;align-items:center;gap:10px;z-index:100;
+  text-decoration:none;}
+#logo-mark{width:32px;height:32px;background:linear-gradient(135deg,var(--teal),var(--teal-mid));
+  border-radius:7px;display:flex;align-items:center;justify-content:center;
+  font-family:'Playfair Display',serif;font-size:14px;color:white;font-weight:700;}
+#logo-text{font-size:12px;color:var(--off);font-weight:300;letter-spacing:.04em;}
+#logo-text span{color:var(--teal-lt);font-weight:500;}
+
+/* ── CLOSE BTN ── */
+#close-btn{position:fixed;top:20px;right:22px;z-index:100;
+  background:rgba(255,255,255,.06);border:0.5px solid rgba(255,255,255,.12);
+  color:var(--off);cursor:pointer;border-radius:50%;width:34px;height:34px;
+  font-size:16px;display:flex;align-items:center;justify-content:center;
+  transition:all .2s;font-family:'DM Sans',sans-serif;}
+#close-btn:hover{background:rgba(226,75,74,.15);border-color:rgba(226,75,74,.3);color:var(--red);}
+
+/* ── ANIMATED ENTRY ── */
+.scene.on .scene-num{animation:fadeUp .5s ease both;}
+.scene.on .scene-title{animation:fadeUp .6s .1s ease both;}
+.scene.on .scene-body{animation:fadeUp .6s .2s ease both;}
+.scene.on .cards{animation:fadeUp .6s .3s ease both;}
+.scene.on .formula{animation:fadeUp .6s .3s ease both;}
+.scene.on .flow{animation:fadeUp .6s .35s ease both;}
+.scene.on .eor-list{animation:fadeUp .6s .3s ease both;}
+.scene.on .quote{animation:fadeUp .6s .3s ease both;}
+.scene.on .gauge-row{animation:fadeUp .6s .3s ease both;}
+.scene.on .form-grid{animation:fadeUp .6s .3s ease both;}
+.scene.on .casing-vis{animation:fadeUp .6s .3s ease both;}
+.scene.on .chain-grid{animation:fadeUp .6s .3s ease both;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── SCENE 1: particle bg ── */
+#particles{position:fixed;inset:0;z-index:0;pointer-events:none;}
+canvas#pc{position:absolute;inset:0;width:100%;height:100%;}
+
+/* ── SCENE 11 CTA ── */
+.cta-btn{display:inline-block;margin-top:24px;padding:14px 36px;
+  background:linear-gradient(135deg,var(--teal),var(--teal-mid));
+  color:white;border-radius:8px;font-size:14px;font-weight:500;
+  text-decoration:none;border:none;cursor:pointer;letter-spacing:.04em;
+  box-shadow:0 4px 24px rgba(13,110,90,.3);transition:all .25s;font-family:'DM Sans',sans-serif;}
+.cta-btn:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(13,110,90,.45);}
+
+/* ── RESPONSIVE ── */
+@media(max-width:700px){
+  .scene{padding:50px 24px 80px;}
+  .form-grid{grid-template-columns:repeat(2,1fr);}
+  .chain-grid{grid-template-columns:repeat(2,1fr);}
+  .casing-vis{gap:12px;}
+}
 </style>
 </head>
 <body>
+
+<canvas id="pc"></canvas>
+
+<div id="progress-rail"><div id="progress-bar"></div></div>
+
+<a id="logo" href="index.html">
+  <div id="logo-mark">H</div>
+  <div id="logo-text"><span>HyperSenseIQ</span></div>
+</a>
+
+<button id="close-btn" onclick="window.location='index.html'" title="Back to platform">✕</button>
+
+<div id="nav-dots"></div>
+
 <div id="stage">
-  <div id="prog" style="width:9.09%"></div>
 
-  <!-- Stars -->
-  <div class="star" style="width:2px;height:2px;top:3%;left:8%;animation-delay:.3s"></div>
-  <div class="star" style="width:1.5px;height:1.5px;top:6%;left:22%;animation-delay:.8s"></div>
-  <div class="star" style="width:2px;height:2px;top:2%;left:41%;animation-delay:1.2s"></div>
-  <div class="star" style="width:1px;height:1px;top:8%;left:58%;animation-delay:.5s"></div>
-  <div class="star" style="width:2px;height:2px;top:4%;left:73%;animation-delay:1s"></div>
-  <div class="star" style="width:1.5px;height:1.5px;top:3%;left:87%;animation-delay:.4s"></div>
-  <div class="star" style="width:1px;height:1px;top:7%;left:35%;animation-delay:1.3s"></div>
-  <div class="star" style="width:2px;height:2px;top:5%;left:53%;animation-delay:.9s"></div>
-
-  <!-- S1: THE PROBLEM -->
-  <div class="scene active" id="s1">
-    <div class="slbl">01 · The Problem</div>
-
-    <!-- ── ZONE 1: Title (top 12%) ── -->
-    <div style="position:absolute;top:0;left:0;right:0;height:12%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding-top:clamp(10px,1.5vh,22px);">
-      <div class="h1" style="animation:slideUp .7s .3s both;">India's Mature Oil Fields</div>
-      <div class="sub" style="animation:slideUp .7s .5s both;">The world's largest under-exploited reservoir opportunity</div>
-    </div>
-
-    <!-- ── ZONE 2: Stats + bubbles (12%→50%) ── -->
-    <div style="position:absolute;top:12%;left:0;right:0;height:38%;display:flex;align-items:center;justify-content:space-between;padding:0 3%;">
-
-      <!-- Left: ONGC bubble -->
-      <div class="bubble" style="flex:0 0 auto;max-width:clamp(200px,26vw,320px);animation:popIn .4s 2.8s cubic-bezier(.34,1.56,.64,1) both;position:relative;bottom:auto;left:auto;">
-        <span style="color:#E24B4A;font-size:clamp(22px,3vw,40px);font-family:'Fredoka One',sans-serif;">78%</span> of our oil<br>
-        is still trapped!<br>
-        <span style="color:#5A7A94;font-size:clamp(11px,1.2vw,15px);font-weight:400;">Mumbai High · 50+ years producing</span>
-      </div>
-
-      <!-- Centre: Big stat counter -->
-      <div style="text-align:center;flex:0 0 auto;animation:slideUp .6s 2.4s both;">
-        <div id="s1-ctr" style="font-family:'Fredoka One',sans-serif;font-size:clamp(80px,13vw,160px);color:#E24B4A;line-height:1;text-shadow:0 0 60px rgba(226,75,74,.8);">0%</div>
-        <div style="font-size:clamp(14px,1.8vw,24px);color:#9FE1CB;font-weight:700;">of ORIGINAL OIL</div>
-        <div style="font-size:clamp(12px,1.5vw,20px);color:#5A7A94;margin-top:4px;">still in the ground</div>
-        <div style="font-size:clamp(13px,1.6vw,21px);color:#F0A500;font-weight:700;margin-top:10px;">≈ 5 BILLION barrels</div>
-      </div>
-
-      <!-- Right: OIL India bubble -->
-      <div class="bubble r" style="flex:0 0 auto;max-width:clamp(190px,25vw,310px);animation:popIn .4s 3.1s cubic-bezier(.34,1.56,.64,1) both;position:relative;bottom:auto;right:auto;">
-        Same in Assam!<br>
-        <span style="color:#E24B4A;font-size:clamp(20px,2.8vw,38px);font-family:'Fredoka One',sans-serif;">85%</span> still underground<br>
-        <span style="color:#5A7A94;font-size:clamp(11px,1.2vw,15px);font-weight:400;">Kalol Sandstone · Cambay Basin</span>
-      </div>
-    </div>
-
-    <!-- ── ZONE 3: Ground scene (50%→100%) ── -->
-    <div style="position:absolute;top:50%;left:0;right:0;bottom:0;overflow:hidden;">
-
-      <!-- Sky part of zone 3 (engineers stand here) -->
-      <div style="position:absolute;top:0;left:0;right:0;height:35%;background:linear-gradient(180deg,transparent,rgba(6,16,30,.3));display:flex;align-items:flex-end;justify-content:space-around;padding:0 8%;">
-
-        <!-- Derrick -->
-        <div style="animation:slideUp .7s 1s both;transform-origin:bottom;flex-shrink:0;">
-          <svg width="clamp(50px,6vw,90px)" viewBox="0 0 80 130" style="width:clamp(50px,6vw,90px);height:auto;display:block;">
-            <line x1="40" y1="2" x2="5" y2="122" stroke="#9FE1CB" stroke-width="3" stroke-linecap="round"/>
-            <line x1="40" y1="2" x2="75" y2="122" stroke="#9FE1CB" stroke-width="3" stroke-linecap="round"/>
-            <line x1="14" y1="85" x2="66" y2="85" stroke="#5DCAA5" stroke-width="2"/>
-            <line x1="22" y1="55" x2="58" y2="55" stroke="#5DCAA5" stroke-width="2"/>
-            <line x1="30" y1="28" x2="50" y2="28" stroke="#5DCAA5" stroke-width="2"/>
-            <rect x="30" y="117" width="20" height="6" fill="#EF9F27" rx="2"/>
-            <line x1="40" y1="123" x2="40" y2="145" stroke="#EF9F27" stroke-width="2.5" stroke-dasharray="5,4"/>
-          </svg>
-        </div>
-
-        <!-- ONGC Engineer -->
-        <div style="animation:bounceIn .6s 1.9s cubic-bezier(.34,1.56,.64,1) both;flex-shrink:0;">
-          <svg width="clamp(70px,9vw,130px)" viewBox="0 0 100 145" style="width:clamp(70px,9vw,130px);height:auto;display:block;">
-            <ellipse cx="50" cy="26" rx="28" ry="10" fill="#F0A500"/><rect x="23" y="26" width="54" height="6" fill="#EF9F27" rx="2"/><ellipse cx="50" cy="32" rx="35" ry="6" fill="#E8971A"/><text x="50" y="30" text-anchor="middle" font-size="9" font-weight="900" fill="#0D1F3C" font-family="Nunito,sans-serif">ONGC</text>
-            <circle cx="50" cy="54" r="23" fill="#D4956A"/><circle cx="40" cy="49" r="7" fill="#fff"/><circle cx="60" cy="49" r="7" fill="#fff"/><circle cx="41" cy="50" r="4" fill="#2C1A08"/><circle cx="61" cy="50" r="4" fill="#2C1A08"/><circle cx="42" cy="49" r="1.5" fill="#fff"/><circle cx="62" cy="49" r="1.5" fill="#fff"/>
-            <path d="M34 42 Q40 37 46 42" stroke="#2C1A08" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M54 42 Q60 37 66 42" stroke="#2C1A08" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-            <path d="M38 63 Q50 73 62 63" stroke="#2C1A08" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M41 64 Q50 71 59 64" fill="#fff"/>
-            <path d="M38 59 Q50 64 62 59" stroke="#2C1A08" stroke-width="3.5" fill="none" stroke-linecap="round"/>
-            <rect x="26" y="76" width="48" height="48" fill="#F0620A" rx="9"/><rect x="26" y="86" width="48" height="5" fill="rgba(220,220,220,.75)" rx="2"/><rect x="26" y="108" width="48" height="5" fill="rgba(220,220,220,.75)" rx="2"/>
-            <rect x="56" y="79" width="15" height="11" fill="#fff" rx="2"/><text x="63" y="88" text-anchor="middle" font-size="6.5" font-weight="900" fill="#F0620A" font-family="Nunito,sans-serif">ONGC</text>
-            <path d="M42 76 L50 87 L58 76" fill="#CC4E08"/>
-            <rect x="4" y="79" width="24" height="10" fill="#F0620A" rx="6"/><rect x="5" y="83" width="22" height="3.5" fill="rgba(220,220,220,.75)" rx="1"/>
-            <rect x="0" y="85" width="25" height="33" fill="#E8D87A" rx="4"/><rect x="2" y="81" width="21" height="7" fill="#F0A500" rx="2"/>
-            <line x1="4" y1="92" x2="21" y2="92" stroke="#3D3D3B" stroke-width="2"/><line x1="4" y1="97" x2="21" y2="97" stroke="#3D3D3B" stroke-width="2"/><line x1="4" y1="102" x2="17" y2="102" stroke="#E24B4A" stroke-width="3"/>
-            <rect x="72" y="75" width="10" height="27" fill="#F0620A" rx="6" transform="rotate(-28 77 85)"/><circle cx="83" cy="64" r="8" fill="#D4956A"/><rect x="81" y="48" width="5" height="18" fill="#D4956A" rx="2.5"/>
-            <rect x="31" y="122" width="15" height="19" fill="#C84F00" rx="5"/><rect x="52" y="122" width="15" height="19" fill="#C84F00" rx="5"/>
-            <rect x="29" y="136" width="19" height="9" fill="#1A1A1A" rx="4"/><rect x="50" y="136" width="19" height="9" fill="#1A1A1A" rx="4"/>
-          </svg>
-        </div>
-
-        <!-- OIL India Engineer -->
-        <div style="animation:bounceIn .6s 2.2s cubic-bezier(.34,1.56,.64,1) both;flex-shrink:0;">
-          <svg width="clamp(65px,8.5vw,120px)" viewBox="0 0 90 138" style="width:clamp(65px,8.5vw,120px);height:auto;display:block;">
-            <ellipse cx="45" cy="24" rx="26" ry="9.5" fill="#CC1A1A"/><rect x="20" y="24" width="50" height="5.5" fill="#B31515" rx="2"/><ellipse cx="45" cy="29.5" rx="32" ry="5.5" fill="#A81010"/><text x="45" y="27" text-anchor="middle" font-size="8" font-weight="900" fill="#FFD700" font-family="Nunito,sans-serif">OIL</text>
-            <circle cx="45" cy="49" r="21" fill="#C07A50"/><ellipse cx="45" cy="30" rx="14" ry="6" fill="#1A0A00"/>
-            <circle cx="36" cy="44" r="7" fill="#fff"/><circle cx="54" cy="44" r="7" fill="#fff"/><circle cx="37" cy="45" r="4.5" fill="#1A0A00"/><circle cx="55" cy="45" r="4.5" fill="#1A0A00"/><circle cx="38" cy="44" r="1.5" fill="#fff"/><circle cx="56" cy="44" r="1.5" fill="#fff"/>
-            <path d="M31 37 Q36 32 41 37" stroke="#1A0A00" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M49 37 Q54 32 59 37" stroke="#1A0A00" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-            <path d="M33 57 Q45 66 57 57" stroke="#1A0A00" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M36 58 Q45 64 54 58" fill="#fff"/>
-            <circle cx="19" cy="51" r="3.5" fill="#FFD700"/><circle cx="71" cy="51" r="3.5" fill="#FFD700"/>
-            <rect x="23" y="69" width="44" height="44" fill="#CC1A1A" rx="9"/><rect x="50" y="72" width="16" height="11" fill="#FFD700" rx="2"/><text x="58" y="81" text-anchor="middle" font-size="6" font-weight="900" fill="#CC1A1A" font-family="Nunito,sans-serif">OIL</text>
-            <rect x="23" y="79" width="44" height="5" fill="rgba(220,220,220,.75)" rx="2"/><rect x="23" y="101" width="44" height="5" fill="rgba(220,220,220,.75)" rx="2"/>
-            <path d="M37 69 L45 80 L53 69" fill="#A81010"/>
-            <rect x="4" y="71" width="21" height="10" fill="#CC1A1A" rx="6"/><rect x="5" y="75" width="19" height="3.5" fill="rgba(220,220,220,.75)" rx="1"/>
-            <rect x="1" y="77" width="22" height="30" fill="#1A2F4A" rx="5"/><rect x="3" y="79" width="18" height="24" fill="#0D1F3C" rx="3"/>
-            <line x1="5" y1="84" x2="19" y2="84" stroke="#9FE1CB" stroke-width="1.5"/><line x1="5" y1="89" x2="14" y2="89" stroke="#F0A500" stroke-width="2"/>
-            <rect x="65" y="70" width="21" height="10" fill="#CC1A1A" rx="6" transform="rotate(20 75 75)"/><circle cx="75" cy="63" r="7.5" fill="#C07A50"/><rect x="73" y="50" width="5" height="15" fill="#C07A50" rx="2.5"/>
-            <rect x="28" y="111" width="13" height="19" fill="#A81010" rx="5"/><rect x="49" y="111" width="13" height="19" fill="#A81010" rx="5"/>
-            <rect x="26" y="125" width="17" height="9" fill="#1A1A1A" rx="4"/><rect x="47" y="125" width="17" height="9" fill="#1A1A1A" rx="4"/>
-          </svg>
-        </div>
-      </div>
-
-      <!-- Ground surface -->
-      <div class="gsurface" style="position:absolute;top:35%;height:9%;"></div>
-      <!-- Reservoir rock -->
-      <div class="gsand" style="position:absolute;top:44%;height:18%;"></div>
-      <!-- Tight formation -->
-      <div class="grock" style="position:absolute;top:62%;height:20%;"></div>
-      <!-- Oil zone -->
-      <div class="goil" style="position:absolute;top:82%;height:18%;"></div>
-      <!-- Oil glow -->
-      <div style="position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:30%;height:10%;background:radial-gradient(ellipse,rgba(240,165,0,.5) 0%,transparent 70%);animation:pulse 2.5s infinite;"></div>
-
-      <!-- Layer labels -->
-      <div style="position:absolute;right:1.5%;top:35%;font-size:clamp(10px,1.1vw,14px);font-weight:700;color:#8FBA6F;animation:fadeIn .5s 1.2s both;">▶ TOPSOIL / SEABED</div>
-      <div style="position:absolute;right:1.5%;top:44%;font-size:clamp(10px,1.1vw,14px);font-weight:700;color:#C4956A;animation:fadeIn .5s 1.5s both;">▶ RESERVOIR ROCK (BASSEIN LST.)</div>
-      <div style="position:absolute;right:1.5%;top:62%;font-size:clamp(10px,1.1vw,14px);font-weight:700;color:#888;animation:fadeIn .5s 1.8s both;">▶ TIGHT FORMATION</div>
-      <div style="position:absolute;right:1.5%;top:83%;font-size:clamp(10px,1.1vw,14px);font-weight:700;color:#F0A500;animation:fadeIn .5s 2.1s both;">▶ OIL-BEARING ZONE 🔥</div>
-    </div>
+<!-- ═══ SCENE 1 ═══ -->
+<div class="scene" id="s1">
+  <div class="scene-num">The Problem · India's Stranded Oil</div>
+  <div class="scene-title">India has <em>2.6 billion barrels</em><br>of stranded oil.</div>
+  <div class="scene-body" style="margin-bottom:24px;">
+    It sits in mature fields that are <strong>still producing</strong> — but declining.
+    Water cut rising. Pressure falling. Conventional methods exhausted.<br><br>
+    The oil is <strong>there</strong>. The question is whether anyone can see it clearly enough
+    to recover it economically. That is the problem HyperSenseIQ was built to solve.
   </div>
-
-  <!-- S2: INTELLIGENCE -->
-  <div class="scene" id="s2">
-    <div class="slbl">02 · The Intelligence</div>
-    <div class="scene-hdr" style="animation:slideUp .6s .2s both;"><div class="h1">LAS File In → Instant Reservoir Intelligence</div><div class="sub">Four wireline curves · SPE-validated physics · Zero manual calculation</div></div>
-    <div class="scene-body"><div class="two-col" style="align-items:center;">
-      <div class="vcenter" style="animation:slideIn .6s .5s both;">
-        <div style="background:#1A2F4A;border:2px solid #5DCAA5;border-radius:14px;padding:clamp(14px,2vh,24px) clamp(16px,2vw,26px);">
-          <div style="font-size:clamp(12px,1.3vw,17px);color:#5DCAA5;font-weight:700;letter-spacing:.06em;margin-bottom:10px;">📄 WIRELINE LOG FILE (LAS)</div>
-          <div style="font-family:monospace;font-size:clamp(12px,1.3vw,17px);color:#9FE1CB;line-height:1.9;">
-            ~VERS 2.0 &nbsp; ~WELL MH-N-01<br>
-            <span style="color:#F0A500;">GR &nbsp; 112 &nbsp; API &nbsp;&nbsp;&nbsp; Shale volume</span><br>
-            <span style="color:#5DCAA5;">RHOB &nbsp;2.31 g/cc &nbsp; Density/porosity</span><br>
-            <span style="color:#E24B4A;">NPHI &nbsp;0.22 frac &nbsp; Neutron porosity</span><br>
-            <span style="color:#AB47BC;">RT &nbsp;&nbsp; 18.4 ohm·m Water saturation</span><br>
-            <span style="color:#64B5F6;">DT &nbsp;&nbsp; 68.2 μs/ft &nbsp;Sonic/mechanical</span>
-          </div>
-        </div>
-        <div style="text-align:center;font-size:clamp(28px,4.5vw,56px);color:#1D9E75;animation:pulse 1.5s infinite;">→</div>
-        <div style="background:rgba(29,158,117,.15);border:2px solid #1D9E75;border-radius:14px;padding:clamp(14px,2vh,22px) clamp(16px,2vw,26px);">
-          <div style="font-family:'Fredoka One',sans-serif;font-size:clamp(20px,2.8vw,38px);color:#9FE1CB;text-align:center;margin-bottom:8px;">HyperSenseIQ</div>
-          <div style="font-size:clamp(11px,1.2vw,15px);color:#5DCAA5;text-align:center;letter-spacing:.05em;">PHYSICS ENGINE · SPE VALIDATED</div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:12px;">
-            <span style="font-size:clamp(10px,1.1vw,14px);background:rgba(29,158,117,.2);border:1px solid #0F6E56;border-radius:6px;padding:3px 9px;color:#9FE1CB;">Archie Eq.</span>
-            <span style="font-size:clamp(10px,1.1vw,14px);background:rgba(107,63,212,.2);border:1px solid #534AB7;border-radius:6px;padding:3px 9px;color:#CE93D8;">Arps DCA</span>
-            <span style="font-size:clamp(10px,1.1vw,14px);background:rgba(240,165,0,.15);border:1px solid #854F0B;border-radius:6px;padding:3px 9px;color:#F0A500;">STOIIP</span>
-            <span style="font-size:clamp(10px,1.1vw,14px);background:rgba(226,75,74,.15);border:1px solid #A32D2D;border-radius:6px;padding:3px 9px;color:#F09595;">P_EOR</span>
-          </div>
-          <div style="font-size:clamp(26px,4vw,50px);text-align:center;margin-top:12px;animation:spin 3s linear infinite;display:inline-block;width:100%;">⚙️</div>
-        </div>
-      </div>
-      <div class="vcenter" style="animation:slideInR .6s 1.0s both;">
-        <div style="font-size:clamp(13px,1.5vw,19px);color:#F0A500;font-weight:700;letter-spacing:.06em;">✅ INSTANT OUTPUT — PAY ZONE MAP</div>
-        <div id="s2-zones" style="background:#1A2F4A;border-radius:12px;overflow:hidden;border:1.5px solid rgba(255,255,255,.1);flex:1;min-height:200px;display:flex;flex-direction:column;gap:4px;padding:10px;justify-content:center;"></div>
-        <div style="background:rgba(13,110,90,.15);border:1.5px solid #0F6E56;border-radius:12px;padding:clamp(10px,1.5vh,18px) clamp(14px,2vw,22px);">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-            <div><div class="stat-num">7.9m</div><div class="stat-lbl">Net pay</div></div>
-            <div><div class="stat-num">22%</div><div class="stat-lbl">Avg Sw</div></div>
-            <div><div class="stat-num">4</div><div class="stat-lbl">Pay zones</div></div>
-            <div><div class="stat-num">7,593</div><div class="stat-lbl">STOIIP (STB)</div></div>
-          </div>
-        </div>
-      </div>
-    </div></div>
+  <div class="cards">
+    <div class="card rd"><div class="card-val">68%</div><div class="card-lbl">Avg water cut<br>mature Indian wells</div></div>
+    <div class="card am"><div class="card-val">2.6 Bn</div><div class="card-lbl">Barrels stranded<br>in mature fields</div></div>
+    <div class="card"><div class="card-val">₹8.4L Cr</div><div class="card-lbl">Estimated value<br>at current prices</div></div>
+    <div class="card rd"><div class="card-val">32%</div><div class="card-lbl">Avg primary<br>recovery factor</div></div>
   </div>
-
-  <!-- S3: SIX DOMAINS -->
-  <div class="scene" id="s3">
-    <div class="slbl">03 · The Scoring Engine</div>
-    <div class="scene-hdr" style="animation:slideUp .6s .2s both;"><div class="h1">P_EOR — Six Domain Science</div><div class="sub">Every EOR method scored across Physics · Mechanical · Geological · Chemical · Operational · Economic</div></div>
-    <!-- Main content: radar + cards (no bottom overflow) -->
-    <div style="position:absolute;top:clamp(80px,12vh,120px);left:0;right:0;bottom:clamp(80px,12vh,110px);display:grid;grid-template-columns:1fr 1fr;gap:clamp(10px,1.5vw,24px);padding:0 clamp(24px,3vw,48px);">
-      <div style="display:flex;align-items:center;justify-content:center;animation:fadeIn .5s .5s both;">
-        <canvas id="radar" style="max-width:100%;max-height:100%;"></canvas>
-      </div>
-      <div id="domain-cards" style="display:flex;flex-direction:column;gap:6px;justify-content:center;animation:slideInR .5s .8s both;overflow:hidden;"></div>
-    </div>
-    <!-- Formula — anchored to bottom, never overlaps cards -->
-    <div style="position:absolute;bottom:clamp(46px,6.5vh,65px);left:50%;transform:translateX(-50%);text-align:center;animation:fadeIn .5s 2.5s both;background:rgba(29,158,117,.12);border:1.5px solid #0F6E56;border-radius:10px;padding:clamp(7px,1vh,12px) clamp(16px,2.5vw,30px);white-space:nowrap;">
-      <div style="font-size:clamp(10px,1.1vw,14px);color:#5DCAA5;font-weight:700;letter-spacing:.05em;">COMPOSITE FORMULA</div>
-      <div style="font-family:monospace;font-size:clamp(13px,1.6vw,22px);color:#9FE1CB;font-weight:700;margin-top:3px;">P_EOR = Σ(wₐ × sₘₐ) / Σ(wₐ)</div>
-      <div style="font-size:clamp(9px,1vw,13px);color:#5A7A94;margin-top:3px;">Patent-protected weights · Domain scores fully transparent</div>
-    </div>
-  </div>
-
-  <!-- S4: EOR BAR RACE -->
-  <div class="scene" id="s4">
-    <div class="slbl">04 · The Recommendation</div>
-    <div class="scene-hdr" style="animation:slideUp .5s .2s both;"><div class="h1">FFUS Ranking — Best EOR Method · Instant</div><div class="sub">8 methods · Ranked by ΔN_eff = STOIIP × uplift × P_EOR_adj × PHF</div></div>
-    <div class="scene-body"><div class="two-col" style="align-items:start;padding-top:8px;">
-      <div id="s4-bars" style="display:flex;flex-direction:column;gap:8px;justify-content:center;height:100%;animation:slideIn .5s .3s both;"></div>
-      <div style="display:flex;flex-direction:column;gap:16px;justify-content:center;align-items:center;padding:0 clamp(8px,1.5vw,22px);">
-        <div style="animation:popIn .5s 2.8s both;text-align:center;background:linear-gradient(135deg,rgba(240,165,0,.2),rgba(29,158,117,.2));border:2.5px solid #F0A500;border-radius:18px;padding:clamp(16px,2.5vh,30px) clamp(20px,3vw,40px);">
-          <div style="font-size:clamp(40px,6.5vw,80px);">🏆</div>
-          <div style="font-family:'Fredoka One',sans-serif;font-size:clamp(26px,3.8vw,52px);color:#F0A500;">UST wins!</div>
-          <div style="font-size:clamp(13px,1.6vw,21px);color:#9FE1CB;margin-top:8px;">Lowest CAPEX · 2-month deploy</div>
-          <div style="font-size:clamp(12px,1.4vw,18px);color:#5A7A94;margin-top:4px;">No injection infrastructure needed</div>
-          <div style="font-size:clamp(12px,1.4vw,18px);color:#5A7A94;">Works in tight pore throats</div>
-          <div style="margin-top:12px;font-family:'Fredoka One',sans-serif;font-size:clamp(20px,2.8vw,36px);color:#1D9E75;">₹75 Lakhs CAPEX</div>
-          <div style="font-size:clamp(12px,1.3vw,17px);color:#9FE1CB;">vs ₹351L for ASP flooding</div>
-        </div>
-        <div style="animation:bounceIn .5s 3.2s both;font-size:clamp(48px,8vw,100px);text-align:center;">🎉</div>
-      </div>
-    </div></div>
-  </div>
-
-  <!-- S5: EOR COST CONFIGURATION -->
-  <div class="scene" id="s5">
-    <div class="slbl">05 · EOR Cost Intelligence</div>
-    <div class="scene-hdr" style="animation:slideUp .5s .2s both;"><div class="h1">EOR Cost Configuration — Your Numbers, Not Benchmarks</div><div class="sub">Override any CAPEX/OPEX · All NPV, IRR, payback recalculate instantly · CUSTOM badge tracks changes</div></div>
-    <div class="scene-body"><div class="two-col" style="align-items:center;">
-      <div class="vcenter" style="animation:slideIn .6s .5s both;">
-        <div style="font-size:clamp(14px,1.7vw,22px);color:#9FE1CB;font-weight:700;margin-bottom:8px;">📊 BENCHMARK vs YOUR COSTS</div>
-        <div id="s5-cost-table"></div>
-        <div style="background:rgba(240,165,0,.1);border:1.5px solid #EF9F27;border-radius:12px;padding:clamp(10px,1.5vh,18px) clamp(14px,2vw,22px);animation:fadeIn .5s 2.8s both;">
-          <div style="font-size:clamp(13px,1.5vw,19px);color:#EF9F27;font-weight:700;">⚡ CUSTOM badge appears — all NPV/IRR recalculates live</div>
-          <div style="font-size:clamp(11px,1.2vw,15px);color:#5A7A94;margin-top:4px;">Reset to SPE benchmark values at any time</div>
-        </div>
-      </div>
-      <div class="vcenter" style="animation:slideInR .6s .8s both;">
-        <div class="feat-card" style="border-left:4px solid #F0A500;">
-          <div style="font-size:clamp(28px,4vw,48px);">🎯</div>
-          <div class="feat-title">Per-well pricing</div>
-          <div class="feat-body">UST, MEOR, Microbial — priced per wellbore intervention. Adjusts automatically for your well count and depth.</div>
-        </div>
-        <div class="feat-card" style="border-left:4px solid #90CAF9;">
-          <div style="font-size:clamp(28px,4vw,48px);">🏭</div>
-          <div class="feat-title">Per-reservoir pricing</div>
-          <div class="feat-body">Polymer, ASP, CO₂, Thermal, Surfactant — field-scale costs reflecting pattern drilling, injection facilities, and ONGC procurement rates.</div>
-        </div>
-        <div class="feat-card" style="border-left:4px solid #1D9E75;">
-          <div style="font-size:clamp(28px,4vw,48px);">📈</div>
-          <div class="feat-title">Live NPV recalculation</div>
-          <div class="feat-body">Every edit instantly recalculates NPV, IRR, and payback using live Brent crude and India fiscal rules (royalty, OID Cess, GST, ONGC equity).</div>
-        </div>
-      </div>
-    </div></div>
-  </div>
-
-  <!-- S6: INDIA FISCAL -->
-  <div class="scene" id="s6">
-    <div class="slbl">06 · India-Fiscal Economics</div>
-    <div class="scene-hdr" style="animation:slideUp .5s .2s both;"><div class="h1">Live Brent · India Fiscal · Instant NPV</div><div class="sub">Royalty · OID Cess · GST · ONGC equity — DGH-aligned fiscal rules · Live Brent from Stooq.com</div></div>
-    <div class="scene-body"><div class="three-col" style="align-items:center;">
-      <div class="vcenter" style="animation:slideIn .5s .5s both;gap:10px;">
-        <div style="background:rgba(240,165,0,.12);border:2px solid #F0A500;border-radius:14px;padding:clamp(14px,2vh,22px);text-align:center;">
-          <div style="font-size:clamp(13px,1.5vw,19px);color:#EF9F27;font-weight:700;letter-spacing:.05em;">● LIVE BRENT CRUDE</div>
-          <div id="s6-brent" style="font-family:'Fredoka One',sans-serif;font-size:clamp(32px,5.5vw,72px);color:#F0A500;margin-top:6px;">₹0</div>
-          <div style="font-size:clamp(11px,1.2vw,15px);color:#5A7A94;margin-top:4px;">Stooq.com · USD/INR 96.0</div>
-        </div>
-        <div style="background:rgba(226,75,74,.1);border:1.5px solid #E24B4A;border-radius:12px;padding:clamp(10px,1.5vh,16px);text-align:center;">
-          <div style="font-size:clamp(12px,1.4vw,18px);color:#E24B4A;font-weight:700;">STRESS −40%</div>
-          <div style="font-family:'Fredoka One',sans-serif;font-size:clamp(24px,3.8vw,48px);color:#E24B4A;">+₹8.2Cr</div>
-          <div style="font-size:clamp(11px,1.2vw,15px);color:#5A7A94;">Still positive NPV</div>
-        </div>
-        <div style="background:rgba(29,158,117,.15);border:2px solid #1D9E75;border-radius:12px;padding:clamp(10px,1.5vh,16px);text-align:center;">
-          <div style="font-size:clamp(12px,1.4vw,18px);color:#1D9E75;font-weight:700;">BASE CASE</div>
-          <div id="s6-npv" style="font-family:'Fredoka One',sans-serif;font-size:clamp(24px,3.8vw,48px);color:#1D9E75;">+₹0Cr</div>
-        </div>
-        <div style="background:rgba(240,165,0,.12);border:1.5px solid #F0A500;border-radius:12px;padding:clamp(10px,1.5vh,16px);text-align:center;">
-          <div style="font-size:clamp(12px,1.4vw,18px);color:#F0A500;font-weight:700;">UPSIDE +30%</div>
-          <div style="font-family:'Fredoka One',sans-serif;font-size:clamp(24px,3.8vw,48px);color:#F0A500;">+₹28.9Cr</div>
-        </div>
-      </div>
-      <div class="vcenter" style="animation:fadeIn .5s 1.0s both;gap:8px;">
-        <div style="font-size:clamp(14px,1.7vw,22px);color:#9FE1CB;font-weight:700;margin-bottom:6px;">INDIA FISCAL DEDUCTIONS</div>
-        <div id="s6-fiscal"></div>
-      </div>
-      <div class="vcenter" style="animation:slideInR .5s 1.5s both;align-items:center;">
-        <div style="background:rgba(29,158,117,.15);border:2px solid #1D9E75;border-radius:14px;padding:clamp(14px,2vh,24px);text-align:center;width:100%;">
-          <div style="font-size:clamp(18px,2.4vw,32px);color:#9FE1CB;font-weight:700;">Economic verdict</div>
-          <div style="font-family:'Fredoka One',sans-serif;font-size:clamp(26px,3.8vw,52px);color:#1D9E75;margin-top:10px;">HIGH VALUE</div>
-          <div style="font-size:clamp(13px,1.6vw,21px);color:#5A7A94;margin-top:8px;">IRR 28% · Payback &lt; 2yr</div>
-        </div>
-        <div style="font-size:clamp(60px,10vw,130px);">💰</div>
-      </div>
-    </div></div>
-  </div>
-
-  <!-- S7: DRILLING PHYSICS -->
-  <div class="scene" id="s7">
-    <div class="slbl">07 · Drilling Physics</div>
-    <div class="scene-hdr" style="animation:slideUp .5s .2s both;"><div class="h1">Drilling Physics — Safe Window · EOR Connection</div><div class="sub">Pore pressure · Fracture gradient · ECD · Mud weight window · Wellbore stability — all five wells</div></div>
-    <div class="scene-body"><div class="two-col" style="align-items:start;padding-top:8px;">
-      <div class="vcenter" style="animation:slideIn .6s .5s both;gap:12px;">
-        <div style="background:#1A2F4A;border:1.5px solid rgba(255,255,255,.1);border-radius:12px;padding:clamp(12px,1.8vh,22px);">
-          <div style="font-size:clamp(14px,1.6vw,21px);color:#90CAF9;font-weight:700;margin-bottom:12px;">PRESSURE WINDOW — MH-N-01</div>
-          <div id="drill-bars"></div>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-          <div class="stat-card" style="text-align:center;"><div class="stat-num" style="color:#E24B4A;">20 MPa</div><div class="stat-lbl">Pore pressure</div></div>
-          <div class="stat-card" style="text-align:center;"><div class="stat-num" style="color:#1D9E75;">26 MPa</div><div class="stat-lbl">Fracture gradient</div></div>
-          <div class="stat-card" style="text-align:center;"><div class="stat-num" style="color:#F0A500;">1.08 SG</div><div class="stat-lbl">ECD nominal</div></div>
-          <div class="stat-card" style="text-align:center;"><div class="stat-num" style="color:#9FE1CB;">0.10 SG</div><div class="stat-lbl">Safe MW window</div></div>
-        </div>
-      </div>
-      <div class="vcenter" style="animation:slideInR .6s .8s both;">
-        <div class="feat-card" style="border-left:4px solid #90CAF9;">
-          <div style="font-size:clamp(26px,3.8vw,46px);">⚠️</div>
-          <div class="feat-title" style="color:#90CAF9;">Why it matters for EOR</div>
-          <div class="feat-body">Polymer, ASP, CO₂, and Steam injection must stay below the fracture gradient. Exceed it and you fracture the formation — creating thief zones that destroy sweep efficiency. HyperSenseIQ automatically flags the maximum safe injection pressure for every method.</div>
-        </div>
-        <div class="feat-card" style="border-left:4px solid #1D9E75;">
-          <div style="font-size:clamp(26px,3.8vw,46px);">🎯</div>
-          <div class="feat-title" style="color:#1D9E75;">UST advantage — zero injection pressure</div>
-          <div class="feat-body">Ultrasound-Assisted EOR operates entirely within the wellbore — far below any fracture gradient. The safest first EOR intervention for narrow-window wells. Recommended whenever PP-FG window is below 0.08 SG.</div>
-        </div>
-        <div class="feat-card" style="border-left:4px solid #F0A500;">
-          <div style="font-size:clamp(26px,3.8vw,46px);">🔬</div>
-          <div class="feat-title" style="color:#F0A500;">Connects to EOR recommendation</div>
-          <div class="feat-body">Drilling Physics module results flow directly into the EOR scoring chain. Narrow window → injection EOR scores penalised → UST promoted. Wide window → all methods eligible.</div>
-        </div>
-      </div>
-    </div></div>
-  </div>
-
-  <!-- S8: DIGITAL TWIN -->
-  <div class="scene" id="s8">
-    <div class="slbl">08 · Digital Twin · Data Sovereignty</div>
-    <div class="scene-hdr" style="animation:slideUp .5s .2s both;"><div class="h1">Digital Twin — National Data Sovereignty</div><div class="sub">SHA-256 provenance · NIC-DLT Hyperledger Fabric · DGH compliant · No cloud upload · Ever</div></div>
-    <div class="scene-body"><div class="two-col" style="align-items:center;">
-      <div class="vcenter" style="animation:slideIn .6s .5s both;gap:14px;">
-        <div style="background:rgba(29,158,117,.1);border:1.5px solid #0F6E56;border-radius:12px;padding:clamp(12px,1.8vh,22px);">
-          <div style="font-size:clamp(13px,1.5vw,19px);color:#5DCAA5;font-weight:700;letter-spacing:.05em;margin-bottom:10px;">SHA-256 PROVENANCE HASH — GENERATING</div>
-          <div id="hash-disp" style="font-family:monospace;font-size:clamp(12px,1.3vw,17px);color:#9FE1CB;letter-spacing:.04em;line-height:1.9;word-break:break-all;min-height:60px;"></div>
-        </div>
-        <div id="chain-nodes" style="display:flex;align-items:center;justify-content:space-between;gap:0;"></div>
-        <div style="background:rgba(100,181,246,.1);border:1.5px solid #185FA5;border-radius:12px;padding:clamp(12px,1.8vh,22px);">
-          <div style="font-size:clamp(14px,1.6vw,21px);color:#90CAF9;font-weight:700;margin-bottom:6px;">🏛️ NIC-DLT (Hyperledger Fabric)</div>
-          <div style="font-size:clamp(12px,1.3vw,17px);color:#8AABCC;line-height:1.65;">Every well analysis becomes a permanent, tamper-proof entry in India's national geological record — accessible to ONGC, DGH, OIL India under PSC data governance rules.</div>
-        </div>
-      </div>
-      <div class="vcenter" style="animation:slideInR .6s .8s both;">
-        <div class="feat-card" style="border-left:4px solid #1D9E75;">
-          <div style="font-size:clamp(26px,3.8vw,46px);">🔐</div>
-          <div class="feat-title">Zero cloud exposure</div>
-          <div class="feat-body">All processing on a locally isolated instance. No third-party cloud storage. No external server transmission. Input data certified as destroyed on client instruction.</div>
-        </div>
-        <div class="feat-card" style="border-left:4px solid #90CAF9;">
-          <div style="font-size:clamp(26px,3.8vw,46px);">🔬</div>
-          <div class="feat-title">Spectral AI — what logs cannot see</div>
-          <div class="feat-body">SWIR hyperspectral analysis at 900–2500nm identifies calcite, oil C-H bonds, clay minerals, brine at pixel level. Pay/non-pay classification at millimetre resolution — what wireline logs miss entirely.</div>
-        </div>
-        <div class="feat-card" style="border-left:4px solid #F0A500;">
-          <div style="font-size:clamp(26px,3.8vw,46px);">📋</div>
-          <div class="feat-title">Digital Twin contents</div>
-          <div class="feat-body">Well ID · Depth interval · Formation · Mineralogy · Spectral scores · Pay zone declarations · P_EOR composite · NPV · SHA-256 fingerprint · Timestamp · Full provenance chain.</div>
-        </div>
-      </div>
-    </div></div>
-  </div>
-
-  <!-- S9: WETTABILITY, THIEF ZONE, PHF -->
-  <div class="scene" id="s9">
-    <div class="slbl">09 · Hidden Reservoir Realities</div>
-    <div class="scene-hdr" style="animation:slideUp .5s .2s both;"><div class="h1">See What Others Miss — W_mod · TZ_pen · PHF</div><div class="sub">Three hidden factors that change every EOR recommendation and every NPV calculation</div></div>
-    <div class="scene-body"><div class="three-col" style="align-items:start;padding-top:10px;">
-      <div style="animation:slideIn .6s .4s both;">
-        <div style="border-top:4px solid #CE93D8;background:rgba(171,71,188,.07);border-radius:0 0 14px 14px;padding:clamp(14px,2vh,22px) clamp(14px,2vw,22px);height:100%;">
-          <div style="font-family:'Fredoka One',sans-serif;font-size:clamp(20px,2.8vw,38px);color:#CE93D8;margin-bottom:10px;">Wettability (W_mod)</div>
-          <div style="font-size:clamp(12px,1.4vw,18px);color:#8AABCC;line-height:1.7;margin-bottom:14px;">Oil-wet rock has oil coating the pore walls. EOR methods that dislodge that film recover dramatically more oil than models without wettability correction predict. Derived from Amott-Harvey proxy using φ, Sw, and API gravity.</div>
-          <div style="background:rgba(171,71,188,.12);border-radius:10px;padding:12px;">
-            <div style="font-size:clamp(12px,1.4vw,18px);color:#CE93D8;font-weight:700;">W_mod &gt;1.10 → oil-wet 🟢 EOR amplified</div>
-            <div style="font-size:clamp(12px,1.4vw,18px);color:#E8D87A;font-weight:700;margin-top:6px;">0.90–1.10 → mixed-wet ⚪ neutral</div>
-            <div style="font-size:clamp(12px,1.4vw,18px);color:#EF9F27;font-weight:700;margin-top:6px;">&lt;0.90 → water-wet 🟡 EOR reduced</div>
-          </div>
-        </div>
-      </div>
-      <div style="animation:fadeIn .6s .7s both;">
-        <div style="border-top:4px solid #EF9F27;background:rgba(239,159,39,.07);border-radius:0 0 14px 14px;padding:clamp(14px,2vh,22px) clamp(14px,2vw,22px);height:100%;">
-          <div style="font-family:'Fredoka One',sans-serif;font-size:clamp(20px,2.8vw,38px);color:#EF9F27;margin-bottom:10px;">Thief Zones (TZ_pen)</div>
-          <div style="font-size:clamp(12px,1.4vw,18px);color:#8AABCC;line-height:1.7;margin-bottom:14px;">High-permeability streaks steal injected EOR fluid — polymer, CO₂, steam — away from the target oil zone. 80% of your spend can bypass the oil entirely. HyperSenseIQ detects them from the k/φ ratio diagnostic.</div>
-          <div style="background:rgba(239,159,39,.12);border-radius:10px;padding:12px;">
-            <div style="font-size:clamp(12px,1.4vw,18px);color:#1D9E75;font-weight:700;">TZ_pen &lt;0.20 → safe 🟢 proceed</div>
-            <div style="font-size:clamp(12px,1.4vw,18px);color:#EF9F27;font-weight:700;margin-top:6px;">0.20–0.50 → treat first 🟡</div>
-            <div style="font-size:clamp(12px,1.4vw,18px);color:#E24B4A;font-weight:700;margin-top:6px;">&gt;0.50 → severe ⚠ UST only 🔴</div>
-          </div>
-          <div style="margin-top:12px;font-size:clamp(11px,1.2vw,16px);color:#5A7A94;">P_EOR_adj = P_EOR × W_mod × (1 − TZ_pen × 0.15)</div>
-        </div>
-      </div>
-      <div style="animation:slideInR .6s 1.0s both;">
-        <div style="border-top:4px solid #F0A500;background:rgba(240,165,0,.07);border-radius:0 0 14px 14px;padding:clamp(14px,2vh,22px) clamp(14px,2vw,22px);height:100%;">
-          <div style="font-family:'Fredoka One',sans-serif;font-size:clamp(20px,2.8vw,38px);color:#F0A500;margin-bottom:10px;">History Factor (PHF)</div>
-          <div style="font-size:clamp(12px,1.4vw,18px);color:#8AABCC;line-height:1.7;margin-bottom:14px;">PHF anchors projections to what the well actually produced over 24 months — not what the model predicted. Enter real monthly data in Section 4 of Your Well Data. Everything adjusts silently — decline curve, EOR uplift, NPV.</div>
-          <div style="background:rgba(240,165,0,.12);border-radius:10px;padding:12px;">
-            <div style="font-size:clamp(12px,1.4vw,18px);color:#1D9E75;font-weight:700;">PHF &gt;1.05 → outperforming 🟢</div>
-            <div style="font-size:clamp(12px,1.4vw,18px);color:#9FE1CB;font-weight:700;margin-top:6px;">0.92–1.05 → on track ⚪</div>
-            <div style="font-size:clamp(12px,1.4vw,18px);color:#E24B4A;font-weight:700;margin-top:6px;">&lt;0.92 → investigate ⚠ skin?</div>
-          </div>
-        </div>
-      </div>
-    </div></div>
-  </div>
-
-  <!-- S10: EXECUTIVE VIEW -->
-  <div class="scene" id="s10">
-    <div class="slbl">10 · The Decision View</div>
-    <div class="scene-hdr" style="animation:slideUp .5s .2s both;"><div class="h1">Executive View — See Your Decision</div><div class="sub">Every well · Every factor · One screen · Colour-coded for instant action</div></div>
-    <div class="scene-body" style="padding:0 clamp(24px,3vw,50px);">
-      <div style="display:flex;flex-direction:column;gap:10px;height:100%;justify-content:center;">
-        <div style="display:grid;grid-template-columns:1fr .8fr .8fr .8fr .8fr .8fr .8fr 1fr;gap:8px;font-size:clamp(9px,.9vw,13px);color:#5A7A94;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:0 8px;animation:fadeIn .4s .3s both;">
-          <span>Well</span><span>Rate</span><span>PHF</span><span>W_mod</span><span>TZ_pen</span><span>P_EOR_adj</span><span>Best EOR</span><span>NPV est.</span>
-        </div>
-        <div id="s10-rows"></div>
-        <div style="animation:fadeIn .5s 3.5s both;text-align:center;padding-top:4px;">
-          <div style="font-size:clamp(13px,1.6vw,21px);color:#9FE1CB;font-weight:700;">🟢 Deploy EOR now &nbsp;·&nbsp; 🟡 Monitor · conformance treat first &nbsp;·&nbsp; ⭕ Investigate before spending</div>
-          <div style="font-size:clamp(11px,1.2vw,16px);color:#5A7A94;margin-top:4px;">* MH-N-04: TZ_pen=0.60 severe thief zone — conformance treatment before injection EOR · UST as safe first step</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- S11: FINAL INVITATION -->
-  <div class="scene" id="s11">
-    <div class="slbl">11 · See Beyond the Surface</div>
-    <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(14px,2.2vh,28px);">
-      <div style="animation:slideUp .8s .3s both;text-align:center;">
-        <div class="brand-big">HyperSenseIQ</div>
-        <div style="font-family:'Fredoka One',sans-serif;font-size:clamp(18px,2.8vw,40px);color:#9FE1CB;letter-spacing:.06em;margin-top:6px;">See Beyond the Surface</div>
-      </div>
-      <div style="display:flex;gap:clamp(10px,1.4vw,20px);flex-wrap:wrap;justify-content:center;animation:slideUp .6s 1.0s both;">
-        <div style="background:rgba(29,158,117,.12);border:1.5px solid #0F6E56;border-radius:12px;padding:clamp(10px,1.5vh,20px) clamp(14px,2vw,28px);text-align:center;">
-          <div style="font-family:'Fredoka One',sans-serif;font-size:clamp(22px,3.5vw,52px);color:#F0A500;">6</div>
-          <div style="font-size:clamp(9px,.9vw,13px);color:#9FE1CB;font-weight:700;letter-spacing:.05em;">PLATFORM LAYERS</div>
-        </div>
-        <div style="background:rgba(29,158,117,.12);border:1.5px solid #0F6E56;border-radius:12px;padding:clamp(10px,1.5vh,20px) clamp(14px,2vw,28px);text-align:center;">
-          <div style="font-family:'Fredoka One',sans-serif;font-size:clamp(22px,3.5vw,52px);color:#F0A500;">8</div>
-          <div style="font-size:clamp(9px,.9vw,13px);color:#9FE1CB;font-weight:700;letter-spacing:.05em;">EOR METHODS</div>
-        </div>
-        <div style="background:rgba(29,158,117,.12);border:1.5px solid #0F6E56;border-radius:12px;padding:clamp(10px,1.5vh,20px) clamp(14px,2vw,28px);text-align:center;">
-          <div style="font-family:'Fredoka One',sans-serif;font-size:clamp(22px,3.5vw,52px);color:#F0A500;">0</div>
-          <div style="font-size:clamp(9px,.9vw,13px);color:#9FE1CB;font-weight:700;letter-spacing:.05em;">CLOUD UPLOAD</div>
-        </div>
-        <div style="background:rgba(29,158,117,.12);border:1.5px solid #0F6E56;border-radius:12px;padding:clamp(10px,1.5vh,20px) clamp(14px,2vw,28px);text-align:center;">
-          <div style="font-family:'Fredoka One',sans-serif;font-size:clamp(22px,3.5vw,52px);color:#F0A500;">SPE</div>
-          <div style="font-size:clamp(9px,.9vw,13px);color:#9FE1CB;font-weight:700;letter-spacing:.05em;">VALIDATED</div>
-        </div>
-        <div style="background:rgba(29,158,117,.12);border:1.5px solid #0F6E56;border-radius:12px;padding:clamp(10px,1.5vh,20px) clamp(14px,2vw,28px);text-align:center;">
-          <div style="font-family:'Fredoka One',sans-serif;font-size:clamp(22px,3.5vw,52px);color:#F0A500;">DGH</div>
-          <div style="font-size:clamp(9px,.9vw,13px);color:#9FE1CB;font-weight:700;letter-spacing:.05em;">COMPLIANT</div>
-        </div>
-      </div>
-      <div style="animation:slideUp .5s 1.6s both;text-align:center;">
-        <div style="font-size:clamp(13px,1.5vw,20px);color:#5A7A94;">Invented by</div>
-        <div style="font-family:'Fredoka One',sans-serif;font-size:clamp(22px,3.2vw,46px);color:#9FE1CB;margin-top:4px;">Niranjan Bilgi</div>
-        <div style="font-size:clamp(12px,1.4vw,18px);color:#5A7A94;margin-top:4px;">+91 9699165381 · niranjanbilgi@yahoo.com · Mumbai 400028</div>
-      </div>
-      <div style="display:flex;gap:clamp(12px,1.5vw,22px);animation:slideUp .5s 2.0s both;">
-        <button onclick="window.open('index.html','_blank')" style="font-family:'Fredoka One',sans-serif;font-size:clamp(16px,2.2vw,30px);padding:clamp(12px,1.8vh,22px) clamp(26px,4vw,52px);border-radius:32px;border:none;background:linear-gradient(135deg,#0F6E56,#1D9E75);color:#fff;cursor:pointer;box-shadow:0 8px 40px rgba(29,158,117,.5);">🚀 Open Platform</button>
-        <button onclick="goTo(0)" style="font-family:'Fredoka One',sans-serif;font-size:clamp(16px,2.2vw,30px);padding:clamp(12px,1.8vh,22px) clamp(26px,4vw,52px);border-radius:32px;border:2.5px solid #1D9E75;background:transparent;color:#9FE1CB;cursor:pointer;">↺ Watch Again</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- NAV -->
-  <div id="nav">
-    <button class="nbtn prev" id="pb" onclick="prev()" disabled>← Prev</button>
-    <div class="ndot on" onclick="goTo(0)"></div>
-    <div class="ndot" onclick="goTo(1)"></div>
-    <div class="ndot" onclick="goTo(2)"></div>
-    <div class="ndot" onclick="goTo(3)"></div>
-    <div class="ndot" onclick="goTo(4)"></div>
-    <div class="ndot" onclick="goTo(5)"></div>
-    <div class="ndot" onclick="goTo(6)"></div>
-    <div class="ndot" onclick="goTo(7)"></div>
-    <div class="ndot" onclick="goTo(8)"></div>
-    <div class="ndot" onclick="goTo(9)"></div>
-    <div class="ndot" onclick="goTo(10)"></div>
-    <button class="nbtn next" id="nb" onclick="next()">Next →</button>
+  <div class="scene-body" style="font-size:12px;opacity:.6;margin-top:8px;">
+    Sources: DGH India Production Statistics 2024 · SPE-171720 · ONGC Annual Report 2024-25
   </div>
 </div>
-<script>
-const N=11;let cur=0;const done=new Array(N).fill(false);
-function goTo(n){document.querySelector('.scene.active').classList.remove('active');document.querySelectorAll('.ndot').forEach((d,i)=>d.classList.toggle('on',i===n));cur=n;document.getElementById('prog').style.width=((n+1)/N*100).toFixed(1)+'%';document.getElementById('pb').disabled=n===0;document.getElementById('nb').disabled=n===N-1;document.getElementById('s'+(n+1)).classList.add('active');if(!done[n]){done[n]=true;init(n);}}
-function next(){if(cur<N-1)goTo(cur+1);}
-function prev(){if(cur>0)goTo(cur-1);}
-document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' ')next();if(e.key==='ArrowLeft')prev();});
-function init(n){[null,initS2,initS3,initS4,initS5,initS6,initS7,initS8,null,initS10,null][n]?.();if(n===0)initS1();}
-function initS1(){setTimeout(()=>{let c=0;const el=document.getElementById('s1-ctr');const iv=setInterval(()=>{c+=2;if(c>=78){c=78;clearInterval(iv);}el.textContent=c+'%';},22);function drop(){const d=document.createElement('div');d.classList.add('odrop');d.style.left=(30+Math.random()*40)+'%';d.style.bottom='12%';d.style.animation='oilDrop '+(1+Math.random())+'s ease-in forwards';document.getElementById('s1').appendChild(d);setTimeout(()=>d.remove(),2200);}const di=setInterval(drop,600);setTimeout(()=>clearInterval(di),9000);},2600);}
-function initS2(){const zones=[{l:'Shale drape 1842m',c:'#E24B4A',h:11,d:1.2},{l:'✓ PAY A · φ=22% Sw=18%',c:'#1D9E75',h:16,d:1.6},{l:'Tight streak',c:'#EF9F27',h:9,d:2.0},{l:'✓ PAY B · φ=26% Sw=14%',c:'#1D9E75',h:18,d:2.4},{l:'✓ PAY C · φ=19% Sw=22%',c:'#1D9E75',h:14,d:2.8},{l:'Water zone Sw=88%',c:'#E24B4A',h:11,d:3.2},{l:'✓ PAY D · φ=20% Sw=20%',c:'#1D9E75',h:13,d:3.6}];const c=document.getElementById('s2-zones');c.innerHTML='';zones.forEach(z=>{const d=document.createElement('div');d.style.cssText='height:'+z.h+'%;background:'+z.c+'28;border-left:4px solid '+z.c+';border-radius:0 6px 6px 0;display:flex;align-items:center;padding:0 10px;opacity:0;animation:slideIn .4s '+z.d+'s both;';d.innerHTML='<span style="font-size:clamp(12px,1.3vw,17px);color:'+z.c+';font-weight:700;">'+z.l+'</span>';c.appendChild(d);});}
-function initS3(){const canvas=document.getElementById('radar');const size=Math.min(window.innerWidth*.44,window.innerHeight*.68,420);canvas.width=canvas.height=size;const ctx=canvas.getContext('2d');const cx=size/2,cy=size/2,maxR=size*.38;const domains=['Physics','Mechanical','Geological','Chemical','Operational','Economic'];const scores=[.91,.84,.87,.88,.92,.89];const colors=['#1D9E75','#F0A500','#E24B4A','#AB47BC','#64B5F6','#EF9F27'];const n=domains.length;let prog=0;function pt(i,r){const a=Math.PI*2*i/n-Math.PI/2;return{x:cx+r*Math.cos(a),y:cy+r*Math.sin(a)};}function frame(){ctx.clearRect(0,0,size,size);[.25,.5,.75,1].forEach(f=>{ctx.beginPath();for(let i=0;i<n;i++){const p=pt(i,maxR*f);i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y);}ctx.closePath();ctx.strokeStyle='rgba(255,255,255,.07)';ctx.lineWidth=1;ctx.stroke();});for(let i=0;i<n;i++){const p=pt(i,maxR);ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(p.x,p.y);ctx.strokeStyle='rgba(255,255,255,.1)';ctx.lineWidth=1;ctx.stroke();}const f=Math.min(prog/100,1);ctx.beginPath();for(let i=0;i<n;i++){const r=maxR*scores[i]*f;const p=pt(i,r);i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y);}ctx.closePath();ctx.fillStyle='rgba(29,158,117,.18)';ctx.fill();ctx.strokeStyle='#1D9E75';ctx.lineWidth=2.5;ctx.stroke();if(f>.3){for(let i=0;i<n;i++){const r=maxR*scores[i]*f;const p=pt(i,r);ctx.beginPath();ctx.arc(p.x,p.y,7,0,Math.PI*2);ctx.fillStyle=colors[i];ctx.fill();}}const fs=Math.max(12,size*.034);for(let i=0;i<n;i++){const p=pt(i,maxR+fs*1.8);ctx.fillStyle=colors[i];ctx.font='700 '+fs+'px Nunito,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(domains[i],p.x,p.y);}if(f>.7){ctx.fillStyle='#F0A500';ctx.font='700 '+(fs*1.1)+'px Fredoka One,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('P_EOR',cx,cy-fs*.8);ctx.fillStyle='#9FE1CB';ctx.font='700 '+(fs*1.6)+'px Fredoka One,sans-serif';ctx.fillText((0.88*f).toFixed(2),cx,cy+fs*.9);}prog+=1.8;if(prog<=100)requestAnimationFrame(frame);}
-const dc=document.getElementById('domain-cards');dc.innerHTML='';const descs=['φ · k · T · P · API · Sw · μ','Wellbore · surface equip.','Heterogeneity · thief zones','Compatibility · salinity','HSE · logistics · timing','CAPEX · OPEX · IRR · NPV'];domains.forEach((d,i)=>{const el=document.createElement('div');el.style.cssText='padding:clamp(6px,.9vh,11px) clamp(10px,1.3vw,16px);background:rgba(255,255,255,.04);border-left:4px solid '+colors[i]+';border-radius:0 8px 8px 0;animation:slideInR .4s '+(.8+i*.12)+'s both;opacity:0;animation-fill-mode:forwards;flex:1;display:flex;flex-direction:column;justify-content:center;min-height:0;';el.innerHTML='<div style="font-size:clamp(13px,1.5vw,20px);font-weight:700;color:'+colors[i]+';">'+d+'</div><div style="font-size:clamp(9px,.9vw,12px);color:#5A7A94;margin-top:1px;">'+descs[i]+'</div><div style="font-size:clamp(12px,1.4vw,18px);color:#9FE1CB;font-weight:700;margin-top:2px;">'+(scores[i]*100).toFixed(0)+'%</div>';dc.appendChild(el);});setTimeout(frame,500);}
-function initS4(){const methods=[{n:'🏆 #1 UST (Ultrasound-assisted)',p:88,c:'#F0A500',note:'₹75L · no injection infra · 2-month deploy',d:.3},{n:'#2 ASP (Alkaline-Surfactant-Polymer)',p:83,c:'#1D9E75',note:'₹351L · highest ΔN · chemical complex',d:.6},{n:'#3 Polymer flooding',p:76,c:'#AB47BC',note:'₹234L · good sweep · needs >20mD perm',d:.9},{n:'#4 CO₂ Miscible',p:71,c:'#64B5F6',note:'₹540L · MMP dependent · source needed',d:1.2},{n:'#5 Surfactant',p:68,c:'#9FE1CB',note:'₹260L · salinity sensitive',d:1.5},{n:'#6 Thermal',p:52,c:'#EF9F27',note:'API<20° preferred · less ideal here',d:1.8},{n:'#7 Microbial EOR',p:44,c:'#CE93D8',note:'Low CAPEX · variable results',d:2.1},{n:'#8 CO₂ Immiscible',p:38,c:'#888',note:'Below MMP · partial recovery only',d:2.4}];const c=document.getElementById('s4-bars');c.innerHTML='';methods.forEach(m=>{const w=document.createElement('div');w.classList.add('eor-bar-wrap');w.style.cssText='opacity:0;animation:slideIn .4s '+m.d+'s both;animation-fill-mode:forwards;';w.innerHTML='<div class="eor-bar-label" style="font-size:clamp(12px,1.3vw,18px);color:'+(m.p>=85?'#F0A500':'#E8D87A')+';font-weight:700;margin-bottom:4px;">'+m.n+'</div><div class="eor-bar-track"><div class="eor-bar-fill" id="bf'+m.p+'" style="background:linear-gradient(90deg,'+m.c+'99,'+m.c+');"><span class="eor-bar-pct">'+m.p+'%</span></div></div><div style="font-size:clamp(10px,1.1vw,15px);color:#5A7A94;margin-top:2px;">'+m.note+'</div>';c.appendChild(w);setTimeout(()=>{const bf=document.getElementById('bf'+m.p);if(bf)bf.style.width=m.p+'%';},m.d*1000+400);});}
-function initS5(){const rows=[{m:'UST',t:'Per-well',b:'₹90L',y:'₹75L',d:'−17%',g:true},{m:'MEOR',t:'Per-well',b:'₹120L',y:'₹100L',d:'−17%',g:true},{m:'Polymer',t:'Per-reservoir',b:'₹280L',y:'₹310L',d:'+11%',g:false},{m:'ASP',t:'Per-reservoir',b:'₹420L',y:'₹351L',d:'−16%',g:true},{m:'CO₂ Misc.',t:'Per-reservoir',b:'₹650L',y:'₹540L',d:'−17%',g:true},{m:'Thermal',t:'Per-reservoir',b:'₹580L',y:'₹580L',d:'—',g:null}];const c=document.getElementById('s5-cost-table');c.innerHTML='';c.style.cssText='display:grid;grid-template-columns:1.2fr .9fr .9fr .9fr .7fr;gap:6px;align-items:center;font-size:clamp(12px,1.3vw,17px);margin-bottom:14px;';['Method','Type','Benchmark','Your cost','Δ'].forEach(h=>{const el=document.createElement('div');el.style.cssText='color:#5A7A94;font-weight:700;font-size:clamp(9px,.9vw,13px);letter-spacing:.05em;text-transform:uppercase;padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,.1);';el.textContent=h;c.appendChild(el);});rows.forEach((r,i)=>{[r.m,r.t,r.b,r.y,r.d].forEach((v,j)=>{const el=document.createElement('div');const cs=['#9FE1CB','#5A7A94','#5A7A94','#F0A500',r.g===true?'#1D9E75':r.g===false?'#E24B4A':'#5A7A94'];el.style.cssText='color:'+cs[j]+';font-weight:'+(j===0||j===3?700:400)+';animation:fadeIn .3s '+(.5+i*.15)+'s both;opacity:0;animation-fill-mode:forwards;padding:5px 0;';el.textContent=v;c.appendChild(el);});});}
-function initS6(){let b=0;const bi=setInterval(()=>{b+=280;if(b>=10450){b=10450;clearInterval(bi);}document.getElementById('s6-brent').textContent='₹'+b.toLocaleString('en-IN');},14);setTimeout(()=>{let n=0;const ni=setInterval(()=>{n+=.5;if(n>=18.5){n=18.5;clearInterval(ni);}document.getElementById('s6-npv').textContent='+₹'+n.toFixed(1)+'Cr';},22);},700);const frows=[{l:'Gross revenue (peak yr)',v:'₹22.8 Cr',c:'#9FE1CB',d:1.2},{l:'Offshore royalty −10%',v:'−₹2.28 Cr',c:'#E24B4A',d:1.6},{l:'OID Cess',v:'−₹0.12 L/yr',c:'#EF9F27',d:1.9},{l:'GST on EOR services 18%',v:'−₹0.20 L',c:'#EF9F27',d:2.2},{l:'ONGC equity (85%)',v:'×0.85',c:'#9FE1CB',d:2.5},{l:'Net annual revenue',v:'₹11.4 Cr/yr',c:'#1D9E75',d:2.8},{l:'EOR CAPEX (one-time)',v:'₹75 Lakhs',c:'#E24B4A',d:3.1},{l:'Payback period',v:'< 2 years',c:'#1D9E75',d:3.4}];const fc=document.getElementById('s6-fiscal');fc.innerHTML='';frows.forEach(r=>{const d=document.createElement('div');d.style.cssText='display:flex;justify-content:space-between;padding:clamp(6px,.9vh,10px) 0;border-bottom:.5px solid rgba(255,255,255,.07);animation:slideIn .3s '+r.d+'s both;opacity:0;animation-fill-mode:forwards;';d.innerHTML='<span style="font-size:clamp(12px,1.4vw,18px);color:#5A7A94;">'+r.l+'</span><span style="font-size:clamp(13px,1.5vw,20px);font-weight:700;color:'+r.c+';">'+r.v+'</span>';fc.appendChild(d);});}
-function initS7(){const bars=[{l:'Pore Pressure (PP)',v:20,max:30,c:'#E24B4A'},{l:'ECD (equivalent circulating)',v:22,max:30,c:'#EF9F27'},{l:'Mud weight upper limit',v:24.2,max:30,c:'#9FE1CB'},{l:'Fracture Gradient (FG)',v:26,max:30,c:'#1D9E75'}];const c=document.getElementById('drill-bars');c.innerHTML='';bars.forEach((b,i)=>{const pct=(b.v/b.max*100).toFixed(0);const d=document.createElement('div');d.style.marginBottom='10px';d.innerHTML='<div style="display:flex;justify-content:space-between;margin-bottom:5px;"><span style="font-size:clamp(12px,1.4vw,18px);color:#8AABCC;">'+b.l+'</span><span style="font-size:clamp(13px,1.5vw,20px);font-weight:700;color:'+b.c+';">'+b.v+' MPa</span></div><div style="height:clamp(10px,1.5vh,18px);background:rgba(255,255,255,.06);border-radius:9px;overflow:hidden;"><div style="height:100%;width:0;background:'+b.c+';border-radius:9px;transition:width 1s '+(.5+i*.2)+'s ease-out;" class="db-'+i+'"></div></div>';c.appendChild(d);setTimeout(()=>{const el=d.querySelector('.db-'+i);if(el)el.style.width=pct+'%';},600+i*200);});const sw=document.createElement('div');sw.style.cssText='margin-top:12px;padding:10px 14px;background:rgba(29,158,117,.15);border:1.5px solid #1D9E75;border-radius:8px;';sw.innerHTML='<div style="font-size:clamp(12px,1.4vw,18px);color:#9FE1CB;font-weight:700;">✅ Safe MW window: 1.02–1.17 SG · EOR injection flagged safe</div>';c.appendChild(sw);}
-function initS8(){const hd=document.getElementById('hash-disp');hd.innerHTML='';const hash='a7f3e9b2d1c4f8a3e6b9d2c5f1a4e7b0d3c6f2a5e8b1d4c7f3a6e9b2d5c8f1a9e2b5d8';const pal=['#F0A500','#9FE1CB','#AB47BC','#64B5F6'];let i=0;const iv=setInterval(()=>{if(i>=hash.length){clearInterval(iv);return;}const s=document.createElement('span');s.className='hc';s.textContent=hash[i];s.style.color=pal[Math.floor(i/16)%4];s.style.animationDelay=(i*.04)+'s';hd.appendChild(s);i++;},40);const nodes=[{e:'📋',t:'Well Analysis',s:'MH-N-01 · 2026'},{e:'🔬',t:'Spectral AI',s:'SWIR · Confirmed'},{e:'💰',t:'Economics',s:'+₹18.5Cr NPV'},{e:'🏛️',t:'NIC-DLT',s:'National registry'}];const nc=document.getElementById('chain-nodes');nc.innerHTML='';nodes.forEach((nd,i)=>{const d=document.createElement('div');d.style.cssText='background:rgba(29,158,117,.12);border:1.5px solid #0F6E56;border-radius:10px;padding:clamp(8px,1.2vh,16px) clamp(10px,1.4vw,18px);text-align:center;animation:popIn .4s '+(3.2+i*.35)+'s both;opacity:0;animation-fill-mode:forwards;flex:1;margin:0 4px;';d.innerHTML='<div style="font-size:clamp(18px,3vw,36px);">'+nd.e+'</div><div style="font-size:clamp(12px,1.4vw,18px);font-weight:700;color:#9FE1CB;">'+nd.t+'</div><div style="font-size:clamp(10px,1.1vw,14px);color:#5A7A94;">'+nd.s+'</div>';nc.appendChild(d);if(i<nodes.length-1){const arr=document.createElement('div');arr.style.cssText='font-size:clamp(16px,2.5vw,30px);color:#1D9E75;flex-shrink:0;';arr.textContent='→';nc.appendChild(arr);}});}
-function initS10(){const rows=[{w:'MH-N-01',r:'182 bbl/d',phf:'1.00',wm:'1.12',tz:'0.10',peor:'90%',eor:'UST',npv:'+₹18.5Cr',cls:'g'},{w:'MH-N-02',r:'210 bbl/d',phf:'0.99',wm:'0.95',tz:'0.25',peor:'82%',eor:'Polymer',npv:'+₹14.2Cr',cls:'g'},{w:'MH-N-03',r:'245 bbl/d',phf:'1.00',wm:'1.18',tz:'0.05',peor:'94%',eor:'UST',npv:'+₹22.1Cr',cls:'g'},{w:'MH-N-04',r:'98 bbl/d',phf:'0.99',wm:'0.78',tz:'0.60',peor:'71%',eor:'UST*',npv:'+₹4.8Cr',cls:'a'},{w:'MH-N-05',r:'134 bbl/d',phf:'0.98',wm:'1.05',tz:'0.18',peor:'87%',eor:'ASP',npv:'+₹16.9Cr',cls:'g'}];const bgM={g:'rgba(29,158,117,.12)',a:'rgba(239,159,39,.1)',r:'rgba(226,75,74,.1)'};const brM={g:'#0F6E56',a:'#EF9F27',r:'#E24B4A'};const c=document.getElementById('s10-rows');c.innerHTML='';rows.forEach((r,i)=>{const d=document.createElement('div');d.style.cssText='display:grid;grid-template-columns:1fr .8fr .8fr .8fr .8fr .8fr .8fr 1fr;gap:8px;padding:clamp(10px,1.5vh,18px) clamp(10px,1.5vw,18px);border-radius:12px;background:'+bgM[r.cls]+';border:1.5px solid '+brM[r.cls]+';animation:slideIn .4s '+(.4+i*.18)+'s both;opacity:0;animation-fill-mode:forwards;align-items:center;';const cm={g:'#9FE1CB',a:'#EF9F27',r:'#F09595'};const cl=cm[r.cls];const fs='font-size:clamp(13px,1.5vw,20px);font-weight:700;';d.innerHTML='<span style="'+fs+'color:'+cl+';">'+r.w+'</span><span style="'+fs.replace('700','400')+'color:#9FE1CB;">'+r.r+'</span><span style="'+fs+'color:'+(parseFloat(r.phf)>=1?'#1D9E75':'#EF9F27')+';">'+r.phf+'×</span><span style="'+fs+'color:'+(parseFloat(r.wm)>1.1?'#1D9E75':parseFloat(r.wm)<0.9?'#EF9F27':'#9FE1CB')+';">'+r.wm+'</span><span style="'+fs+'color:'+(parseFloat(r.tz)>.5?'#E24B4A':parseFloat(r.tz)>.2?'#EF9F27':'#1D9E75')+';">'+r.tz+'</span><span style="'+fs+'color:#AB47BC;">'+r.peor+'</span><span style="'+fs+'color:#F0A500;">'+r.eor+'</span><span style="'+fs+'color:#1D9E75;">'+r.npv+'</span>';c.appendChild(d);});}
-setTimeout(()=>{done[0]=true;init(0);},500);
-</script>
-<!-- ── HINDUSTANI AMBIENT MUSIC ENGINE ── -->
-<div id="music-btn" onclick="toggleMusic()" title="Toggle ambient music"
-  style="position:fixed;bottom:clamp(60px,9vh,80px);right:18px;z-index:200;
-    width:42px;height:42px;border-radius:50%;
-    background:rgba(13,110,90,0.25);border:1.5px solid #0D6E5A;
-    display:flex;align-items:center;justify-content:center;
-    cursor:pointer;transition:all .3s;backdrop-filter:blur(6px);"
-  onmouseover="this.style.background='rgba(13,110,90,0.5)'"
-  onmouseout="this.style.background='rgba(13,110,90,0.25)'">
-  <span id="music-icon" style="font-size:18px;">🎵</span>
+
+<!-- ═══ SCENE 2 ═══ -->
+<div class="scene" id="s2">
+  <div class="scene-num">The Idea · See Beyond the Surface</div>
+  <div class="scene-title">See <em>beyond</em> the surface.</div>
+  <div class="scene-body">
+    HyperSenseIQ is a <strong>unified subsurface intelligence platform</strong> — the first of its kind
+    built specifically for the Indian oil &amp; gas sector.<br><br>
+    It takes a well's raw data and delivers — in minutes — what would take a specialist team weeks:
+    reservoir characterisation, EOR method ranking, chemistry compatibility, production engineering
+    design, fiscal modelling, and a blockchain-verified digital twin.
+  </div>
+  <div class="flow" style="margin:28px 0;">
+    <div class="flow-node">Well data / LAS file</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node">Physics engine</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node">AI layer</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node">Decision output</div>
+  </div>
+  <div class="scene-body">
+    Six integrated modules. One platform. <span class="hl">No black box.</span>
+    Every output traceable to a published equation — auditable by any reservoir engineer.
+  </div>
 </div>
-<div id="music-label" style="position:fixed;bottom:clamp(60px,9vh,80px);right:66px;z-index:200;
-  font-family:Nunito,sans-serif;font-size:10px;color:#5DCAA5;
-  background:rgba(6,16,30,0.85);padding:4px 10px;border-radius:10px;
-  opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;">
-  Raga Yaman · ambient
+
+<!-- ═══ SCENE 3 ═══ -->
+<div class="scene" id="s3">
+  <div class="scene-num">Well Intelligence · Your Well, Decoded</div>
+  <div class="scene-title">Your well,<br><em>decoded.</em></div>
+  <div class="scene-body">
+    Upload a LAS file — or enter parameters manually. HyperSenseIQ reads
+    <strong>GR, RHOB, NPHI, RT, DT</strong> curves and immediately computes:
+  </div>
+  <div class="cards" style="margin:20px 0;">
+    <div class="card"><div class="card-val">STOIIP</div><div class="card-lbl">7758 × A × h × φ × (1−Sw) / Bo</div></div>
+    <div class="card"><div class="card-val">Pay zones</div><div class="card-lbl">PAY / MARGINAL / NON-PAY<br>per depth interval</div></div>
+    <div class="card"><div class="card-val">Sw</div><div class="card-lbl">Archie's equation<br>a=1, m=2, n=2</div></div>
+  </div>
+  <div class="formula">
+    STOIIP = 7758 × A × h_net × φ × (1 − Sw) / Bo<br>
+    P_EOR = ∑ wᵢ × Dᵢ  across 6 domains  (Phys · Mech · Geo · Chem · Ops · Econ)
+  </div>
+  <div class="scene-body">
+    Zone classification is displayed as an interactive wireline log — the same visual language
+    reservoir engineers have used for 60 years. <span class="hl">Familiar. Trustworthy. Instant.</span>
+  </div>
+</div>
+
+<!-- ═══ SCENE 4 ═══ -->
+<div class="scene" id="s4">
+  <div class="scene-num">EOR Screening · Eight Methods, One Answer</div>
+  <div class="scene-title">Eight methods.<br><em>One answer.</em></div>
+  <div class="scene-body">
+    HyperSenseIQ evaluates all eight EOR methods simultaneously across six physics domains —
+    then ranks them by P_EOR score for <em>your specific reservoir.</em>
+  </div>
+  <div class="eor-list" id="eor-list"></div>
+  <div class="scene-body">
+    The <span class="pu">P_EOR score</span> is adjusted by three reality checks:
+    <strong>W_mod</strong> (wettability), <strong>CF_mod</strong> (formation chemistry),
+    and <strong>TZ_pen</strong> (thief zone penalty). No single score fits all wells.
+  </div>
+</div>
+
+<!-- ═══ SCENE 5 ═══ -->
+<div class="scene" id="s5">
+  <div class="scene-num">Chemistry · Will the Chemicals Survive?</div>
+  <div class="scene-title">Will the chemicals<br><em>survive</em> the formation?</div>
+  <div class="scene-body">
+    Before spending crores on polymer or ASP flooding, HyperSenseIQ checks whether the
+    <strong>formation water chemistry</strong> will allow those chemicals to work — or destroy them
+    before they reach the oil. Six diagnostic indices, computed automatically.
+  </div>
+  <div class="gauge-row" id="gauge-row"></div>
+  <div class="scene-body">
+    For <span class="am">Ankleshwar Hazad Member</span> — SSI 2.2 (severe CaCO₃ scaling) means
+    scale inhibitor is <strong>mandatory</strong> before any chemical EOR.
+    <span class="hl">UST has CF_mod = 1.00 always</span> — no chemicals, no chemistry penalty.
+    Adverse formation conditions actually <em>widen</em> UST's advantage.
+  </div>
+</div>
+
+<!-- ═══ SCENE 6 ═══ -->
+<div class="scene" id="s6">
+  <div class="scene-num">Decline Analysis · The Well's Biography</div>
+  <div class="scene-title">The well's<br><em>biography.</em></div>
+  <div class="scene-body">
+    Every well tells a story in its production history. HyperSenseIQ reads it using
+    <strong>Arps harmonic decline</strong> (b = 0.5) — the industry standard for mature fields.
+  </div>
+  <div class="cards">
+    <div class="card"><div class="card-val">q(t)</div><div class="card-lbl">qᵢ / (1 + b·Dᵢ·t)^(1/b)<br>Harmonic b = 0.5</div></div>
+    <div class="card am"><div class="card-val">EUR</div><div class="card-lbl">Estimated ultimate<br>recovery (MMbbl)</div></div>
+    <div class="card"><div class="card-val">PHF</div><div class="card-lbl">Production history<br>factor — propagates</div></div>
+  </div>
+  <div class="scene-body">
+    The decline curve feeds the <strong>NPV engine</strong> — computing India-fiscal net present value
+    with live Brent crude pricing, government royalty, OID cess, and GST on services.
+    Every number auditable. No assumptions hidden.
+  </div>
+</div>
+
+<!-- ═══ SCENE 7 ═══ -->
+<div class="scene" id="s7">
+  <div class="scene-num">Production Engineering · Rock to Surface</div>
+  <div class="scene-title">From rock<br><em>to surface.</em></div>
+  <div class="scene-body">
+    HyperSenseIQ designs the complete production system — automatically, for each well.
+  </div>
+  <div class="casing-vis" id="casing-vis"></div>
+  <div class="flow">
+    <div class="flow-node">Casing design<br><span style="font-size:9px;opacity:.7">Burst · Collapse · Tension</span></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node">Production string<br><span style="font-size:9px;opacity:.7">Tubing · Nodal analysis</span></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node am">Bean valve<br><span style="font-size:9px;opacity:.7">Gilbert choke sizing</span></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node am">SRP lift<br><span style="font-size:9px;opacity:.7">API RP 11L · ALCF-driven</span></div>
+  </div>
+  <div class="scene-body">
+    The <span class="hl">ALCF index</span> (Asphaltene-Lift Complexity Factor) from the Chemistry module
+    drives the SRP maintenance schedule — chemical squeeze intervals, rod coating, hot oil treatment.
+    <strong>Chemistry and engineering, integrated.</strong>
+  </div>
+</div>
+
+<!-- ═══ SCENE 8 ═══ -->
+<div class="scene" id="s8">
+  <div class="scene-num">India Fiscal · The Numbers That Matter</div>
+  <div class="scene-title">The numbers<br><em>that matter.</em></div>
+  <div class="scene-body">
+    HyperSenseIQ speaks the language of Indian E&amp;P finance — not generic NPV models.
+    Every fiscal calculation uses the actual GoI structure.
+  </div>
+  <div class="cards">
+    <div class="card am"><div class="card-val">10%</div><div class="card-lbl">Offshore royalty<br>(ONGC Mumbai High)</div></div>
+    <div class="card am"><div class="card-val">12.5%</div><div class="card-lbl">Onshore royalty<br>(ONGC / OIL India)</div></div>
+    <div class="card"><div class="card-val">1.5%</div><div class="card-lbl">OID cess<br>on production value</div></div>
+    <div class="card"><div class="card-val">Live</div><div class="card-lbl">Brent crude pricing<br>INR/USD real-time</div></div>
+  </div>
+  <div class="scene-body">
+    Three scenarios — Low / Base / High — computed simultaneously.
+    The platform knows the difference between <strong>ONGC offshore</strong> (Mumbai High),
+    <strong>ONGC onshore</strong> (Ankleshwar), and <strong>OIL India</strong> (Assam) fiscal structures.
+    Each gets its own correct royalty, operator label, and NPV calculation.
+  </div>
+</div>
+
+<!-- ═══ SCENE 9 ═══ -->
+<div class="scene" id="s9">
+  <div class="scene-num">Digital Twin · Permanently Recorded</div>
+  <div class="scene-title">Every well,<br><em>permanently recorded.</em></div>
+  <div class="scene-body">
+    Each well analysed by HyperSenseIQ receives a <strong>Digital Twin</strong> — a cryptographically
+    verified record of its subsurface state, stored on India's national blockchain infrastructure.
+  </div>
+  <div class="chain-grid" id="chain-grid"></div>
+  <div class="scene-body">
+    <span class="pu">SHA-256 hashing</span> · <span class="pu">NIC Hyperledger Fabric</span> ·
+    <span class="pu">ERC-3643 NFT (regulated)</span><br><br>
+    The twin is not just a report — it is a <strong>sovereign data asset</strong>,
+    with provenance traceable to DGH, GSI, and MoPNG. Consistent with India's
+    National Data Repository governance framework.
+  </div>
+</div>
+
+<!-- ═══ SCENE 10 ═══ -->
+<div class="scene" id="s10">
+  <div class="scene-num">Four Formations · Every Indian Basin</div>
+  <div class="scene-title">One platform.<br><em>Every basin.</em></div>
+  <div class="scene-body" style="margin-bottom:20px;">
+    HyperSenseIQ is validated across four Indian formations — each with distinct geology,
+    chemistry, and production engineering challenges.
+  </div>
+  <div class="form-grid">
+    <div class="form-card teal">
+      <h4>Mumbai High</h4>
+      <div class="fc-field">Bassein Limestone</div>
+      <div class="fc-form">Offshore · ONGC</div>
+      <div class="fc-stat">API 38–42° · SSI 0.42 (clean)<br>Depth 1840–1870m · HPHT</div>
+    </div>
+    <div class="form-card">
+      <h4>Cambay Basin</h4>
+      <div class="fc-field">Kalol Sandstone</div>
+      <div class="fc-form">Onshore Gujarat · ONGC</div>
+      <div class="fc-stat">API 34–38° · SSI 1.05 (moderate)<br>Depth 1580–1660m · WBM</div>
+    </div>
+    <div class="form-card am">
+      <h4>Ankleshwar</h4>
+      <div class="fc-field">Hazad Sandstone</div>
+      <div class="fc-form">Onshore Gujarat · ONGC</div>
+      <div class="fc-stat">API 36–40° · SSI 2.2 (severe)<br>Depth 1420–1480m · H₂S sour</div>
+    </div>
+    <div class="form-card pu">
+      <h4>Upper Assam</h4>
+      <div class="fc-field">Tipam Sandstone</div>
+      <div class="fc-form">Onshore Assam · OIL India</div>
+      <div class="fc-stat">API 34–38° · SSI 0.85 (low-mod)<br>Depth 750–912m · Soft Ss.</div>
+    </div>
+  </div>
+  <div class="scene-body" style="font-size:12px;opacity:.7;">
+    All four datasets are published-data-anchored synthetic — reference ranges from Biswas (1987),
+    SPE-39563, and ONGC monographs. Real well data replaces synthetic values as received.
+  </div>
+</div>
+
+<!-- ═══ SCENE 11 ═══ -->
+<div class="scene" id="s11">
+  <div class="scene-num">The Invitation · What Comes Next</div>
+  <div class="scene-title">The work<br><em>continues.</em></div>
+  <div class="scene-body" style="max-width:660px;margin-bottom:28px;">
+    HyperSenseIQ has been demonstrated to senior technical leadership at
+    <strong>ONGC</strong> and <strong>OIL India Ltd</strong> — we believe, to their satisfaction.<br><br>
+    Both organisations have engaged positively with the platform's capabilities across
+    reservoir characterisation, EOR method ranking, chemistry compatibility, production engineering,
+    and the digital twin framework.<br><br>
+    <span class="hl">The next phase is data.</span> As real well data arrives,
+    the synthetic datasets in this platform will be replaced — formation by formation, well by well —
+    with verified, site-specific parameters. The physics engine, the audit trail, and
+    the governance framework are ready.<br><br>
+    <span class="am">The platform is open. Your data is welcome.</span>
+  </div>
+  <div class="cards" style="margin-bottom:28px;">
+    <div class="card"><div class="card-val" style="font-size:14px;">ONGC</div><div class="card-lbl">Platform demonstrated<br>Director Exploration + Asset level</div></div>
+    <div class="card"><div class="card-val" style="font-size:14px;">OIL India</div><div class="card-lbl">Platform demonstrated<br>GM Geology · E&amp;D Directorate</div></div>
+    <div class="card pu"><div class="card-val" style="font-size:14px;">Latest</div><div class="card-lbl">Current build<br>Four formations · Continuously updated</div></div>
+  </div>
+  <button class="cta-btn" onclick="window.location='index.html'">
+    Explore the Platform →
+  </button>
+</div>
+
+</div><!-- /stage -->
+
+<div id="nav">
+  <button onclick="prev()">← Prev</button>
+  <span id="scene-counter">1 / 11</span>
+  <button class="primary" onclick="next()">Next →</button>
 </div>
 
 <script>
-// ── HINDUSTANI AMBIENT — RAGA YAMAN (Kalyan Thaat) ───────────
-// Yaman is the evening raga of peace and contemplation.
-// Scale: Sa Re Ga Ma(tivra) Pa Dha Ni Sa — all shuddha except Ma which is tivra
-// Base frequency: D4 = 293.66 Hz as Sa (comfortable for ambient)
+const TOTAL = 11;
+let cur = 0;
 
-let audioCtx = null;
-let musicPlaying = false;
-let masterGain = null;
-let scheduledNodes = [];
-let musicLoopTimer = null;
+/* ── PARTICLE BACKGROUND ── */
+(function(){
+  const c = document.getElementById('pc');
+  const ctx = c.getContext('2d');
+  let particles = [];
+  function resize(){ c.width=innerWidth; c.height=innerHeight; }
+  resize(); window.addEventListener('resize', resize);
+  for(let i=0;i<55;i++) particles.push({
+    x:Math.random()*innerWidth, y:Math.random()*innerHeight,
+    r:Math.random()*1.2+.3, vx:(Math.random()-.5)*.18, vy:(Math.random()-.5)*.18,
+    a:Math.random()*.3+.05
+  });
+  function frame(){
+    ctx.clearRect(0,0,c.width,c.height);
+    particles.forEach(p=>{
+      p.x+=p.vx; p.y+=p.vy;
+      if(p.x<0)p.x=c.width; if(p.x>c.width)p.x=0;
+      if(p.y<0)p.y=c.height; if(p.y>c.height)p.y=0;
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(93,202,165,${p.a})`; ctx.fill();
+    });
+    requestAnimationFrame(frame);
+  }
+  frame();
+})();
 
-const SA = 293.66;  // D4 as Sa
-
-// Yaman scale ratios (just intonation approximation)
-// Sa  Re   Ga   Ma#  Pa   Dha  Ni   Sa2
-const YAMAN = [1, 9/8, 5/4, 45/32, 3/2, 5/3, 15/8, 2];
-const NOTE_NAMES = ['Sa','Re','Ga','Ma♯','Pa','Dha','Ni','Sa\''];
-
-function freq(scaleIdx, octave=0) {
-  return SA * YAMAN[scaleIdx % 8] * Math.pow(2, Math.floor(scaleIdx/8) + octave);
+/* ── NAV DOTS ── */
+const dotsEl = document.getElementById('nav-dots');
+for(let i=0;i<TOTAL;i++){
+  const d = document.createElement('div');
+  d.className = 'dot'; d.title = 'Scene '+(i+1);
+  d.onclick = ()=>goTo(i);
+  dotsEl.appendChild(d);
 }
 
-// Create a sitar/sarod-like plucked tone
-function pluckNote(ctx, f, startTime, duration, gainVal=0.18, detune=0) {
-  const osc = ctx.createOscillator();
-  const osc2 = ctx.createOscillator();
-  const gain = ctx.createGain();
-  const filter = ctx.createBiquadFilter();
+function goTo(n){
+  document.querySelectorAll('.scene').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('on',i===n));
+  cur = n;
+  document.getElementById('s'+(n+1)).classList.add('on');
+  document.getElementById('scene-counter').textContent=(n+1)+' / '+TOTAL;
+  document.getElementById('progress-bar').style.width=((n+1)/TOTAL*100)+'%';
+  // Trigger scene-specific animations
+  if(n===3) buildEOR();
+  if(n===4) buildGauges();
+  if(n===6) buildCasing();
+  if(n===8) buildChain();
+}
+function next(){ if(cur<TOTAL-1) goTo(cur+1); }
+function prev(){ if(cur>0) goTo(cur-1); }
 
-  osc.type = 'sawtooth';
-  osc.frequency.value = f;
-  osc.detune.value = detune;
+/* ── KEYBOARD ── */
+document.addEventListener('keydown', e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowDown') next();
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp') prev();
+  if(e.key==='Escape') window.location='index.html';
+});
 
-  osc2.type = 'triangle';
-  osc2.frequency.value = f * 1.005; // slight chorus
-  osc2.detune.value = detune - 4;
-
-  filter.type = 'bandpass';
-  filter.frequency.value = f * 2.5;
-  filter.Q.value = 3;
-
-  // Pluck envelope: fast attack, exponential decay (like a plucked string)
-  gain.gain.setValueAtTime(0, startTime);
-  gain.gain.linearRampToValueAtTime(gainVal, startTime + 0.015);
-  gain.gain.exponentialRampToValueAtTime(gainVal * 0.3, startTime + duration * 0.3);
-  gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
-
-  osc.connect(filter);
-  osc2.connect(filter);
-  filter.connect(gain);
-  gain.connect(masterGain);
-
-  osc.start(startTime);
-  osc.stop(startTime + duration + 0.1);
-  osc2.start(startTime);
-  osc2.stop(startTime + duration + 0.1);
-
-  scheduledNodes.push(osc, osc2, gain, filter);
+/* ── SCENE 4: EOR bars ── */
+function buildEOR(){
+  const methods = [
+    {n:'UST',col:'#AB47BC',pct:87},
+    {n:'ASP',col:'#0A7A9E',pct:81},
+    {n:'Surfactant',col:'#1D9E75',pct:76},
+    {n:'CO₂ Misc.',col:'#185FA5',pct:71},
+    {n:'Polymer',col:'#2C7A4B',pct:68},
+    {n:'CO₂ Immisc.',col:'#4A7A9E',pct:62},
+    {n:'Thermal',col:'#EF9F27',pct:45},
+    {n:'Microbial',col:'#8B7355',pct:38},
+  ];
+  document.getElementById('eor-list').innerHTML = methods.map(m=>`
+    <div class="eor-row">
+      <div class="eor-name">${m.n}</div>
+      <div class="eor-bar-w">
+        <div class="eor-bar" style="width:0%;background:${m.col};" data-w="${m.pct}">
+          ${m.n==='UST'?'Best method':''}
+        </div>
+      </div>
+      <div class="eor-pct">${m.pct}%</div>
+    </div>`).join('');
+  setTimeout(()=>{
+    document.querySelectorAll('.eor-bar').forEach(b=>{
+      b.style.width = b.dataset.w+'%';
+    });
+  },100);
 }
 
-// Tanpura drone — sustained Sa Pa Sa Sa
-function tanpura(ctx, startTime, duration) {
-  const droneNotes = [freq(0), freq(4), freq(0, 1), freq(0, 1)]; // Sa Pa SA SA
-  droneNotes.forEach((f, i) => {
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    const filter = ctx.createBiquadFilter();
-
-    osc.type = 'sine';
-    osc.frequency.value = f;
-
-    // Add subtle harmonics
-    const osc2 = ctx.createOscillator();
-    osc2.type = 'triangle';
-    osc2.frequency.value = f * 2;
-    const g2 = ctx.createGain();
-    g2.gain.value = 0.06;
-
-    filter.type = 'lowpass';
-    filter.frequency.value = f * 4;
-
-    const stagger = i * (duration / 4);
-    gain.gain.setValueAtTime(0, startTime + stagger);
-    gain.gain.linearRampToValueAtTime(0.09, startTime + stagger + 0.8);
-    gain.gain.setValueAtTime(0.09, startTime + stagger + duration/4 - 0.5);
-    gain.gain.linearRampToValueAtTime(0, startTime + stagger + duration/4);
-
-    osc.connect(filter); osc2.connect(g2); g2.connect(filter);
-    filter.connect(gain); gain.connect(masterGain);
-    osc.start(startTime + stagger);
-    osc.stop(startTime + stagger + duration/4 + 0.2);
-    osc2.start(startTime + stagger);
-    osc2.stop(startTime + stagger + duration/4 + 0.2);
-    scheduledNodes.push(osc, osc2, gain, g2, filter);
+/* ── SCENE 5: Chem gauges ── */
+function buildGauges(){
+  const gauges=[
+    {lbl:'SSI',val:2.19,max:3,col:'#E24B4A',flag:'SEVERE',flagCol:'#E24B4A'},
+    {lbl:'CO₂ CR',val:0.0008,max:0.002,col:'#1D9E75',flag:'LOW',flagCol:'#1D9E75'},
+    {lbl:'STI',val:1.27,max:2,col:'#EF9F27',flag:'SCALE RISK',flagCol:'#EF9F27'},
+    {lbl:'WFAR',val:0.53,max:1,col:'#EF9F27',flag:'MODERATE',flagCol:'#EF9F27'},
+    {lbl:'ECCS',val:0.79,max:1,col:'#1D9E75',flag:'ACCEPTABLE',flagCol:'#1D9E75'},
+    {lbl:'ALCF',val:0.24,max:1,col:'#5DCAA5',flag:'LOW-MOD',flagCol:'#5DCAA5'},
+  ];
+  const R=34, C=2*Math.PI*R, el=document.getElementById('gauge-row');
+  el.innerHTML = gauges.map((g,i)=>{
+    const frac=Math.min(1,g.val/g.max);
+    const dash=C*frac, gap=C*(1-frac);
+    const disp=g.lbl==='CO₂ CR'?'0.0008':g.val.toFixed(2);
+    return `<div class="gauge">
+      <div class="gauge-ring">
+        <svg width="80" height="80" viewBox="0 0 80 80">
+          <circle class="track" cx="40" cy="40" r="${R}"/>
+          <circle class="fill" cx="40" cy="40" r="${R}" stroke="${g.col}"
+            stroke-dasharray="${C}" stroke-dashoffset="${C}" id="gf${i}"/>
+        </svg>
+        <div class="gauge-val" style="color:${g.col};font-size:${g.lbl==='CO₂ CR'?'9px':'13px'};">${disp}</div>
+      </div>
+      <div class="gauge-lbl">${g.lbl}</div>
+      <div class="gauge-flag" style="color:${g.flagCol};">${g.flag}</div>
+    </div>`;
+  }).join('');
+  setTimeout(()=>{
+    gauges.forEach((g,i)=>{
+      const frac=Math.min(1,g.val/g.max);
+      const el2=document.getElementById('gf'+i);
+      if(el2) el2.style.strokeDashoffset=C*(1-frac);
+    });
+  },150);
+  const C2=2*Math.PI*34;
+  document.querySelectorAll('.fill').forEach(f=>{
+    f.style.transition='stroke-dashoffset 1.2s ease';
   });
 }
 
-// Tabla-like subtle pulse — just a very soft low thud
-function tablaThud(ctx, time, vol=0.12) {
-  const osc = ctx.createOscillator();
-  const gain = ctx.createGain();
-  osc.type = 'sine';
-  osc.frequency.setValueAtTime(140, time);
-  osc.frequency.exponentialRampToValueAtTime(60, time + 0.15);
-  gain.gain.setValueAtTime(vol, time);
-  gain.gain.exponentialRampToValueAtTime(0.001, time + 0.22);
-  osc.connect(gain); gain.connect(masterGain);
-  osc.start(time); osc.stop(time + 0.25);
-  scheduledNodes.push(osc, gain);
+/* ── SCENE 7: Casing diagram ── */
+function buildCasing(){
+  const strings=[
+    {lbl:'Conductor',size:'30"',h:60,grade:'K-55',col:'rgba(29,158,117,.3)'},
+    {lbl:'Surface',size:'13⅜"',h:90,grade:'J-55',col:'rgba(29,158,117,.25)'},
+    {lbl:'Production',size:'7"',h:140,grade:'N-80',col:'rgba(29,158,117,.4)'},
+  ];
+  document.getElementById('casing-vis').innerHTML=strings.map(s=>`
+    <div class="csg-col">
+      <div class="csg-pipe" style="width:${parseInt(s.size)*6+20}px;height:${s.h}px;background:${s.col};border-color:rgba(29,158,117,.5);">
+        ${s.size}
+      </div>
+      <div class="csg-lbl">${s.lbl}</div>
+      <div class="csg-grade">${s.grade}</div>
+    </div>`).join('');
 }
 
-// Raga Yaman melodic phrases — alaap style, slow and contemplative
-const PHRASES = [
-  // Alaap phrase 1: Ni Re Ga Ma# Pa (ascending question)
-  [7, 0.8], [1, 0.6], [2, 0.7], [3, 1.2], [4, 1.5],
-  null, // pause
-  // Phrase 2: Pa Dha Ni SA (ascending to upper Sa)
-  [4, 0.6], [5, 0.7], [6, 0.8], [7, 2.0],
-  null,
-  // Phrase 3: SA Ni Dha Pa (gentle descent)
-  [7, 0.6], [6, 0.7], [5, 0.8], [4, 1.5],
-  null,
-  // Phrase 4: Pa Ma# Ga Re Sa (full descent, resolution)
-  [4, 0.5], [3, 0.6], [2, 0.7], [1, 0.8], [0, 2.5],
-  null, null,
-  // Phrase 5: Sa Ga Ma# Pa Dha Ni (Gamak — fast ornament)
-  [0, 0.3], [2, 0.3], [3, 0.4], [4, 0.4], [5, 0.5], [6, 1.2],
-  null,
-  // Phrase 6: Ni Dha Pa Ma# Ga Re Sa (descent with pause on Ga)
-  [6, 0.5], [5, 0.5], [4, 0.5], [3, 0.5], [2, 1.4], [1, 0.6], [0, 2.0],
-  null, null, null,
-];
-
-function scheduleMusicLoop(startTime) {
-  if(!musicPlaying) return;
-
-  const TEMPO = 2.2; // seconds per beat unit — very slow, contemplative
-  let t = startTime;
-
-  // Continuous tanpura drone underneath
-  tanpura(audioCtx, t, PHRASES.length * TEMPO * 1.5);
-
-  // Subtle tabla on beats 1 and 3 of each cycle
-  for(let b=0; b<8; b++) {
-    tablaThud(audioCtx, t + b * TEMPO * 2, b%2===0 ? 0.14 : 0.07);
-  }
-
-  // Melodic phrase
-  PHRASES.forEach(item => {
-    if(item === null) { t += TEMPO * 0.8; return; }
-    const [scaleIdx, dur] = item;
-    // Alternate between Sa octave and Pa octave for variety
-    const octave = scaleIdx >= 6 ? 0 : (scaleIdx <= 1 && Math.random()>.5 ? -1 : 0);
-    pluckNote(audioCtx, freq(scaleIdx, octave), t, dur * TEMPO * 0.9, 0.16);
-    // Occasional sympathetic string resonance
-    if(Math.random() > 0.7) {
-      pluckNote(audioCtx, freq(scaleIdx, octave) * 2, t + 0.05, dur * TEMPO * 0.4, 0.04, 8);
-    }
-    t += dur * TEMPO;
-  });
-
-  // Gentle fade and loop
-  const loopDuration = t - startTime + 3;
-  musicLoopTimer = setTimeout(() => {
-    if(musicPlaying) {
-      // Clean up old nodes
-      scheduledNodes = [];
-      scheduleMusicLoop(audioCtx.currentTime + 0.1);
-    }
-  }, loopDuration * 1000);
+/* ── SCENE 9: Chain grid ── */
+function buildChain(){
+  const nodes=[
+    {id:'DGH-NDR',name:'DGH',status:'ACTIVE'},
+    {id:'GSI-GIS',name:'GSI',status:'ACTIVE'},
+    {id:'ONGC-G&G',name:'ONGC G&G',status:'ACTIVE'},
+    {id:'NIC-DLT',name:'NIC DLT',status:'ACTIVE'},
+    {id:'MoPNG',name:'MoPNG',status:'ACTIVE'},
+    {id:'CSIR-NGRI',name:'CSIR-NGRI',status:'ACTIVE'},
+    {id:'IEA-DATA',name:'IEA',status:'FUTURE'},
+    {id:'IOGP-STD',name:'IOGP',status:'PLANNED'},
+  ];
+  document.getElementById('chain-grid').innerHTML=nodes.map(n=>`
+    <div class="chain-node">
+      <div class="cn-id">${n.id}</div>
+      <div class="cn-name">${n.name}</div>
+      <div class="cn-status" style="color:${n.status==='ACTIVE'?'#5DCAA5':n.status==='FUTURE'?'#EF9F27':'#7F77DD'}">${n.status}</div>
+    </div>`).join('');
 }
 
-function startMusic() {
-  if(!audioCtx) {
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    masterGain = audioCtx.createGain();
-    // Add gentle reverb via convolver-style delay
-    const delay = audioCtx.createDelay(2.0);
-    const delayGain = audioCtx.createGain();
-    delay.delayTime.value = 0.35;
-    delayGain.gain.value = 0.18;
-    masterGain.connect(delay);
-    delay.connect(delayGain);
-    delayGain.connect(audioCtx.destination);
-    masterGain.connect(audioCtx.destination);
-  }
-  if(audioCtx.state === 'suspended') audioCtx.resume();
-  masterGain.gain.setValueAtTime(0, audioCtx.currentTime);
-  masterGain.gain.linearRampToValueAtTime(0.7, audioCtx.currentTime + 1.5);
-  musicPlaying = true;
-  scheduleMusicLoop(audioCtx.currentTime + 0.3);
-}
-
-function stopMusic() {
-  musicPlaying = false;
-  if(musicLoopTimer) clearTimeout(musicLoopTimer);
-  if(masterGain) {
-    masterGain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 1.2);
-  }
-  setTimeout(() => { scheduledNodes = []; }, 1500);
-}
-
-function toggleMusic() {
-  const btn = document.getElementById('music-btn');
-  const icon = document.getElementById('music-icon');
-  const lbl = document.getElementById('music-label');
-  if(musicPlaying) {
-    stopMusic();
-    icon.textContent = '🎵';
-    btn.style.opacity = '0.5';
-    lbl.style.opacity = '0';
-  } else {
-    startMusic();
-    icon.textContent = '🔇';
-    btn.style.opacity = '1';
-    btn.style.background = 'rgba(13,110,90,0.5)';
-    lbl.style.opacity = '1';
-    setTimeout(() => { lbl.style.opacity = '0'; }, 3000);
-  }
-}
-
-// Show music hint after 3 seconds
-setTimeout(() => {
-  const lbl = document.getElementById('music-label');
-  if(!musicPlaying && lbl) {
-    lbl.style.opacity = '1';
-    lbl.textContent = '🎵 Click for Raga Yaman';
-    setTimeout(() => { lbl.style.opacity = '0'; }, 4000);
-  }
-}, 3000);
+/* ── INIT ── */
+goTo(0);
 </script>
 </body>
 </html>
