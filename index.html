@@ -1100,8 +1100,8 @@ async function fetchLive(){
     const r=await fetch('./data/brent.json?t='+Date.now(),{signal:AbortSignal.timeout(4000)});
     if(r.ok){
       const d=await r.json();
-      const p=parseFloat(d.price);
-      if(p>40 && p<200){
+      const p=parseFloat(d.price_usd);
+      if(p>40&&p<200){
         inrPerBbl=Math.round(p*fx);
         _brentLive=true;
       }
