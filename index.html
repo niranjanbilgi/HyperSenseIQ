@@ -1082,70 +1082,92 @@ const rate=w=>Math.round(arps(w.qi,w.Di,8));
 const kCls=(v,hi,lo,dir='up')=>dir==='up'?(v>=hi?'g':v>=lo?'a':'r'):(v<=hi?'g':v<=lo?'a':'r');
 const vCls=v=>v>0?'vg':'vr';
 /* ── LIVE DATA ── */
-let _brentLive=false; // true once we get a real price — stays green
+let _brentLive=false;
+
 async function fetchLive(){
-  let fx=83.5;
-  const sources=[
-    ()=>fetch('https://open.er-api.com/v6/latest/USD',{mode:'cors'}).then(r=>r.json()).then(d=>d.rates.INR),
-    ()=>fetch('https://api.frankfurter.app/latest?from=USD&to=INR',{mode:'cors'}).then(r=>r.json()).then(d=>d.rates.INR),
-    ()=>fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json',{mode:'cors'}).then(r=>r.json()).then(d=>d.usd.inr)
+  // ── FX Rate: USD → INR ──
+  let fx=83.5, inrPerBbl=null;
+  const fxSources=[
+    ()=>fetch('https://open.er-api.com/v6/latest/USD').then(r=>r.json()).then(d=>{if(d.rates?.INR>70&&d.rates?.INR<100)return d.rates.INR;throw 0;}),
+    ()=>fetch('https://api.frankfurter.app/latest?from=USD&to=INR').then(r=>r.json()).then(d=>{if(d.rates?.INR>70&&d.rates?.INR<100)return d.rates.INR;throw 0;}),
+    ()=>fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json').then(r=>r.json()).then(d=>{if(d.usd?.inr>70)return d.usd.inr;throw 0;}),
   ];
-  for(const s of sources){try{const v=await s();if(v>70&&v<100){fx=v;break;}}catch(e){}}
-  // Brent crude price — multiple source fallback chain
-  let brent=78.5;
-  const brentSources=[
-    // Source 1: Stooq — reliable, CORS-open, no key needed
-    async()=>{
-      const r=await fetch('https://stooq.com/q/l/?s=brent.f&f=sd2t2ohlcv&h&e=json',
-        {signal:AbortSignal.timeout(5000)});
+  for(const s of fxSources){try{fx=await s();break;}catch(e){}}
+
+  // ── Brent Crude: use fawazahmed0 commodity API (XBR = Brent Crude Oil) ──
+  // Same CDN as FX — guaranteed CORS-open on GitHub Pages
+  // Returns direct INR/bbl price — no multiplication needed
+  try{
+    // Primary: XBR direct in INR
+    const r=await fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/xbr.json',
+      {signal:AbortSignal.timeout(5000)});
+    if(r.ok){
       const d=await r.json();
-      const p=parseFloat(d?.symbols?.['BRENT.F']?.close||d?.symbols?.['brent.f']?.close);
-      if(p>40&&p<200)return p; throw 0;
-    },
-    // Source 2: Financial Modeling Prep (free tier, no key for basic quotes)
-    async()=>{
-      const r=await fetch('https://financialmodelingprep.com/api/v3/quote/BCOUSD?apikey=demo',
+      const priceINR=d?.xbr?.inr;
+      if(priceINR&&priceINR>3000&&priceINR<20000){
+        inrPerBbl=Math.round(priceINR);
+        _brentLive=true;
+      }
+    }
+  }catch(e){}
+
+  // Secondary: XBR in USD then multiply by live FX
+  if(!inrPerBbl){
+    try{
+      const r=await fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/xbr.json',
         {signal:AbortSignal.timeout(5000)});
-      const d=await r.json();
-      const p=parseFloat(d?.[0]?.price);
-      if(p>40&&p<200)return p; throw 0;
-    },
-    // Source 3: Twelve Data free tier
-    async()=>{
-      const r=await fetch('https://api.twelvedata.com/price?symbol=BZ%3AF&apikey=demo',
-        {signal:AbortSignal.timeout(5000)});
-      const d=await r.json();
-      const p=parseFloat(d?.price);
-      if(p>40&&p<200)return p; throw 0;
-    },
-  ];
-  for(const fn of brentSources){
-    try{brent=await fn();break;}catch(e){}
+      if(r.ok){
+        const d=await r.json();
+        const priceUSD=d?.xbr?.usd;
+        if(priceUSD&&priceUSD>40&&priceUSD<200){
+          inrPerBbl=Math.round(priceUSD*fx);
+          _brentLive=true;
+        }
+      }
+    }catch(e){}
   }
-  const inr=Math.round(brent*fx);
-  document.getElementById('brent-val').textContent='₹'+Math.round(inr).toLocaleString('en-IN')+'/bbl';
+
+  // Tertiary: WTI (close proxy for Brent, ~$2-3 differential)
+  if(!inrPerBbl){
+    try{
+      const r=await fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/xwti.json',
+        {signal:AbortSignal.timeout(5000)});
+      if(r.ok){
+        const d=await r.json();
+        const priceINR=d?.xwti?.inr;
+        if(priceINR&&priceINR>3000&&priceINR<20000){
+          inrPerBbl=Math.round(priceINR*1.03); // Brent ~3% premium over WTI
+          _brentLive=true;
+        }
+      }
+    }catch(e){}
+  }
+
+  // Final fallback: use FX-converted static estimate
+  if(!inrPerBbl) inrPerBbl=Math.round(78.5*fx);
+
+  // ── Update UI ──
+  document.getElementById('brent-val').textContent='₹'+inrPerBbl.toLocaleString('en-IN')+'/bbl';
   document.getElementById('fx-val').textContent=fx.toFixed(1);
-  // Update the EOR price slider to match live price
+
+  // Sync live price to EOR slider
   const eorSl=document.getElementById('eor-price-sl');
   const eorDisp=document.getElementById('eor-price-disp');
-  if(eorSl&&inr>=3500&&inr<=12000){
-    eorSl.value=inr;
-    if(eorDisp)eorDisp.textContent='₹'+Math.round(inr).toLocaleString('en-IN');
+  if(eorSl&&inrPerBbl>=3500&&inrPerBbl<=12000){
+    eorSl.value=inrPerBbl;
+    if(eorDisp)eorDisp.textContent='₹'+inrPerBbl.toLocaleString('en-IN');
+    renderEOR();
   }
-  document.getElementById('oil-sl').value=Math.min(10000,Math.max(3500,inr));
-  const gotLive = brent !== 78.5;
-  if(gotLive) _brentLive=true; // latch — once live, stays live
+
+  // Dot: green = confirmed live, amber = FX-adjusted estimate
   const now=new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
   document.getElementById('last-upd').textContent=(_brentLive?'Live ':'Est. ')+now;
   const ldot=document.querySelector('.ldot');
   if(ldot)ldot.style.background=_brentLive?'#1D9E75':'#EF9F27';
-  document.getElementById('last-upd').style.color='#9FE1CB';
-  document.getElementById('status-dot').style.background='#1D9E75';
-  document.getElementById('status-dot').style.animation='pulse 2s infinite';
-  ec();
+  if(ldot)ldot.style.boxShadow=_brentLive?'0 0 6px #1D9E75':'0 0 6px #EF9F27';
 }
 
-/* ── NAVIGATION ── */
+
 function setMode(m){
   mode=m;
   const isPetro=m==='petro';
@@ -2394,7 +2416,7 @@ function applyLasParams() {
 
 /* ── INIT ── */
 setTimeout(()=>{render();fetchLive();},100);
-setInterval(fetchLive,30*60*1000); // refresh every 30 minutes
+setInterval(fetchLive,60*60*1000); // refresh every 60 minutes — commodity prices
 window.addEventListener('resize',()=>{renderDecline();ec();});
 </script>
 </body>
