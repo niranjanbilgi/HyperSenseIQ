@@ -1082,6 +1082,7 @@ const rate=w=>Math.round(arps(w.qi,w.Di,8));
 const kCls=(v,hi,lo,dir='up')=>dir==='up'?(v>=hi?'g':v>=lo?'a':'r'):(v<=hi?'g':v<=lo?'a':'r');
 const vCls=v=>v>0?'vg':'vr';
 /* ── LIVE DATA ── */
+let _brentLive=false; // true once we get a real price — stays green
 async function fetchLive(){
   let fx=83.5;
   const sources=[
@@ -1133,9 +1134,11 @@ async function fetchLive(){
   }
   document.getElementById('oil-sl').value=Math.min(10000,Math.max(3500,inr));
   const gotLive = brent !== 78.5;
-  document.getElementById('last-upd').textContent=(gotLive?'Live ':'Est. ')+new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+  if(gotLive) _brentLive=true; // latch — once live, stays live
+  const now=new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+  document.getElementById('last-upd').textContent=(_brentLive?'Live ':'Est. ')+now;
   const ldot=document.querySelector('.ldot');
-  if(ldot)ldot.style.background=gotLive?'#1D9E75':'#EF9F27';
+  if(ldot)ldot.style.background=_brentLive?'#1D9E75':'#EF9F27';
   document.getElementById('last-upd').style.color='#9FE1CB';
   document.getElementById('status-dot').style.background='#1D9E75';
   document.getElementById('status-dot').style.animation='pulse 2s infinite';
@@ -2391,7 +2394,7 @@ function applyLasParams() {
 
 /* ── INIT ── */
 setTimeout(()=>{render();fetchLive();},100);
-setInterval(fetchLive,15*60*1000);
+setInterval(fetchLive,30*60*1000); // refresh every 30 minutes
 window.addEventListener('resize',()=>{renderDecline();ec();});
 </script>
 </body>
