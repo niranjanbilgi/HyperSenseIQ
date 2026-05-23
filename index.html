@@ -755,34 +755,25 @@ const rate=w=>Math.round(arps(w.qi,w.Di,8));
 const kCls=(v,hi,lo,dir='up')=>dir==='up'?(v>=hi?'g':v>=lo?'a':'r'):(v<=hi?'g':v<=lo?'a':'r');
 const vCls=v=>v>0?'vg':'vr';
 /* ── LIVE DATA ── */
-name: Fetch Live Brent Price
-
-on:
-  schedule:
-    - cron: '0 * * * *'
-  workflow_dispatch:
-
-jobs:
-  fetch-brent:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      
-      - name: Fetch Brent Price
-        run: |
-          mkdir -p data
-          PRICE=$(curl -s "https://api.coinbase.com/v2/exchange-rates?currency=USD" | grep -oP '(?<="USD":)\d+\.\d+' | head -1)
-          if [ -z "$PRICE" ]; then PRICE="103.94"; fi
-          cat > data/brent_live.json << JSON
-          {"price_usd": $PRICE, "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)", "source": "Live"}
-          JSON
-          
-      - name: Commit and Push
-        run: |
-          git config user.email "action@github.com"
-          git config user.name "GitHub Action"
-          git add data/brent_live.json
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Update Brent" && git push)
+async function fetchLive(){
+  let fx=95.9;
+  const sources=[
+    ()=>fetch('https://open.er-api.com/v6/latest/USD',{mode:'cors'}).then(r=>r.json()).then(d=>d.rates.INR),
+    ()=>fetch('https://api.frankfurter.app/latest?from=USD&to=INR',{mode:'cors'}).then(r=>r.json()).then(d=>d.rates.INR),
+    ()=>fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json',{mode:'cors'}).then(r=>r.json()).then(d=>d.usd.inr)
+  ];
+  for(const s of sources){try{const v=await s();if(v>70&&v<110){fx=v;break;}}catch(e){}}
+  let brent=103.94;
+  try{const brentData=await fetch('https://raw.githubusercontent.com/niranjanbilgi/HyperSenseIQ/main/data/brent_live.json',{mode:'cors'}).then(r=>r.json());if(brentData&&brentData.price_usd){brent=parseFloat(brentData.price_usd);}}catch(e){}
+  const inr=Math.round(brent*fx);
+  document.getElementById('brent-val').textContent=INR(inr)+'/bbl';
+  document.getElementById('fx-val').textContent=fx.toFixed(1);
+  document.getElementById('oil-sl').value=Math.min(10000,Math.max(3500,inr));
+  document.getElementById('last-upd').textContent='Live '+new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+  document.getElementById('last-upd').style.color='#9FE1CB';
+  document.getElementById('status-dot').style.background='#1D9E75';
+  document.getElementById('status-dot').style.animation='pulse 2s infinite';
+  ec();
 }
 
 /* ── NAVIGATION ── */
