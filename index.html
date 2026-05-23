@@ -765,7 +765,7 @@ async function fetchLive(){
   for(const s of sources){try{const v=await s();if(v>70&&v<110){fx=v;break;}}catch(e){}}
   let brent=103.94;
   try{const brentData=await fetch('https://raw.githubusercontent.com/niranjanbilgi/HyperSenseIQ/main/data/brent_live.json',{mode:'cors'}).then(r=>r.json());if(brentData&&brentData.price_usd){brent=parseFloat(brentData.price_usd);}}catch(e){}
-  const inr=Math.round(brent*fx);
+  let brent=103.94;try{const brentData=await fetch('https://raw.githubusercontent.com/niranjanbilgi/HyperSenseIQ/main/data/brent_live.json',{mode:'cors'}).then(r=>r.json());if(brentData&&brentData.price_usd){brent=parseFloat(brentData.price_usd);}}catch(e){}const inr=Math.round(brent*fx);
   document.getElementById('brent-val').textContent=INR(inr)+'/bbl';
   document.getElementById('fx-val').textContent=fx.toFixed(1);
   document.getElementById('oil-sl').value=Math.min(10000,Math.max(3500,inr));
