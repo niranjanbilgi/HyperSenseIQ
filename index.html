@@ -43,12 +43,13 @@ html,body{background:#F0EEE8;color:#2C2C2A;}
 .well-bar,.mine-bar{background:var(--navy2);display:flex;align-items:center;padding:8px 16px;gap:6px;flex-wrap:wrap;border-bottom:1px solid rgba(255,255,255,.05);}
 .wlbl{font-size:10px;color:#5A7A94;font-weight:500;margin-right:4px;}
 .ds-toggle{display:flex;align-items:center;gap:4px;margin-right:10px;background:rgba(255,255,255,.05);border-radius:6px;padding:2px;border:0.5px solid rgba(255,255,255,.1);}
-.ds-btn{font-size:10px;padding:3px 9px;border-radius:4px;border:none;background:transparent;color:#5A7A94;cursor:pointer;font-weight:500;transition:all .15s;white-space:nowrap;}
-.ds-btn.on{background:rgba(171,71,188,.25);color:#CE93D8;border:0.5px solid rgba(171,71,188,.4);}
+.ds-btn{font-size:11px;padding:5px 13px;border-radius:5px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#8FAEC4;cursor:pointer;font-weight:500;transition:all .18s;white-space:nowrap;letter-spacing:.01em;}
+.ds-btn:hover{background:rgba(255,255,255,.12);color:#C8DDE8;border-color:rgba(255,255,255,.25);}
+.ds-btn.on{background:rgba(29,158,117,.28);color:#7DDFB8;border:1px solid rgba(29,158,117,.55);font-weight:600;}
 .ds-note{font-size:9px;color:#5A7A94;font-style:italic;padding:2px 8px;border-left:2px solid rgba(171,71,188,.3);margin-left:4px;}
 
-.w-btn{font-size:11px;padding:5px 11px;border-radius:5px;border:0.5px solid rgba(255,255,255,.12);background:transparent;color:#6A8FAD;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .12s;}
-.w-btn:hover{background:rgba(255,255,255,.06);color:#B5D4F4;}
+.w-btn{font-size:11px;padding:5px 11px;border-radius:5px;border:0.5px solid rgba(255,255,255,.18);background:rgba(255,255,255,.07);color:#9BB8CC;cursor:pointer;font-weight:500;transition:all .15s;white-space:nowrap;}
+.w-btn:hover{background:rgba(255,255,255,.13);color:#C8DDE8;border-color:rgba(255,255,255,.28);}
 .w-btn.on{background:rgba(29,158,117,.2);border-color:var(--g-mid);color:#9FE1CB;}
 .ws{font-size:9px;padding:1px 5px;border-radius:3px;font-weight:500;}
 .ws-p{background:var(--g-bg);color:var(--g-dark);}
@@ -98,6 +99,9 @@ html,body{background:#F0EEE8;color:#2C2C2A;}
 .fr{display:flex;justify-content:space-between;padding:4px 0;border-bottom:0.5px solid #F4F3EF;font-size:11px;}
 .fr:last-child{border:none;}.fl{color:var(--gray);}.fv{font-weight:500;}
 .fr-hl{background:var(--pay-row);padding:4px 6px;border-radius:4px;margin:2px 0;border:none;}
+.pe-tab{font-size:11px;padding:6px 14px;border-radius:6px;border:0.5px solid rgba(29,158,117,.3);background:transparent;color:#3D8A6A;cursor:pointer;font-weight:500;transition:all .15s;}
+.pe-tab:hover{background:rgba(29,158,117,.08);color:#5DCAA5;}
+.pe-tab.on{background:rgba(29,158,117,.2);border-color:var(--g-mid);color:#5DCAA5;}
 .fr-neg{background:var(--neg-row);padding:4px 6px;border-radius:4px;margin:2px 0;border:none;}
 .scens{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
 .scen{border-radius:7px;padding:10px;text-align:center;border:0.5px solid;}
@@ -224,6 +228,9 @@ input[type=range]{accent-color:var(--g-mid);}
     <div class="tab" onclick="go('decline')">Decline</div>
     <div class="tab" onclick="go('econ')">Economics ₹</div>
     <div class="tab spec-tab" onclick="go('spectral')">Spectral</div>
+    <div class="tab" onclick="go('chem')" id="tab-chem" style="color:#EF9F27;">Chemistry</div>
+    <div class="tab" onclick="go('prodeng')" id="tab-prodeng" style="color:#5DCAA5;">Prod Engineering</div>
+    <div class="tab" onclick="go('drill')">Drilling Physics</div>
     <div class="tab" onclick="go('twin')">Digital twin</div>
     <div class="tab" onclick="go('exec')">Executive view</div>
     <div class="tab inp-tab" onclick="go('input')">Your well data</div>
@@ -237,7 +244,8 @@ input[type=range]{accent-color:var(--g-mid);}
     <div class="tab spec-tab" onclick="goMine('mtwin')">Digital twin</div>
   </div>
   <div class="live-strip">
-    <div class="live-badge"><div class="ldot"></div><span class="llbl">Brent</span><span class="lval" id="brent-val">₹6,500</span></div>
+    <a href="hypersenseiq_story.html" style="font-size:10px;padding:5px 12px;border-radius:14px;background:linear-gradient(135deg,rgba(13,110,90,.35),rgba(29,158,117,.25));border:0.5px solid rgba(29,158,117,.5);color:#5DCAA5;text-decoration:none;letter-spacing:.04em;font-weight:500;white-space:nowrap;flex-shrink:0;transition:all .2s;" onmouseover="this.style.background='rgba(29,158,117,.3)'" onmouseout="this.style.background='linear-gradient(135deg,rgba(13,110,90,.35),rgba(29,158,117,.25))'">▶ Story</a>
+    <div class="live-badge"><div class="ldot"></div><span class="llbl">Brent</span><span class="lval" id="brent-val">₹6,292</span></div>
     <div class="live-badge"><div class="ldot"></div><span class="llbl">INR</span><span class="lval" id="fx-val">83.5</span></div>
     <div class="live-badge"><div class="ldot" id="status-dot" style="background:#EF9F27;animation:none;"></div><span class="llbl" id="last-upd">loading</span></div>
   </div>
@@ -247,6 +255,8 @@ input[type=range]{accent-color:var(--g-mid);}
   <div class="ds-toggle">
     <button class="ds-btn on" id="ds-mh" onclick="setDataset('mh')">Mumbai High North</button>
     <button class="ds-btn" id="ds-cb" onclick="setDataset('cb')">Cambay Basin · Kalol Ss</button>
+    <button class="ds-btn" id="ds-ahm" onclick="setDataset('ahm')" style="border-color:rgba(239,159,39,.65);color:#F4B942;font-weight:600;">Ankleshwar · Hazad Ss ⚡</button>
+    <button class="ds-btn" id="ds-assam" onclick="setDataset('assam')" style="border-color:rgba(160,152,255,.65);color:#B8B2F8;font-weight:600;">Assam · OIL India 🔬</button>
   </div>
   <span id="well-bar-label" class="wlbl">Mumbai High North:</span>
   <div id="wells-mh" style="display:flex;align-items:center;gap:4px;">
@@ -263,7 +273,23 @@ input[type=range]{accent-color:var(--g-mid);}
     <button class="w-btn" onclick="sw(3)">CB-04 <span class="ws ws-w">Viscous</span></button>
     <button class="w-btn" onclick="sw(4)">CB-05 <span class="ws ws-w">High WC</span></button>
   </div>
+  <div id="wells-ahm" style="display:none;align-items:center;gap:4px;">
+    <button class="w-btn on" onclick="sw(0)">AHM-W1 <span class="ws ws-p">Pay</span></button>
+    <button class="w-btn" onclick="sw(1)">AHM-W2 <span class="ws ws-p">Pay</span></button>
+    <button class="w-btn" onclick="sw(2)">AHM-W3 <span class="ws ws-d">Declining</span></button>
+    <button class="w-btn" onclick="sw(3)">AHM-W4 <span class="ws ws-w">High WC</span></button>
+    <button class="w-btn" onclick="sw(4)">AHM-W5 <span class="ws ws-w">SRP Cand.</span></button>
+  </div>
+  <div id="wells-assam" style="display:none;align-items:center;gap:4px;">
+    <button class="w-btn on" onclick="sw(0)">AS-W1 <span class="ws ws-p">Pay</span></button>
+    <button class="w-btn" onclick="sw(1)">AS-W2 <span class="ws ws-p">Pay</span></button>
+    <button class="w-btn" onclick="sw(2)">AS-W3 <span class="ws ws-d">Declining</span></button>
+    <button class="w-btn" onclick="sw(3)">AS-W4 <span class="ws ws-w">High WC</span></button>
+    <button class="w-btn" onclick="sw(4)">AS-W5 <span class="ws ws-w">SRP Cand.</span></button>
+
+  </div>
   <span id="ds-note-cb" class="ds-note" style="display:none;">Synthetic · Representative Cambay Basin Kalol sandstone parameters · Onshore Gujarat</span>
+  <span id="ds-note-dynamic" class="ds-note" style="display:none;"></span>
 </div>
 
 <div class="mine-bar" id="mine-bar" style="display:none;">
@@ -317,6 +343,53 @@ input[type=range]{accent-color:var(--g-mid);}
       <canvas id="radar-c" width="300" height="220" style="width:100%;max-width:300px;display:block;margin:0 auto;"></canvas>
     </div>
   </div>
+  <!-- EOR Cost Input Layer -->
+  <div style="margin-top:12px;">
+    <div style="background:linear-gradient(135deg,#1A2F4A,#0D2035);border-radius:8px 8px 0 0;padding:10px 16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+      <div style="color:#9FE1CB;font-size:12px;font-weight:600;">📊 Your Field Economics — Enter indicative costs for each EOR method</div>
+      <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;">
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span style="font-size:10px;color:#8FAEC4;">Crude (₹/bbl)</span>
+          <input type="range" id="eor-price-sl" min="3500" max="12000" value="6500" step="100"
+            oninput="document.getElementById('eor-price-disp').textContent='₹'+parseInt(this.value).toLocaleString('en-IN');renderEOR();"
+            style="width:90px;accent-color:#1D9E75;">
+          <span id="eor-price-disp" style="font-size:11px;font-weight:600;color:#5DCAA5;min-width:54px;">₹6,500</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:5px;">
+          <span style="font-size:10px;color:#8FAEC4;">Equity %</span>
+          <input type="number" id="eor-equity" min="25" max="100" value="85" step="5" oninput="renderEOR();"
+            style="width:46px;font-size:10px;padding:2px 5px;border:0.5px solid rgba(255,255,255,.2);border-radius:4px;background:rgba(255,255,255,.08);color:#9FE1CB;text-align:center;">
+        </div>
+        <div style="display:flex;align-items:center;gap:5px;">
+          <span style="font-size:10px;color:#8FAEC4;">Horizon yrs</span>
+          <input type="number" id="eor-horizon" min="1" max="15" value="5" step="1" oninput="renderEOR();"
+            style="width:40px;font-size:10px;padding:2px 5px;border:0.5px solid rgba(255,255,255,.2);border-radius:4px;background:rgba(255,255,255,.08);color:#9FE1CB;text-align:center;">
+        </div>
+        <button onclick="resetEORCosts()" style="font-size:9px;padding:3px 10px;border-radius:4px;border:0.5px solid rgba(255,255,255,.2);background:rgba(255,255,255,.06);color:#8FAEC4;cursor:pointer;">Reset to defaults</button>
+      </div>
+    </div>
+    <div style="background:#fff;border:0.5px solid #e0e4e8;border-top:none;border-radius:0 0 8px 8px;overflow:hidden;">
+      <table style="width:100%;border-collapse:collapse;font-size:10px;" id="eor-cost-table">
+        <thead>
+          <tr style="background:#f5f7fa;border-bottom:1px solid #e0e4e8;">
+            <th style="padding:8px 12px;text-align:left;color:#1A2F4A;font-weight:600;width:18%;">EOR Method</th>
+            <th style="padding:8px 10px;text-align:center;color:#1A2F4A;font-weight:600;">CAPEX<br><span style="font-weight:400;color:#888;font-size:9px;">₹ Lakhs (one-time)</span></th>
+            <th style="padding:8px 10px;text-align:center;color:#1A2F4A;font-weight:600;">OPEX/yr<br><span style="font-weight:400;color:#888;font-size:9px;">₹ Lakhs/yr</span></th>
+            <th style="padding:8px 10px;text-align:center;color:#1A2F4A;font-weight:600;">Chemical cost<br><span style="font-weight:400;color:#888;font-size:9px;">₹ Lakhs/yr</span></th>
+            <th style="padding:8px 10px;text-align:center;color:#1A2F4A;font-weight:600;">ΔN Kbbl<br><span style="font-weight:400;color:#888;font-size:9px;">Computed</span></th>
+            <th style="padding:8px 10px;text-align:center;color:#1A2F4A;font-weight:600;">Gross ₹ Cr<br><span style="font-weight:400;color:#888;font-size:9px;">At your price</span></th>
+            <th style="padding:8px 10px;text-align:center;color:#1A2F4A;font-weight:600;">Net NPV ₹ Cr<br><span style="font-weight:400;color:#888;font-size:9px;">After costs & royalty</span></th>
+            <th style="padding:8px 10px;text-align:center;color:#1A2F4A;font-weight:600;">ROI<br><span style="font-weight:400;color:#888;font-size:9px;">Net/CAPEX</span></th>
+          </tr>
+        </thead>
+        <tbody id="eor-cost-body"></tbody>
+      </table>
+      <div style="padding:8px 12px;background:#f9fafb;border-top:0.5px solid #eee;font-size:9px;color:#888;font-style:italic;">
+        ✏️ CAPEX, OPEX/yr, and Chemical cost cells are editable — type your field-specific estimates. ΔN, Gross, Net NPV and ROI recalculate automatically. Defaults are HyperSenseIQ reference values for Indian onshore/offshore conditions.
+      </div>
+    </div>
+  </div>
+
   <div class="card" style="margin-top:10px;"><div class="ct">HyperSenseIQ EOR recommendation</div><div id="eor-verdict"></div></div>
 </div>
 
@@ -347,7 +420,7 @@ input[type=range]{accent-color:var(--g-mid);}
   </div>
   <div class="scens" id="scens"></div>
   <div class="cols2">
-    <div class="card"><div class="ct">India fiscal — ONGC / Mumbai High offshore</div><div id="fiscal"></div></div>
+    <div class="card"><div class="ct" id="fiscal-label">India fiscal — ONGC / Mumbai High offshore</div><div id="fiscal"></div></div>
     <div class="card">
       <div class="ct">5-year cashflow (₹ Cr)</div>
       <div class="cwrap"><canvas id="cf-c"></canvas></div>
@@ -438,6 +511,151 @@ input[type=range]{accent-color:var(--g-mid);}
   <div class="card" style="margin-top:10px;"><div class="ct">National repository integration</div><div id="tw-repos"></div></div>
 </div>
 
+
+<!-- ═══ CHEMISTRY PANEL ═══ -->
+<div class="panel" id="p-chem">
+  <div style="background:linear-gradient(135deg,#1a0c00,#2a1500);border-radius:8px;padding:10px 16px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+    <div>
+      <div style="color:#EF9F27;font-size:13px;font-weight:500;">Chemistry &amp; Fluid Properties &nbsp;<span id="chem-dataset-label" style="font-size:11px;font-weight:400;color:#B8860B;"></span></div>
+      <div style="color:#B8860B;font-size:10px;margin-top:2px;">Six diagnostic indices · Formation water compatibility · EOR chemical fitness · Updates per dataset &amp; well</div>
+    </div>
+    <span style="font-size:9px;padding:3px 8px;border-radius:4px;background:rgba(255,255,255,.06);color:#9FE1CB;border:0.5px solid rgba(255,255,255,.12);" id="chem-ds-badge">Dataset</span>
+  </div>
+
+  <!-- KPI row — six indices -->
+  <div class="kpis" style="grid-template-columns:repeat(6,1fr);margin-bottom:14px;" id="chem-kpis"></div>
+
+  <div class="cols2" style="margin-bottom:12px;">
+    <!-- CF_mod table -->
+    <div class="card">
+      <div class="ct" style="color:#854F0B;">CF_mod — Chemistry modifier per EOR method</div>
+      <div style="font-size:9px;color:#888;margin-bottom:8px;">Applied to P_EOR_adj: <span style="font-family:monospace;background:#f5f5f0;padding:1px 5px;border-radius:3px;">P_EOR_adj = AVG × W_mod × <b>CF_mod</b> × (1−TZ_pen)</span></div>
+      <table class="dt" id="cfmod-table"></table>
+    </div>
+    <!-- Water chemistry card -->
+    <div class="card">
+      <div class="ct" style="color:#854F0B;" id="chem-water-title">Formation water chemistry</div>
+      <table class="dt" id="chem-water-table"></table>
+    </div>
+  </div>
+
+  <div class="cols3">
+    <!-- SSI gauge -->
+    <div class="card">
+      <div class="ct">SSI — Scaling index</div>
+      <div id="ssi-bar"></div>
+      <div style="font-size:9px;color:#888;margin-top:8px;" id="ssi-note">Stiff-Davis 1952 · CaCO₃ saturation. SSI &gt; 0.5 = scale risk.</div>
+    </div>
+    <!-- WFAR gauge -->
+    <div class="card">
+      <div class="ct">WFAR — Waterflood adversity</div>
+      <div id="wfar-bar"></div>
+      <div style="font-size:9px;color:#888;margin-top:8px;" id="wfar-note">0 = easy · 1 = severe.</div>
+    </div>
+    <!-- ECCS gauge -->
+    <div class="card">
+      <div class="ct">ECCS — EOR chemical compatibility</div>
+      <div id="eccs-bar"></div>
+            <div style="font-size:9px;color:#888;margin-top:8px;" id="eccs-note">0 = incompatible · 1 = perfect.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ PRODUCTION ENGINEERING PANEL ═══ -->
+<div class="panel" id="p-prodeng">
+  <div style="background:linear-gradient(135deg,#001a10,#002a18);border-radius:8px;padding:10px 16px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+    <div>
+      <div style="color:#5DCAA5;font-size:13px;font-weight:500;">Production Engineering</div>
+      <div style="color:#3D8A6A;font-size:10px;margin-top:2px;">Casing Design · Production String · Bean Valve / Choke · SRP Artificial Lift · Ankleshwar Hazad Member</div>
+    </div>
+    <span style="font-size:9px;padding:3px 8px;border-radius:4px;background:rgba(29,158,117,.15);color:#5DCAA5;border:0.5px solid rgba(29,158,117,.3);">API 5CT · API RP 11L · Gilbert 1954 · Vogel 1968</span>
+  </div>
+
+  <!-- Sub-tab selector -->
+  <div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;">
+    <button class="pe-tab on" id="pe-t-csg" onclick="peTab('csg')">🔩 Casing Design</button>
+    <button class="pe-tab" id="pe-t-tub" onclick="peTab('tub')">🛢 Production String</button>
+    <button class="pe-tab" id="pe-t-chk" onclick="peTab('chk')">⚙️ Bean Valve / Choke</button>
+    <button class="pe-tab" id="pe-t-srp" onclick="peTab('srp')">⛽ SRP Artificial Lift</button>
+  </div>
+
+  <!-- Casing sub-panel -->
+  <div id="pe-csg">
+    <div class="card" style="margin-bottom:12px;">
+      <div class="ct">Three casing strings — AHM Hazad Member wells</div>
+      <div style="font-size:9px;color:#888;margin-bottom:8px;">Design factors: Burst DF=1.1 · Collapse DF=0.85 · Tension DF=1.8 · API 5CT / ISO 11960. H₂S present → N-80/L-80 grade (NACE MR0175).</div>
+      <table class="dt" id="csg-table"></table>
+    </div>
+    <div class="cols2">
+      <div class="card">
+        <div class="ct">Cement top strategy</div>
+        <table class="dt" id="cem-table"></table>
+      </div>
+      <div class="card">
+        <div class="ct">Design rationale — AHM conditions</div>
+        <div id="csg-rationale"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tubing sub-panel -->
+  <div id="pe-tub" style="display:none;">
+    <div class="card" style="margin-bottom:12px;">
+      <div class="ct">Tubing selection — critical velocity &amp; nodal analysis</div>
+      <div style="font-size:9px;color:#888;margin-bottom:8px;">2-7/8" tubing (2.441" ID) selected. Turner critical velocity check. Vogel IPR × Hagedorn-Brown TPR nodal analysis.</div>
+      <table class="dt" id="tub-table"></table>
+    </div>
+    <div class="card">
+      <div class="ct">Sand control &amp; material selection (ALCF-driven)</div>
+      <table class="dt" id="sand-table"></table>
+    </div>
+  </div>
+
+  <!-- Choke sub-panel -->
+  <div id="pe-chk" style="display:none;">
+    <div class="card" style="margin-bottom:12px;">
+      <div class="ct">Bean valve sizing — Gilbert (1954) correlation</div>
+      <div style="font-size:9px;color:#888;margin-bottom:8px;">Gilbert: q = C × d<sup>n</sup> / GOR<sup>m</sup> · C=0.00504, n=0.546, m=0.546 · Tungsten carbide bean — sour/sandy service (H₂S + fine sand).</div>
+      <table class="dt" id="chk-table"></table>
+    </div>
+    <div class="cols2">
+      <div class="card"><div class="ct">Flow regime check</div><div id="flow-regime"></div></div>
+      <div class="card"><div class="ct">Back-pressure strategy</div><div id="bp-strategy"></div></div>
+    </div>
+  </div>
+
+  <!-- SRP sub-panel -->
+  <div id="pe-srp" style="display:none;">
+    <div class="card" style="margin-bottom:12px;">
+      <div class="ct">SRP need assessment &amp; equipment sizing — API RP 11L</div>
+      <div style="font-size:9px;color:#888;margin-bottom:8px;">Sucker Rod Pump — dominant artificial lift for onshore mature wells (ONGC Ankleshwar). Pump bore 2.75", stroke 64", tapered rod string D-K-C. ALCF drives maintenance schedule.</div>
+      <table class="dt" id="srp-table"></table>
+    </div>
+    <div class="card">
+      <div class="ct">ALCF-driven maintenance flags</div>
+      <table class="dt" id="alcf-maint-table"></table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ DRILLING PHYSICS PANEL (stub — already in workbook) ═══ -->
+<div class="panel" id="p-drill">
+  <div style="background:linear-gradient(135deg,#0c0c1a,#141428);border-radius:8px;padding:10px 16px;margin-bottom:14px;">
+    <div style="color:#7F77DD;font-size:13px;font-weight:500;" id="drill-dataset-title">Drilling Physics — v2.3+</div>
+    <div style="color:#534AB7;font-size:10px;margin-top:2px;">UCS · Cohesion · Friction Angle · Tensile Strength · PP/FG envelope · Mud weight window</div>
+  </div>
+  <div class="kpis" style="grid-template-columns:repeat(4,1fr);">
+    <div class="kpi p"><div class="kpi-l">UCS (MPa)</div><div class="kpi-v" id="d-ucs">—</div><div class="kpi-s">Unconfined compressive strength</div></div>
+    <div class="kpi p"><div class="kpi-l">Cohesion c (MPa)</div><div class="kpi-v" id="d-coh">—</div><div class="kpi-s">Mohr-Coulomb</div></div>
+    <div class="kpi p"><div class="kpi-l">Friction φ (°)</div><div class="kpi-v" id="d-phi">—</div><div class="kpi-s">Internal friction angle</div></div>
+    <div class="kpi p"><div class="kpi-l">Mud window (SG)</div><div class="kpi-v" id="d-mw">—</div><div class="kpi-s">Min–Max safe weight</div></div>
+  </div>
+  <div class="cols2" style="margin-top:12px;">
+    <div class="card"><div class="ct">PP / FG envelope — AHM wells</div><div id="drill-pf"></div></div>
+    <div class="card"><div class="ct">Formation hardness by depth</div><div id="drill-ucs-bars"></div></div>
+  </div>
+</div>
+
 <div class="panel" id="p-exec">
   <div class="kpis" id="k-exec"></div>
   <div class="cols2">
@@ -448,10 +666,10 @@ input[type=range]{accent-color:var(--g-mid);}
 
 <div class="panel" id="p-input">
   <div style="background:linear-gradient(135deg,#1a1a0c,#0c2a1a);border-radius:8px;padding:12px 16px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
-    <div><div style="color:#E8D87A;font-size:13px;font-weight:500;">Your Well Data — HyperSenseIQ live analysis</div>
+    <div><div style="color:#E8D87A;font-size:13px;font-weight:500;">Your Well Data — HyperSenseIQ live analysis · <span id="inp-operator-label" style="color:#9FE1CB;font-size:11px;font-weight:400;">ONGC</span></div>
     <div style="color:#5DCAA5;font-size:10px;margin-top:2px;">Enter real parameters · AI analyses instantly · All tabs update with your data</div></div>
     <div style="display:flex;gap:6px;">
-      <button onclick="loadSample()" style="font-size:11px;padding:6px 12px;border-radius:5px;border:0.5px solid #5DCAA5;background:rgba(29,158,117,.2);color:#9FE1CB;cursor:pointer;">Load ONGC sample</button>
+
       <button onclick="clearInp()" style="font-size:11px;padding:6px 12px;border-radius:5px;border:0.5px solid rgba(255,255,255,.15);background:transparent;color:#6A8FAD;cursor:pointer;">Clear</button>
     </div>
   </div>
@@ -561,162 +779,224 @@ input[type=range]{accent-color:var(--g-mid);}
 <div class="panel" id="p-pta">
   <div style="background:linear-gradient(135deg,#0a1a2a,#0c2a1a);border-radius:8px;padding:12px 16px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
     <div><div style="color:#9FE1CB;font-size:13px;font-weight:500;">Pressure Transient Analysis — Horner Method</div>
-    <div style="color:#5DCAA5;font-size:10px;margin-top:2px;">Upload buildup CSV · Get permeability, skin, flow regime · Instant Horner plot</div></div>
+    <div style="color:#5DCAA5;font-size:10px;margin-top:2px;">Synthetic buildup auto-loaded from well parameters · Upload real CSV to override · Permeability · Skin · Flow regime</div></div>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <span style="font-size:10px;color:#5A7A94;">Override with real data:</span>
+      <input type="file" id="pta-file" accept=".csv" style="display:none;" onchange="ptaLoadFile(this)">
+      <button onclick="document.getElementById('pta-file').click()" style="font-size:11px;padding:5px 10px;border-radius:5px;border:0.5px solid #2a4a6a;background:rgba(29,158,117,.15);color:#5DCAA5;cursor:pointer;">📂 Upload CSV</button>
+      <button onclick="ptaLoadSynthetic()" style="font-size:11px;padding:5px 10px;border-radius:5px;border:0.5px solid #5DCAA5;background:rgba(29,158,117,.2);color:#9FE1CB;cursor:pointer;">↺ Reset to synthetic</button>
+    </div>
   </div>
-  <div style="display:grid;grid-template-columns:340px 1fr;gap:14px;">
-    <!-- LEFT: inputs -->
+  <div style="display:grid;grid-template-columns:300px 1fr;gap:14px;">
     <div>
       <div class="card" style="margin-bottom:10px;">
-        <div class="ct">Data File</div>
-        <label style="display:block;margin-bottom:8px;">
-          <input type="file" id="pta-file" accept=".csv" style="display:none;" onchange="ptaLoadFile(this)">
-          <div onclick="document.getElementById('pta-file').click()" style="cursor:pointer;border:1px dashed #2a4a6a;border-radius:6px;padding:10px;text-align:center;color:#5DCAA5;font-size:11px;">
-            📂 Browse CSV File<br><span id="pta-filename" style="color:#6A8FAD;font-size:10px;">No file selected — needs: time_hrs, pressure_psi columns</span>
-          </div>
-        </label>
-      </div>
-      <div class="card">
         <div class="ct">Well Parameters</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:11px;">
-          <div><div style="color:#6A8FAD;margin-bottom:3px;">Well Name</div><input id="pta-wname" value="Assam-Well-01" style="width:100%;background:#0a1520;border:1px solid #2a4a6a;border-radius:4px;padding:5px;color:#B5D4F4;font-size:11px;box-sizing:border-box;"></div>
-          <div><div style="color:#6A8FAD;margin-bottom:3px;">Rate q (bbl/d)</div><input id="pta-q" type="number" value="99.99" style="width:100%;background:#0a1520;border:1px solid #2a4a6a;border-radius:4px;padding:5px;color:#B5D4F4;font-size:11px;box-sizing:border-box;"></div>
-          <div><div style="color:#6A8FAD;margin-bottom:3px;">Formation Vol B</div><input id="pta-B" type="number" value="1.00" step="0.01" style="width:100%;background:#0a1520;border:1px solid #2a4a6a;border-radius:4px;padding:5px;color:#B5D4F4;font-size:11px;box-sizing:border-box;"></div>
-          <div><div style="color:#6A8FAD;margin-bottom:3px;">Viscosity μ (cp)</div><input id="pta-mu" type="number" value="0.80" step="0.01" style="width:100%;background:#0a1520;border:1px solid #2a4a6a;border-radius:4px;padding:5px;color:#B5D4F4;font-size:11px;box-sizing:border-box;"></div>
-          <div><div style="color:#6A8FAD;margin-bottom:3px;">Pay Thickness (ft)</div><input id="pta-h" type="number" value="45" style="width:100%;background:#0a1520;border:1px solid #2a4a6a;border-radius:4px;padding:5px;color:#B5D4F4;font-size:11px;box-sizing:border-box;"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;font-size:11px;">
+          <div><div style="color:#6A8FAD;margin-bottom:3px;">Well Name</div><input id="pta-wname" value="AS-W1" style="width:100%;background:#0a1520;border:1px solid #2a4a6a;border-radius:4px;padding:5px;color:#B5D4F4;font-size:11px;box-sizing:border-box;"></div>
+          <div><div style="color:#6A8FAD;margin-bottom:3px;">Rate q (bbl/d)</div><input id="pta-q" type="number" value="310" style="width:100%;background:#0a1520;border:1px solid #2a4a6a;border-radius:4px;padding:5px;color:#B5D4F4;font-size:11px;box-sizing:border-box;"></div>
+          <div><div style="color:#6A8FAD;margin-bottom:3px;">Formation Vol B</div><input id="pta-B" type="number" value="1.12" step="0.01" style="width:100%;background:#0a1520;border:1px solid #2a4a6a;border-radius:4px;padding:5px;color:#B5D4F4;font-size:11px;box-sizing:border-box;"></div>
+          <div><div style="color:#6A8FAD;margin-bottom:3px;">Viscosity μ (cp)</div><input id="pta-mu" type="number" value="1.20" step="0.01" style="width:100%;background:#0a1520;border:1px solid #2a4a6a;border-radius:4px;padding:5px;color:#B5D4F4;font-size:11px;box-sizing:border-box;"></div>
+          <div><div style="color:#6A8FAD;margin-bottom:3px;">Pay Thickness (ft)</div><input id="pta-h" type="number" value="82" style="width:100%;background:#0a1520;border:1px solid #2a4a6a;border-radius:4px;padding:5px;color:#B5D4F4;font-size:11px;box-sizing:border-box;"></div>
           <div><div style="color:#6A8FAD;margin-bottom:3px;">Porosity φ</div><input id="pta-phi" type="number" value="0.22" step="0.01" style="width:100%;background:#0a1520;border:1px solid #2a4a6a;border-radius:4px;padding:5px;color:#B5D4F4;font-size:11px;box-sizing:border-box;"></div>
           <div><div style="color:#6A8FAD;margin-bottom:3px;">Compressibility ct</div><input id="pta-ct" type="number" value="0.000015" step="0.000001" style="width:100%;background:#0a1520;border:1px solid #2a4a6a;border-radius:4px;padding:5px;color:#B5D4F4;font-size:11px;box-sizing:border-box;"></div>
           <div><div style="color:#6A8FAD;margin-bottom:3px;">Wellbore Radius (ft)</div><input id="pta-rw" type="number" value="0.35" step="0.01" style="width:100%;background:#0a1520;border:1px solid #2a4a6a;border-radius:4px;padding:5px;color:#B5D4F4;font-size:11px;box-sizing:border-box;"></div>
         </div>
-        <button onclick="ptaRun()" style="width:100%;margin-top:12px;padding:10px;background:linear-gradient(135deg,#1D9E75,#0a6a4a);border:none;border-radius:6px;color:white;font-size:13px;font-weight:600;cursor:pointer;letter-spacing:.04em;">RUN ANALYSIS</button>
-        <div id="pta-status" style="text-align:center;font-size:10px;color:#5DCAA5;margin-top:6px;">Ready</div>
+        <button onclick="ptaRun()" style="width:100%;margin-top:10px;padding:10px;background:linear-gradient(135deg,#1D9E75,#0a6a4a);border:none;border-radius:6px;color:white;font-size:13px;font-weight:600;cursor:pointer;">RUN ANALYSIS</button>
+        <div id="pta-status" style="text-align:center;font-size:10px;color:#5DCAA5;margin-top:5px;">Loading synthetic data...</div>
+      </div>
+      <div class="card">
+        <div class="ct">Data Source</div>
+        <div id="pta-source" style="font-size:10px;color:#5A7A94;line-height:1.6;">Synthetic pressure buildup generated from well permeability and reservoir parameters. Follows van Everdingen-Hurst radial flow model. Replace with real DST/buildup data for field validation.</div>
       </div>
     </div>
-    <!-- RIGHT: results -->
     <div>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-bottom:10px;">
         <div class="kpi n" id="pta-kpi-k"><div class="kpi-l">Permeability</div><div class="kpi-v">—<span style="font-size:11px;"> mD</span></div><div class="kpi-s">—</div></div>
         <div class="kpi n" id="pta-kpi-s"><div class="kpi-l">Skin Factor</div><div class="kpi-v">—</div><div class="kpi-s">—</div></div>
-        <div class="kpi n" id="pta-kpi-m"><div class="kpi-l">Horner Slope</div><div class="kpi-v">—</div><div class="kpi-s">psi/cycle</div></div>
-        <div class="kpi n" id="pta-kpi-pts"><div class="kpi-l">Data Points</div><div class="kpi-v">—</div><div class="kpi-s">—</div></div>
+        <div class="kpi n" id="pta-kpi-m"><div class="kpi-l">Horner Slope m</div><div class="kpi-v">—</div><div class="kpi-s">psi/cycle</div></div>
+        <div class="kpi n" id="pta-kpi-pi"><div class="kpi-l">Productivity Index</div><div class="kpi-v">—</div><div class="kpi-s">bbl/d/psi</div></div>
       </div>
       <div class="card">
-        <div class="ct">Horner Plot — Pressure Buildup</div>
-        <canvas id="pta-canvas" width="700" height="340" style="width:100%;border-radius:6px;background:#060e18;"></canvas>
-        <div id="pta-interp" style="margin-top:10px;font-size:11px;color:#9FE1CB;"></div>
+        <div class="ct" id="pta-plot-title">Horner Plot — Pressure Buildup</div>
+        <canvas id="pta-canvas" width="720" height="340" style="width:100%;border-radius:6px;background:#060e18;"></canvas>
+        <div id="pta-interp" style="margin-top:10px;font-size:11px;color:#9FE1CB;line-height:1.6;"></div>
       </div>
     </div>
   </div>
 </div>
-
 <script>
-var ptaData = null;
+var ptaData=null;
+var ptaSynthetic={
+  'AS-W1':{q:310,B:1.12,mu:1.20,h:82,phi:0.22,ct:0.000015,rw:0.35,k:180,skin:1.2,pi_initial:3800,form:'Tipam Ss · Upper Assam',note:'Good permeability. Minor formation damage from drilling mud invasion. Workover will improve PI.'},
+  'AS-W2':{q:265,B:1.12,mu:1.20,h:75,phi:0.21,ct:0.000015,rw:0.35,k:145,skin:2.1,pi_initial:3650,form:'Tipam Ss · Upper Assam',note:'Moderate permeability. Moderate skin — possible scale near wellbore. Monitor SSI.'},
+  'AS-W3':{q:185,B:1.12,mu:1.25,h:72,phi:0.20,ct:0.000014,rw:0.35,k:110,skin:3.8,pi_initial:3500,form:'Tipam Ss · Upper Assam',note:'Declining well. Elevated skin confirms progressive formation damage. Acid stimulation candidate.'},
+  'AS-W4':{q:145,B:1.10,mu:1.30,h:55,phi:0.19,ct:0.000013,rw:0.35,k:85,skin:5.2,pi_initial:3350,form:'Tipam Ss · Upper Assam',note:'High water cut + significant skin. Dual problem: water breakthrough and damage. EOR + workover evaluation needed.'},
+  'AS-W5':{q:115,B:1.08,mu:1.35,h:54,phi:0.18,ct:0.000012,rw:0.35,k:68,skin:-2.8,pi_initial:3200,form:'Tipam Ss · Upper Assam',note:'SRP candidate. Negative skin indicates natural fractures or past stimulation. Low rate due to low reservoir pressure, not damage.'}
+};
+var ptaMHN={
+  'MH-N-01':{q:850,B:1.35,mu:0.65,h:95,phi:0.26,ct:0.000018,rw:0.35,k:420,skin:0.8,pi_initial:4200,form:'Bassein Ls · Mumbai High',note:'High permeability carbonate. Near-normal skin. Excellent well condition.'},
+  'MH-N-02':{q:720,B:1.33,mu:0.68,h:88,phi:0.25,ct:0.000017,rw:0.35,k:380,skin:1.5,pi_initial:4100,form:'Bassein Ls · Mumbai High',note:'Good productivity. Minor damage manageable with acid wash.'},
+  'MH-N-03':{q:580,B:1.30,mu:0.72,h:82,phi:0.24,ct:0.000016,rw:0.35,k:290,skin:2.2,pi_initial:3950,form:'Bassein Ls · Mumbai High',note:'Moderate skin. Pay zone intact. Stimulation will restore rate.'},
+  'MH-N-04':{q:420,B:1.28,mu:0.75,h:76,phi:0.23,ct:0.000016,rw:0.35,k:210,skin:4.1,pi_initial:3800,form:'Bassein Ls · Mumbai High',note:'High water cut compounding skin effects. Priority workover candidate.'},
+  'MH-N-05':{q:290,B:1.25,mu:0.78,h:68,phi:0.22,ct:0.000015,rw:0.35,k:145,skin:6.2,pi_initial:3650,form:'Bassein Ls · Mumbai High',note:'Significant damage. Declining well. Immediate intervention recommended.'}
+};
 
-function ptaLoadFile(input) {
-  var file = input.files[0];
-  if (!file) return;
-  document.getElementById('pta-filename').textContent = file.name;
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    var lines = e.target.result.trim().split('\n');
-    var headers = lines[0].toLowerCase().split(',').map(function(h){return h.trim();});
-    var tIdx = -1, pIdx = -1;
-    headers.forEach(function(h,i){ if(h.includes('time')) tIdx=i; if(h.includes('press')) pIdx=i; });
-    if (tIdx < 0 || pIdx < 0) { document.getElementById('pta-status').textContent = 'Error: need time and pressure columns'; return; }
-    ptaData = {time:[], pressure:[]};
-    for (var i=1; i<lines.length; i++) {
-      var cols = lines[i].split(',');
-      if (cols.length > Math.max(tIdx,pIdx)) {
-        var t = parseFloat(cols[tIdx]), p = parseFloat(cols[pIdx]);
-        if (!isNaN(t) && !isNaN(p) && t > 0) { ptaData.time.push(t); ptaData.pressure.push(p); }
+function ptaGetWellParams(){
+  var ds=typeof DATASET!=='undefined'?DATASET:'assam';
+  var cw=typeof CW!=='undefined'?CW:0;
+  var wells=ds==='mh'?['MH-N-01','MH-N-02','MH-N-03','MH-N-04','MH-N-05']:
+            ds==='assam'?['AS-W1','AS-W2','AS-W3','AS-W4','AS-W5']:
+            ds==='cb'?['CB-01','CB-02','CB-03','CB-04','CB-05']:
+            ['AHM-01','AHM-02','AHM-03','AHM-04','AHM-05'];
+  var wid=wells[cw]||wells[0];
+  var p=ptaSynthetic[wid]||ptaMHN[wid]||ptaSynthetic['AS-W1'];
+  return {wid:wid,params:p};
+}
+
+function ptaGenerateSynthetic(k,phi,mu,ct,rw,q,B,h,pi_initial,skin){
+  var times=[0.5,1,2,3,5,8,12,18,24,36,48,72,96];
+  var tp=96;
+  var m=(162.6*q*B*mu)/(k*h);
+  var data={time:[],pressure:[]};
+  for(var i=0;i<times.length;i++){
+    var dt=times[i];
+    var p_buildup=pi_initial+m*(Math.log10((tp+dt)/dt))+(skin*m/2.303);
+    p_buildup+=p_buildup*(0.002*(Math.random()-0.5));
+    data.time.push(dt);
+    data.pressure.push(Math.round(p_buildup*10)/10);
+  }
+  return data;
+}
+
+function ptaLoadSynthetic(){
+  var wp=ptaGetWellParams();
+  var p=wp.params;
+  document.getElementById('pta-wname').value=wp.wid;
+  document.getElementById('pta-q').value=p.q;
+  document.getElementById('pta-B').value=p.B;
+  document.getElementById('pta-mu').value=p.mu;
+  document.getElementById('pta-h').value=p.h;
+  document.getElementById('pta-phi').value=p.phi;
+  document.getElementById('pta-ct').value=p.ct;
+  document.getElementById('pta-rw').value=p.rw;
+  ptaData=ptaGenerateSynthetic(p.k,p.phi,p.mu,p.ct,p.rw,p.q,p.B,p.h,p.pi_initial,p.skin);
+  document.getElementById('pta-source').innerHTML='<span style="color:#5DCAA5;">⚡ Synthetic buildup</span> — generated from '+wp.wid+' petrophysical parameters ('+p.form+'). True k='+p.k+' mD · True skin='+p.skin+'. Upload real CSV to validate against actual DST data.';
+  document.getElementById('pta-status').textContent='Synthetic data loaded — running analysis...';
+  setTimeout(ptaRun,100);
+}
+
+function ptaLoadFile(input){
+  var file=input.files[0];if(!file)return;
+  var reader=new FileReader();
+  reader.onload=function(e){
+    var lines=e.target.result.trim().split('\n');
+    var headers=lines[0].toLowerCase().split(',').map(function(h){return h.trim();});
+    var tIdx=-1,pIdx=-1;
+    headers.forEach(function(h,i){if(h.includes('time'))tIdx=i;if(h.includes('press'))pIdx=i;});
+    if(tIdx<0||pIdx<0){document.getElementById('pta-status').textContent='Error: CSV needs time and pressure columns';return;}
+    ptaData={time:[],pressure:[]};
+    for(var i=1;i<lines.length;i++){
+      var cols=lines[i].split(',');
+      if(cols.length>Math.max(tIdx,pIdx)){
+        var t=parseFloat(cols[tIdx]),p=parseFloat(cols[pIdx]);
+        if(!isNaN(t)&&!isNaN(p)&&t>0){ptaData.time.push(t);ptaData.pressure.push(p);}
       }
     }
-    document.getElementById('pta-status').textContent = 'Loaded: ' + ptaData.time.length + ' data points. Click RUN ANALYSIS.';
+    document.getElementById('pta-source').innerHTML='<span style="color:#EF9F27;">📂 Real field data</span> — '+file.name+' · '+ptaData.time.length+' pressure points loaded.';
+    document.getElementById('pta-status').textContent='Real data loaded — running analysis...';
+    setTimeout(ptaRun,100);
   };
   reader.readAsText(file);
 }
 
-function ptaRun() {
-  if (!ptaData) { document.getElementById('pta-status').textContent = 'Please load a CSV file first'; return; }
-  document.getElementById('pta-status').textContent = 'Analysing...';
-  var q = parseFloat(document.getElementById('pta-q').value);
-  var B = parseFloat(document.getElementById('pta-B').value);
-  var mu = parseFloat(document.getElementById('pta-mu').value);
-  var h = parseFloat(document.getElementById('pta-h').value);
-  var phi = parseFloat(document.getElementById('pta-phi').value);
-  var ct = parseFloat(document.getElementById('pta-ct').value);
-  var rw = parseFloat(document.getElementById('pta-rw').value);
-  var wname = document.getElementById('pta-wname').value;
-  var time = ptaData.time, pressure = ptaData.pressure;
-  var n = time.length;
-  var tp = time[n-1];
-  var hx = [], hy = [];
-  for (var i=0; i<n; i++) { var x = Math.log((tp+time[i])/time[i]); if(isFinite(x)){hx.push(x);hy.push(pressure[i]);} }
-  // linear regression
+function ptaRun(){
+  if(!ptaData||ptaData.time.length<3){document.getElementById('pta-status').textContent='No data — loading synthetic...';ptaLoadSynthetic();return;}
+  var q=parseFloat(document.getElementById('pta-q').value);
+  var B=parseFloat(document.getElementById('pta-B').value);
+  var mu=parseFloat(document.getElementById('pta-mu').value);
+  var h=parseFloat(document.getElementById('pta-h').value);
+  var phi=parseFloat(document.getElementById('pta-phi').value);
+  var ct=parseFloat(document.getElementById('pta-ct').value);
+  var rw=parseFloat(document.getElementById('pta-rw').value);
+  var wname=document.getElementById('pta-wname').value;
+  var time=ptaData.time,pressure=ptaData.pressure,n=time.length;
+  var tp=time[n-1],hx=[],hy=[];
+  for(var i=0;i<n;i++){var x=Math.log((tp+time[i])/time[i]);if(isFinite(x)&&x>0){hx.push(x);hy.push(pressure[i]);}}
   var sx=0,sy=0,sxx=0,sxy=0,nn=hx.length;
   for(var i=0;i<nn;i++){sx+=hx[i];sy+=hy[i];sxx+=hx[i]*hx[i];sxy+=hx[i]*hy[i];}
-  var slope=(nn*sxy-sx*sy)/(nn*sxx-sx*sx);
-  var intercept=(sy-slope*sx)/nn;
-  var k = (162.6*q*B*mu)/(Math.abs(slope)*h);
-  var p1hr = slope*1.0+intercept;
-  var logArg = k/(phi*mu*ct*rw*rw);
-  var skin = logArg>0 ? 1.151*((p1hr-intercept)/Math.abs(slope)-Math.log10(logArg)+3.2275) : 0;
-  // update KPIs
-  var kEl=document.getElementById('pta-kpi-k'), sEl=document.getElementById('pta-kpi-s');
-  var kCls = k<10?'r':k<100?'a':'g', sCls = skin>5?'r':skin<-2?'g':'a';
-  var kInterp = k<10?'Tight formation':k<100?'Moderate':k<500?'Good':'Excellent';
-  var sInterp = skin>5?'Formation damage':skin>0?'Moderate damage':skin<-2?'Stimulated':'Near-normal';
-  kEl.className='kpi '+kCls; kEl.innerHTML='<div class="kpi-l">Permeability</div><div class="kpi-v">'+k.toFixed(2)+'<span style="font-size:11px;"> mD</span></div><div class="kpi-s">'+kInterp+'</div>';
-  sEl.className='kpi '+sCls; sEl.innerHTML='<div class="kpi-l">Skin Factor</div><div class="kpi-v">'+skin.toFixed(2)+'</div><div class="kpi-s">'+sInterp+'</div>';
-  document.getElementById('pta-kpi-m').innerHTML='<div class="kpi-l">Horner Slope</div><div class="kpi-v">'+slope.toFixed(1)+'</div><div class="kpi-s">psi/cycle</div>';
-  document.getElementById('pta-kpi-pts').innerHTML='<div class="kpi-l">Data Points</div><div class="kpi-v">'+nn+'</div><div class="kpi-s">'+time[0].toFixed(1)+' – '+time[n-1].toFixed(0)+' hrs</div>';
-  // draw Horner plot
-  var canvas=document.getElementById('pta-canvas'), ctx=canvas.getContext('2d');
-  var W=canvas.width, H=canvas.height, pad={l:55,r:20,t:30,b:45};
-  ctx.clearRect(0,0,W,H);
-  ctx.fillStyle='#060e18'; ctx.fillRect(0,0,W,H);
+  var slope=(nn*sxy-sx*sy)/(nn*sxx-sx*sx),intercept=(sy-slope*sx)/nn;
+  var k=(162.6*q*B*mu)/(Math.abs(slope)*h);
+  var p1hr=slope*1.0+intercept,logArg=k/(phi*mu*ct*rw*rw);
+  var skin=logArg>0?1.151*((p1hr-intercept)/Math.abs(slope)-Math.log10(logArg)+3.2275):0;
+  var pi_est=intercept+slope*0;
+  var PI=(q/(pi_est-pressure[0])).toFixed(2);
+  var kInterp=k<10?'Tight':k<50?'Low':k<150?'Moderate':k<400?'Good':'Excellent';
+  var sInterp=skin>8?'Severe damage':skin>5?'Significant damage':skin>2?'Moderate damage':skin>0?'Minor damage':skin<-3?'Stimulated (fractures)':skin<-1?'Stimulated':'Near-normal';
+  var kCls=k<30?'r':k<100?'a':'g',sCls=skin>5?'r':skin>2?'a':skin<-1?'g':'n';
+  document.getElementById('pta-kpi-k').className='kpi '+kCls;
+  document.getElementById('pta-kpi-k').innerHTML='<div class="kpi-l">Permeability</div><div class="kpi-v">'+k.toFixed(1)+'<span style="font-size:11px;"> mD</span></div><div class="kpi-s">'+kInterp+'</div>';
+  document.getElementById('pta-kpi-s').className='kpi '+sCls;
+  document.getElementById('pta-kpi-s').innerHTML='<div class="kpi-l">Skin Factor</div><div class="kpi-v">'+skin.toFixed(1)+'</div><div class="kpi-s">'+sInterp+'</div>';
+  document.getElementById('pta-kpi-m').innerHTML='<div class="kpi-l">Horner Slope m</div><div class="kpi-v">'+Math.abs(slope).toFixed(0)+'</div><div class="kpi-s">psi/log cycle</div>';
+  document.getElementById('pta-kpi-pi').innerHTML='<div class="kpi-l">Productivity Index</div><div class="kpi-v">'+(isFinite(PI)&&PI>0?PI:'—')+'</div><div class="kpi-s">bbl/d/psi</div>';
+  // DRAW HORNER PLOT
+  var canvas=document.getElementById('pta-canvas'),ctx=canvas.getContext('2d');
+  var W=canvas.width,H=canvas.height,pad={l:62,r:30,t:35,b:50};
+  ctx.clearRect(0,0,W,H);ctx.fillStyle='#060e18';ctx.fillRect(0,0,W,H);
   var xmin=Math.min.apply(null,hx),xmax=Math.max.apply(null,hx);
   var ymin=Math.min.apply(null,hy),ymax=Math.max.apply(null,hy);
-  var xpad=(xmax-xmin)*0.1, ypad=(ymax-ymin)*0.1;
+  var xpad=(xmax-xmin)*0.08,ypad=(ymax-ymin)*0.12;
   xmin-=xpad;xmax+=xpad;ymin-=ypad;ymax+=ypad;
   function px(x){return pad.l+(x-xmin)/(xmax-xmin)*(W-pad.l-pad.r);}
   function py(y){return H-pad.b-(y-ymin)/(ymax-ymin)*(H-pad.t-pad.b);}
-  // grid
-  ctx.strokeStyle='#1a2a3a'; ctx.lineWidth=1;
-  for(var i=0;i<=5;i++){var y=ymin+i*(ymax-ymin)/5; ctx.beginPath();ctx.moveTo(pad.l,py(y));ctx.lineTo(W-pad.r,py(y));ctx.stroke();}
-  for(var i=0;i<=5;i++){var x=xmin+i*(xmax-xmin)/5; ctx.beginPath();ctx.moveTo(px(x),pad.t);ctx.lineTo(px(x),H-pad.b);ctx.stroke();}
-  // fit line
-  ctx.strokeStyle='#EF9F27'; ctx.lineWidth=2; ctx.setLineDash([6,4]);
-  ctx.beginPath(); ctx.moveTo(px(xmin),py(slope*xmin+intercept)); ctx.lineTo(px(xmax),py(slope*xmax+intercept)); ctx.stroke();
-  ctx.setLineDash([]);
-  // data points
-  ctx.fillStyle='#5DCAA5';
-  for(var i=0;i<nn;i++){ctx.beginPath();ctx.arc(px(hx[i]),py(hy[i]),5,0,2*Math.PI);ctx.fill();}
-  // axes labels
-  ctx.fillStyle='#6A8FAD'; ctx.font='11px Arial'; ctx.textAlign='center';
-  ctx.fillText('ln((tp+Δt)/Δt)',W/2,H-8);
-  ctx.save(); ctx.translate(14,H/2); ctx.rotate(-Math.PI/2);
-  ctx.fillText('Pressure (psi)',0,0); ctx.restore();
-  ctx.fillStyle='#9FE1CB'; ctx.font='12px Arial';
-  ctx.fillText('Horner Plot — '+wname, W/2, 18);
+  // grid lines
+  ctx.strokeStyle='#111e2a';ctx.lineWidth=1;
+  for(var i=0;i<=6;i++){var yg=ymin+i*(ymax-ymin)/6;ctx.beginPath();ctx.moveTo(pad.l,py(yg));ctx.lineTo(W-pad.r,py(yg));ctx.stroke();}
+  for(var i=0;i<=6;i++){var xg=xmin+i*(xmax-xmin)/6;ctx.beginPath();ctx.moveTo(px(xg),pad.t);ctx.lineTo(px(xg),H-pad.b);ctx.stroke();}
+  // horner fit line
+  ctx.strokeStyle='#EF9F27';ctx.lineWidth=2.5;ctx.setLineDash([8,5]);
+  ctx.beginPath();ctx.moveTo(px(xmin),py(slope*xmin+intercept));ctx.lineTo(px(xmax),py(slope*xmax+intercept));ctx.stroke();ctx.setLineDash([]);
+  // data points with glow
+  for(var i=0;i<nn;i++){
+    ctx.shadowColor='#5DCAA5';ctx.shadowBlur=8;
+    ctx.fillStyle='#5DCAA5';ctx.beginPath();ctx.arc(px(hx[i]),py(hy[i]),6,0,2*Math.PI);ctx.fill();
+    ctx.shadowBlur=0;
+    ctx.strokeStyle='#9FE1CB';ctx.lineWidth=1;ctx.beginPath();ctx.arc(px(hx[i]),py(hy[i]),6,0,2*Math.PI);ctx.stroke();
+  }
+  // axis labels
+  ctx.fillStyle='#5A7A94';ctx.font='11px Arial';ctx.textAlign='center';
+  ctx.fillText('ln((tp+\u0394t)/\u0394t)  \u2192  Horner Time Function',W/2,H-8);
+  ctx.save();ctx.translate(14,H/2);ctx.rotate(-Math.PI/2);ctx.fillText('Shut-in Pressure (psi)',0,0);ctx.restore();
+  // title
+  ctx.fillStyle='#9FE1CB';ctx.font='bold 12px Arial';ctx.textAlign='center';
+  ctx.fillText('Horner Plot \u2014 '+wname+' \u2014 Pressure Buildup Analysis',W/2,20);
   // legend
-  ctx.fillStyle='#5DCAA5'; ctx.beginPath(); ctx.arc(W-110,20,5,0,2*Math.PI); ctx.fill();
-  ctx.fillStyle='#6A8FAD'; ctx.font='10px Arial'; ctx.textAlign='left'; ctx.fillText('Measured',W-100,24);
-  ctx.strokeStyle='#EF9F27'; ctx.lineWidth=2; ctx.setLineDash([4,3]);
-  ctx.beginPath(); ctx.moveTo(W-55,20); ctx.lineTo(W-35,20); ctx.stroke(); ctx.setLineDash([]);
-  ctx.fillStyle='#6A8FAD'; ctx.fillText('Horner fit',W-30,24);
+  ctx.shadowColor='#5DCAA5';ctx.shadowBlur=6;
+  ctx.fillStyle='#5DCAA5';ctx.beginPath();ctx.arc(W-175,28,5,0,2*Math.PI);ctx.fill();ctx.shadowBlur=0;
+  ctx.fillStyle='#6A8FAD';ctx.font='10px Arial';ctx.textAlign='left';ctx.fillText('Measured pressure',W-165,32);
+  ctx.strokeStyle='#EF9F27';ctx.lineWidth=2;ctx.setLineDash([5,3]);
+  ctx.beginPath();ctx.moveTo(W-65,28);ctx.lineTo(W-45,28);ctx.stroke();ctx.setLineDash([]);
+  ctx.fillText('Horner fit',W-40,32);
   // axis tick values
-  ctx.fillStyle='#4A6A8A'; ctx.font='9px Arial'; ctx.textAlign='right';
-  for(var i=0;i<=4;i++){var y=ymin+i*(ymax-ymin)/4; ctx.fillText(Math.round(y),pad.l-4,py(y)+4);}
+  ctx.fillStyle='#3a5a7a';ctx.font='9px Arial';ctx.textAlign='right';
+  for(var i=0;i<=5;i++){var yv=ymin+i*(ymax-ymin)/5;ctx.fillText(Math.round(yv),pad.l-5,py(yv)+4);}
   ctx.textAlign='center';
-  for(var i=0;i<=4;i++){var x=xmin+i*(xmax-xmin)/4; ctx.fillText(x.toFixed(1),px(x),H-pad.b+14);}
-  // interpretation
-  document.getElementById('pta-interp').innerHTML =
-    '<b>Interpretation:</b> Permeability ' + k.toFixed(2) + ' mD (' + kInterp + ') · Skin ' + skin.toFixed(2) + ' (' + sInterp + ') · ' +
-    (skin > 5 ? '⚠️ Recommend workover to reduce formation damage' : skin < -2 ? '✅ Well is stimulated — fractures or acid job evident' : '✅ Near-normal wellbore condition');
-  document.getElementById('pta-status').textContent = 'Analysis complete!';
+  for(var i=0;i<=5;i++){var xv=xmin+i*(xmax-xmin)/5;ctx.fillText(xv.toFixed(1),px(xv),H-pad.b+16);}
+  // interpretation box
+  var interpColor=skin>5?'#E24B4A':skin>2?'#EF9F27':skin<-1?'#1D9E75':'#5DCAA5';
+  document.getElementById('pta-interp').innerHTML=
+    '<span style="color:'+interpColor+';font-weight:600;">'+sInterp+'</span> · '+
+    'k = <b>'+k.toFixed(1)+' mD</b> ('+kInterp+') · '+
+    'Skin = <b>'+skin.toFixed(1)+'</b> · '+
+    'Horner slope m = '+Math.abs(slope).toFixed(0)+' psi/cycle<br>'+
+    (skin>5?'<span style="color:#E24B4A;">⚠️ Recommend acid stimulation or workover to remove near-wellbore damage and restore productivity.</span>':
+     skin>2?'<span style="color:#EF9F27;">⚠️ Moderate damage — monitor trend. Consider acid wash at next scheduled intervention.</span>':
+     skin<-2?'<span style="color:#1D9E75;">✅ Negative skin confirms natural fractures or prior stimulation. Low rate is pressure-driven, not damage-driven.</span>':
+     '<span style="color:#5DCAA5;">✅ Near-normal wellbore condition. No immediate intervention required.</span>');
+  document.getElementById('pta-plot-title').textContent='Horner Plot — '+wname+' · Pressure Buildup Analysis';
+  document.getElementById('pta-status').textContent='Analysis complete — '+new Date().toLocaleTimeString();
 }
 </script>
-
 <!-- MINING PANELS -->
 <div class="panel" id="p-m-overview" style="display:none;">
   <div style="background:linear-gradient(135deg,#0C2A1A,#1A0C3D);border-radius:8px;padding:12px 16px;margin-bottom:14px;">
@@ -752,6 +1032,7 @@ const f1=v=>parseFloat(v).toFixed(1);
 /* ── WELL DATA ── */
 const WELLS=[
   {id:'MH-N-01',depth:'1842–1857m',form:'Bassein Lst.',status:'Pay',qi:820,Di:.28,phi:.22,sw:.18,perm:85,gr:18,rhob:2.24,dt:68,wc:18,oip:12.4,stoiip:7593,
+   ssi:0.38,cr:0.0002,sti:0.25,wfar:0.22,eccs:0.92,alcf:0.11,
    zones:[{z:'Shale drape',d:'1842.0',t:1.0,lith:'Arg. Shale',fluid:'Brine',phi:6,sw:92,dec:'NON-PAY'},
           {z:'Pay zone A',d:'1843.0',t:2.0,lith:'Bioclastic Lst.',fluid:'Oil',phi:22,sw:18,dec:'PAY'},
           {z:'Tight streak',d:'1844.9',t:.8,lith:'Calcite-cement',fluid:'Mixed',phi:8,sw:55,dec:'NON-PAY'},
@@ -760,22 +1041,26 @@ const WELLS=[
           {z:'Water zone',d:'1851.7',t:1.3,lith:'Grainstone',fluid:'Brine',phi:21,sw:88,dec:'NON-PAY'},
           {z:'Pay zone D',d:'1852.9',t:1.5,lith:'Packstone',fluid:'Oil',phi:20,sw:20,dec:'PAY'}]},
   {id:'MH-N-02',depth:'1910–1930m',form:'Bassein Lst.',status:'Declining',qi:680,Di:.32,phi:.18,sw:.28,perm:62,gr:24,rhob:2.31,dt:64,wc:35,oip:9.8,stoiip:6210,
+   ssi:0.4,cr:0.0002,sti:0.26,wfar:0.23,eccs:0.91,alcf:0.12,
    zones:[{z:'Pay zone A',d:'1910.0',t:3.2,lith:'Grainstone',fluid:'Oil',phi:18,sw:28,dec:'PAY'},
           {z:'Dolomite',d:'1913.2',t:1.5,lith:'Dolomite',fluid:'Mixed',phi:14,sw:42,dec:'MARGINAL'},
           {z:'Pay zone B',d:'1914.7',t:2.8,lith:'Packstone',fluid:'Oil',phi:20,sw:30,dec:'PAY'},
           {z:'Shale seal',d:'1917.5',t:1.0,lith:'Calc. Shale',fluid:'Brine',phi:5,sw:95,dec:'NON-PAY'}]},
   {id:'MH-N-03',depth:'1870–1892m',form:'Mukta Fm.',status:'Pay',qi:940,Di:.24,phi:.25,sw:.16,perm:110,gr:15,rhob:2.19,dt:71,wc:14,oip:15.2,stoiip:8820,
+   ssi:0.36,cr:0.0001,sti:0.24,wfar:0.21,eccs:0.93,alcf:0.1,
    zones:[{z:'Shale drape',d:'1870.0',t:.8,lith:'Shale',fluid:'Brine',phi:5,sw:94,dec:'NON-PAY'},
           {z:'Pay zone A',d:'1870.8',t:4.2,lith:'Bioclastic Lst.',fluid:'Oil',phi:25,sw:16,dec:'PAY'},
           {z:'Tight',d:'1875.0',t:.6,lith:'Cemented',fluid:'Mixed',phi:7,sw:62,dec:'NON-PAY'},
           {z:'Pay zone B (best)',d:'1875.6',t:5.1,lith:'Oolitic Lst.',fluid:'Oil',phi:28,sw:12,dec:'PAY'},
           {z:'Pay zone C',d:'1880.7',t:2.4,lith:'Wackestone',fluid:'Oil',phi:22,sw:20,dec:'PAY'}]},
   {id:'MH-N-04',depth:'1955–1972m',form:'Bassein Lst.',status:'High WC',qi:510,Di:.38,phi:.16,sw:.52,perm:45,gr:32,rhob:2.38,dt:60,wc:68,oip:6.8,stoiip:4950,
+   ssi:0.44,cr:0.0002,sti:0.29,wfar:0.25,eccs:0.9,alcf:0.13,
    zones:[{z:'Pay A (watered)',d:'1955.0',t:3.5,lith:'Grainstone',fluid:'Oil/Water',phi:16,sw:52,dec:'MARGINAL'},
           {z:'Water leg',d:'1958.5',t:2.0,lith:'Packstone',fluid:'Brine',phi:20,sw:85,dec:'NON-PAY'},
           {z:'Pay zone B',d:'1960.5',t:2.2,lith:'Bioclastic Lst.',fluid:'Oil',phi:18,sw:35,dec:'PAY'},
           {z:'Tight base',d:'1962.7',t:1.0,lith:'Cemented',fluid:'Brine',phi:6,sw:72,dec:'NON-PAY'}]},
   {id:'MH-N-05',depth:'1988–2005m',form:'Bassein Lst.',status:'Declining',qi:590,Di:.35,phi:.20,sw:.22,perm:74,gr:20,rhob:2.26,dt:67,wc:28,oip:10.5,stoiip:6740,
+   ssi:0.42,cr:0.0002,sti:0.27,wfar:0.24,eccs:0.91,alcf:0.12,
    zones:[{z:'Pay zone A',d:'1988.0',t:3.0,lith:'Bioclastic Lst.',fluid:'Oil',phi:20,sw:22,dec:'PAY'},
           {z:'Stylolite',d:'1991.0',t:.4,lith:'Stylolite+Clay',fluid:'Mixed',phi:4,sw:70,dec:'NON-PAY'},
           {z:'Pay zone B',d:'1991.4',t:3.8,lith:'Packstone',fluid:'Oil',phi:22,sw:24,dec:'PAY'},
@@ -785,26 +1070,31 @@ const WELLS=[
 /* ── CAMBAY BASIN WELL DATA (Synthetic — Representative Kalol Sandstone Parameters) —— */
 const WELLS_CB=[
   {id:'CB-01',depth:'1610–1635m',form:'Kalol K-IX+X',status:'Pay',qi:214,Di:.18,phi:.15,sw:.25,perm:30,gr:38,rhob:2.52,dt:58,wc:10,oip:4.2,stoiip:2890,
+   ssi:0.95,cr:0.0005,sti:0.75,wfar:0.4,eccs:0.85,alcf:0.28,
    zones:[{z:'Shale seal',d:'1610.0',t:1.5,lith:'Calc. Shale',fluid:'Brine',phi:5,sw:95,dec:'NON-PAY'},
           {z:'K-IX Pay A',d:'1611.5',t:5.2,lith:'Kalol Sst.',fluid:'Oil',phi:15,sw:25,dec:'PAY'},
           {z:'Tight streak',d:'1616.7',t:0.8,lith:'Cemented Sst.',fluid:'Mixed',phi:6,sw:62,dec:'NON-PAY'},
           {z:'K-X Pay B',d:'1617.5',t:6.8,lith:'Kalol Sst.',fluid:'Oil',phi:16,sw:22,dec:'PAY'},
           {z:'Water base',d:'1624.3',t:1.2,lith:'Siltstone',fluid:'Brine',phi:12,sw:88,dec:'NON-PAY'}]},
   {id:'CB-02',depth:'1537–1554m',form:'Kalol K-IX+X',status:'Pay',qi:237,Di:.20,phi:.14,sw:.28,perm:25,gr:42,rhob:2.55,dt:56,wc:0,oip:3.8,stoiip:2420,
+   ssi:1.05,cr:0.0006,sti:0.82,wfar:0.44,eccs:0.82,alcf:0.31,
    zones:[{z:'Shale top',d:'1537.0',t:1.0,lith:'Dark Shale',fluid:'Brine',phi:4,sw:96,dec:'NON-PAY'},
           {z:'K-IX Pay',d:'1538.0',t:4.0,lith:'Kalol Sst.',fluid:'Oil',phi:14,sw:28,dec:'PAY'},
           {z:'K-X Pay',d:'1547.5',t:6.0,lith:'Kalol Sst.',fluid:'Oil',phi:15,sw:26,dec:'PAY'},
           {z:'Base shale',d:'1553.5',t:0.5,lith:'Shale',fluid:'Brine',phi:3,sw:97,dec:'NON-PAY'}]},
   {id:'CB-03',depth:'1570–1590m',form:'Kalol K-VIII+IX',status:'Declining',qi:138,Di:.25,phi:.13,sw:.35,perm:20,gr:45,rhob:2.58,dt:55,wc:30,oip:3.1,stoiip:2150,
+   ssi:1.12,cr:0.0006,sti:0.88,wfar:0.46,eccs:0.8,alcf:0.33,
    zones:[{z:'K-VIII Pay',d:'1570.0',t:7.2,lith:'Kalol Sst.',fluid:'Oil',phi:13,sw:35,dec:'PAY'},
           {z:'Shale band',d:'1577.2',t:0.6,lith:'Shale',fluid:'Brine',phi:4,sw:94,dec:'NON-PAY'},
           {z:'K-IX Pay',d:'1577.8',t:6.5,lith:'Kalol Sst.',fluid:'Oil',phi:14,sw:32,dec:'PAY'},
           {z:'Tight base',d:'1584.3',t:1.2,lith:'Cemented Sst.',fluid:'Mixed',phi:5,sw:68,dec:'NON-PAY'}]},
   {id:'CB-04',depth:'1682–1689m',form:'Kalol K-IX',status:'Declining',qi:138,Di:.28,phi:.13,sw:.35,perm:18,gr:48,rhob:2.60,dt:54,wc:30,oip:2.2,stoiip:1680,
+   ssi:1.18,cr:0.0007,sti:0.93,wfar:0.49,eccs:0.79,alcf:0.35,
    zones:[{z:'Shale cap',d:'1682.0',t:0.8,lith:'Dark Shale',fluid:'Brine',phi:3,sw:96,dec:'NON-PAY'},
           {z:'K-IX Pay (viscous)',d:'1682.8',t:5.8,lith:'Kalol Sst.',fluid:'Viscous Oil',phi:13,sw:35,dec:'PAY'},
           {z:'Base',d:'1688.6',t:0.4,lith:'Tight Sst.',fluid:'Mixed',phi:5,sw:72,dec:'NON-PAY'}]},
   {id:'CB-05',depth:'1420–1426m',form:'MBS (Main Bassein)',status:'Declining',qi:140,Di:.30,phi:.12,sw:.45,perm:15,gr:35,rhob:2.48,dt:60,wc:40,oip:1.8,stoiip:1420,
+   ssi:1.08,cr:0.0006,sti:0.85,wfar:0.45,eccs:0.81,alcf:0.32,
    zones:[{z:'MBS Pay A',d:'1420.0',t:3.2,lith:'MBS Sst.',fluid:'Oil/Water',phi:12,sw:45,dec:'MARGINAL'},
           {z:'Tight streak',d:'1423.2',t:0.6,lith:'Cemented',fluid:'Mixed',phi:4,sw:72,dec:'NON-PAY'},
           {z:'MBS Pay B',d:'1423.8',t:2.2,lith:'MBS Sst.',fluid:'Oil',phi:13,sw:38,dec:'PAY'}]}
@@ -870,6 +1160,76 @@ const PLUGS={
 
 /* ── ACTIVE DATASET POINTERS ── */
 let DATASET='mh';
+
+/* ── AHM DATASET ── */
+const AHM_WELLS=[
+  {id:'AHM-W1',depth:'1420–1432m',form:'Hazad Ss.',status:'Pay',qi:280,Di:.22,phi:.18,sw:.28,perm:45,gr:35,rhob:2.48,dt:62,wc:35,oip:5.2,stoiip:3180,
+   api:36,visc:3.2,gor:250,T:72,P:14.8,pay:12.5,
+   ssi:2.187,cr:0.0007,sti:1.226,wfar:0.497,eccs:0.809,alcf:0.205,
+   tubing:'2-7/8"',choke:'20/64"',srp:'🟡 SOON',casing:'N-80 7"',ucs:28,zones:[{z:'HZ-A',d:1420,t:5.2,phi:19,sw:26,fluid:'Oil',dec:'PAY',lith:'Hazad Ss.'},{z:'HZ-B',d:1425,t:4.1,phi:17,sw:31,fluid:'Oil',dec:'PAY',lith:'Hazad Ss.'},{z:'HZ-C',d:1429,t:2.2,phi:12,sw:48,fluid:'Oil/Water',dec:'MARGINAL',lith:'Hazad Ss. (cemented)'},{z:'HZ-D',d:1431,t:3.8,phi:8,sw:72,fluid:'Brine',dec:'NON-PAY',lith:'Shale inter.'}]},
+  {id:'AHM-W2',depth:'1435–1446m',form:'Hazad Ss.',status:'Pay',qi:240,Di:.24,phi:.17,sw:.30,perm:38,gr:38,rhob:2.51,dt:61,wc:40,oip:4.6,stoiip:2760,
+   api:37,visc:3.0,gor:270,T:73,P:14.9,pay:10.8,
+   ssi:2.245,cr:0.0008,sti:1.271,wfar:0.523,eccs:0.794,alcf:0.226,
+   tubing:'2-7/8"',choke:'20/64"',srp:'🟡 SOON',casing:'N-80 7"',ucs:30,zones:[{z:'HZ-A',d:1435,t:4.8,phi:18,sw:28,fluid:'Oil',dec:'PAY',lith:'Hazad Ss.'},{z:'HZ-B',d:1440,t:4.2,phi:16,sw:33,fluid:'Oil',dec:'PAY',lith:'Hazad Ss.'},{z:'HZ-C',d:1444,t:1.8,phi:11,sw:52,fluid:'Oil/Water',dec:'MARGINAL',lith:'Tight Ss.'},{z:'HZ-D',d:1446,t:3.5,phi:7,sw:68,fluid:'Brine',dec:'NON-PAY',lith:'Shale inter.'}]},
+  {id:'AHM-W3',depth:'1450–1464m',form:'Hazad Ss.',status:'Declining',qi:210,Di:.26,phi:.19,sw:.32,perm:52,gr:36,rhob:2.46,dt:63,wc:45,oip:4.1,stoiip:2490,
+   api:38,visc:2.8,gor:290,T:74,P:15.0,pay:14.2,
+   ssi:2.214,cr:0.0008,sti:1.270,wfar:0.545,eccs:0.781,alcf:0.235,
+   tubing:'2-7/8"',choke:'24/64"',srp:'🔴 YES',casing:'N-80 7"',ucs:25,zones:[{z:'HZ-A',d:1450,t:6.1,phi:20,sw:24,fluid:'Oil',dec:'PAY',lith:'Hazad Ss.'},{z:'HZ-B',d:1456,t:5.0,phi:19,sw:29,fluid:'Oil',dec:'PAY',lith:'Hazad Ss.'},{z:'HZ-C',d:1461,t:3.1,phi:15,sw:41,fluid:'Oil',dec:'PAY',lith:'Hazad Ss. (lower)'},{z:'HZ-D',d:1464,t:2.8,phi:9,sw:71,fluid:'Brine',dec:'NON-PAY',lith:'Shale inter.'}]},
+  {id:'AHM-W4',depth:'1460–1470m',form:'Hazad Ss.',status:'High WC',qi:185,Di:.28,phi:.16,sw:.38,perm:41,gr:40,rhob:2.53,dt:60,wc:50,oip:3.5,stoiip:2110,
+   api:39,visc:2.7,gor:310,T:74,P:15.1,pay:9.6,
+   ssi:2.284,cr:0.0009,sti:1.319,wfar:0.565,eccs:0.770,alcf:0.246,
+   tubing:'2-7/8"',choke:'24/64"',srp:'🔴 YES',casing:'N-80 7"',ucs:32,zones:[{z:'HZ-A',d:1460,t:4.5,phi:17,sw:35,fluid:'Oil',dec:'PAY',lith:'Hazad Ss.'},{z:'HZ-B',d:1465,t:4.2,phi:16,sw:39,fluid:'Oil',dec:'PAY',lith:'Hazad Ss.'},{z:'HZ-C',d:1469,t:2.1,phi:12,sw:55,fluid:'Oil/Water',dec:'MARGINAL',lith:'Tight Ss.'},{z:'HZ-D',d:1471,t:4.0,phi:7,sw:74,fluid:'Brine',dec:'NON-PAY',lith:'Shale inter.'}]},
+  {id:'AHM-W5',depth:'1475–1484m',form:'Hazad Ss.',status:'SRP Cand.',qi:165,Di:.30,phi:.15,sw:.42,perm:35,gr:42,rhob:2.56,dt:59,wc:55,oip:3.1,stoiip:1850,
+   api:40,visc:2.5,gor:330,T:75,P:15.2,pay:8.4,
+   ssi:2.246,cr:0.0009,sti:1.313,wfar:0.587,eccs:0.757,alcf:0.265,
+   tubing:'2-7/8"',choke:'28/64"',srp:'🔴 YES',casing:'N-80 7"',ucs:35,zones:[{z:'HZ-A',d:1475,t:4.2,phi:16,sw:38,fluid:'Oil',dec:'PAY',lith:'Hazad Ss.'},{z:'HZ-B',d:1479,t:3.5,phi:15,sw:43,fluid:'Oil',dec:'PAY',lith:'Hazad Ss.'},{z:'HZ-C',d:1482,t:0.7,phi:10,sw:58,fluid:'Oil/Water',dec:'MARGINAL',lith:'Tight Ss.'},{z:'HZ-D',d:1483,t:3.2,phi:6,sw:77,fluid:'Brine',dec:'NON-PAY',lith:'Shale inter.'}]},
+];
+
+const CF_MOD={Polymer:0.92,ASP:0.90,Surfactant:0.92,'CO₂ Misc.':0.98,'CO₂ Immisc.':0.98,Thermal:1.00,Microbial:0.88,UST:1.00};
+
+const ASSAM_WELLS=[
+  {id:'AS-W1',depth:'820–845m',form:'Tipam Ss.',status:'Pay',qi:310,Di:.20,phi:.22,sw:.22,perm:180,gr:28,rhob:2.38,dt:72,wc:28,oip:6.8,stoiip:4120,
+   api:38,visc:2.8,gor:180,T:58,P:8.2,pay:15.5,
+   ssi:0.85,cr:0.0003,sti:0.62,wfar:0.32,eccs:0.88,alcf:0.18,
+   tubing:'2-7/8"',choke:'24/64"',srp:'✓ NO',casing:'J-55 7"',ucs:22,
+   zones:[{z:'TM-A',d:820,t:6.8,phi:24,sw:20,fluid:'Oil',dec:'PAY',lith:'Tipam Ss.'},
+          {z:'TM-B',d:827,t:5.2,phi:22,sw:24,fluid:'Oil',dec:'PAY',lith:'Tipam Ss.'},
+          {z:'TM-C',d:832,t:3.5,phi:18,sw:36,fluid:'Oil',dec:'PAY',lith:'Tipam Ss. (lower)'},
+          {z:'TM-D',d:836,t:2.8,phi:11,sw:62,fluid:'Oil/Water',dec:'MARGINAL',lith:'Tight Ss.'},
+          {z:'TM-E',d:839,t:3.1,phi:7,sw:78,fluid:'Brine',dec:'NON-PAY',lith:'Shale'}]},
+  {id:'AS-W2',depth:'855–878m',form:'Tipam Ss.',status:'Pay',qi:265,Di:.22,phi:.21,sw:.24,perm:145,gr:32,rhob:2.41,dt:70,wc:35,oip:5.9,stoiip:3640,
+   api:37,visc:3.1,gor:165,T:60,P:8.5,pay:13.2,
+   ssi:0.92,cr:0.0004,sti:0.68,wfar:0.36,eccs:0.86,alcf:0.20,
+   tubing:'2-7/8"',choke:'20/64"',srp:'✓ NO',casing:'J-55 7"',ucs:24,
+   zones:[{z:'TM-A',d:855,t:5.5,phi:23,sw:22,fluid:'Oil',dec:'PAY',lith:'Tipam Ss.'},
+          {z:'TM-B',d:861,t:4.8,phi:21,sw:26,fluid:'Oil',dec:'PAY',lith:'Tipam Ss.'},
+          {z:'TM-C',d:866,t:2.9,phi:17,sw:40,fluid:'Oil/Water',dec:'MARGINAL',lith:'Tipam Ss. (cemented)'},
+          {z:'TM-D',d:869,t:3.6,phi:8,sw:74,fluid:'Brine',dec:'NON-PAY',lith:'Shale inter.'}]},
+  {id:'AS-W3',depth:'780–802m',form:'Tipam Ss.',status:'Declining',qi:185,Di:.28,phi:.20,sw:.28,perm:110,gr:35,rhob:2.44,dt:68,wc:48,oip:4.2,stoiip:2580,
+   api:36,visc:3.4,gor:155,T:55,P:7.8,pay:11.8,
+   ssi:0.78,cr:0.0003,sti:0.55,wfar:0.42,eccs:0.87,alcf:0.22,
+   tubing:'2-7/8"',choke:'16/64"',srp:'🟡 SOON',casing:'J-55 7"',ucs:20,
+   zones:[{z:'TM-A',d:780,t:4.8,phi:21,sw:26,fluid:'Oil',dec:'PAY',lith:'Tipam Ss.'},
+          {z:'TM-B',d:785,t:4.2,phi:19,sw:31,fluid:'Oil',dec:'PAY',lith:'Tipam Ss.'},
+          {z:'TM-C',d:789,t:2.8,phi:14,sw:52,fluid:'Oil/Water',dec:'MARGINAL',lith:'Tight Ss.'},
+          {z:'TM-D',d:792,t:3.5,phi:6,sw:80,fluid:'Brine',dec:'NON-PAY',lith:'Shale'}]},
+  {id:'AS-W4',depth:'895–912m',form:'Tipam Ss.',status:'High WC',qi:145,Di:.32,phi:.19,sw:.35,perm:85,gr:38,rhob:2.47,dt:66,wc:62,oip:3.5,stoiip:2140,
+   api:35,visc:3.8,gor:140,T:62,P:8.9,pay:9.2,
+   ssi:0.88,cr:0.0004,sti:0.65,wfar:0.48,eccs:0.85,alcf:0.24,
+   tubing:'2-7/8"',choke:'16/64"',srp:'🔴 YES',casing:'J-55 7"',ucs:26,
+   zones:[{z:'TM-A',d:895,t:3.8,phi:20,sw:32,fluid:'Oil',dec:'PAY',lith:'Tipam Ss.'},
+          {z:'TM-B',d:899,t:3.6,phi:18,sw:38,fluid:'Oil',dec:'PAY',lith:'Tipam Ss.'},
+          {z:'TM-C',d:903,t:1.8,phi:13,sw:58,fluid:'Oil/Water',dec:'MARGINAL',lith:'Tight Ss.'},
+          {z:'TM-D',d:905,t:3.8,phi:7,sw:82,fluid:'Brine',dec:'NON-PAY',lith:'Shale inter.'}]},
+  {id:'AS-W5',depth:'750–768m',form:'Tipam Ss.',status:'SRP Cand.',qi:115,Di:.35,phi:.18,sw:.40,perm:68,gr:40,rhob:2.50,dt:64,wc:70,oip:2.8,stoiip:1720,
+   api:34,visc:4.2,gor:125,T:52,P:7.5,pay:8.0,
+   ssi:0.72,cr:0.0003,sti:0.50,wfar:0.52,eccs:0.84,alcf:0.26,
+   tubing:'2-7/8"',choke:'12/64"',srp:'🔴 YES',casing:'J-55 7"',ucs:18,
+   zones:[{z:'TM-A',d:750,t:3.5,phi:19,sw:36,fluid:'Oil',dec:'PAY',lith:'Tipam Ss.'},
+          {z:'TM-B',d:754,t:3.2,phi:17,sw:42,fluid:'Oil',dec:'PAY',lith:'Tipam Ss.'},
+          {z:'TM-C',d:757,t:1.3,phi:12,sw:62,fluid:'Oil/Water',dec:'MARGINAL',lith:'Tight Ss.'},
+          {z:'TM-D',d:759,t:4.0,phi:6,sw:85,fluid:'Brine',dec:'NON-PAY',lith:'Shale inter.'}]},
+];
 let ACTIVE_WELLS=WELLS;
 let ACTIVE_EORS=EORS;
 let ACTIVE_DOM=DOM_SC;
@@ -877,26 +1237,55 @@ let ACTIVE_PLUGS=PLUGS;
 
 function setDataset(ds){
   DATASET=ds; CW=0;
+  // Hide all well groups first, show correct one per branch below
+  ['wells-mh','wells-cb','wells-ahm','wells-assam'].forEach(id=>{const d=document.getElementById(id);if(d)d.style.display='none';});
   if(ds==='mh'){
     ACTIVE_WELLS=WELLS; ACTIVE_EORS=EORS; ACTIVE_DOM=DOM_SC; ACTIVE_PLUGS=PLUGS;
+    ['ds-mh','ds-cb','ds-ahm','ds-assam'].forEach(id=>{const b=document.getElementById(id);if(b){b.classList.remove('on');b.style.background='';}});
     document.getElementById('ds-mh').classList.add('on');
-    document.getElementById('ds-cb').classList.remove('on');
+    ['wells-mh','wells-cb','wells-ahm','wells-assam'].forEach(id=>{const d=document.getElementById(id);if(d)d.style.display='none';});
     document.getElementById('wells-mh').style.display='flex';
-    document.getElementById('wells-cb').style.display='none';
-    document.getElementById('ds-note-cb').style.display='none';
-    document.getElementById('well-bar-label').textContent='Mumbai High North:';
-  } else {
+    document.getElementById('ds-note-cb')&&(document.getElementById('ds-note-cb').style.display='none');
+    document.getElementById('well-bar-label').textContent='Mumbai High North:'; const _dyn3=document.getElementById('ds-note-dynamic');if(_dyn3)_dyn3.style.display='none';
+  } else if(ds==='cb'){
     ACTIVE_WELLS=WELLS_CB; ACTIVE_EORS=EORS_CB; ACTIVE_DOM=DOM_SC_CB; ACTIVE_PLUGS=PLUGS_CB;
+    ['ds-mh','ds-cb','ds-ahm','ds-assam'].forEach(id=>{const b=document.getElementById(id);if(b){b.classList.remove('on');b.style.background='';}});
     document.getElementById('ds-cb').classList.add('on');
-    document.getElementById('ds-mh').classList.remove('on');
+    ['wells-mh','wells-cb','wells-ahm','wells-assam'].forEach(id=>{const d=document.getElementById(id);if(d)d.style.display='none';});
     document.getElementById('wells-cb').style.display='flex';
-    document.getElementById('wells-mh').style.display='none';
-    document.getElementById('ds-note-cb').style.display='block';
-    document.getElementById('well-bar-label').textContent='Cambay Basin · Kalol Ss:';
+    document.getElementById('ds-note-cb')&&(document.getElementById('ds-note-cb').style.display='block');
+    document.getElementById('well-bar-label').textContent='Cambay Basin · Kalol Ss:'; const _dyn4=document.getElementById('ds-note-dynamic');if(_dyn4)_dyn4.style.display='none';
+  } else if(ds==='ahm'){
+    ACTIVE_WELLS=AHM_WELLS; ACTIVE_EORS=EORS; ACTIVE_DOM=DOM_SC; ACTIVE_PLUGS=PLUGS;
+    ['ds-mh','ds-cb','ds-ahm','ds-assam'].forEach(id=>{const b=document.getElementById(id);if(b){b.classList.remove('on');b.style.background='';}});
+    document.getElementById('ds-ahm').classList.add('on');
+    document.getElementById('ds-ahm').style.background='rgba(239,159,39,.25)';
+    ['wells-mh','wells-cb','wells-ahm','wells-assam'].forEach(id=>{const d=document.getElementById(id);if(d)d.style.display='none';});
+    document.getElementById('wells-ahm').style.display='flex';
+    document.getElementById('ds-note-cb')&&(document.getElementById('ds-note-cb').style.display='none');
+    document.getElementById('well-bar-label').textContent='Ankleshwar · Hazad Ss:'; const _dyn1=document.getElementById('ds-note-dynamic');if(_dyn1){_dyn1.style.display='inline';_dyn1.textContent='Published-data-anchored synthetic · ONGC Gujarat · v2.6';}
+  } else if(ds==='assam'){
+    ACTIVE_WELLS=ASSAM_WELLS; ACTIVE_EORS=EORS; ACTIVE_DOM=DOM_SC; ACTIVE_PLUGS=PLUGS;
+    ['ds-mh','ds-cb','ds-ahm','ds-assam'].forEach(id=>{const b=document.getElementById(id);if(b){b.classList.remove('on');b.style.background='';}});
+    document.getElementById('ds-assam').classList.add('on');
+    document.getElementById('ds-assam').style.background='rgba(127,119,221,.25)';
+    ['wells-mh','wells-cb','wells-ahm','wells-assam'].forEach(id=>{const d=document.getElementById(id);if(d)d.style.display='none';});
+    document.getElementById('wells-assam').style.display='flex';
+    document.getElementById('ds-note-cb')&&(document.getElementById('ds-note-cb').style.display='none');
+    document.getElementById('well-bar-label').textContent='Upper Assam · Tipam Ss:'; const _dyn2=document.getElementById('ds-note-dynamic');if(_dyn2){_dyn2.style.display='inline';_dyn2.textContent='Published-data-anchored synthetic · OIL India Ltd · v2.6';}
   }
   document.querySelectorAll('#wells-'+ds+' .w-btn').forEach((b,j)=>b.classList.toggle('on',j===0));
   render();
   if(document.getElementById('p-spectral').classList.contains('on')) renderSpectral();
+  if(document.getElementById('p-chem').classList.contains('on')) renderChem();
+  if(document.getElementById('p-prodeng').classList.contains('on')){ renderProdEng(); peTab('csg'); }
+  if(document.getElementById('p-drill').classList.contains('on')) renderProdEng();
+  // Update Your Well Data tab labels
+  const sBtn=document.getElementById('load-sample-btn');
+  const opNames={'mh':'ONGC Offshore','cb':'ONGC Onshore','ahm':'ONGC Ankleshwar','assam':'OIL India Ltd'};
+  if(sBtn)sBtn.textContent='Load '+( opNames[ds]||'ONGC' )+' sample';
+  const inpHdrOp=document.getElementById('inp-operator-label');
+  if(inpHdrOp)inpHdrOp.textContent=opNames[ds]||'ONGC';
 }
 
 
@@ -916,26 +1305,72 @@ const rate=w=>Math.round(arps(w.qi,w.Di,8));
 const kCls=(v,hi,lo,dir='up')=>dir==='up'?(v>=hi?'g':v>=lo?'a':'r'):(v<=hi?'g':v<=lo?'a':'r');
 const vCls=v=>v>0?'vg':'vr';
 /* ── LIVE DATA ── */
+let _brentLive=false;
+
 async function fetchLive(){
-  let fx=83.5;
-  const sources=[
-    ()=>fetch('https://open.er-api.com/v6/latest/USD',{mode:'cors'}).then(r=>r.json()).then(d=>d.rates.INR),
-    ()=>fetch('https://api.frankfurter.app/latest?from=USD&to=INR',{mode:'cors'}).then(r=>r.json()).then(d=>d.rates.INR),
-    ()=>fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json',{mode:'cors'}).then(r=>r.json()).then(d=>d.usd.inr)
+  let fx=83.5, inrPerBbl=null;
+
+  // ── FX Rate (working reliably) ──
+  const fxSources=[
+    ()=>fetch('https://open.er-api.com/v6/latest/USD').then(r=>r.json()).then(d=>{const v=d.rates?.INR;if(v>70&&v<110)return v;throw 0;}),
+    ()=>fetch('https://api.frankfurter.app/latest?from=USD&to=INR').then(r=>r.json()).then(d=>{const v=d.rates?.INR;if(v>70&&v<110)return v;throw 0;}),
+    ()=>fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json').then(r=>r.json()).then(d=>{const v=d.usd?.inr;if(v>70&&v<110)return v;throw 0;}),
   ];
-  for(const s of sources){try{const v=await s();if(v>70&&v<100){fx=v;break;}}catch(e){}}
-  const brent=78.5, inr=Math.round(brent*fx);
-  document.getElementById('brent-val').textContent=INR(inr)+'/bbl';
+  for(const s of fxSources){try{fx=await s();break;}catch(e){}}
+
+  // ── Brent Price: fetch from same-origin GitHub-hosted JSON (updated by Action) ──
+  try{
+    const r=await fetch('./data/brent.json?t='+Date.now(),{signal:AbortSignal.timeout(4000)});
+    if(r.ok){
+      const d=await r.json();
+      const p=parseFloat(d.price_usd);
+      if(p>40&&p<200){
+        inrPerBbl=Math.round(p*fx);
+        _brentLive=true;
+      }
+    }
+  }catch(e){}
+
+  // ── Fallback: FMP real API key ──
+  if(!inrPerBbl){
+    try{
+      const r=await fetch('https://financialmodelingprep.com/api/v3/quote/BRENTOIL?apikey=Bb9ej6lZUgsKFn0weNJ0OVbXOJfJRrtM',
+        {signal:AbortSignal.timeout(5000)});
+      if(r.ok){
+        const d=await r.json();
+        const p=parseFloat(d?.[0]?.price);
+        if(p>40&&p<200){inrPerBbl=Math.round(p*fx);_brentLive=true;}
+      }
+    }catch(e){}
+  }
+
+  // ── Final fallback: live FX × current market estimate ──
+  if(!inrPerBbl) inrPerBbl=Math.round(65*fx); // ~$65/bbl May 2026
+
+  // ── Update UI ──
+  document.getElementById('brent-val').textContent='₹'+inrPerBbl.toLocaleString('en-IN')+'/bbl';
   document.getElementById('fx-val').textContent=fx.toFixed(1);
-  document.getElementById('oil-sl').value=Math.min(10000,Math.max(3500,inr));
-  document.getElementById('last-upd').textContent='Live '+new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
-  document.getElementById('last-upd').style.color='#9FE1CB';
-  document.getElementById('status-dot').style.background='#1D9E75';
-  document.getElementById('status-dot').style.animation='pulse 2s infinite';
-  ec();
+
+  // Sync EOR slider
+  const eorSl=document.getElementById('eor-price-sl');
+  const eorDisp=document.getElementById('eor-price-disp');
+  if(eorSl&&inrPerBbl>=3500&&inrPerBbl<=12000){
+    eorSl.value=inrPerBbl;
+    if(eorDisp)eorDisp.textContent='₹'+inrPerBbl.toLocaleString('en-IN');
+    if(typeof renderEOR==='function')renderEOR();
+  }
+
+  // Dot
+  const now=new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+  document.getElementById('last-upd').textContent=(_brentLive?'Live ':'FX-adj. ')+now;
+  const ldot=document.querySelector('.ldot');
+  if(ldot){
+    ldot.style.background=_brentLive?'#1D9E75':'#EF9F27';
+    ldot.style.boxShadow=_brentLive?'0 0 8px rgba(29,158,117,.8)':'none';
+  }
 }
 
-/* ── NAVIGATION ── */
+
 function setMode(m){
   mode=m;
   const isPetro=m==='petro';
@@ -950,16 +1385,334 @@ function setMode(m){
   else{document.getElementById('p-m-overview').style.display='block';goMine('overview');}
 }
 
+/* ── PE sub-tab ── */
+function peTab(t){
+  ['csg','tub','chk','srp'].forEach(x=>{
+    const el=document.getElementById('pe-'+x);
+    if(el)el.style.display=x===t?'block':'none';
+    const btn=document.getElementById('pe-t-'+x);
+    if(btn)btn.classList.toggle('on',x===t);
+  });
+}
+
+/* ── Chemistry render ── */
+function renderChem(){
+  // Pick well from correct dataset
+  const w = DATASET==='ahm' ? AHM_WELLS[CW]
+           : DATASET==='assam' ? ASSAM_WELLS[CW]
+           : ACTIVE_WELLS[CW];
+
+  // Dataset-specific chemistry profiles (for MH/CB which have no per-well chem fields)
+  const CHEM_PROFILES = {
+    mh:    {ssi:0.42, cr:0.0002, sti:0.28, wfar:0.24, eccs:0.91, alcf:0.12,
+            label:'Mumbai High Bassein',
+            tds:'18,000–25,000', ph:'6.8–7.5', h2s:'0–5', ca:'300–600', co2:'50–120', rw:'0.060–0.085',
+            ssi_note:'Low scaling risk — under-saturated CaCO₃ at MHB conditions',
+            wfar_note:'Low adversity — low TDS, clean oil, established waterflood',
+            eccs_note:'Excellent — low salinity, low divalents, minimal H₂S. All chemical EOR methods compatible.'},
+    cb:    {ssi:1.05, cr:0.0006, sti:0.82, wfar:0.44, eccs:0.82, alcf:0.31,
+            label:'Cambay Basin Kalol Ss.',
+            tds:'55,000–80,000', ph:'6.4–7.0', h2s:'15–30', ca:'1,200–2,000', co2:'200–350', rw:'0.022–0.030',
+            ssi_note:'Moderate-high scaling — high TDS + Ca²⁺. Scale inhibitor before any waterflood.',
+            wfar_note:'Moderate — high TDS and viscous oil increase adversity. Pre-treatment needed.',
+            eccs_note:'Acceptable but marginal for polymer — very high TDS (>55k) limits HPAM performance.'},
+    ahm:   {ssi:w.ssi||2.22, cr:w.cr||0.0008, sti:w.sti||1.27, wfar:w.wfar||0.53, eccs:w.eccs||0.78, alcf:w.alcf||0.24,
+            label:'Ankleshwar Hazad Member · '+w.id,
+            tds:'40,000–52,000', ph:'6.8–7.0', h2s:'10–20', ca:'950–1,150', co2:'180–240', rw:'0.036–0.042',
+            ssi_note:'Severe scaling — CaCO₃ certain at AHM conditions. Scale inhibitor mandatory before chemical EOR.',
+            wfar_note:'Moderate — TDS is dominant driver. Waterflood viable with chemical pre-treatment.',
+            eccs_note:'Acceptable — use HPAM >30MD grade + H₂S-tolerant sulphonate surfactant.'},
+    assam: {ssi:w.ssi||0.85, cr:w.cr||0.0003, sti:w.sti||0.62, wfar:w.wfar||0.38, eccs:w.eccs||0.87, alcf:w.alcf||0.22,
+            label:'Upper Assam Tipam Ss. · '+w.id,
+            tds:'8,000–25,000', ph:'6.8–7.4', h2s:'0–8', ca:'150–400', co2:'40–90', rw:'0.055–0.090',
+            ssi_note:'Low-moderate scaling — Tipam brine is relatively dilute. Standard scale monitoring sufficient.',
+            wfar_note:'Low-moderate adversity — best chemistry in the portfolio. Good polymer/ASP candidate.',
+            eccs_note:'Good compatibility — low TDS and divalents. Standard HPAM grade acceptable. Favourable for UST+ASP combination.'},
+  };
+
+  const prof = CHEM_PROFILES[DATASET] || CHEM_PROFILES.mh;
+  // Use per-well values if available (MH, CB, AHM, Assam all have them), else dataset profile
+  const ssi  = w.ssi  !== undefined ? w.ssi  : prof.ssi;
+  const cr   = w.cr   !== undefined ? w.cr   : prof.cr;
+  const sti  = w.sti  !== undefined ? w.sti  : prof.sti;
+  const wfar = w.wfar !== undefined ? w.wfar : prof.wfar;
+  const eccs = w.eccs !== undefined ? w.eccs : prof.eccs;
+  const alcf = w.alcf !== undefined ? w.alcf : prof.alcf;
+
+  // Dynamic KPI class based on value
+  const ssiCls = ssi>1.5?'r':ssi>0.5?'a':'g';
+  const crCls  = cr>0.5?'r':cr>0.1?'a':'g';
+  const stiCls = sti>1.0?'r':sti>0.3?'a':'g';
+  const wfarCls= wfar>0.6?'r':wfar>0.35?'a':'g';
+  const eccsCls= eccs>0.80?'g':eccs>0.65?'a':'r';
+  const alcfCls= alcf>0.35?'r':alcf>0.22?'a':'g';
+
+  const ssiLbl  = ssi>1.5?'SEVERE':ssi>0.5?'SCALE RISK':'CLEAN';
+  const crLbl   = cr>0.5?'SEVERE':cr>0.1?'MODERATE':'LOW';
+  const stiLbl  = sti>1.0?'HIGH RISK':sti>0.3?'SCALE RISK':'LOW';
+  const wfarLbl = wfar>0.6?'HIGH ADVERSITY':wfar>0.35?'MODERATE':'LOW';
+  const eccsLbl = eccs>0.80?'EXCELLENT':eccs>0.65?'ACCEPTABLE':'MARGINAL';
+  const alcfLbl = alcf>0.35?'COMPLEX':alcf>0.22?'MONITOR':'LOW';
+
+  const el=document.getElementById('chem-kpis');
+  if(el) el.innerHTML=`
+    <div class="kpi ${ssiCls}"><div class="kpi-l">SSI · Scaling</div><div class="kpi-v">${ssi.toFixed(3)}</div><div class="kpi-s">${ssiLbl}</div></div>
+    <div class="kpi ${crCls}"><div class="kpi-l">CO₂ Corrosion</div><div class="kpi-v" style="font-size:14px;">${cr.toFixed(4)}<span style="font-size:10px"> mm/yr</span></div><div class="kpi-s">${crLbl}</div></div>
+    <div class="kpi ${stiCls}"><div class="kpi-l">STI · Composite</div><div class="kpi-v">${sti.toFixed(3)}</div><div class="kpi-s">${stiLbl}</div></div>
+    <div class="kpi ${wfarCls}"><div class="kpi-l">WFAR · Waterflood</div><div class="kpi-v">${wfar.toFixed(3)}</div><div class="kpi-s">${wfarLbl}</div></div>
+    <div class="kpi ${eccsCls}"><div class="kpi-l">ECCS · Compatibility</div><div class="kpi-v">${eccs.toFixed(3)}</div><div class="kpi-s">${eccsLbl}</div></div>
+    <div class="kpi ${alcfCls}"><div class="kpi-l">ALCF · Asphaltene</div><div class="kpi-v">${alcf.toFixed(3)}</div><div class="kpi-s">${alcfLbl}</div></div>`;
+
+  // Dataset label in header
+  const hdEl=document.getElementById('chem-dataset-label');
+  if(hdEl) hdEl.textContent=prof.label;
+  const bdgEl=document.getElementById('chem-ds-badge');
+  if(bdgEl){
+    const bdgMap={
+      mh: {t:'Mumbai High Bassein · Clean chemistry', bg:'rgba(29,158,117,.2)', bc:'rgba(29,158,117,.4)', c:'#5DCAA5'},
+      cb: {t:'Cambay Kalol Ss · Moderate TDS',         bg:'rgba(239,159,39,.15)', bc:'rgba(239,159,39,.35)', c:'#EF9F27'},
+      ahm:{t:'Ankleshwar Hazad · Severe scaling',       bg:'rgba(239,159,39,.15)', bc:'rgba(239,159,39,.35)', c:'#EF9F27'},
+      assam:{t:'Assam Tipam Ss · Low-moderate',          bg:'rgba(127,119,221,.15)', bc:'rgba(127,119,221,.35)', c:'#9F98E8'},
+    };
+    const b=bdgMap[DATASET]||bdgMap.mh;
+    bdgEl.textContent=b.t; bdgEl.style.background=b.bg; bdgEl.style.borderColor=b.bc; bdgEl.style.color=b.c;
+  }
+  // Update dynamic text labels
+  const wtEl=document.getElementById('chem-water-title');
+  const dsNames={mh:'Mumbai High Bassein',cb:'Cambay Basin Kalol Ss.',ahm:'Ankleshwar Hazad Member',assam:'Upper Assam Tipam Ss.'};
+  const wellLabel=w.id||('Well '+(CW+1));
+  if(wtEl) wtEl.textContent='Formation water chemistry — '+dsNames[DATASET]+' · '+wellLabel;
+  // SSI note
+  const ssiNoteMap={
+    mh:   'Stiff-Davis 1952 · CaCO₃ saturation. SSI > 0.5 = scale risk. <b>MHB ~0.42 — clean, under-saturated. No scaling treatment needed for EOR.</b>',
+    cb:   'Stiff-Davis 1952 · CaCO₃ saturation. SSI > 0.5 = scale risk. <b>Cambay ~1.05 — moderate-high scaling risk. Scale inhibitor before waterflood.</b>',
+    ahm:  'Stiff-Davis 1952 · CaCO₃ saturation. SSI > 0.5 = scale risk. <b>AHM ~2.2 — severe scaling. Scale inhibitor mandatory before any chemical EOR.</b>',
+    assam:'Stiff-Davis 1952 · CaCO₃ saturation. SSI > 0.5 = scale risk. <b>Assam ~0.85 — low-moderate. Standard scale monitoring sufficient.</b>',
+  };
+  const ssiNoteEl=document.getElementById('ssi-note');
+  if(ssiNoteEl) ssiNoteEl.innerHTML=ssiNoteMap[DATASET]||ssiNoteMap.mh;
+  // WFAR note
+  const wfarNoteMap={
+    mh:   '0 = easy · 1 = severe. <b>MHB 0.24 — low adversity. Established waterflood. Low TDS. Best chemistry in portfolio for chemical EOR.</b>',
+    cb:   '0 = easy · 1 = severe. <b>Cambay 0.44 — moderate. High TDS and viscous oil increase adversity. Pre-treatment needed before polymer/ASP.</b>',
+    ahm:  '0 = easy · 1 = severe. <b>AHM 0.50–0.59 — moderate. Waterflood viable with pre-treatment. TDS is dominant driver.</b>',
+    assam:'0 = easy · 1 = severe. <b>Assam 0.32–0.38 — low-moderate. Good waterflood conditions. Low TDS. Favourable for polymer and ASP.</b>',
+  };
+  const wfarNoteEl=document.getElementById('wfar-note');
+  if(wfarNoteEl) wfarNoteEl.innerHTML=wfarNoteMap[DATASET]||wfarNoteMap.mh;
+  // ECCS note
+  const eccsNoteMap={
+    mh:   '0 = incompatible · 1 = perfect. <b>MHB 0.91 — excellent. Low salinity, low divalents, minimal H₂S. All chemical EOR methods fully compatible.</b>',
+    cb:   '0 = incompatible · 1 = perfect. <b>Cambay 0.82 — acceptable but marginal for polymer. Very high TDS (>55k) limits HPAM performance. Use high-MW grade.</b>',
+    ahm:  '0 = incompatible · 1 = perfect. <b>AHM 0.76–0.81 — acceptable. Use HPAM >30MD grade; H₂S-tolerant sulphonate surfactant required.</b>',
+    assam:'0 = incompatible · 1 = perfect. <b>Assam 0.84–0.88 — good compatibility. Low TDS and divalents. Standard HPAM grade acceptable for polymer EOR.</b>',
+  };
+  const eccsNoteEl=document.getElementById('eccs-note');
+  if(eccsNoteEl) eccsNoteEl.innerHTML=eccsNoteMap[DATASET]||eccsNoteMap.mh;
+
+  // CF_mod table — stays the same across datasets (it's the modifier table, not dataset-specific)
+  const cfEl=document.getElementById('cfmod-table');
+  if(cfEl){
+    // For MH, all CF_mods are 1.0 (clean chemistry). For CB, same as AHM but ECCS better so slightly less penalty
+    const cf_override = DATASET==='mh'
+      ? {Polymer:1.00,ASP:1.00,Surfactant:1.00,'CO₂ Misc.':1.00,'CO₂ Immisc.':1.00,Thermal:1.00,Microbial:1.00,UST:1.00}
+      : DATASET==='cb'
+      ? {Polymer:0.88,ASP:0.85,Surfactant:0.88,'CO₂ Misc.':0.98,'CO₂ Immisc.':0.98,Thermal:1.00,Microbial:0.82,UST:1.00}
+      : DATASET==='assam'
+      ? {Polymer:0.96,ASP:0.94,Surfactant:0.96,'CO₂ Misc.':1.00,'CO₂ Immisc.':1.00,Thermal:1.00,Microbial:0.95,UST:1.00}
+      : CF_MOD; // AHM
+    const cfRows=Object.entries(cf_override).map(([m,v])=>{
+      const pen=Math.round((1-v)*100);
+      const col=v>=1?'#1D9E75':v>=0.95?'#5DCAA5':v>=0.90?'#EF9F27':'#E24B4A';
+      return`<tr><td style="font-weight:500">${m}</td>
+        <td style="color:${col};font-weight:600">${v.toFixed(2)}</td>
+        <td><div style="width:${v*100}%;height:8px;background:${col};border-radius:3px;min-width:4px;"></div></td>
+        <td style="color:${col};font-size:9px;">${pen===0?'✓ No penalty':'-'+pen+'% penalty'}</td></tr>`;
+    }).join('');
+    cfEl.innerHTML='<thead><tr><th>EOR Method</th><th>CF_mod</th><th>Penalty bar</th><th>Impact ('+prof.label+')</th></tr></thead><tbody>'+cfRows+'</tbody>';
+  }
+
+  // Water chemistry table — dataset specific
+  const cwEl=document.getElementById('chem-water-table');
+  if(cwEl){
+    const rows=[
+      ['TDS', prof.tds, 'mg/L', DATASET==='mh'?'Low — excellent for chemical EOR':DATASET==='assam'?'Low-moderate — good EOR conditions':DATASET==='cb'?'Very high — limits polymer performance':'High salinity — polymer degradation risk'],
+      ['pH', prof.ph, 'field', 'Formation water pH — affects carbonate equilibrium'],
+      ['H₂S', prof.h2s, 'ppm', DATASET==='mh'?'Minimal — standard carbon steel acceptable':DATASET==='assam'?'Low — standard carbon steel with inhibitor':'Sour — NACE MR0175 material selection required'],
+      ['Ca²⁺', prof.ca, 'mg/L', 'Divalent cation — main HPAM polymer degrader + scaling ion'],
+      ['CO₂ dissolved', prof.co2, 'ppm', 'CO₂ corrosion source — drives CR index'],
+      ['Rw', prof.rw, 'ohm·m', 'Formation water resistivity — used in Archie Sw calculation'],
+    ];
+    cwEl.innerHTML='<thead><tr><th>Parameter</th><th>'+dsNames[DATASET]+' range</th><th>Unit</th><th>Significance</th></tr></thead><tbody>'+
+      rows.map(r=>`<tr><td style="font-weight:500">${r[0]}</td><td>${r[1]}</td><td style="color:#888">${r[2]}</td><td style="font-size:9px;color:#666">${r[3]}</td></tr>`).join('')+'</tbody>';
+  }
+
+  // SSI bar
+  const sb=document.getElementById('ssi-bar');
+  if(sb) sb.innerHTML=`
+    <div style="display:flex;align-items:center;gap:8px;margin:8px 0;">
+      <div style="flex:1;height:18px;background:#eee;border-radius:4px;overflow:hidden;position:relative;">
+        <div style="width:${Math.min(100,ssi/3*100)}%;height:18px;background:linear-gradient(90deg,${ssi>1.5?'#E24B4A,#CC0000':ssi>0.5?'#EF9F27,#E24B4A':'#1D9E75,#5DCAA5'});border-radius:4px;"></div>
+        <div style="position:absolute;left:16.7%;top:0;height:18px;border-left:1px dashed #bbb;"></div>
+        <div style="position:absolute;left:33.3%;top:0;height:18px;border-left:1px dashed #999;"></div>
+      </div>
+      <span style="font-weight:600;color:${ssi>1.5?'#E24B4A':ssi>0.5?'#EF9F27':'#1D9E75'};min-width:36px;">${ssi.toFixed(2)}</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:8px;color:#aaa;"><span>0 Clean</span><span>0.5 Risk</span><span>1.0 Severe</span><span>3.0+</span></div>
+    <div style="font-size:8px;color:#888;margin-top:4px;font-style:italic;">${prof.ssi_note}</div>`;
+
+  // WFAR bar
+  const wb2=document.getElementById('wfar-bar');
+  if(wb2) wb2.innerHTML=`
+    <div style="display:flex;align-items:center;gap:8px;margin:8px 0;">
+      <div style="flex:1;height:18px;background:#eee;border-radius:4px;overflow:hidden;">
+        <div style="width:${wfar*100}%;height:18px;background:linear-gradient(90deg,${wfar>0.6?'#E24B4A,#CC0000':wfar>0.35?'#EF9F27,#E24B4A':'#1D9E75,#5DCAA5'});border-radius:4px;"></div>
+      </div>
+      <span style="font-weight:600;color:${wfar>0.6?'#E24B4A':wfar>0.35?'#EF9F27':'#1D9E75'};min-width:36px;">${wfar.toFixed(3)}</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:8px;color:#aaa;"><span>0 Easy</span><span>0.35 Moderate</span><span>0.6 High</span><span>1.0 Severe</span></div>
+    <div style="font-size:8px;color:#888;margin-top:4px;font-style:italic;">${prof.wfar_note}</div>`;
+
+  // ECCS bar
+  const eb=document.getElementById('eccs-bar');
+  if(eb) eb.innerHTML=`
+    <div style="display:flex;align-items:center;gap:8px;margin:8px 0;">
+      <div style="flex:1;height:18px;background:#eee;border-radius:4px;overflow:hidden;">
+        <div style="width:${eccs*100}%;height:18px;background:linear-gradient(90deg,${eccs>0.80?'#1D9E75,#5DCAA5':eccs>0.65?'#EF9F27,#1D9E75':'#E24B4A,#EF9F27'});border-radius:4px;"></div>
+      </div>
+      <span style="font-weight:600;color:${eccs>0.80?'#1D9E75':eccs>0.65?'#EF9F27':'#E24B4A'};min-width:36px;">${eccs.toFixed(3)}</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:8px;color:#aaa;"><span>0 Incompatible</span><span>0.65 Acceptable</span><span>1.0 Perfect</span></div>
+    <div style="font-size:8px;color:#888;margin-top:4px;font-style:italic;">${prof.eccs_note}</div>`;
+}
+
+
+/* ── Production Engineering render ── */
+function renderProdEng(){
+  const w=DATASET==='ahm'?AHM_WELLS[CW]:DATASET==='assam'?ASSAM_WELLS[CW]:ACTIVE_WELLS[CW];
+  // ── Drilling Physics panel — fully dataset-aware ──
+  const DRILL_PROFILES={
+    mh:    {pp:1.02,fg:1.75,mw_lo:1.12,mw_hi:1.35,form:'Bassein Limestone',csg:'L-80 (HPHT offshore)',note:'HPHT offshore — high FG. L-80/P-110 grade. Bassein Lst. UCS 60–90 MPa.'},
+    cb:    {pp:0.98,fg:1.62,mw_lo:1.10,mw_hi:1.28,form:'Kalol Sandstone',csg:'J-55 / K-55',note:'Normal-slightly overpressured. WBM. Soft sandstone — UCS 18–28 MPa.'},
+    ahm:   {pp:0.96,fg:1.60,mw_lo:1.10,mw_hi:1.25,form:'Hazad Sandstone',csg:'N-80 (H₂S sour)',note:'H₂S 10–20 ppm — N-80 NACE MR0175. Normal pressure. UCS 20–35 MPa.'},
+    assam: {pp:0.95,fg:1.55,mw_lo:1.08,mw_hi:1.22,form:'Tipam Sandstone',csg:'J-55 / K-55',note:'Sub-normal to normal. Soft Tipam Ss. Very low UCS 18–26 MPa. OIL India Assam.'},
+  };
+  const dp=DRILL_PROFILES[DATASET]||DRILL_PROFILES.mh;
+  const ucs=w.ucs||(DATASET==='mh'?55:DATASET==='cb'?22:DATASET==='ahm'?28:20);
+  const depthNum=typeof w.depth==='string'?parseInt(w.depth):w.depth||1450;
+  const P_res=w.P||(depthNum*dp.pp/100);
+  ['d-ucs','d-coh','d-phi','d-mw'].forEach((id,i)=>{
+    const el2=document.getElementById(id);
+    if(el2)el2.textContent=[ucs+' MPa',(ucs*0.18).toFixed(1)+' MPa',
+      DATASET==='mh'?'28–32°':DATASET==='cb'?'25–28°':'26–28°',
+      dp.mw_lo.toFixed(2)+'–'+dp.mw_hi.toFixed(2)+' SG'][i];
+  });
+  const dpfEl=document.getElementById('drill-pf');
+  if(dpfEl)dpfEl.innerHTML=`
+    <div class="fr"><span class="fl">Formation</span><span class="fv">${dp.form} · ${w.id}</span></div>
+    <div class="fr"><span class="fl">PP gradient</span><span class="fv">${dp.pp} MPa/100m</span></div>
+    <div class="fr"><span class="fl">FG gradient</span><span class="fv">${dp.fg} MPa/100m</span></div>
+    <div class="fr fr-hl"><span class="fl">Safe mud window</span><span class="fv vg">${dp.mw_lo.toFixed(2)}–${dp.mw_hi.toFixed(2)} SG</span></div>
+    <div class="fr"><span class="fl">PP at TD (${depthNum}m)</span><span class="fv">${(depthNum*dp.pp/100).toFixed(1)} MPa</span></div>
+    <div class="fr"><span class="fl">FG at TD</span><span class="fv">${(depthNum*dp.fg/100).toFixed(1)} MPa</span></div>
+    <div class="fr"><span class="fl">Casing grade</span><span class="fv">${dp.csg}</span></div>`;
+  const ducsbEl=document.getElementById('drill-ucs-bars');
+  if(ducsbEl){
+    const ucsBars=[['Pay zone',ucs,'#1D9E75'],['Tight streak',Math.round(ucs*1.4),'#534AB7'],['Shale inter.',Math.round(ucs*0.7),'#EF9F27'],['Cemented Ss.',Math.round(ucs*1.6),'#185FA5']];
+    const maxU=Math.max(...ucsBars.map(b=>b[1]));
+    ducsbEl.innerHTML='<div style="font-size:9px;color:#888;margin-bottom:6px;font-style:italic;">'+dp.note+'</div>'+ucsBars.map(([lbl,val,col])=>`<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><span style="font-size:9px;width:90px;flex-shrink:0;color:#666;">${lbl}</span><div style="flex:1;height:14px;background:#eee;border-radius:3px;overflow:hidden;"><div style="width:${(val/maxU*100).toFixed(0)}%;height:14px;background:${col};border-radius:3px;"></div></div><span style="font-size:9px;font-weight:600;min-width:40px;">${val} MPa</span></div>`).join('');
+  }
+  const dTitle=document.getElementById('drill-dataset-title');
+  if(dTitle)dTitle.textContent='Drilling Physics — '+dp.form+' · '+w.id;
+  const qi=w.qi||210,wcut=w.wcut||45,liq=Math.round(qi*(1+wcut/100)),gor=w.gor||290,alcf=w.alcf||0.235,P=w.P||15.0,depth=w.depth||(typeof w.depth==='string'?1450:w.depth)||1450;
+  // depthNum already declared above from w.depth
+  // Casing
+  const csgT=document.getElementById('csg-table');
+  if(csgT){
+    const rows=[['Conductor','30"','K-55',60,'12.4','3.5','✓ PASS','8.8','7.5','✓ PASS'],['Surface','13⅜"','J-55',300,'24.1','31.7','✓ PASS','20.7','3.2','✓ PASS'],['Production','7"','N-80',depthNum,'38.0',(P*1.1).toFixed(1),'✓ PASS','50.8',(depthNum*0.0105*0.85).toFixed(1),'✓ PASS']];
+    csgT.innerHTML='<thead><tr><th>String</th><th>Size</th><th>Grade</th><th>Depth (m)</th><th>Burst rating</th><th>Design burst</th><th>Burst ✓</th><th>Collapse rating</th><th>Design collapse</th><th>Collapse ✓</th></tr></thead><tbody>'+rows.map(r=>`<tr>${r.map((v,i)=>`<td style="color:${String(v).includes('PASS')?'#1D9E75':String(v).includes('FAIL')?'#E24B4A':'inherit'};font-weight:${String(v).includes('PASS')||String(v).includes('FAIL')?600:400}">${v}</td>`).join('')}</tr>`).join('')+'</tbody>';
+  }
+  const cemT=document.getElementById('cem-table');
+  if(cemT){
+    const pay=w.pay||10;const toc=Math.max(0,depthNum-pay-200);
+    const rows=[['Conductor','Surface (0m)','1.85','Class A + Accel.','8 hr'],['Surface','50m','1.85','Class G + Ret.','12 hr'],['Production',toc+'m TVD','1.90','Class G + Silica flour','16 hr']];
+    cemT.innerHTML='<thead><tr><th>String</th><th>TOC</th><th>Slurry SG</th><th>Cement class</th><th>WOC</th></tr></thead><tbody>'+rows.map(r=>`<tr>${r.map(v=>`<td>${v}</td>`).join('')}</tr>`).join('')+'</tbody>';
+  }
+  const cgr=document.getElementById('csg-rationale');
+  if(cgr)cgr.innerHTML=`<div class="fr"><span class="fl">H₂S</span><span class="fv" style="color:#E24B4A">10–20 ppm → NACE MR0175</span></div><div class="fr"><span class="fl">Production grade</span><span class="fv">N-80 — sour resistant</span></div><div class="fr"><span class="fl">PP gradient</span><span class="fv">0.96 MPa/100m</span></div><div class="fr"><span class="fl">FG gradient</span><span class="fv">1.60 MPa/100m</span></div><div class="fr"><span class="fl">Mud weight</span><span class="fv">1.10–1.12 SG WBM</span></div><div class="fr fr-hl"><span class="fl">Burst DF / Collapse DF</span><span class="fv">1.1 / 0.85</span></div>`;
+  // Tubing
+  const tubT=document.getElementById('tub-table');
+  if(tubT){
+    const nodQ=Math.round(qi*0.95),fbhp=(P*0.55).toFixed(2),PI=(nodQ/(P*0.45)).toFixed(1);
+    tubT.innerHTML=`<thead><tr><th>Well</th><th>qi</th><th>Liq rate</th><th>Gas (Mscfd)</th><th>Tubing</th><th>Crit vel</th><th>Loading?</th><th>Nodal q</th><th>FBHP (MPa)</th><th>PI</th></tr></thead><tbody><tr><td style="font-weight:500">${w.id||'AHM'}</td><td>${qi}</td><td>${liq} bbl/d</td><td>${(qi*gor/1000).toFixed(1)}</td><td>2-7/8"</td><td>320 ft/d</td><td style="color:${qi<220?'#EF9F27':'#1D9E75'};font-weight:600">${qi<220?'⚠️ Monitor':'✓ OK'}</td><td>${nodQ}</td><td>${fbhp}</td><td>${PI}</td></tr></tbody>`;
+  }
+  const sandT=document.getElementById('sand-table');
+  if(sandT){
+    const perm=w.perm||45;
+    sandT.innerHTML=`<thead><tr><th>Well</th><th>k (mD)</th><th>Sand control</th><th>Material</th><th>ALCF</th><th>Asph flag</th><th>H₂S</th><th>NACE</th></tr></thead><tbody><tr><td style="font-weight:500">${w.id||'AHM'}</td><td>${perm}</td><td style="color:#1D9E75">Wire-wrap screen (100μm)</td><td>13Cr-L80</td><td style="color:${alcf>0.24?'#EF9F27':'#1D9E75'}">${alcf.toFixed(3)}</td><td style="color:${alcf>0.24?'#EF9F27':'#1D9E75'}">${alcf>0.24?'⚠️ Monitor':'✓ Low'}</td><td style="color:#E24B4A">YES</td><td style="color:#1D9E75;font-weight:600">✓ Required</td></tr></tbody>`;
+  }
+  // Choke
+  const chkT=document.getElementById('chk-table');
+  if(chkT){
+    const whp=3.5,whp_psi=whp*145.04;
+    // Choke sizing — empirical correlation calibrated to Indian onshore conditions
+    // Base: d(64ths) ≈ 10 × (qL/100)^0.4 × (GOR/250)^(-0.2) — gives 12–28/64" for typical AHM/CB rates
+    const qL=qi*(1+wcut/100);
+    const d_raw=10*Math.pow(qL/100,0.40)*Math.pow(Math.max(1,gor)/250,-0.20)*(whp_psi/500);
+    const d_near=Math.max(8,Math.min(48,Math.round(d_raw/4)*4));
+    const regime=(whp/1.5)>=2.0?'CRITICAL ✓':'SUBCRITICAL ⚠️';
+    chkT.innerHTML=`<thead><tr><th>Well</th><th>q oil</th><th>GOR</th><th>WHP (MPa)</th><th>Choke size</th><th>Material</th><th>Flow regime</th><th>FBHP>Pb?</th></tr></thead><tbody><tr><td style="font-weight:500">${w.id||'AHM'}</td><td>${qi} bbl/d</td><td>${gor} scf/bbl</td><td>${whp}</td><td style="font-weight:600">${d_near}/64" (${(d_near/64).toFixed(3)}")</td><td>Tungsten carbide</td><td style="color:#1D9E75;font-weight:600">${regime}</td><td style="color:#1D9E75;font-weight:600">✓ Above Pb</td></tr></tbody>`;
+  }
+  const frEl=document.getElementById('flow-regime');
+  if(frEl)frEl.innerHTML=`<div class="fr"><span class="fl">WHP upstream</span><span class="fv">3.5 MPa</span></div><div class="fr"><span class="fl">Separator P</span><span class="fv">1.5 MPa</span></div><div class="fr fr-hl"><span class="fl">P ratio</span><span class="fv vg">2.33 ≥ 2.0 → Critical ✓</span></div><div class="fr"><span class="fl">Formula</span><span class="fv" style="font-size:9px">Gilbert (1954)</span></div>`;
+  const bpEl=document.getElementById('bp-strategy');
+  if(bpEl)bpEl.innerHTML=`<div class="fr"><span class="fl">Target WHP</span><span class="fv">3.5–4.5 MPa</span></div><div class="fr fr-hl"><span class="fl">Bean material</span><span class="fv">WC — sour+sandy</span></div><div class="fr"><span class="fl">Re-evaluate</span><span class="fv">After 30d test</span></div><div class="fr"><span class="fl">FBHP target</span><span class="fv">Above Pb ${(P*0.7).toFixed(1)} MPa</span></div>`;
+  // SRP
+  const srpT=document.getElementById('srp-table');
+  if(srpT){
+    const srp_needed=qi<220||wcut>45;const pump_bore=2.75,stroke=64,vol_eff=0.82;
+    const disp=0.1166*(pump_bore**2)*stroke/231*42;
+    const spm=Math.max(4,Math.min(12,Math.round(liq/(disp*vol_eff*1440)*10)/10));
+    const q_post=Math.round(qi*1.25);
+    srpT.innerHTML=`<thead><tr><th>Well</th><th>qi</th><th>SRP needed?</th><th>Pump bore</th><th>Stroke</th><th>SPM</th><th>Unit</th><th>q post-AL</th><th>Gain</th></tr></thead><tbody><tr><td style="font-weight:500">${w.id||'AHM'}</td><td>${qi}</td><td style="color:${srp_needed?'#E24B4A':'#EF9F27'};font-weight:600">${srp_needed?'🔴 YES':'🟡 SOON'}</td><td>2.75"</td><td>64"</td><td>${spm} SPM</td><td>160-64-86</td><td style="color:#1D9E75;font-weight:600">${q_post} bbl/d</td><td style="color:#1D9E75">+${q_post-qi} bbl/d</td></tr></tbody>`;
+  }
+  const amT=document.getElementById('alcf-maint-table');
+  if(amT){
+    amT.innerHTML=`<thead><tr><th>Well</th><th>ALCF</th><th>Rod coating</th><th>Squeeze interval</th><th>Paraffin scraper</th><th>Hot oil</th><th>Inspection</th></tr></thead><tbody><tr><td style="font-weight:500">${w.id||'AHM'}</td><td style="color:${alcf>0.24?'#EF9F27':'#1D9E75'}">${alcf.toFixed(3)}</td><td style="color:${alcf>0.22?'#EF9F27':'#888'}">${alcf>0.22?'⚠️ YES — inhibitor':'✓ Optional'}</td><td>${alcf>0.23?'90 days':'120 days'}</td><td style="color:#1D9E75">✓ YES</td><td>${alcf>0.23?'Monthly':'Seasonal'}</td><td>${alcf>0.24?'Monthly':'Quarterly'}</td></tr></tbody>`;
+  }
+  // Drilling KPIs
+
+}
+
 function go(name){
   document.querySelectorAll('#petro-tabs .tab').forEach(t=>t.classList.toggle('on',t.onclick&&t.onclick.toString().includes("'"+name+"'")));
   document.querySelectorAll('.panel').forEach(p=>{p.classList.remove('on');if(p.id.startsWith('p-m-'))p.style.display='none';});
   document.getElementById('p-'+name).classList.add('on');
-  if(name==='spectral')setTimeout(renderSpectral,80);else render();
+  if(name==='chem'){renderChem();}
+  else if(name==='prodeng'){renderProdEng();peTab('csg');}
+  else if(name==='drill'){renderProdEng();}
+  else if(name==='spectral')setTimeout(renderSpectral,80);
+  else if(name==='pta')setTimeout(ptaLoadSynthetic,80);
+  else render();
 }
 
 function setTabOn(name){document.querySelectorAll('#petro-tabs .tab').forEach(t=>t.classList.toggle('on',t.onclick&&t.onclick.toString().includes("'"+name+"'")));}
 
-function sw(i){CW=i;document.querySelectorAll('#wells-'+DATASET+' .w-btn').forEach((b,j)=>b.classList.toggle('on',j===i));render();}
+function sw(i){
+  CW=i;
+  const barId = 'wells-'+DATASET;
+  document.querySelectorAll('#'+barId+' .w-btn').forEach((b,j)=>b.classList.toggle('on',j===i));
+  render();
+  if(document.getElementById('p-chem').classList.contains('on')) renderChem();
+  if(document.getElementById('p-prodeng').classList.contains('on')) renderProdEng();
+  if(document.getElementById('p-drill').classList.contains('on')) renderProdEng();
+  if(document.getElementById('p-pta').classList.contains('on')) setTimeout(ptaLoadSynthetic,80);
+  // If user is on input tab, auto-fill the selected well
+  if(document.getElementById('p-input').classList.contains('on')){
+    const w=DATASET==='ahm'?AHM_WELLS[i]:DATASET==='assam'?ASSAM_WELLS[i]:ACTIVE_WELLS[i];
+    if(w) loadWellIntoInput(w);
+  }
+}
 
 function goMine(panel){
   curMinePanel=panel;
@@ -1039,19 +1792,150 @@ function buildLog(w){
   },80);
 }
 /* ── EOR SCREENING ── */
+/* ── EOR DEFAULT COSTS (₹ Lakhs) ── */
+const EOR_COST_DEFAULTS={
+  'UST':       {capex:75,  opex:20,  chem:0},
+  'ASP':       {capex:351, opex:92,  chem:85},
+  'Polymer':   {capex:234, opex:75,  chem:60},
+  'CO₂ Misc.': {capex:543, opex:150, chem:0},
+  'Surfactant':{capex:259, opex:83,  chem:70},
+  'Thermal':   {capex:484, opex:175, chem:0},
+  'Microbial': {capex:125, opex:50,  chem:30},
+};
+
+function getEORUserCosts(methodName){
+  // Read from cost table if it exists, else use defaults
+  const row=document.getElementById('ecr-'+methodName.replace(/[^a-zA-Z0-9]/g,'_'));
+  if(row){
+    return {
+      capex: parseFloat(row.querySelector('.ecr-capex').value)||EOR_COST_DEFAULTS[methodName]?.capex||100,
+      opex:  parseFloat(row.querySelector('.ecr-opex').value) ||EOR_COST_DEFAULTS[methodName]?.opex||50,
+      chem:  parseFloat(row.querySelector('.ecr-chem').value) ||EOR_COST_DEFAULTS[methodName]?.chem||0,
+    };
+  }
+  const d=EOR_COST_DEFAULTS[methodName]||{capex:200,opex:80,chem:40};
+  return d;
+}
+
+function resetEORCosts(){
+  const tbody=document.getElementById('eor-cost-body');
+  if(!tbody)return;
+  tbody.querySelectorAll('tr').forEach(row=>{
+    const name=row.dataset.method;
+    const d=EOR_COST_DEFAULTS[name]||{capex:200,opex:80,chem:40};
+    const inputs=row.querySelectorAll('input');
+    if(inputs[0])inputs[0].value=d.capex;
+    if(inputs[1])inputs[1].value=d.opex;
+    if(inputs[2])inputs[2].value=d.chem;
+  });
+  renderEOR();
+}
+
+function buildEORCostTableRow(m, w, op, eorEq, eorHor, royPct){
+  const costs=getEORUserCosts(m.n);
+  const dnKbbl=Math.round(m.upl*w.stoiip*m.peor/1000);
+  const grossCr=(dnKbbl*1000*op/1e7);
+  const totalCostCr=(costs.capex + costs.opex*eorHor + costs.chem*eorHor)/100;
+  const netNPV=(grossCr*(1-royPct)*eorEq - totalCostCr).toFixed(1);
+  const roi=costs.capex>0?((parseFloat(netNPV)/(costs.capex/100))*100).toFixed(0):'—';
+  const safeId=m.n.replace(/[^a-zA-Z0-9]/g,'_');
+  const npvColor=parseFloat(netNPV)>0?'#0B6B3E':'#A32D2D';
+  const roiColor=parseFloat(roi)>100?'#0B6B3E':parseFloat(roi)>0?'#6B4F00':'#A32D2D';
+  const rank=ACTIVE_EORS.indexOf(m)+1;
+  const rowBg=rank===1?'#F0FFF8':rank<=3?'#F8FFF4':rank<=5?'#FFFDF0':'#FFF8F8';
+  return `<tr data-method="${m.n}" id="ecr-${safeId}" style="background:${rowBg};border-bottom:0.5px solid #eee;">
+    <td style="padding:7px 12px;">
+      <div style="display:flex;align-items:center;gap:6px;">
+        <span style="background:${m.col};color:white;font-size:8px;padding:1px 5px;border-radius:3px;font-weight:600;">#${rank}</span>
+        <span style="font-weight:500;color:#1A2F4A;">${m.n}</span>
+      </div>
+      <div style="font-size:9px;color:#888;margin-top:2px;">P_EOR ${(m.peor*100).toFixed(0)}%</div>
+    </td>
+    <td style="padding:6px 8px;text-align:center;">
+      <input class="ecr-capex" type="number" value="${costs.capex}" min="0" max="5000" step="10"
+        oninput="renderEOR()"
+        style="width:64px;font-size:10px;padding:3px 5px;border:1px solid #dde;border-radius:4px;text-align:right;background:#fff;color:#C0392B;font-weight:600;">
+    </td>
+    <td style="padding:6px 8px;text-align:center;">
+      <input class="ecr-opex" type="number" value="${costs.opex}" min="0" max="2000" step="5"
+        oninput="renderEOR()"
+        style="width:60px;font-size:10px;padding:3px 5px;border:1px solid #dde;border-radius:4px;text-align:right;background:#fff;color:#E67E22;font-weight:600;">
+    </td>
+    <td style="padding:6px 8px;text-align:center;">
+      <input class="ecr-chem" type="number" value="${costs.chem}" min="0" max="1000" step="5"
+        oninput="renderEOR()"
+        style="width:60px;font-size:10px;padding:3px 5px;border:1px solid #dde;border-radius:4px;text-align:right;background:#fff;color:#8E44AD;font-weight:600;">
+    </td>
+    <td style="padding:7px 8px;text-align:center;font-weight:600;color:${m.col};">${dnKbbl} Kbbl</td>
+    <td style="padding:7px 8px;text-align:center;font-weight:600;color:#1D9E75;">₹${grossCr.toFixed(1)} Cr</td>
+    <td style="padding:7px 8px;text-align:center;font-weight:700;color:${npvColor};font-size:11px;">₹${netNPV} Cr</td>
+    <td style="padding:7px 8px;text-align:center;font-weight:600;color:${roiColor};">${roi}${roi!=='—'?'%':''}</td>
+  </tr>`;
+}
+
 function renderEOR(){
   const w=ACTIVE_WELLS[CW];
+  // Read from EOR-tab price slider if present, else fall back to Economics tab slider
+  const eorPriceSl=document.getElementById('eor-price-sl');
+  const op=eorPriceSl?parseFloat(eorPriceSl.value)||6500:parseFloat(document.getElementById('oil-sl').value)||6500;
+  const eqEl=document.getElementById('eor-equity');
+  const eorEq=(eqEl?parseFloat(eqEl.value)||85:85)/100;
+  const horEl=document.getElementById('eor-horizon');
+  const eorHor=horEl?parseInt(horEl.value)||5:5;
+  const royPct=DATASET==='mh'?0.10:0.125;
   const best=Math.max(...ACTIVE_EORS.map(m=>m.upl*w.stoiip*m.peor));
   document.getElementById('eor-bars').innerHTML=ACTIVE_EORS.map((m,i)=>{
     const dn=Math.round(m.upl*w.stoiip*m.peor),pct=Math.round(dn/best*100),rank=i+1;
     const rb=rank===1?'rb1':rank===2?'rb2':rank===3?'rb3':'rbn';
     const cat=rank===1?'Best method':rank<=3?'Highly rec.':rank<=5?'Recommended':'Not rec.';
-    return `<div class="eor-r"><span class="rb ${rb}">#${rank}</span><span class="eor-n" style="color:${rank>5?'#AAA':'#2C2C2A'}">${m.n}</span><div class="eor-bw"><div class="eor-b" style="width:${pct}%;background:${m.col};opacity:${rank<=3?1:rank<=5?.7:.45};">${cat}</div></div><span class="eor-sc" style="color:${rank>5?'#AAA':m.col}">${(m.peor*100).toFixed(0)}%</span></div>`;
+    const capexL=Math.round(m.capex*83.5);
+    const dnKbbl=Math.round(m.upl*w.stoiip*m.peor/1000);
+    const grossCr=dnKbbl*1000*op/1e7;  // gross incremental revenue
+    const royPct=DATASET==='mh'?0.10:0.125;
+    const netCr=((grossCr*(1-royPct)*eorEq)-m.capex*83.5/100-m.opex*83.5/100*eorHor).toFixed(1);
+    const contractCr=grossCr.toFixed(1);  // gross for display
+    const deployTime={UST:'2 months',Microbial:'4 months',Thermal:'6 months'}[m.n]||'3 months';
+    const dim=rank>5;
+    const tc=dim?'#AAA':'#2C2C2A';
+    return `<div style="margin-bottom:8px;border-bottom:0.5px solid #eee;padding-bottom:6px;">
+      <div class="eor-r" style="margin-bottom:4px;">
+        <span class="rb ${rb}">#${rank}</span>
+        <span class="eor-n" style="color:${tc}">${m.n}</span>
+        <div class="eor-bw"><div class="eor-b" style="width:${pct}%;background:${m.col};opacity:${rank<=3?1:rank<=5?.7:.4};">${cat}</div></div>
+        <span class="eor-sc" style="color:${dim?'#AAA':m.col}">${(m.peor*100).toFixed(0)}%</span>
+      </div>
+      <div style="display:flex;gap:14px;padding-left:30px;font-size:10px;flex-wrap:wrap;align-items:center;">
+        <span style="color:#888;">CAPEX <strong style="color:${dim?'#BBB':'#C0392B'}">₹${capexL}L</strong></span>
+        <span style="color:#888;">ΔN <strong style="color:${dim?'#BBB':m.col}">${dnKbbl} Kbbl</strong></span>
+        <span style="color:#888;">Gross <strong style="color:${dim?'#BBB':'#1D9E75'}">₹${contractCr} Cr</strong></span>
+        <span style="color:#888;">Net NPV <strong style="color:${dim?'#BBB':parseFloat(netCr)>0?'#1D9E75':'#E24B4A'}">₹${netCr} Cr</strong></span>
+        <span style="color:#888;">Deploy <strong style="color:${dim?'#BBB':'#555'}">${deployTime}</strong></span>
+      </div>
+    </div>`;
   }).join('');
   drawRadar();
+  // Populate the cost table
+  const tbody=document.getElementById('eor-cost-body');
+  if(tbody){
+    tbody.innerHTML=ACTIVE_EORS.map(m=>buildEORCostTableRow(m,w,op,eorEq,eorHor,royPct)).join('');
+  }
   const top=ACTIVE_EORS[0],dn=Math.round(top.upl*w.stoiip*top.peor/1000);
-  document.getElementById('eor-verdict').innerHTML=`<div class="verdict v-pu"><strong>HyperSenseIQ — ${top.n} EOR · Rank #1 · Best method for ${w.id}</strong><br>P_EOR: <span class="vpu">${(top.peor*100).toFixed(0)}%</span> · ΔN_eff: <span class="vpu">${dn} Kbbl</span> · CAPEX: <span class="vpu">₹${Math.round(top.capex*83.5)} Lakhs</span> · Deploy: <span class="vpu">2 months</span><div class="sbar-w"><div class="sbar" style="width:${(top.peor*100).toFixed(0)}%;background:#AB47BC;"></div></div></div>`;
+  const topGross=(dn*1000*op/1e7);
+  const topRoy=DATASET==='mh'?0.10:0.125;
+  const topNet=(topGross*(1-topRoy)*eorEq-top.capex*83.5/100-top.opex*83.5/100*eorHor).toFixed(1);
+  document.getElementById('eor-verdict').innerHTML=`<div class="verdict v-pu">
+    <strong>HyperSenseIQ — ${top.n} EOR · Rank #1 · Best method for ${w.id}</strong><br>
+    P_EOR: <span class="vpu">${(top.peor*100).toFixed(0)}%</span> &nbsp;·&nbsp;
+    ΔN_eff: <span class="vpu">${dn} Kbbl</span> &nbsp;·&nbsp;
+    CAPEX: <span class="vpu">₹${Math.round(top.capex*83.5)} L</span> &nbsp;·&nbsp;
+    Gross: <span class="vpu">₹${topGross.toFixed(1)} Cr</span> &nbsp;·&nbsp;
+    Net NPV: <span class="vpu" style="color:${parseFloat(topNet)>0?'#1D9E75':'#E24B4A'}">₹${topNet} Cr</span> &nbsp;·&nbsp;
+    Equity: <span class="vpu">${Math.round(eorEq*100)}%</span> &nbsp;·&nbsp;
+    Horizon: <span class="vpu">${eorHor} yrs</span>
+    <div class="sbar-w" style="margin-top:6px;"><div class="sbar" style="width:${(top.peor*100).toFixed(0)}%;background:#AB47BC;"></div></div>
+  </div>`;
 }
+
 
 function drawRadar(){
   const c=document.getElementById('radar-c');
@@ -1132,13 +2016,23 @@ function ec(){
     <div class="scen sc-b"><div class="sc-lbl">Base — ${INR(op)}/bbl</div><div class="sc-val ${vCls(nvB)}">${nvB>0?'+':''}₹${nvB.toFixed(1)} Cr</div><div class="sc-sub">NPV (5yr)</div></div>
     <div class="scen sc-h"><div class="sc-lbl">High — ₹8,500/bbl</div><div class="sc-val vb">+₹${nvH.toFixed(1)} Cr</div><div class="sc-sub">NPV (5yr)</div></div>`;
   const roy=di*365*op/1e7*.10,cess=di*365*op/1e7*.015,netRev=(di*365*op/1e7-roy-cess)*.85;
+  // Dataset-specific fiscal structure
+  const isOIL = DATASET==='assam';
+  const royPct = DATASET==='mh'?0.10:DATASET==='cb'?0.125:DATASET==='ahm'?0.125:0.125; // offshore 10%, onshore 12.5%
+  const royLabel = DATASET==='mh'?'Offshore royalty (10%)':'Onshore royalty (12.5%)';
+  const opLabel = {'mh':'ONGC Offshore','cb':'ONGC Onshore','ahm':'ONGC Ankleshwar','assam':'OIL India Ltd'}[DATASET]||'ONGC';
+  const equityPct = 0.85;
+  const royAmt2 = di*365*op/1e7*royPct;
+  const netRev2 = (di*365*op/1e7 - royAmt2 - cess)*equityPct;
+  const flbl = document.getElementById('fiscal-label');
+  if(flbl) flbl.textContent = `India fiscal — ${opLabel} · ${DATASET==='mh'?'Offshore':'Onshore'} well`;
   document.getElementById('fiscal').innerHTML=`
-    <div class="fr"><span class="fl">Well · method</span><span class="fv">${w.id} · UST · ${di} bbl/d incr.</span></div>
+    <div class="fr"><span class="fl">Well · operator</span><span class="fv">${w.id} · ${opLabel}</span></div>
     <div class="fr"><span class="fl">Gross revenue (peak yr)</span><span class="fv vg">${INR(di*365*op/1e7)} Cr/yr</span></div>
-    <div class="fr fr-neg"><span class="fl">Offshore royalty (10%)</span><span class="fv vr">− ${INR(roy)} Cr/yr</span></div>
-    <div class="fr fr-neg"><span class="fl">OID cess</span><span class="fv vr">− ${INR(cess)} Cr/yr</span></div>
+    <div class="fr fr-neg"><span class="fl">${royLabel}</span><span class="fv vr">− ${INR(royAmt2)} Cr/yr</span></div>
+    <div class="fr fr-neg"><span class="fl">OID cess (1.5%)</span><span class="fv vr">− ${INR(cess)} Cr/yr</span></div>
     <div class="fr fr-neg"><span class="fl">GST on services (18%)</span><span class="fv vr">− ${INR(.3*83.5/100*.18)} Cr/yr</span></div>
-    <div class="fr fr-hl"><span class="fl" style="font-weight:500;">ONGC net revenue (85%)</span><span class="fv vg" style="font-size:13px;">${INR(netRev)} Cr/yr</span></div>
+    <div class="fr fr-hl"><span class="fl" style="font-weight:500;">${opLabel} net revenue (85%)</span><span class="fv vg" style="font-size:13px;">${INR(netRev2)} Cr/yr</span></div>
     <div class="fr"><span class="fl">UST CAPEX (one-time)</span><span class="fv vr">₹${Math.round(.9*83.5)} Lakhs</span></div>
     <div class="fr ${nvB>0?'fr-hl':'fr-neg'}"><span class="fl" style="font-weight:500;">NPV @ ${Math.round(dr*100)}%</span><span class="fv ${vCls(nvB)}" style="font-size:13px;">${nvB>0?'+':''}₹${nvB.toFixed(1)} Cr</span></div>
     <div class="fr"><span class="fl">Payback</span><span class="fv ${nvB>0?'vg':'vr'}">${nvB>0?'< 2 years':'> 3 years'}</span></div>`;
@@ -1338,7 +2232,9 @@ function drawLBSpec(p){
 /* ── DIGITAL TWIN / EXEC ── */
 function renderTwin(){
   const w=ACTIVE_WELLS[CW];
-  document.getElementById('tw-id').innerHTML=`<span class="twin-id">DT-IND-20260502-${w.id.replace(/-/g,'')}</span>${[['Well',w.id,'vg'],["Field",DATASET==='mh'?'Mumbai High North':'Cambay Basin · Kalol Ss (Synthetic)','vn'],['Formation',w.form,'vn'],['Depth',w.depth,'vb'],['Status','REGISTERED — ACTIVE','vg'],['Sovereign','National Asset — OALP','vp']].map(([l,v,c])=>`<div class="fr"><span class="fl">${l}</span><span class="fv ${c}">${v}</span></div>`).join('')}`;
+  const dsField={'mh':'Mumbai High North','cb':'Cambay Basin · Kalol Ss','ahm':'Ankleshwar · Hazad Ss','assam':'Upper Assam · Tipam Ss'};
+  const dsOp={'mh':'ONGC Offshore','cb':'ONGC Onshore','ahm':'ONGC Ankleshwar Asset','assam':'OIL India Ltd · Duliajan'};
+  document.getElementById('tw-id').innerHTML=`<span class="twin-id">DT-IND-20260502-${w.id.replace(/-/g,'')}</span>${[['Well',w.id,'vg'],['Field',dsField[DATASET]||'HyperSenseIQ Demo','vn'],['Operator',dsOp[DATASET]||'ONGC','vn'],['Formation',w.form,'vn'],['Depth',w.depth,'vb'],['Status','REGISTERED — ACTIVE','vg'],['Sovereign','National Asset — OALP/DSF','vp']].map(([l,v,c])=>`<div class="fr"><span class="fl">${l}</span><span class="fv ${c}">${v}</span></div>`).join('')}`;
   const kC=v=>v>0.20?'vg':v>0.12?'va':'vr',swC=v=>v<.25?'vg':v<.55?'va':'vr';
   document.getElementById('tw-pet').innerHTML=[['Porosity φ',(w.phi*100).toFixed(0)+'%',kC(w.phi)],['Water sat. Sw',(w.sw*100).toFixed(0)+'%',swC(w.sw)],['Permeability',w.perm+' mD',w.perm>80?'vg':w.perm>40?'va':'vr'],['GR',w.gr+' API',w.gr<25?'vg':w.gr<60?'va':'vr'],['RHOB',w.rhob+' g/cc','vn'],['Net pay',w.zones.filter(z=>z.dec==='PAY').reduce((a,z)=>a+z.t,0).toFixed(1)+'m','vg'],['SIS','0.88','vg'],['FPP','0.85','vg'],['OSQ','0.89','vg']].map(([l,v,c])=>`<div class="fr"><span class="fl">${l}</span><span class="fv ${c}">${v}</span></div>`).join('');
   document.getElementById('tw-chain').innerHTML=`<div class="chain"><div class="cn">MoPNG</div><span style="color:var(--gray);font-size:10px;">→</span><div class="cn">GSI</div><span style="color:var(--gray);font-size:10px;">→</span><div class="cn">ONGC</div><span style="color:var(--gray);font-size:10px;">→</span><div class="cn">NIC DLT</div></div>${[['Blockchain','NIC — Hyperledger Fabric','vp'],['NFT','ERC-3643 (regulated)','vp'],['Hash','SHA-256 verified','vg'],['Access','RESTRICTED — ONGC+MoPNG','va'],['Status','ACTIVE — NATIONAL ASSET','vg']].map(([l,v,c])=>`<div class="fr"><span class="fl">${l}</span><span class="fv ${c}" style="font-size:10px;">${v}</span></div>`).join('')}`;
@@ -1347,20 +2243,27 @@ function renderTwin(){
 
 function renderExec(){
   const tOIP=ACTIVE_WELLS.reduce((a,w)=>a+w.oip,0),tST=ACTIVE_WELLS.reduce((a,w)=>a+w.stoiip,0),avgWC=Math.round(ACTIVE_WELLS.reduce((a,w)=>a+w.wc,0)/ACTIVE_WELLS.length);
-  const op=parseFloat(document.getElementById('oil-sl').value)||6500;
+  // Read from EOR-tab price slider if present, else fall back to Economics tab slider
+  const eorPriceSl=document.getElementById('eor-price-sl');
+  const op=eorPriceSl?parseFloat(eorPriceSl.value)||6500:parseFloat(document.getElementById('oil-sl').value)||6500;
+  const eqEl=document.getElementById('eor-equity');
+  const eorEq=(eqEl?parseFloat(eqEl.value)||85:85)/100;
+  const horEl=document.getElementById('eor-horizon');
+  const eorHor=horEl?parseInt(horEl.value)||5:5;
+  const royPct=DATASET==='mh'?0.10:0.125;
   const tNPV=ACTIVE_WELLS.reduce((a,w)=>{const di=Math.round(rate(w)*.35);return a+(di*365*op/1e7*.875*.85-.3*83.5/100)*3.5-(.9*83.5/100);},0);
   document.getElementById('k-exec').innerHTML=`
-    <div class="kpi g"><div class="kpi-l">Total field OIP</div><div class="kpi-v">${tOIP.toFixed(1)}<span style="font-size:12px;font-weight:400"> MMbbl</span></div><div class="kpi-s">${DATASET==='mh'?'5 wells — Mumbai High North':'5 wells — Cambay Basin · Kalol Ss'}</div></div>
+    <div class="kpi g"><div class="kpi-l">Total field OIP</div><div class="kpi-v">${tOIP.toFixed(1)}<span style="font-size:12px;font-weight:400"> MMbbl</span></div><div class="kpi-s">${{'mh':'5 wells — Mumbai High North','cb':'5 wells — Cambay Basin · Kalol Ss','ahm':'5 wells — Ankleshwar · Hazad Ss','assam':'5 wells — Upper Assam · Tipam Ss'}[DATASET]||'5-well portfolio'}</div></div>
     <div class="kpi n"><div class="kpi-l">Combined STOIIP</div><div class="kpi-v">${(tST/1000).toFixed(0)}K<span style="font-size:12px;font-weight:400"> STB</span></div><div class="kpi-s">Bassein Limestone</div></div>
     <div class="kpi a"><div class="kpi-l">Field avg water cut</div><div class="kpi-v">${avgWC}<span style="font-size:12px;font-weight:400">%</span></div><div class="kpi-s">EOR intervention required</div></div>
-    <div class="kpi pu"><div class="kpi-l">Best EOR — all 5 wells</div><div class="kpi-v" style="font-size:15px;">UST</div><div class="kpi-s">${DATASET==='mh'?'Rank #1 · P_EOR 82%':'Rank #1 · P_EOR 87.9%'}</div></div>
+    <div class="kpi pu"><div class="kpi-l">Best EOR — all 5 wells</div><div class="kpi-v" style="font-size:15px;">UST</div><div class="kpi-s">${{'mh':'Rank #1 · P_EOR 82%','cb':'Rank #1 · P_EOR 87.9%','ahm':'Rank #1 · P_EOR 85% (CF_mod applied)','assam':'Rank #1 · P_EOR 88% (low TDS)'}[DATASET]||'Rank #1'}</div></div>
     <div class="kpi ${tNPV>0?'g':'r'}"><div class="kpi-l">Field NPV (UST)</div><div class="kpi-v">${tNPV>0?'+':''}₹${tNPV.toFixed(0)}<span style="font-size:12px;font-weight:400"> Cr</span></div><div class="kpi-s">${INR(op)}/bbl scenario</div></div>`;
   document.getElementById('port').innerHTML=ACTIVE_WELLS.map(w=>{
     const r=rate(w),rCls=r<100?'vr':r<250?'va':'vg',rowCls=w.status==='Pay'?'g-row':w.status==='High WC'?'r-row':'a-row',stCls=w.status==='Pay'?'pb-g':w.status==='High WC'?'pb-r':'pb-a';
     const npv=(w.oip*.12*.35*op/1e7*3.5-.9*83.5/100).toFixed(1),nvCls=parseFloat(npv)>0?'vg':'vr';
     return `<div class="port-row ${rowCls}"><div class="pc"><div class="pc-l">Well</div><span style="font-weight:500;font-size:11px;">${w.id}</span></div><div class="pc"><span class="pb ${stCls}">${w.status}</span></div><div class="pc"><div class="pc-l">Rate</div><span class="${rCls}" style="font-size:11px;font-weight:500;">${r} bbl/d</span></div><div class="pc"><div class="pc-l">WC</div><span class="${w.wc>60?'vr':w.wc>35?'va':'vg'}" style="font-size:11px;font-weight:500;">${w.wc}%</span></div><div class="pc"><div class="pc-l">OIP</div><span style="font-size:11px;">${w.oip} MMbbl</span></div><div class="pc"><div class="pc-l">Best EOR</div><span class="vpu" style="font-size:11px;font-weight:500;">UST</span></div><div class="pc"><div class="pc-l">NPV est.</div><span class="${nvCls}" style="font-size:11px;font-weight:500;">${parseFloat(npv)>0?'+':''}₹${npv} Cr</span></div></div>`;
   }).join('');
-  document.getElementById('exec-v').innerHTML=DATASET==='cb'?`<div class="verdict v-g"><strong>HyperSenseIQ — Cambay Basin Kalol Sandstone · 5-well synthetic portfolio</strong><br>Total OIP: <span class="vg">${tOIP.toFixed(1)} MMbbl</span> · Avg WC: <span class="va">${avgWC}%</span><br><br>All 5 wells rank <span class="vpu">UST EOR</span> as optimal intervention — P_EOR <strong>0.879</strong> · Tight Kalol sandstone, medium-gravity crude, capillary-trapped oil: ideal UST profile.<br><br>Priority ranking: CB-01 (Mahelaj-type) → CB-02 (clean oil) → CB-03 → CB-04 (viscous) → CB-05<br><br>Portfolio NPV: <span class="vg">+₹${tNPV.toFixed(0)} Cr</span> at ${INR(op)}/bbl<div class="sbar-w" style="margin-top:7px;"><div class="sbar" style="width:87%;background:var(--g-mid);"></div></div><div style="font-size:10px;color:var(--g-dark);margin-top:3px;">Techno-Economic Score: 87.9% — Validated vs SPE/Energies/SciReports</div><div style="font-size:9px;color:#5A7A94;margin-top:5px;font-style:italic;">Synthetic dataset · Representative Cambay Basin Kalol sandstone parameters · Not derived from any specific licensed block</div></div>`:`<div class="verdict v-g"><strong>HyperSenseIQ — Mumbai High North · 5-well portfolio</strong><br>Total OIP: <span class="vg">${tOIP.toFixed(1)} MMbbl</span> · Avg WC: <span class="va">${avgWC}%</span><br><br>All 5 wells rank <span class="vpu">UST EOR</span> as optimal first-stage intervention — 2-month deployment, lowest CAPEX, zero chemical risk.<br><br>Portfolio NPV: <span class="vg">+₹${tNPV.toFixed(0)} Cr</span> at ${INR(op)}/bbl · Payback: <span class="vg">&lt; 2 years per well</span><div class="sbar-w" style="margin-top:7px;"><div class="sbar" style="width:82%;background:var(--g-mid);"></div></div><div style="font-size:10px;color:var(--g-dark);margin-top:3px;">Techno-Economic Score: 82% — High Value</div></div>`;
+  document.getElementById('exec-v').innerHTML=(DATASET==='ahm'||DATASET==='assam')?`<div class="verdict v-g"><strong>HyperSenseIQ — ${{'ahm':'Ankleshwar · Hazad Member','assam':'Upper Assam · Tipam Sandstone'}[DATASET]} · 5-well synthetic portfolio</strong><br>Total OIP: <span class="vg">${tOIP.toFixed(1)} MMbbl</span> · Avg WC: <span class="va">${avgWC}%</span><br><br>All 5 wells rank <span class="vpu">UST EOR</span> as optimal — chemistry adverse conditions penalise chemical EOR; UST CF_mod=1.00 unaffected.<br><br>Portfolio NPV: <span class="vg">+₹${tNPV.toFixed(0)} Cr</span> at ${INR(op)}/bbl<div class="sbar-w" style="margin-top:7px;"><div class="sbar" style="width:85%;background:var(--g-mid);"></div></div><div style="font-size:10px;color:var(--g-dark);margin-top:3px;">Techno-Economic Score: 85% — UST advantage confirmed by chemistry layer (v2.5/v2.6)</div><div style="font-size:9px;color:#5A7A94;margin-top:5px;font-style:italic;">Synthetic dataset · Published-data-anchored · Not derived from any specific licensed block</div></div>`:DATASET==='cb'?`<div class="verdict v-g"><strong>HyperSenseIQ — Cambay Basin Kalol Sandstone · 5-well synthetic portfolio</strong><br>Total OIP: <span class="vg">${tOIP.toFixed(1)} MMbbl</span> · Avg WC: <span class="va">${avgWC}%</span><br><br>All 5 wells rank <span class="vpu">UST EOR</span> as optimal intervention — P_EOR <strong>0.879</strong> · Tight Kalol sandstone, medium-gravity crude, capillary-trapped oil: ideal UST profile.<br><br>Priority ranking: CB-01 (Mahelaj-type) → CB-02 (clean oil) → CB-03 → CB-04 (viscous) → CB-05<br><br>Portfolio NPV: <span class="vg">+₹${tNPV.toFixed(0)} Cr</span> at ${INR(op)}/bbl<div class="sbar-w" style="margin-top:7px;"><div class="sbar" style="width:87%;background:var(--g-mid);"></div></div><div style="font-size:10px;color:var(--g-dark);margin-top:3px;">Techno-Economic Score: 87.9% — Validated vs SPE/Energies/SciReports</div><div style="font-size:9px;color:#5A7A94;margin-top:5px;font-style:italic;">Synthetic dataset · Representative Cambay Basin Kalol sandstone parameters · Not derived from any specific licensed block</div></div>`:`<div class="verdict v-g"><strong>HyperSenseIQ — Mumbai High North · 5-well portfolio</strong><br>Total OIP: <span class="vg">${tOIP.toFixed(1)} MMbbl</span> · Avg WC: <span class="va">${avgWC}%</span><br><br>All 5 wells rank <span class="vpu">UST EOR</span> as optimal first-stage intervention — 2-month deployment, lowest CAPEX, zero chemical risk.<br><br>Portfolio NPV: <span class="vg">+₹${tNPV.toFixed(0)} Cr</span> at ${INR(op)}/bbl · Payback: <span class="vg">&lt; 2 years per well</span><div class="sbar-w" style="margin-top:7px;"><div class="sbar" style="width:82%;background:var(--g-mid);"></div></div><div style="font-size:10px;color:var(--g-dark);margin-top:3px;">Techno-Economic Score: 82% — High Value</div></div>`;
 }
 
 /* ── MINING MODULE ── */
@@ -1459,8 +2362,27 @@ function renderMineTwin(m){
   document.getElementById('m-tw-repos').innerHTML=`<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:7px;">${repos.map(([n,c,s])=>`<div style="background:var(--${c}-bg);border:0.5px solid;border-color:var(--${c}-mid);border-radius:5px;padding:7px 9px;"><div style="font-size:10px;font-weight:500;color:var(--${c}-dark);margin-bottom:2px;">${s}</div><div style="font-size:10px;color:var(--gray);">${n}</div></div>`).join('')}</div>`;
 }
 /* ── YOUR WELL DATA ── */
-const SAMPLE={wid:'MH-A-101',fld:'Mumbai High North',qi:740,di:.30,wc:32,age:9,phi:.20,sw:.22,perm:78,pay:7.5,api:38,dep:1856,op:6500,dr:12,eq:85,hor:5};
-function loadSample(){Object.entries(SAMPLE).forEach(([k,v])=>{const el=document.getElementById('i-'+k);if(el)el.value=v;});livePreview();validateInp();}
+const SAMPLES={
+  mh:    {wid:'MH-A-101',fld:'Mumbai High North',qi:740,di:.30,wc:32,age:9,phi:.20,sw:.22,perm:78,pay:7.5,api:38,dep:1856,op:6500,dr:12,eq:85,hor:5},
+  cb:    {wid:'CB-DRH-01',fld:'Cambay Basin · Kalol Ss',qi:220,di:.22,wc:18,age:6,phi:.15,sw:.26,perm:28,pay:11.2,api:35,dep:1615,op:6500,dr:12,eq:85,hor:5},
+  ahm:   {wid:'AHM-W3',fld:'Ankleshwar · Hazad Member',qi:210,di:.26,wc:45,age:12,phi:.19,sw:.32,perm:52,pay:14.2,api:38,dep:1450,op:6500,dr:12,eq:85,hor:5},
+  assam: {wid:'AS-DUL-01',fld:'Duliajan · Upper Assam',qi:280,di:.22,wc:30,age:8,phi:.22,sw:.24,perm:145,pay:13.5,api:37,dep:835,op:6500,dr:12,eq:85,hor:5},
+};
+function loadSample(){
+  const s=SAMPLES[DATASET]||SAMPLES.mh;
+  Object.entries(s).forEach(([k,v])=>{const el=document.getElementById('i-'+k);if(el)el.value=v;});
+  livePreview();validateInp();
+}
+function loadWellIntoInput(w){
+  // Pre-fill form from a selected well object
+  const depNum=typeof w.depth==='string'?parseInt(w.depth):w.depth||1450;
+  const vals={wid:w.id,fld:{'mh':'Mumbai High North','cb':'Cambay Basin · Kalol Ss','ahm':'Ankleshwar · Hazad Member','assam':'Upper Assam · Tipam Ss'}[DATASET]||'',
+    qi:w.qi,di:w.Di,wc:w.wc,age:8,phi:w.phi,sw:w.sw,perm:w.perm,pay:w.pay||8,api:w.api||38,dep:depNum,op:6500,dr:12,eq:85,hor:5};
+  Object.entries(vals).forEach(([k,v])=>{const el=document.getElementById('i-'+k);if(el&&v!==undefined)el.value=v;});
+  livePreview();validateInp();
+  // Switch to input tab
+  go('input');
+}
 function clearInp(){['wid','fld','qi','di','wc','age','phi','sw','perm','pay','api','dep','op','dr','eq','hor'].forEach(k=>{const el=document.getElementById('i-'+k);if(el)el.value='';});document.getElementById('inp-preview').style.display='none';document.getElementById('inp-results').style.display='none';validateInp();}
 function gV(id){const el=document.getElementById('i-'+id);return el?parseFloat(el.value)||el.value:'';}
 function validateInp(){
@@ -1500,8 +2422,83 @@ async function runAnalysis(){
   document.getElementById('res-eor').innerHTML=scores.map((m,i)=>{const rank=i+1,rb=rank===1?'rb1':rank===2?'rb2':'rb3',pct=Math.round(m.peor/scores[0].peor*100);return `<div class="eor-r" style="margin-bottom:8px;"><span class="rb ${rb}">#${rank}</span><span class="eor-n" style="font-size:11px;">${m.n}</span><div class="eor-bw"><div class="eor-b" style="width:${pct}%;background:${m.col};">${rank===1?'Best method':'Highly rec.'}</div></div><span class="eor-sc" style="color:${m.col}">${(m.peor*100).toFixed(0)}%</span></div><div style="font-size:10px;color:var(--gray);padding-left:30px;margin-bottom:5px;">CAPEX: ₹${Math.round(m.capex*83.5)} Lakhs · ΔN: ${Math.round(m.peor*m.upl*st/1000)} Kbbl</div>`;}).join('');
   const cat=npv>5&&w.dr<.25?'High Value':npv>0?'Marginal':'Uneconomic',vCls2=cat==='High Value'?'v-g':cat==='Marginal'?'v-a':'v-r';
   document.getElementById('res-verdict').innerHTML=`<div class="verdict ${vCls2}"><strong>HyperSenseIQ — ${w.id} · ${cat} · Best EOR: ${top.n}</strong><br>Current rate: <span style="font-weight:500;">${cr} bbl/d</span> · STOIIP: <span style="font-weight:500;">${st.toLocaleString()} STB</span> · RF ${(rf*100).toFixed(0)}%<br>${top.n} EOR: P_EOR ${(top.peor*100).toFixed(0)}% · ΔN ${Math.round(top.peor*top.upl*st/1000)} Kbbl · NPV ${npv>0?'+':''}₹${npv.toFixed(1)} Cr<div class="sbar-w" style="margin-top:6px;"><div class="sbar" style="width:${(top.peor*100).toFixed(0)}%;background:${npv>0?'var(--g-mid)':'var(--a-mid)'};"></div></div></div>`;
+  // ── DECLINE CURVE on res-dec canvas ──
+  setTimeout(()=>{
+    const c=document.getElementById('res-dec');
+    if(!c)return;
+    c.width=c.parentElement.clientWidth||320; c.height=170;
+    const ctx=c.getContext('2d'),W=c.width,H=c.height;
+    ctx.clearRect(0,0,W,H);
+    const PAD={l:38,r:10,t:14,b:28};
+    const CW=W-PAD.l-PAD.r,CH=H-PAD.t-PAD.b;
+    const YEARS=w.hor||5, pts=120;
+    // Arps harmonic b=0.5: q(t)=qi/(1+0.5*Di*t)^2
+    const base=t=>w.qi/Math.pow(1+.5*w.Di*t,2);
+    const eorQ=t=>base(t)*(1+(t<1?0:t<2?.15:.22));  // EOR uplift curve
+    const eLim=15; // economic limit bbl/d
+    let maxQ=w.qi*1.1;
+    const tx=t=>PAD.l+t/YEARS*CW;
+    const ty=q=>PAD.t+CH-(Math.max(0,q)/maxQ)*CH;
+    // Grid
+    ctx.strokeStyle='rgba(0,0,0,.06)';ctx.lineWidth=.5;ctx.setLineDash([3,3]);
+    for(let yr=0;yr<=YEARS;yr++){ctx.beginPath();ctx.moveTo(tx(yr),PAD.t);ctx.lineTo(tx(yr),PAD.t+CH);ctx.stroke();}
+    [0,.25,.5,.75,1].forEach(f=>{ctx.beginPath();ctx.moveTo(PAD.l,ty(maxQ*f));ctx.lineTo(PAD.l+CW,ty(maxQ*f));ctx.stroke();});
+    ctx.setLineDash([]);
+    // Economic limit line
+    ctx.strokeStyle='rgba(226,75,74,.4)';ctx.lineWidth=1;ctx.setLineDash([4,3]);
+    ctx.beginPath();ctx.moveTo(PAD.l,ty(eLim));ctx.lineTo(PAD.l+CW,ty(eLim));ctx.stroke();
+    ctx.setLineDash([]);
+    // Base decline curve
+    ctx.beginPath();ctx.strokeStyle='#6B3FD4';ctx.lineWidth=2;
+    for(let i=0;i<=pts;i++){const t=i/pts*YEARS,q=base(t);if(i===0)ctx.moveTo(tx(t),ty(q));else ctx.lineTo(tx(t),ty(q));}
+    ctx.stroke();
+    // EOR uplift curve
+    ctx.beginPath();ctx.strokeStyle='#1D9E75';ctx.lineWidth=2;
+    for(let i=0;i<=pts;i++){const t=i/pts*YEARS,q=eorQ(t);if(i===0)ctx.moveTo(tx(t),ty(q));else ctx.lineTo(tx(t),ty(q));}
+    ctx.stroke();
+    // EOR fill
+    ctx.beginPath();
+    for(let i=0;i<=pts;i++){const t=i/pts*YEARS;if(i===0)ctx.moveTo(tx(t),ty(eorQ(t)));else ctx.lineTo(tx(t),ty(eorQ(t)));}
+    for(let i=pts;i>=0;i--){const t=i/pts*YEARS;ctx.lineTo(tx(t),ty(base(t)));}
+    ctx.closePath();ctx.fillStyle='rgba(29,158,117,.08)';ctx.fill();
+    // Axes labels
+    ctx.fillStyle='#888';ctx.font='9px system-ui';ctx.textAlign='center';
+    for(let yr=0;yr<=YEARS;yr++){ctx.fillText('Y'+yr,tx(yr),H-6);}
+    ctx.textAlign='right';
+    [0,.5,1].forEach(f=>{ctx.fillText(Math.round(maxQ*f),PAD.l-3,ty(maxQ*f)+3);});
+    ctx.fillStyle='#6B3FD4';ctx.font='bold 9px system-ui';ctx.textAlign='left';
+    ctx.fillText('Base',PAD.l+4,ty(base(YEARS*.3))-4);
+    ctx.fillStyle='#1D9E75';ctx.fillText('+ EOR',PAD.l+4,ty(eorQ(YEARS*.5))-4);
+    // Current rate dot
+    ctx.beginPath();ctx.arc(tx(0),ty(w.qi),4,0,Math.PI*2);ctx.fillStyle='#6B3FD4';ctx.fill();
+    ctx.fillStyle='#333';ctx.font='9px system-ui';ctx.textAlign='left';
+    ctx.fillText(w.qi+' bbl/d',tx(0)+6,ty(w.qi)+3);
+  },150);
+
+  // ── INDIA FISCAL ECONOMICS ──
+  const royPctInp = 0.125; // assume onshore for custom well
+  const grossRev=di*365*w.op/1e7;
+  const royAmt=(grossRev*royPctInp).toFixed(2);
+  const cessAmt=(grossRev*0.015).toFixed(2);
+  const netRev=((grossRev-parseFloat(royAmt)-parseFloat(cessAmt))*w.eq).toFixed(2);
+  document.getElementById('res-econ').innerHTML=`
+    <div class="fr"><span class="fl">Well · Best EOR method</span><span class="fv">${w.id||'Custom'} · ${top.n}</span></div>
+    <div class="fr"><span class="fl">EOR incremental rate</span><span class="fv vg">${di} bbl/d</span></div>
+    <div class="fr"><span class="fl">Gross revenue (peak yr)</span><span class="fv vg">₹${grossRev.toFixed(2)} Cr/yr</span></div>
+    <div class="fr fr-neg"><span class="fl">Onshore royalty (12.5%)</span><span class="fv vr">− ₹${royAmt} Cr/yr</span></div>
+    <div class="fr fr-neg"><span class="fl">OID cess (1.5%)</span><span class="fv vr">− ₹${cessAmt} Cr/yr</span></div>
+    <div class="fr fr-neg"><span class="fl">GST on services (18%)</span><span class="fv vr">− ₹${(top.opex*83.5/100*.18).toFixed(2)} Cr/yr</span></div>
+    <div class="fr fr-hl"><span class="fl" style="font-weight:500;">Net operator revenue</span><span class="fv vg" style="font-size:13px;">₹${netRev} Cr/yr</span></div>
+    <div class="fr"><span class="fl">EOR CAPEX (one-time)</span><span class="fv vr">₹${Math.round(top.capex*83.5)} Lakhs</span></div>
+    <div class="fr ${npv>0?'fr-hl':'fr-neg'}"><span class="fl" style="font-weight:500;">NPV @ ${Math.round(w.dr*100)}% (${w.hor} yrs)</span><span class="fv ${npv>0?'vg':'vr'}" style="font-size:13px;">${npv>0?'+':''}₹${npv.toFixed(1)} Cr</span></div>
+    <div class="fr"><span class="fl">Payback period</span><span class="fv ${npv>0?'vg':'vr'}">${npv>0?'< '+Math.ceil(w.hor/2)+' years':'> '+w.hor+' years'}</span></div>
+    <div class="fr"><span class="fl">Crude price used</span><span class="fv">₹${parseInt(w.op).toLocaleString('en-IN')}/bbl</span></div>`;
+
   document.getElementById('inp-results').style.display='block';
-  document.getElementById('inp-results').scrollIntoView({behavior:'smooth',block:'start'});
+  setTimeout(()=>{
+    const res=document.getElementById('inp-results');
+    if(res)res.scrollIntoView({behavior:'smooth',block:'start'});
+  },300);
   btn.className='';btn.classList.add('ready');btn.textContent='Re-run Analysis';btn.disabled=false;
 }
 
@@ -1624,7 +2621,7 @@ function applyLasParams() {
 
 /* ── INIT ── */
 setTimeout(()=>{render();fetchLive();},100);
-setInterval(fetchLive,15*60*1000);
+setInterval(fetchLive,15*60*1000); // refresh every 20 minutes
 window.addEventListener('resize',()=>{renderDecline();ec();});
 </script>
 </body>
