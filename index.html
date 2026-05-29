@@ -1000,169 +1000,192 @@ function ptaRun(){
 </script>
 <!-- FAQ PANEL -->
 <div class="panel" id="p-faq">
-  <div style="background:linear-gradient(135deg,#0a1a2a,#0c2a1a);border-radius:8px;padding:14px 18px;margin-bottom:16px;">
+  <div style="background:linear-gradient(135deg,#0a1a2a,#0c2a1a);border-radius:8px;padding:14px 18px;margin-bottom:20px;">
     <div style="color:#9FE1CB;font-size:13px;font-weight:500;">Frequently Asked Questions</div>
-    <div style="color:#5DCAA5;font-size:10px;margin-top:2px;">Everything a reservoir engineer, asset manager or investor needs to know about HyperSenseIQ</div>
+    <div style="color:#5DCAA5;font-size:10px;margin-top:2px;">Click any question to expand the answer</div>
   </div>
 
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+<style>
+.faq-section-title {
+  font-size:11px;font-weight:700;color:#5DCAA5;letter-spacing:.08em;
+  text-transform:uppercase;margin:20px 0 10px 0;padding-left:4px;
+  border-left:3px solid #0D6E5A;padding-left:10px;
+}
+.faq-item {
+  border:0.5px solid #1a2e40;border-radius:7px;margin-bottom:8px;
+  overflow:hidden;background:rgba(10,22,35,.6);
+}
+.faq-q {
+  width:100%;text-align:left;background:none;border:none;cursor:pointer;
+  padding:14px 16px;display:flex;justify-content:space-between;align-items:center;
+  color:#B5D4F4;font-size:12.5px;font-weight:600;font-family:Arial,sans-serif;
+  transition:background .2s;
+}
+.faq-q:hover { background:rgba(29,158,117,.08); }
+.faq-q.open { color:#9FE1CB;background:rgba(29,158,117,.1); }
+.faq-arrow {
+  font-size:16px;color:#5DCAA5;transition:transform .25s;flex-shrink:0;margin-left:12px;
+}
+.faq-q.open .faq-arrow { transform:rotate(180deg); }
+.faq-a {
+  max-height:0;overflow:hidden;transition:max-height .35s ease;
+  padding:0 16px;
+}
+.faq-a.open {
+  max-height:400px;padding:0 16px 16px 16px;
+}
+.faq-a p {
+  font-size:12px;color:#9FBDD4;line-height:1.8;margin:0;
+}
+</style>
 
-    <!-- COLUMN 1 -->
-    <div>
+<script>
+function faqToggle(el){
+  const btn=el;
+  const ans=el.nextElementSibling;
+  const isOpen=btn.classList.contains('open');
+  document.querySelectorAll('.faq-q.open').forEach(b=>{
+    b.classList.remove('open');
+    b.nextElementSibling.classList.remove('open');
+  });
+  if(!isOpen){btn.classList.add('open');ans.classList.add('open');}
+}
+</script>
 
-      <div class="card" style="margin-bottom:12px;">
-        <div class="ct" style="color:#5DCAA5;">Platform Fundamentals</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:0 28px;">
+<div>
 
-        <div style="margin-bottom:12px;">
-          <div style="font-size:11px;font-weight:600;color:#9FE1CB;margin-bottom:4px;">What is HyperSenseIQ?</div>
-          <div style="font-size:10px;color:#8AAABF;line-height:1.6;">HyperSenseIQ is an AI-powered subsurface intelligence platform designed for the Indian oil and gas sector. It takes wireline LAS files and well data as input and delivers instant reservoir characterisation, EOR screening, decline analysis, pressure transient analysis, drilling physics, economics and digital twin outputs — all in a unified browser interface. No installation required.</div>
-        </div>
+<div class="faq-section-title">Platform Fundamentals</div>
 
-        <div style="margin-bottom:12px;">
-          <div style="font-size:11px;font-weight:600;color:#9FE1CB;margin-bottom:4px;">Is this AI or physics? How do I know the results are correct?</div>
-          <div style="font-size:10px;color:#8AAABF;line-height:1.6;">The core operational engine is entirely deterministic physics — not a neural network, not a black box. Every output is traceable to a named equation and a specific input value. STOIIP uses the standard volumetric equation. Decline uses Arps harmonic. Permeability uses the Craft, Hawkins and Terry Horner method. Every domain score in the EOR ranking is independently visible and challengeable. The AI layer (SWIR spectral engine) is patented and under development — it is clearly labelled as such.</div>
-        </div>
+<div class="faq-item">
+<button class="faq-q" onclick="faqToggle(this)">What is HyperSenseIQ?<span class="faq-arrow">&#8964;</span></button>
+<div class="faq-a"><p>HyperSenseIQ is an AI-powered subsurface intelligence platform designed for the Indian oil and gas sector. It takes wireline LAS files and well data as input and delivers instant reservoir characterisation, EOR screening, decline analysis, pressure transient analysis, drilling physics, economics and digital twin outputs — all in a unified browser interface. No installation required.</p></div>
+</div>
 
-        <div style="margin-bottom:12px;">
-          <div style="font-size:11px;font-weight:600;color:#9FE1CB;margin-bottom:4px;">What data do I need to use the platform?</div>
-          <div style="font-size:10px;color:#8AAABF;line-height:1.6;">The minimum requirement is a wireline LAS file with GR, RHOB, NPHI and RT curves, or a structured data sheet with porosity, permeability, pay thickness, water saturation, API gravity and production rate. The platform also accepts pressure buildup CSV files for PTA/RTA analysis. For the built-in demo, no data upload is needed — synthetic data for five Assam and five Mumbai High wells loads automatically.</div>
-        </div>
+<div class="faq-item">
+<button class="faq-q" onclick="faqToggle(this)">Is this AI or physics? How do I know results are correct?<span class="faq-arrow">&#8964;</span></button>
+<div class="faq-a"><p>The core operational engine is entirely deterministic physics — not a neural network, not a black box. Every output is traceable to a named equation and a specific input value. STOIIP uses the standard volumetric equation. Decline uses Arps harmonic. Permeability uses the Craft, Hawkins and Terry Horner method. Every domain score in the EOR ranking is independently visible and challengeable. The AI layer (SWIR spectral engine) is patented and under development — clearly labelled as such.</p></div>
+</div>
 
-        <div style="margin-bottom:12px;">
-          <div style="font-size:11px;font-weight:600;color:#9FE1CB;margin-bottom:4px;">Is my data safe? Who can see it?</div>
-          <div style="font-size:10px;color:#8AAABF;line-height:1.6;">Data entered in the browser stays in your browser session — it is not transmitted to any server. For PSU clients with strict data sovereignty requirements, a local deployment option is available where the entire platform runs within your own network. No data leaves OIL India or ONGC infrastructure under this arrangement.</div>
-        </div>
+<div class="faq-item">
+<button class="faq-q" onclick="faqToggle(this)">What data do I need to use the platform?<span class="faq-arrow">&#8964;</span></button>
+<div class="faq-a"><p>The minimum requirement is a wireline LAS file with GR, RHOB, NPHI and RT curves, or a structured data sheet with porosity, permeability, pay thickness, water saturation, API gravity and production rate. The platform also accepts pressure buildup CSV files for PTA/RTA analysis. For the built-in demo, no data upload is needed — synthetic data for five Assam and five Mumbai High wells loads automatically.</p></div>
+</div>
 
-        <div style="margin-bottom:0;">
-          <div style="font-size:11px;font-weight:600;color:#9FE1CB;margin-bottom:4px;">Is a patent filed?</div>
-          <div style="font-size:10px;color:#8AAABF;line-height:1.6;">Yes. The HyperSenseIQ SWIR spectral intelligence engine is covered by a patent application filed on 24 March 2026 with 11 claims. Six additional claims are drafted. The patent covers the transformer-based mineralogy identification and hydrocarbon contact prediction from hyperspectral core plug images.</div>
-        </div>
-      </div>
+<div class="faq-item">
+<button class="faq-q" onclick="faqToggle(this)">Is my data safe? Who can see it?<span class="faq-arrow">&#8964;</span></button>
+<div class="faq-a"><p>Data entered in the browser stays in your browser session — it is not transmitted to any server. For PSU clients with strict data sovereignty requirements, a local deployment option is available where the entire platform runs within your own network. No data leaves OIL India or ONGC infrastructure under this arrangement.</p></div>
+</div>
 
-      <div class="card" style="margin-bottom:12px;">
-        <div class="ct" style="color:#5DCAA5;">Well Intelligence & Petrophysics</div>
+<div class="faq-item">
+<button class="faq-q" onclick="faqToggle(this)">Is a patent filed?<span class="faq-arrow">&#8964;</span></button>
+<div class="faq-a"><p>Yes. The HyperSenseIQ SWIR spectral intelligence engine is covered by a patent application filed on 24 March 2026 with 11 claims. Six additional claims are drafted. The patent covers the transformer-based mineralogy identification and hydrocarbon contact prediction from hyperspectral core plug images.</p></div>
+</div>
 
-        <div style="margin-bottom:12px;">
-          <div style="font-size:11px;font-weight:600;color:#9FE1CB;margin-bottom:4px;">How does HyperSenseIQ identify pay zones?</div>
-          <div style="font-size:10px;color:#8AAABF;line-height:1.6;">The platform applies a five-criterion cutoff system to each depth interval: GR below the shale baseline identifies clean sand; RHOB and NPHI cross-over confirms gas or light oil; RT above the water baseline identifies hydrocarbon bearing zones; Sw calculated from Archie's equation determines fluid type. Zones meeting all criteria are flagged Pay. Zones meeting three or four are flagged Marginal.</div>
-        </div>
+<div class="faq-section-title">Well Intelligence &amp; Petrophysics</div>
 
-        <div style="margin-bottom:12px;">
-          <div style="font-size:11px;font-weight:600;color:#9FE1CB;margin-bottom:4px;">How is STOIIP calculated?</div>
-          <div style="font-size:10px;color:#8AAABF;line-height:1.6;">Using the standard volumetric equation: STOIIP = 7758 × A × h × φ × (1 − Sw) / Bo, where A is drainage area in acres, h is net pay in feet, φ is effective porosity, Sw is water saturation and Bo is the formation volume factor. Every parameter is visible in the Your Well Data tab and can be adjusted.</div>
-        </div>
+<div class="faq-item">
+<button class="faq-q" onclick="faqToggle(this)">How does HyperSenseIQ identify pay zones?<span class="faq-arrow">&#8964;</span></button>
+<div class="faq-a"><p>The platform applies a five-criterion cutoff system to each depth interval: GR below the shale baseline identifies clean sand; RHOB and NPHI cross-over confirms gas or light oil; RT above the water baseline identifies hydrocarbon bearing zones; Sw calculated from Archie's equation determines fluid type. Zones meeting all criteria are flagged Pay. Zones meeting three or four are flagged Marginal.</p></div>
+</div>
 
-        <div style="margin-bottom:0;">
-          <div style="font-size:11px;font-weight:600;color:#9FE1CB;margin-bottom:4px;">What does the Spectral tab show?</div>
-          <div style="font-size:10px;color:#8AAABF;line-height:1.6;">It demonstrates the SWIR spectral intelligence engine on synthetic core plug data. Absorption peaks at 1730nm indicate oil signatures, 1900nm indicates brine, and 2200nm and above identify clay minerals, dolomite and mica. The engine cross-checks log-derived water saturation against spectral mineralogy to confirm or challenge the pay zone call. Real core plug image analysis is available for validation engagements.</div>
-        </div>
-      </div>
+<div class="faq-item">
+<button class="faq-q" onclick="faqToggle(this)">How is STOIIP calculated?<span class="faq-arrow">&#8964;</span></button>
+<div class="faq-a"><p>Using the standard volumetric equation: STOIIP = 7758 × A × h × φ × (1 − Sw) / Bo, where A is drainage area in acres, h is net pay in feet, φ is effective porosity, Sw is water saturation and Bo is the formation volume factor. Every parameter is visible in the Your Well Data tab and can be adjusted.</p></div>
+</div>
 
-      <div class="card">
-        <div class="ct" style="color:#5DCAA5;">Drilling Physics</div>
+<div class="faq-item">
+<button class="faq-q" onclick="faqToggle(this)">What does the Spectral tab show?<span class="faq-arrow">&#8964;</span></button>
+<div class="faq-a"><p>It demonstrates the SWIR spectral intelligence engine on synthetic core plug data. Absorption peaks at 1730nm indicate oil signatures, 1900nm indicates brine, and 2200nm and above identify clay minerals, dolomite and mica. The engine cross-checks log-derived water saturation against spectral mineralogy to confirm or challenge the pay zone call. Real core plug image analysis is available for validation engagements.</p></div>
+</div>
 
-        <div style="margin-bottom:12px;">
-          <div style="font-size:11px;font-weight:600;color:#9FE1CB;margin-bottom:4px;">What does the Drilling Physics module compute?</div>
-          <div style="font-size:10px;color:#8AAABF;line-height:1.6;">It computes the full drilling envelope: pore pressure gradient using the Eaton method, fracture gradient using the Hubbert-Willis method, equivalent circulating density accounting for mud rheology and annular pressure losses, and the safe mud weight window between pore pressure and fracture gradient. It flags kick risk when pore pressure approaches mud weight and lost circulation risk when ECD approaches the fracture gradient.</div>
-        </div>
+<div class="faq-section-title">Drilling Physics</div>
 
-        <div style="margin-bottom:0;">
-          <div style="font-size:11px;font-weight:600;color:#9FE1CB;margin-bottom:4px;">Can I use this for well planning?</div>
-          <div style="font-size:10px;color:#8AAABF;line-height:1.6;">Yes, as a pre-drill screening and planning tool. The platform accepts pore pressure, fracture gradient and mud weight as inputs from your drilling records and delivers the safety envelope, ECD and MPD pressure limit. For detailed well design, the outputs inform rather than replace dedicated drilling software.</div>
-        </div>
-      </div>
+<div class="faq-item">
+<button class="faq-q" onclick="faqToggle(this)">What does the Drilling Physics module compute?<span class="faq-arrow">&#8964;</span></button>
+<div class="faq-a"><p>It computes the full drilling envelope: pore pressure gradient using the Eaton method, fracture gradient using the Hubbert-Willis method, equivalent circulating density accounting for mud rheology and annular pressure losses, and the safe mud weight window. It flags kick risk when pore pressure approaches mud weight and lost circulation risk when ECD approaches the fracture gradient.</p></div>
+</div>
 
-    </div>
+<div class="faq-item">
+<button class="faq-q" onclick="faqToggle(this)">Can I use this for well planning?<span class="faq-arrow">&#8964;</span></button>
+<div class="faq-a"><p>Yes, as a pre-drill screening and planning tool. The platform accepts pore pressure, fracture gradient and mud weight as inputs from your drilling records and delivers the safety envelope, ECD and MPD pressure limit. For detailed well design, the outputs inform rather than replace dedicated drilling software.</p></div>
+</div>
 
-    <!-- COLUMN 2 -->
-    <div>
+</div>
+<div>
 
-      <div class="card" style="margin-bottom:12px;">
-        <div class="ct" style="color:#5DCAA5;">EOR Screening & Ranking</div>
+<div class="faq-section-title">EOR Screening &amp; Ranking</div>
 
-        <div style="margin-bottom:12px;">
-          <div style="font-size:11px;font-weight:600;color:#9FE1CB;margin-bottom:4px;">How does the EOR screening work?</div>
-          <div style="font-size:10px;color:#8AAABF;line-height:1.6;">The platform evaluates eight EOR methods simultaneously: polymer flood, ASP, surfactant, CO2 miscible, steam, SAGD, in-situ combustion and waterflooding. Each method is scored across six scientific domains — Physics, Mechanical, Geological, Chemical, Operational and Techno-Economic. The composite P_EOR score is the weighted average across all six domains. The highest scoring method is ranked as the primary recommendation, with the full ranking visible for every well.</div>
-        </div>
+<div class="faq-item">
+<button class="faq-q" onclick="faqToggle(this)">How does the EOR screening work?<span class="faq-arrow">&#8964;</span></button>
+<div class="faq-a"><p>The platform evaluates eight EOR methods simultaneously: polymer flood, ASP, surfactant, CO2 miscible, steam, SAGD, in-situ combustion and waterflooding. Each method is scored across six scientific domains — Physics, Mechanical, Geological, Chemical, Operational and Techno-Economic. The composite P_EOR score is the weighted average across all six domains. The highest scoring method is the primary recommendation, with the full ranking visible for every well.</p></div>
+</div>
 
-        <div style="margin-bottom:12px;">
-          <div style="font-size:11px;font-weight:600;color:#9FE1CB;margin-bottom:4px;">What is wettability and why does it matter for EOR?</div>
-          <div style="font-size:10px;color:#8AAABF;line-height:1.6;">Wettability describes whether the rock surface preferentially contacts oil or water. An oil-wet formation is harder to flood efficiently with water. HyperSenseIQ computes a wettability modifier coefficient from API gravity, connate water saturation and irreducible water saturation. This modifier adjusts the EOR score — chemical methods receive a higher uplift in oil-wet reservoirs, waterflood receives a penalty.</div>
-        </div>
+<div class="faq-item">
+<button class="faq-q" onclick="faqToggle(this)">What is wettability and why does it matter?<span class="faq-arrow">&#8964;</span></button>
+<div class="faq-a"><p>Wettability describes whether the rock surface preferentially contacts oil or water. An oil-wet formation is harder to flood efficiently with water. HyperSenseIQ computes a wettability modifier coefficient from API gravity, connate water saturation and irreducible water saturation. This modifier adjusts the EOR score — chemical methods receive a higher uplift in oil-wet reservoirs, waterflood receives a penalty.</p></div>
+</div>
 
-        <div style="margin-bottom:0;">
-          <div style="font-size:11px;font-weight:600;color:#9FE1CB;margin-bottom:4px;">What is a Thief Zone and how does it affect EOR?</div>
-          <div style="font-size:10px;color:#8AAABF;line-height:1.6;">A thief zone is a high permeability streak that preferentially accepts injected fluid, bypassing the lower permeability pay zones. HyperSenseIQ detects thief zones from the k/phi ratio diagnostic. When detected, it applies a penalty to injection-based EOR methods (waterflood, polymer, ASP) and flags the formation for conformance control evaluation before any injection programme.</div>
-        </div>
-      </div>
+<div class="faq-item">
+<button class="faq-q" onclick="faqToggle(this)">What is a Thief Zone and how does it affect EOR?<span class="faq-arrow">&#8964;</span></button>
+<div class="faq-a"><p>A thief zone is a high permeability streak that preferentially accepts injected fluid, bypassing lower permeability pay zones. HyperSenseIQ detects thief zones from the k/phi ratio diagnostic. When detected, it applies a penalty to injection-based EOR methods (waterflood, polymer, ASP) and flags the formation for conformance control evaluation before any injection programme.</p></div>
+</div>
 
-      <div class="card" style="margin-bottom:12px;">
-        <div class="ct" style="color:#5DCAA5;">Pressure Transient Analysis (PTA/RTA)</div>
+<div class="faq-section-title">Pressure Transient Analysis (PTA/RTA)</div>
 
-        <div style="margin-bottom:12px;">
-          <div style="font-size:11px;font-weight:600;color:#9FE1CB;margin-bottom:4px;">What is the Horner method and what does it tell me?</div>
-          <div style="font-size:10px;color:#8AAABF;line-height:1.6;">The Horner method analyses pressure buildup after shutting in a well. It plots shut-in pressure against the logarithm of the Horner time function (tp + Δt)/Δt. The straight line in the middle time region gives the slope m, from which permeability is calculated as k = 162.6qBµ/(|m|h). The skin factor S tells you whether the wellbore is damaged (positive skin) or stimulated by fractures or acid (negative skin).</div>
-        </div>
+<div class="faq-item">
+<button class="faq-q" onclick="faqToggle(this)">What is the Horner method and what does it tell me?<span class="faq-arrow">&#8964;</span></button>
+<div class="faq-a"><p>The Horner method analyses pressure buildup after shutting in a well. It plots shut-in pressure against the logarithm of the Horner time function (tp + Δt)/Δt. The straight line in the middle time region gives slope m, from which permeability k = 162.6qBμ/(|m|h) is calculated. The skin factor S tells you whether the wellbore is damaged (positive skin) or stimulated by fractures or acid (negative skin).</p></div>
+</div>
 
-        <div style="margin-bottom:12px;">
-          <div style="font-size:11px;font-weight:600;color:#9FE1CB;margin-bottom:4px;">What does a skin factor of +5 mean for my well?</div>
-          <div style="font-size:10px;color:#8AAABF;line-height:1.6;">A skin of +5 indicates significant formation damage near the wellbore — likely from drilling mud invasion, scale deposition, clay swelling or fines migration. It means the well is producing at a fraction of its theoretical rate. A workover or acid stimulation to reduce skin to near zero can substantially restore productivity. The platform recommends intervention when skin exceeds 5.</div>
-        </div>
+<div class="faq-item">
+<button class="faq-q" onclick="faqToggle(this)">What does a skin factor of +5 mean for my well?<span class="faq-arrow">&#8964;</span></button>
+<div class="faq-a"><p>A skin of +5 indicates significant formation damage near the wellbore — likely from drilling mud invasion, scale deposition, clay swelling or fines migration. The well is producing at a fraction of its theoretical rate. A workover or acid stimulation to reduce skin to near zero can substantially restore productivity. The platform recommends intervention when skin exceeds 5.</p></div>
+</div>
 
-        <div style="margin-bottom:12px;">
-          <div style="font-size:11px;font-weight:600;color:#9FE1CB;margin-bottom:4px;">Can I upload my own pressure buildup data?</div>
-          <div style="font-size:10px;color:#8AAABF;line-height:1.6;">Yes. Click Upload CSV in the PTA/RTA tab and provide a file with two columns: time_hrs and pressure_psi. The platform parses it automatically, runs the Horner analysis and displays the plot and results within seconds. The built-in synthetic data loads automatically for each well so you can see the capability without any data preparation.</div>
-        </div>
+<div class="faq-item">
+<button class="faq-q" onclick="faqToggle(this)">Can I upload my own pressure buildup data?<span class="faq-arrow">&#8964;</span></button>
+<div class="faq-a"><p>Yes. Click Upload CSV in the PTA/RTA tab and provide a file with two columns: time_hrs and pressure_psi. The platform parses it automatically, runs the Horner analysis and displays the plot and results within seconds. The built-in synthetic data loads automatically for each well so you can see the capability without any data preparation.</p></div>
+</div>
 
-        <div style="margin-bottom:0;">
-          <div style="font-size:11px;font-weight:600;color:#9FE1CB;margin-bottom:4px;">How is the synthetic pressure data generated?</div>
-          <div style="font-size:10px;color:#8AAABF;line-height:1.6;">Synthetic buildup is generated from each well's petrophysical parameters using the van Everdingen-Hurst radial flow model. The Horner slope m is back-calculated from the well's known permeability k, and the pressure buildup curve is constructed accordingly. This means when you run PTA on a synthetic well, the platform will recover the true k and skin — providing a built-in accuracy check for the method.</div>
-        </div>
-      </div>
+<div class="faq-section-title">Economics, Decline &amp; Commercial</div>
 
-      <div class="card" style="margin-bottom:12px;">
-        <div class="ct" style="color:#5DCAA5;">Economics & Decline</div>
+<div class="faq-item">
+<button class="faq-q" onclick="faqToggle(this)">How does the India fiscal model work?<span class="faq-arrow">&#8964;</span></button>
+<div class="faq-a"><p>The platform uses live Brent crude pricing converted to INR at real-time FX rates. It applies GoI royalty rates, OID cess, GST on services, and ONGC or OIL India equity percentages to compute field-specific NPV and IRR. Payback period and undiscounted cash flow are also shown. All fiscal parameters are editable in the Economics tab for sensitivity analysis.</p></div>
+</div>
 
-        <div style="margin-bottom:12px;">
-          <div style="font-size:11px;font-weight:600;color:#9FE1CB;margin-bottom:4px;">How does the India fiscal model work?</div>
-          <div style="font-size:10px;color:#8AAABF;line-height:1.6;">The platform uses live Brent crude pricing converted to INR at real-time FX rates. It applies GoI royalty rates, OID cess, GST on services, and ONGC or OIL India equity percentages to compute field-specific NPV and IRR. Payback period and undiscounted cash flow are also shown. All fiscal parameters are editable in the Economics tab for sensitivity analysis.</div>
-        </div>
+<div class="faq-item">
+<button class="faq-q" onclick="faqToggle(this)">What decline model does HyperSenseIQ use?<span class="faq-arrow">&#8964;</span></button>
+<div class="faq-a"><p>Arps harmonic decline with b = 0.5 as the default, appropriate for most Indian sandstone reservoirs. The platform computes EUR, remaining reserves, abandonment rate and the Production History Factor (PHF) which validates whether the well's actual decline matches the model. A PHF above 1.1 flags accelerated decline for investigation.</p></div>
+</div>
 
-        <div style="margin-bottom:0;">
-          <div style="font-size:11px;font-weight:600;color:#9FE1CB;margin-bottom:4px;">What decline model does HyperSenseIQ use?</div>
-          <div style="font-size:10px;color:#8AAABF;line-height:1.6;">Arps harmonic decline with b = 0.5 as the default, which is appropriate for most Indian sandstone reservoirs. The platform computes EUR (estimated ultimate recovery), remaining reserves, abandonment rate and the Production History Factor (PHF) which validates whether the well's actual decline matches the model. A PHF above 1.1 flags accelerated decline for investigation.</div>
-        </div>
-      </div>
+<div class="faq-item">
+<button class="faq-q" onclick="faqToggle(this)">How do we start a pilot validation?<span class="faq-arrow">&#8964;</span></button>
+<div class="faq-a"><p>The simplest path is two or three anonymous wells from your field — as LAS files, structured data sheets or direct platform entry. HyperSenseIQ runs the full six-layer analysis and delivers a confidential report. No data leaves your organisation. The outputs are anonymised. This is a zero-risk proof of concept before any formal engagement.</p></div>
+</div>
 
-      <div class="card">
-        <div class="ct" style="color:#5DCAA5;">Commercial & Engagement</div>
+<div class="faq-item">
+<button class="faq-q" onclick="faqToggle(this)">What is the commercial model?<span class="faq-arrow">&#8964;</span></button>
+<div class="faq-a"><p>The platform operates on an annual SaaS licence model. Pilot engagements are offered at a fixed project fee. Post-pilot, licensing options include per-well annual, per-field annual and enterprise-wide access. Indian PSU pricing is calibrated for DGH budget cycles. Contact niranjanbilgi@yahoo.com for a formal proposal.</p></div>
+</div>
 
-        <div style="margin-bottom:12px;">
-          <div style="font-size:11px;font-weight:600;color:#9FE1CB;margin-bottom:4px;">How do we start a pilot validation with HyperSenseIQ?</div>
-          <div style="font-size:10px;color:#8AAABF;line-height:1.6;">The simplest path is two or three anonymous wells from your field — as LAS files, structured data sheets or direct platform entry. HyperSenseIQ runs the full six-layer analysis and delivers a confidential report with petrophysical assessment, EOR ranking, decline forecast and economics. No data leaves your organisation. The outputs are anonymised. This is a zero-risk proof of concept before any formal engagement.</div>
-        </div>
+<div class="faq-item">
+<button class="faq-q" onclick="faqToggle(this)">Is this platform only for petroleum?<span class="faq-arrow">&#8964;</span></button>
+<div class="faq-a"><p>The Mining tab is live with architecture for coalfields (BCCL/CIL Jharia) and iron ore (NMDC Bailadila) as flagship demos. The platform applies analogous intelligence — ore grade distribution, depletion curves, MMDR Act fiscal compliance and recovery optimisation. The mining campaign follows the petroleum pilot validation phase. SWIR spectral analysis applies directly to core drill samples from mineral exploration.</p></div>
+</div>
 
-        <div style="margin-bottom:12px;">
-          <div style="font-size:11px;font-weight:600;color:#9FE1CB;margin-bottom:4px;">What is the commercial model?</div>
-          <div style="font-size:10px;color:#8AAABF;line-height:1.6;">The platform operates on an annual SaaS licence model. Pilot engagements are offered at a fixed project fee. Post-pilot, licensing options include per-well annual, per-field annual and enterprise-wide access. Indian PSU pricing is calibrated for DGH budget cycles. Contact niranjanbilgi@yahoo.com for a formal proposal.</div>
-        </div>
+</div>
+</div>
 
-        <div style="margin-bottom:0;">
-          <div style="font-size:11px;font-weight:600;color:#9FE1CB;margin-bottom:4px;">Is this platform only for petroleum? What about mining?</div>
-          <div style="font-size:10px;color:#8AAABF;line-height:1.6;">The Mining tab is live with architecture for coalfields (BCCL/CIL Jharia) and iron ore (NMDC Bailadila) as flagship demos. The platform applies analogous intelligence — ore grade distribution, depletion curves, MMDR Act fiscal compliance and recovery optimisation. The mining campaign will follow the petroleum pilot validation phase. SWIR spectral analysis is directly applicable to core drill samples from mineral exploration.</div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <div style="margin-top:14px;padding:12px 16px;background:rgba(29,158,117,.08);border-radius:8px;border:0.5px solid #1D9E75;">
-    <div style="font-size:10px;color:#5DCAA5;font-weight:600;margin-bottom:4px;">Have a question not answered here?</div>
-    <div style="font-size:10px;color:#8AAABF;">Contact Niranjan Bilgi directly at <span style="color:#5DCAA5;">niranjanbilgi@yahoo.com</span> or +91 9699165381. For technical validation enquiries, platform demonstrations or pilot proposals, we respond within 24 hours.</div>
+  <div style="margin-top:18px;padding:14px 18px;background:rgba(29,158,117,.08);border-radius:8px;border:0.5px solid #1D9E75;">
+    <div style="font-size:11px;color:#5DCAA5;font-weight:600;margin-bottom:5px;">Have a question not answered here?</div>
+    <div style="font-size:11px;color:#9FBDD4;line-height:1.7;">Contact Niranjan Bilgi directly at <span style="color:#5DCAA5;">niranjanbilgi@yahoo.com</span> or +91 9699165381. For technical validation enquiries, platform demonstrations or pilot proposals, we respond within 24 hours.</div>
   </div>
 </div>
 
 <!-- MINING PANELS -->
+
 <div class="panel" id="p-m-overview" style="display:none;">
   <div style="background:linear-gradient(135deg,#0C2A1A,#1A0C3D);border-radius:8px;padding:12px 16px;margin-bottom:14px;">
     <div style="color:#9FE1CB;font-size:13px;font-weight:500;" id="m-title">HyperSenseIQ Mining Intelligence</div>
