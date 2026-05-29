@@ -344,6 +344,67 @@ input[type=range]{accent-color:var(--g-mid);}
       <canvas id="radar-c" width="300" height="220" style="width:100%;max-width:300px;display:block;margin:0 auto;"></canvas>
     </div>
   </div>
+  <!-- RESERVOIR DIAGNOSTICS CARDS -->
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:14px;margin-bottom:4px;">
+
+    <!-- WETTABILITY DIAGNOSTIC -->
+    <div class="card" style="border-top:2px solid #1D9E75;">
+      <div class="ct" style="color:#1D9E75;">Wettability Diagnostic</div>
+      <div style="font-size:9px;color:#6A8FAD;margin-bottom:8px;">W_mod coefficient · Affects all EOR scores</div>
+      <div id="diag-wett-content">
+        <div style="text-align:center;padding:10px 0;">
+          <div id="wmod-val" style="font-size:28px;font-weight:700;color:#1D9E75;">—</div>
+          <div id="wmod-label" style="font-size:10px;color:#9FE1CB;margin-top:2px;">W_mod coefficient</div>
+          <div id="wmod-class" style="font-size:11px;font-weight:600;color:#5DCAA5;margin-top:6px;">—</div>
+        </div>
+        <div style="font-size:9px;color:#5A7A94;line-height:1.6;margin-top:6px;" id="wmod-desc">
+          W_mod computed from API gravity, connate Sw and irreducible Sw. Values below 0.85 indicate oil-wet conditions favouring chemical EOR over waterflood.
+        </div>
+        <div style="margin-top:8px;background:rgba(29,158,117,.08);border-radius:5px;padding:6px 8px;">
+          <div style="font-size:9px;color:#6A8FAD;">Impact on EOR methods:</div>
+          <div id="wmod-impact" style="font-size:9px;color:#9FE1CB;margin-top:3px;line-height:1.6;">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- THIEF ZONE DIAGNOSTIC -->
+    <div class="card" style="border-top:2px solid #EF9F27;">
+      <div class="ct" style="color:#EF9F27;">Thief Zone Diagnostic</div>
+      <div style="font-size:9px;color:#6A8FAD;margin-bottom:8px;">k/φ ratio · TZ_pen applied to injection EOR</div>
+      <div style="text-align:center;padding:10px 0;">
+        <div id="kphi-val" style="font-size:28px;font-weight:700;color:#EF9F27;">—</div>
+        <div style="font-size:10px;color:#9FE1CB;margin-top:2px;">k/φ ratio (mD/fraction)</div>
+        <div id="tz-flag" style="font-size:11px;font-weight:600;margin-top:6px;padding:3px 10px;border-radius:4px;display:inline-block;">—</div>
+      </div>
+      <div style="font-size:9px;color:#5A7A94;line-height:1.6;margin-top:6px;" id="tz-desc">
+        Thief zones are high-permeability streaks that steal injected fluid from target pay. Detected when k/φ exceeds 500 mD/fraction. Penalises waterflood, polymer and ASP EOR methods.
+      </div>
+      <div style="margin-top:8px;background:rgba(239,159,39,.08);border-radius:5px;padding:6px 8px;">
+        <div style="font-size:9px;color:#6A8FAD;">TZ penalty applied:</div>
+        <div id="tz-penalty" style="font-size:9px;color:#EF9F27;margin-top:3px;line-height:1.6;">—</div>
+      </div>
+    </div>
+
+    <!-- CONFORMANCE FACTOR -->
+    <div class="card" style="border-top:2px solid #9C6FDE;">
+      <div class="ct" style="color:#9C6FDE;">Conformance Factor (CF_mod)</div>
+      <div style="font-size:9px;color:#6A8FAD;margin-bottom:8px;">Chemistry fitness · Water-rock compatibility</div>
+      <div style="text-align:center;padding:10px 0;">
+        <div id="cfmod-val" style="font-size:28px;font-weight:700;color:#9C6FDE;">—</div>
+        <div style="font-size:10px;color:#9FE1CB;margin-top:2px;">CF_mod (formation water quality)</div>
+        <div id="cfmod-class" style="font-size:11px;font-weight:600;color:#9C6FDE;margin-top:6px;">—</div>
+      </div>
+      <div style="font-size:9px;color:#5A7A94;line-height:1.6;margin-top:6px;" id="cfmod-desc">
+        CF_mod reflects formation water chemistry fitness for EOR injection. High TDS, hardness or incompatible ions reduce the score for chemical EOR methods. UST and thermal methods are unaffected.
+      </div>
+      <div style="margin-top:8px;background:rgba(156,111,222,.08);border-radius:5px;padding:6px 8px;">
+        <div style="font-size:9px;color:#6A8FAD;">Master formula:</div>
+        <div style="font-size:9px;color:#9C6FDE;margin-top:3px;font-family:monospace;">P_EOR_adj = AVG × W_mod × CF_mod × (1−TZ_pen)</div>
+      </div>
+    </div>
+
+  </div>
+
   <!-- EOR Cost Input Layer -->
   <div style="margin-top:12px;">
     <div style="background:linear-gradient(135deg,#1A2F4A,#0D2035);border-radius:8px 8px 0 0;padding:10px 16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
@@ -1128,7 +1189,17 @@ function faqToggle(el){
 
 <div class="faq-item">
 <button class="faq-q" onclick="faqToggle(this)">What is a Thief Zone and how does it affect EOR?<span class="faq-arrow">&#8964;</span></button>
-<div class="faq-a"><p>A thief zone is a high permeability streak that preferentially accepts injected fluid, bypassing lower permeability pay zones. HyperSenseIQ detects thief zones from the k/phi ratio diagnostic. When detected, it applies a penalty to injection-based EOR methods (waterflood, polymer, ASP) and flags the formation for conformance control evaluation before any injection programme.</p></div>
+<div class="faq-a"><p>A thief zone is a high permeability streak that preferentially accepts injected fluid, bypassing lower permeability pay zones. HyperSenseIQ detects thief zones from the k/phi ratio diagnostic. When detected, it applies a TZ_pen penalty to injection-based EOR methods (waterflood, polymer, ASP) and flags the formation for conformance control evaluation before any injection programme. The diagnostic is now visible directly in the EOR Screening tab.</p></div>
+</div>
+
+<div class="faq-item">
+<button class="faq-q" onclick="faqToggle(this)">What is the Conformance Factor (CF_mod) and why does it matter?<span class="faq-arrow">&#8964;</span></button>
+<div class="faq-a"><p>The Conformance Factor reflects the fitness of formation water chemistry for EOR injection methods. High total dissolved solids (TDS), hardness, scaling ions or incompatible brines reduce the CF_mod score for chemical EOR methods such as polymer and ASP. A CF_mod of 1.0 means the water is clean and unpenalised. Ankleshwar Hazad Member water, for example, carries a CF_mod of 0.68 due to high TDS and sulphate scaling tendency. UST and thermal methods are unaffected by CF_mod. The three modifiers — W_mod, CF_mod and TZ_pen — together adjust the raw EOR score through the master formula: P_EOR_adj = AVG × W_mod × CF_mod × (1 − TZ_pen).</p></div>
+</div>
+
+<div class="faq-item">
+<button class="faq-q" onclick="faqToggle(this)">How do W_mod, TZ_pen and CF_mod work together?<span class="faq-arrow">&#8964;</span></button>
+<div class="faq-a"><p>These three modifiers are HyperSenseIQ's reservoir quality adjusters. W_mod (wettability modifier) reflects oil-wet versus water-wet tendencies from API gravity and water saturation data. TZ_pen (thief zone penalty) is triggered when the k/phi ratio exceeds 500 mD/fraction, indicating a high-permeability streak. CF_mod (conformance factor) reflects water chemistry fitness. Together they ensure the EOR ranking is not just based on generic physics but on the specific character of each well's reservoir. All three are now visible as diagnostic cards in the EOR Screening tab.</p></div>
 </div>
 
 <div class="faq-section-title">Pressure Transient Analysis (PTA/RTA)</div>
@@ -2112,6 +2183,7 @@ function renderEOR(){
   const topGross=(dn*1000*op/1e7);
   const topRoy=DATASET==='mh'?0.10:0.125;
   const topNet=(topGross*(1-topRoy)*eorEq-top.capex*83.5/100-top.opex*83.5/100*eorHor).toFixed(1);
+  renderEORDiagnostics();
   document.getElementById('eor-verdict').innerHTML=`<div class="verdict v-pu">
     <strong>HyperSenseIQ — ${top.n} EOR · Rank #1 · Best method for ${w.id}</strong><br>
     P_EOR: <span class="vpu">${(top.peor*100).toFixed(0)}%</span> &nbsp;·&nbsp;
@@ -2125,6 +2197,64 @@ function renderEOR(){
   </div>`;
 }
 
+
+function renderEORDiagnostics(){
+  const w=ACTIVE_WELLS[CW];
+  if(!w)return;
+
+  // W_mod calculation from API gravity and water saturation
+  const api=w.api||32;
+  const swi=w.sw/100||0.25;
+  const swirr=0.15;
+  // Oil-wet tendency: lower API and higher Swi vs Swirr ratio = more oil-wet
+  const oilWetIndex=Math.max(0,Math.min(1,(45-api)/30));
+  const wmod=Math.max(0.70,Math.min(1.05,1.0-(oilWetIndex*0.25)+(swirr/swi*0.05)));
+  const wmodClass=wmod<0.80?'Strongly Oil-Wet':wmod<0.90?'Mildly Oil-Wet':wmod<1.0?'Near-Neutral':wmod>=1.0?'Water-Wet':'Near-Neutral';
+  const wmodCol=wmod<0.80?'#E24B4A':wmod<0.90?'#EF9F27':wmod>=1.0?'#1D9E75':'#5DCAA5';
+  const wmodImpact=wmod<0.90?
+    'Chemical EOR (ASP, Polymer) gains uplift. Waterflood penalised. UST unaffected.':
+    'Waterflood performance near-normal. Chemical EOR at standard efficiency.';
+  const wmodEl=document.getElementById('wmod-val');
+  if(wmodEl){
+    wmodEl.textContent=wmod.toFixed(2);
+    wmodEl.style.color=wmodCol;
+    document.getElementById('wmod-class').textContent=wmodClass;
+    document.getElementById('wmod-class').style.color=wmodCol;
+    document.getElementById('wmod-impact').textContent=wmodImpact;
+  }
+
+  // TZ_pen calculation from k/phi ratio
+  const kphi=(w.perm||80)/(w.phi||0.22);
+  const tzDetected=kphi>500;
+  const tzpen=tzDetected?Math.min(0.25,(kphi-500)/4000):0;
+  const kphiEl=document.getElementById('kphi-val');
+  const tzFlag=document.getElementById('tz-flag');
+  if(kphiEl){
+    kphiEl.textContent=Math.round(kphi);
+    kphiEl.style.color=tzDetected?'#E24B4A':'#1D9E75';
+    if(tzFlag){
+      tzFlag.textContent=tzDetected?'THIEF ZONE DETECTED':'No Thief Zone';
+      tzFlag.style.background=tzDetected?'rgba(226,75,74,.15)':'rgba(29,158,117,.15)';
+      tzFlag.style.color=tzDetected?'#E24B4A':'#1D9E75';
+    }
+    document.getElementById('tz-penalty').textContent=tzDetected?
+      `TZ_pen = ${(tzpen*100).toFixed(1)}% applied to waterflood, polymer and ASP. Consider conformance control before injection.`:
+      'TZ_pen = 0%. No penalty applied. Formation suitable for injection EOR.';
+  }
+
+  // CF_mod from dataset chemistry profile
+  const cfByDataset={mh:0.98,cb:0.72,ahm:0.68,assam:0.91};
+  const cfmod=cfByDataset[DATASET]||0.85;
+  const cfClass=cfmod>=0.95?'Excellent — Clean Water':cfmod>=0.85?'Good — Minor Scaling Risk':cfmod>=0.75?'Moderate — Scale Treatment Needed':'Adverse — Chemical EOR Penalised';
+  const cfCol=cfmod>=0.95?'#1D9E75':cfmod>=0.85?'#5DCAA5':cfmod>=0.75?'#EF9F27':'#E24B4A';
+  const cfEl=document.getElementById('cfmod-val');
+  if(cfEl){
+    cfEl.textContent=cfmod.toFixed(2);
+    cfEl.style.color=cfCol;
+    document.getElementById('cfmod-class').textContent=cfClass;
+    document.getElementById('cfmod-class').style.color=cfCol;
+  }
+}
 
 function drawRadar(){
   const c=document.getElementById('radar-c');
