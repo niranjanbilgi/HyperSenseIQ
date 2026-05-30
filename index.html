@@ -761,6 +761,8 @@ function chemCalcRun(){
   // Scale inhibitor dose recommendation (ppm)
   const dose = ssi<0?0:ssi<0.5?0:ssi<1.0?Math.round(15+ssi*20):ssi<2.0?Math.round(35+ssi*25):Math.round(80+ssi*15);
 
+  // Write to integration state
+  HSIQ.setChem(ssi, wfar);
   // Update SSI display
   const ssiEl=document.getElementById('cc-ssi-val');
   const ssiLbl=document.getElementById('cc-ssi-lbl');
@@ -1024,7 +1026,7 @@ setTimeout(chemCalcRun, 200);
   <div class="kpis" id="k-exec"></div>
   <div class="cols2">
     <div class="card"><div class="ct">Field portfolio — all 5 wells colour coded</div><div id="port"></div></div>
-    <div class="card"><div class="ct">HyperSenseIQ executive verdict</div><div id="exec-v"></div></div>
+    <div class="card"><div class="ct">HyperSenseIQ executive verdict</div><div id="exec-integration-status" style="font-size:9px;color:#5DCAA5;padding:3px 0 6px 0;border-bottom:0.5px solid #1a2a1a;margin-bottom:6px;"></div><div id="exec-v"></div></div>
   </div>
 </div>
 
@@ -1448,6 +1450,9 @@ function ptaRun(){
      '<span style="color:#5DCAA5;">✅ Near-normal wellbore condition. No immediate intervention required.</span>');
   document.getElementById('pta-plot-title').textContent='Horner Plot — '+wname+' · Pressure Buildup Analysis';
   document.getElementById('pta-status').textContent='Analysis complete — '+new Date().toLocaleTimeString();
+  // Write PTA results to integration state
+  const pi_from_pta = q>0&&p1hr>0?(q/(p1hr-pressure[0])).toFixed(3):0;
+  HSIQ.setPTA(skin, k, parseFloat(pi_from_pta)||0);
 }
 </script>
 <!-- FAQ PANEL -->
@@ -1950,7 +1955,12 @@ function renderWorkflow(){
                  skin_approx>2?'Moderate skin. Schedule acid wash at next intervention.':
                  'Wellbore condition acceptable. Proceed with EOR programme.';
     const eorRec=w.api>35?'UST':'ASP';
-    sumEl.innerHTML='<b style="color:#9FE1CB;">'+wname+' — Integrated Decision:</b><br>'+
+    // Enrich with cross-module HSIQ data
+    const hsiq_skin = HSIQ.skin!==null ? ' (PTA confirmed: '+HSIQ.skin.toFixed(1)+')' : ' (estimated)';
+    const hsiq_rate = HSIQ.op_rate!==null ? HSIQ.op_rate+' bbl/d (nodal)' : k+' mD estimate';
+    const hsiq_lift = HSIQ.needs_lift ? '<br><span style="color:#E24B4A;">⚠️ Artificial lift required — confirmed by Nodal Analysis</span>' : '';
+    const hsiq_scale = HSIQ.scale_risk&&HSIQ.scale_risk!=='none' ? '<br><span style="color:#EF9F27;">⚠️ Scale risk: '+HSIQ.scale_risk+' (SSI='+HSIQ.ssi_live?.toFixed(2)+')</span>' : '';
+    sumEl.innerHTML='<b style="color:#9FE1CB;">'+wname+' — Integrated Decision:</b><br>'
       '<span style="color:#5DCAA5;">Step 1 Reservoir:</span> phi='+phi.toFixed(1)+'% · Sw='+sw.toFixed(0)+'% · STOIIP ~'+stoiip+' MMbbl<br>'+
       '<span style="color:#EF9F27;">Step 2 PTA:</span> k='+k+' mD · Skin='+skin_approx+' ('+skinClass+')<br>'+
       '<span style="color:#9C6FDE;">Step 3 EOR:</span> '+eorRec+' recommended · Skin feeds EOR score<br>'+
@@ -1958,6 +1968,100 @@ function renderWorkflow(){
       '<b style="color:#EF9F27;">Recommendation:</b> <span style="color:#9FBDD4;">'+action+'</span>';
   }
 }
+
+// ═══════════════════════════════════════════════════════════════
+// HYPERSENSEIQ CROSS-MODULE INTEGRATION STATE
+// All modules write outputs here — others read and react
+// ═══════════════════════════════════════════════════════════════
+var HSIQ = {
+  // PTA outputs
+  skin: null,          // from PTA/RTA — positive=damage, negative=stimulated
+  k_pta: null,         // permeability from PTA (mD)
+  PI_pta: null,        // productivity index from PTA
+
+  // Nodal outputs  
+  op_rate: null,       // operating rate from nodal (bbl/d)
+  op_fbhp: null,       // operating FBHP from nodal (psi)
+  needs_lift: false,   // artificial lift required flag
+  PI_nodal: null,      // PI from nodal analysis
+
+  // Chemistry outputs
+  ssi_live: null,      // live SSI from calculator
+  wfar_live: null,     // live WFAR from calculator
+  scale_risk: null,    // 'none','low','moderate','severe'
+
+  // Well Intelligence outputs
+  stoiip: null,        // STOIIP from well intel
+  eur: null,           // EUR from decline
+
+  // Integration flags
+  skin_eor_penalty: 0,   // penalty applied to EOR score from skin
+  lift_flag: false,       // whether lift is needed
+
+  // Write methods
+  setPTA: function(skin, k, pi){
+    this.skin=skin; this.k_pta=k; this.PI_pta=pi;
+    this.skin_eor_penalty = skin>5?0.20:skin>2?0.10:skin>0?0.05:0;
+    this.broadcastUpdate('pta');
+  },
+  setNodal: function(rate, fbhp, pi, lift){
+    this.op_rate=rate; this.op_fbhp=fbhp; this.PI_nodal=pi; this.needs_lift=lift;
+    this.lift_flag=lift;
+    this.broadcastUpdate('nodal');
+  },
+  setChem: function(ssi, wfar){
+    this.ssi_live=ssi; this.wfar_live=wfar;
+    this.scale_risk=ssi>1.5?'severe':ssi>0.5?'moderate':ssi>0?'low':'none';
+    this.broadcastUpdate('chem');
+  },
+
+  // Broadcast update to all active panels
+  broadcastUpdate: function(source){
+    // Update integration badge in Executive View
+    this.updateExecIntegration();
+    // Update Well Intelligence skin badge
+    if(source==='pta') this.updateWellSkinBadge();
+    // Update EOR if skin changed
+    if(source==='pta' && document.getElementById('p-eor').classList.contains('on')) renderEOR();
+    // Update Workflow
+    if(document.getElementById('p-workflow').classList.contains('on')) setTimeout(renderWorkflow,50);
+  },
+
+  updateWellSkinBadge: function(){
+    const el=document.getElementById('well-skin-indicator');
+    if(!el||this.skin===null) return;
+    const col=this.skin>5?'#E24B4A':this.skin>2?'#EF9F27':this.skin<-1?'#1D9E75':'#5DCAA5';
+    const txt=this.skin>5?'Severe damage — workover priority':
+              this.skin>2?'Moderate damage — acid wash recommended':
+              this.skin<-2?'Stimulated — natural fractures present':'Near-normal condition';
+    el.innerHTML='<span style="color:'+col+';font-weight:600;">PTA Skin = '+this.skin.toFixed(1)+' — '+txt+'</span>';
+  },
+
+  updateExecIntegration: function(){
+    const el=document.getElementById('exec-integration-status');
+    if(!el) return;
+    const items=[];
+    if(this.skin!==null) items.push('Skin='+this.skin.toFixed(1));
+    if(this.op_rate!==null) items.push('Rate='+this.op_rate+'bbl/d');
+    if(this.scale_risk) items.push('Scale='+this.scale_risk);
+    if(this.needs_lift) items.push('⚠️ Lift needed');
+    if(items.length>0) el.textContent='Cross-module: '+items.join(' · ');
+  },
+
+  getSkinEORPenalty: function(){
+    if(this.skin===null) return 0;
+    return this.skin>5?0.20:this.skin>2?0.10:this.skin>0?0.05:0;
+  },
+
+  getIntegrationSummary: function(){
+    const parts=[];
+    if(this.skin!==null) parts.push('Skin '+this.skin.toFixed(1)+(this.skin>2?' (damaged)':this.skin<-1?' (stimulated)':' (normal)'));
+    if(this.op_rate!==null) parts.push('Operating rate '+this.op_rate+' bbl/d');
+    if(this.needs_lift) parts.push('Artificial lift required');
+    if(this.scale_risk&&this.scale_risk!=='none') parts.push('Scale risk: '+this.scale_risk);
+    return parts.length>0?parts.join(' · '):'Run PTA and Nodal analysis to populate';
+  }
+};
 
 function setDataset(ds){
   DATASET=ds; CW=0;
@@ -2445,6 +2549,8 @@ function drawNodalPlot(){
 
   // Update KPIs
   const PI_val=AOF/Pr;
+  // Write Nodal results to integration state
+  HSIQ.setNodal(op_q, op_p, PI_val, needsLift);
   const rateEl=document.getElementById('nkpi-rate');
   const fbhpEl=document.getElementById('nkpi-fbhp');
   const piEl=document.getElementById('nkpi-pi');
@@ -2828,9 +2934,24 @@ function renderEOR(){
   const horEl=document.getElementById('eor-horizon');
   const eorHor=horEl?parseInt(horEl.value)||5:5;
   const royPct=DATASET==='mh'?0.10:0.125;
-  const best=Math.max(...ACTIVE_EORS.map(m=>m.upl*w.stoiip*m.peor));
+  // Apply PTA skin penalty to EOR scores (damaged wells get penalised for injection methods)
+  const skinPen=HSIQ.getSkinEORPenalty();
+  const injectionMethods=['Polymer','ASP','Surfactant','Waterflood'];
+  if(skinPen>0){
+    ACTIVE_EORS.forEach(m=>{
+      if(injectionMethods.includes(m.n)){
+        m.peor_display = Math.max(0.20, (m.peor||0.5)*(1-skinPen));
+      } else {
+        m.peor_display = m.peor;
+      }
+    });
+  } else {
+    ACTIVE_EORS.forEach(m=>{ m.peor_display = m.peor; });
+  }
+  const best=Math.max(...ACTIVE_EORS.map(m=>m.upl*w.stoiip*(m.peor_display||m.peor)));
   document.getElementById('eor-bars').innerHTML=ACTIVE_EORS.map((m,i)=>{
-    const dn=Math.round(m.upl*w.stoiip*m.peor),pct=Math.round(dn/best*100),rank=i+1;
+    const peorEff=m.peor_display||m.peor;
+    const dn=Math.round(m.upl*w.stoiip*peorEff),pct=Math.round(dn/best*100),rank=i+1;
     const rb=rank===1?'rb1':rank===2?'rb2':rank===3?'rb3':'rbn';
     const cat=rank===1?'Best method':rank<=3?'Highly rec.':rank<=5?'Recommended':'Not rec.';
     const capexL=Math.round(m.capex*83.5);
@@ -2847,7 +2968,7 @@ function renderEOR(){
         <span class="rb ${rb}">#${rank}</span>
         <span class="eor-n" style="color:${tc}">${m.n}</span>
         <div class="eor-bw"><div class="eor-b" style="width:${pct}%;background:${m.col};opacity:${rank<=3?1:rank<=5?.7:.4};">${cat}</div></div>
-        <span class="eor-sc" style="color:${dim?'#AAA':m.col}">${(m.peor*100).toFixed(0)}%</span>
+        <span class="eor-sc" style="color:${dim?'#AAA':m.col}">${((m.peor_display||m.peor)*100).toFixed(0)}%${skinPen>0&&injectionMethods.includes(m.n)?'<span style="font-size:8px;color:#EF9F27;"> -skin</span>':''}</span>
       </div>
       <div style="display:flex;gap:14px;padding-left:30px;font-size:10px;flex-wrap:wrap;align-items:center;">
         <span style="color:#888;">CAPEX <strong style="color:${dim?'#BBB':'#C0392B'}">₹${capexL}L</strong></span>
