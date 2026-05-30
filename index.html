@@ -700,6 +700,253 @@ input[type=range]{accent-color:var(--g-mid);}
   </div>
 </div>
 
+    <div class="card">
+      <div class="ct">ALCF-driven maintenance flags</div>
+      <table class="dt" id="alcf-maint-table"></table>
+    </div>
+  </div>
+
+  <!-- ══ LIVE WATER CHEMISTRY CALCULATOR ══ -->
+  <div style="margin-top:14px;background:linear-gradient(135deg,#1a0f00,#2a1800);border-radius:8px;border:0.5px solid #854F0B;overflow:hidden;">
+    <div style="padding:12px 16px;background:rgba(239,159,39,.08);border-bottom:0.5px solid rgba(239,159,39,.2);display:flex;justify-content:space-between;align-items:center;">
+      <div>
+        <div style="color:#EF9F27;font-size:12px;font-weight:600;">⚗️ Live Water Chemistry Calculator</div>
+        <div style="color:#B8860B;font-size:9px;margin-top:2px;">Enter real formation water ions · SSI, WFAR and compatibility computed live · Stiff-Davis 1952 method</div>
+      </div>
+      <button onclick="chemCalcReset()" style="font-size:9px;padding:4px 10px;border-radius:4px;border:0.5px solid rgba(239,159,39,.3);background:rgba(239,159,39,.1);color:#EF9F27;cursor:pointer;">Reset to dataset defaults</button>
+    </div>
+    <div style="padding:14px 16px;">
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;">
+
+        <div>
+          <div style="font-size:9px;color:#B8860B;margin-bottom:4px;">Ca²⁺ (mg/L)</div>
+          <input id="cc-ca" type="number" value="950" oninput="chemCalcRun()"
+            style="width:100%;background:#1a0f00;border:0.5px solid #854F0B;border-radius:4px;padding:6px 8px;color:#EF9F27;font-size:12px;font-weight:600;box-sizing:border-box;">
+          <div style="font-size:8px;color:#5A4A2A;margin-top:2px;">Calcium — main scaling ion</div>
+        </div>
+
+        <div>
+          <div style="font-size:9px;color:#B8860B;margin-bottom:4px;">Mg²⁺ (mg/L)</div>
+          <input id="cc-mg" type="number" value="180" oninput="chemCalcRun()"
+            style="width:100%;background:#1a0f00;border:0.5px solid #854F0B;border-radius:4px;padding:6px 8px;color:#EF9F27;font-size:12px;font-weight:600;box-sizing:border-box;">
+          <div style="font-size:8px;color:#5A4A2A;margin-top:2px;">Magnesium — dolomite scaling</div>
+        </div>
+
+        <div>
+          <div style="font-size:9px;color:#B8860B;margin-bottom:4px;">HCO₃⁻ (mg/L)</div>
+          <input id="cc-hco3" type="number" value="320" oninput="chemCalcRun()"
+            style="width:100%;background:#1a0f00;border:0.5px solid #854F0B;border-radius:4px;padding:6px 8px;color:#EF9F27;font-size:12px;font-weight:600;box-sizing:border-box;">
+          <div style="font-size:8px;color:#5A4A2A;margin-top:2px;">Bicarbonate — carbonate equilibrium</div>
+        </div>
+
+        <div>
+          <div style="font-size:9px;color:#B8860B;margin-bottom:4px;">Cl⁻ (mg/L)</div>
+          <input id="cc-cl" type="number" value="28000" oninput="chemCalcRun()"
+            style="width:100%;background:#1a0f00;border:0.5px solid #854F0B;border-radius:4px;padding:6px 8px;color:#EF9F27;font-size:12px;font-weight:600;box-sizing:border-box;">
+          <div style="font-size:8px;color:#5A4A2A;margin-top:2px;">Chloride — TDS driver</div>
+        </div>
+
+        <div>
+          <div style="font-size:9px;color:#B8860B;margin-bottom:4px;">SO₄²⁻ (mg/L)</div>
+          <input id="cc-so4" type="number" value="220" oninput="chemCalcRun()"
+            style="width:100%;background:#1a0f00;border:0.5px solid #854F0B;border-radius:4px;padding:6px 8px;color:#EF9F27;font-size:12px;font-weight:600;box-sizing:border-box;">
+          <div style="font-size:8px;color:#5A4A2A;margin-top:2px;">Sulphate — BaSO₄ scaling risk</div>
+        </div>
+
+        <div>
+          <div style="font-size:9px;color:#B8860B;margin-bottom:4px;">Na⁺ (mg/L)</div>
+          <input id="cc-na" type="number" value="16000" oninput="chemCalcRun()"
+            style="width:100%;background:#1a0f00;border:0.5px solid #854F0B;border-radius:4px;padding:6px 8px;color:#EF9F27;font-size:12px;font-weight:600;box-sizing:border-box;">
+          <div style="font-size:8px;color:#5A4A2A;margin-top:2px;">Sodium — total salinity</div>
+        </div>
+
+        <div>
+          <div style="font-size:9px;color:#B8860B;margin-bottom:4px;">Temperature (°C)</div>
+          <input id="cc-temp" type="number" value="85" oninput="chemCalcRun()"
+            style="width:100%;background:#1a0f00;border:0.5px solid #854F0B;border-radius:4px;padding:6px 8px;color:#EF9F27;font-size:12px;font-weight:600;box-sizing:border-box;">
+          <div style="font-size:8px;color:#5A4A2A;margin-top:2px;">Reservoir temperature</div>
+        </div>
+
+        <div>
+          <div style="font-size:9px;color:#B8860B;margin-bottom:4px;">pH (field)</div>
+          <input id="cc-ph" type="number" value="6.9" step="0.1" oninput="chemCalcRun()"
+            style="width:100%;background:#1a0f00;border:0.5px solid #854F0B;border-radius:4px;padding:6px 8px;color:#EF9F27;font-size:12px;font-weight:600;box-sizing:border-box;">
+          <div style="font-size:8px;color:#5A4A2A;margin-top:2px;">Formation water pH</div>
+        </div>
+      </div>
+
+      <!-- LIVE RESULTS -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-bottom:14px;">
+        <div style="background:#0d0800;border-radius:6px;padding:10px;border:0.5px solid #854F0B;text-align:center;">
+          <div style="font-size:9px;color:#B8860B;margin-bottom:4px;">Live SSI</div>
+          <div id="cc-ssi-val" style="font-size:24px;font-weight:700;color:#EF9F27;">—</div>
+          <div id="cc-ssi-lbl" style="font-size:10px;color:#888;margin-top:2px;">Scaling Index</div>
+        </div>
+        <div style="background:#0d0800;border-radius:6px;padding:10px;border:0.5px solid #854F0B;text-align:center;">
+          <div style="font-size:9px;color:#B8860B;margin-bottom:4px;">Live TDS</div>
+          <div id="cc-tds-val" style="font-size:24px;font-weight:700;color:#EF9F27;">—</div>
+          <div style="font-size:10px;color:#888;margin-top:2px;">mg/L</div>
+        </div>
+        <div style="background:#0d0800;border-radius:6px;padding:10px;border:0.5px solid #854F0B;text-align:center;">
+          <div style="font-size:9px;color:#B8860B;margin-bottom:4px;">Live WFAR</div>
+          <div id="cc-wfar-val" style="font-size:24px;font-weight:700;color:#EF9F27;">—</div>
+          <div id="cc-wfar-lbl" style="font-size:10px;color:#888;margin-top:2px;">Waterflood Adversity</div>
+        </div>
+        <div style="background:#0d0800;border-radius:6px;padding:10px;border:0.5px solid #854F0B;text-align:center;">
+          <div style="font-size:9px;color:#B8860B;margin-bottom:4px;">Scale Inhibitor Dose</div>
+          <div id="cc-dose-val" style="font-size:22px;font-weight:700;color:#EF9F27;">—</div>
+          <div style="font-size:10px;color:#888;margin-top:2px;">ppm (recommended)</div>
+        </div>
+      </div>
+
+      <!-- FLUID COMPATIBILITY MATRIX -->
+      <div style="background:#0d0800;border-radius:6px;padding:12px;border:0.5px solid rgba(239,159,39,.2);">
+        <div style="font-size:10px;color:#EF9F27;font-weight:600;margin-bottom:8px;">Fluid Compatibility Matrix — Injection Water vs Formation Water</div>
+        <div id="cc-compat-matrix" style="font-size:10px;"></div>
+      </div>
+
+      <!-- RECOMMENDATION -->
+      <div id="cc-recommendation" style="margin-top:10px;padding:10px 14px;border-radius:6px;font-size:10px;line-height:1.7;"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+function chemCalcRun(){
+  const ca=parseFloat(document.getElementById('cc-ca').value)||0;
+  const mg=parseFloat(document.getElementById('cc-mg').value)||0;
+  const hco3=parseFloat(document.getElementById('cc-hco3').value)||0;
+  const cl=parseFloat(document.getElementById('cc-cl').value)||0;
+  const so4=parseFloat(document.getElementById('cc-so4').value)||0;
+  const na=parseFloat(document.getElementById('cc-na').value)||0;
+  const temp=parseFloat(document.getElementById('cc-temp').value)||85;
+  const ph=parseFloat(document.getElementById('cc-ph').value)||7.0;
+
+  // TDS calculation
+  const tds=ca+mg+hco3+cl+so4+na;
+
+  // SSI — Stiff-Davis simplified (Langelier adaptation for oilfield)
+  // SSI = pHs - pH where pHs = pK2 - pKs + pCa + pAlk
+  // Simplified for oilfield: SSI = log10(Ca*HCO3/Ksp_temp) - correction
+  const pCa = -Math.log10(ca/40080); // molar Ca
+  const pAlk = -Math.log10(hco3/61017); // molar HCO3
+  const pKsp = 8.48 - 0.011*(temp-25); // Ksp CaCO3 temperature correction
+  const pK2 = 10.33 - 0.014*(temp-25);
+  const pHs = pK2 - pKsp + pCa + pAlk;
+  const ssi = ph - pHs; // positive = supersaturated = scaling
+
+  // WFAR — Waterflood Adversity Rating
+  // Based on TDS, Ca, SO4 and temperature
+  const tds_factor = Math.min(1, tds/80000);
+  const ca_factor = Math.min(1, ca/2000);
+  const so4_factor = Math.min(1, so4/1000);
+  const temp_factor = Math.min(1, (temp-40)/100);
+  const wfar = Math.min(0.95, 0.3*tds_factor + 0.25*ca_factor + 0.2*so4_factor + 0.15*temp_factor + 0.1*(ssi>0.5?1:0));
+
+  // Scale inhibitor dose recommendation (ppm)
+  const dose = ssi<0?0:ssi<0.5?0:ssi<1.0?Math.round(15+ssi*20):ssi<2.0?Math.round(35+ssi*25):Math.round(80+ssi*15);
+
+  // Update SSI display
+  const ssiEl=document.getElementById('cc-ssi-val');
+  const ssiLbl=document.getElementById('cc-ssi-lbl');
+  if(ssiEl){
+    ssiEl.textContent=ssi.toFixed(3);
+    const sc=ssi>1.5?'#E24B4A':ssi>0.5?'#EF9F27':'#1D9E75';
+    ssiEl.style.color=sc;
+    if(ssiLbl) ssiLbl.textContent=ssi>1.5?'SEVERE SCALING':ssi>0.5?'SCALE RISK':ssi>0?'BORDERLINE':'CLEAN';
+    if(ssiLbl) ssiLbl.style.color=sc;
+  }
+
+  // TDS display
+  const tdsEl=document.getElementById('cc-tds-val');
+  if(tdsEl){
+    tdsEl.textContent=(tds/1000).toFixed(1)+'k';
+    tdsEl.style.color=tds>60000?'#E24B4A':tds>30000?'#EF9F27':'#1D9E75';
+  }
+
+  // WFAR display
+  const wfarEl=document.getElementById('cc-wfar-val');
+  const wfarLbl=document.getElementById('cc-wfar-lbl');
+  if(wfarEl){
+    wfarEl.textContent=wfar.toFixed(3);
+    const wc=wfar>0.6?'#E24B4A':wfar>0.35?'#EF9F27':'#1D9E75';
+    wfarEl.style.color=wc;
+    if(wfarLbl) wfarLbl.textContent=wfar>0.6?'HIGH ADVERSITY':wfar>0.35?'MODERATE':'LOW';
+    if(wfarLbl) wfarLbl.style.color=wc;
+  }
+
+  // Dose display
+  const doseEl=document.getElementById('cc-dose-val');
+  if(doseEl){
+    doseEl.textContent=dose===0?'None':dose+' ppm';
+    doseEl.style.color=dose>50?'#E24B4A':dose>20?'#EF9F27':'#1D9E75';
+  }
+
+  // Fluid compatibility matrix
+  const matrix=[
+    {ion:'Ca²⁺', fw:ca.toFixed(0)+' mg/L', iw:'200 mg/L', risk:ca>800?'High — CaCO₃/CaSO₄ scaling':'Low', col:ca>800?'#E24B4A':'#1D9E75'},
+    {ion:'SO₄²⁻', fw:so4.toFixed(0)+' mg/L', iw:'50 mg/L', risk:so4>500&&ca>500?'High — BaSO₄/CaSO₄ risk':so4>200?'Monitor':'Compatible', col:so4>500&&ca>500?'#E24B4A':so4>200?'#EF9F27':'#1D9E75'},
+    {ion:'HCO₃⁻', fw:hco3.toFixed(0)+' mg/L', iw:'150 mg/L', risk:ssi>1.0?'Carbonate scaling certain':ssi>0.5?'Carbonate scaling risk':'Compatible', col:ssi>1.0?'#E24B4A':ssi>0.5?'#EF9F27':'#1D9E75'},
+    {ion:'TDS', fw:(tds/1000).toFixed(1)+'k mg/L', iw:'<5k mg/L', risk:tds>50000?'Very high — polymer degradation certain':tds>25000?'High — use HPAM high-MW grade':tds>10000?'Moderate':'Compatible', col:tds>50000?'#E24B4A':tds>25000?'#EF9F27':tds>10000?'#EF9F27':'#1D9E75'},
+    {ion:'pH', fw:ph.toFixed(1), iw:'7.0–8.0', risk:ph<6.5?'Corrosive — CO₂ dominant':ph>8.5?'High scaling potential':'Acceptable', col:ph<6.5?'#E24B4A':ph>8.5?'#EF9F27':'#1D9E75'},
+  ];
+
+  const matEl=document.getElementById('cc-compat-matrix');
+  if(matEl){
+    matEl.innerHTML='<table style="width:100%;border-collapse:collapse;font-size:9.5px;">' +
+      '<thead><tr style="background:rgba(239,159,39,.1);">' +
+      '<th style="padding:5px 8px;text-align:left;color:#EF9F27;">Ion/Parameter</th>' +
+      '<th style="padding:5px 8px;text-align:center;color:#EF9F27;">Formation Water</th>' +
+      '<th style="padding:5px 8px;text-align:center;color:#EF9F27;">Typical Injection</th>' +
+      '<th style="padding:5px 8px;text-align:left;color:#EF9F27;">Compatibility Risk</th>' +
+      '</tr></thead><tbody>' +
+      matrix.map((r,i)=>`<tr style="background:${i%2===0?'rgba(239,159,39,.04)':'transparent'}">
+        <td style="padding:5px 8px;font-weight:600;color:#B8860B;">${r.ion}</td>
+        <td style="padding:5px 8px;text-align:center;color:#E8D87A;">${r.fw}</td>
+        <td style="padding:5px 8px;text-align:center;color:#888;">~${r.iw}</td>
+        <td style="padding:5px 8px;color:${r.col};font-weight:${r.col==='#E24B4A'?'600':'400'};">${r.risk}</td>
+      </tr>`).join('') + '</tbody></table>';
+  }
+
+  // Recommendation box
+  const recEl=document.getElementById('cc-recommendation');
+  if(recEl){
+    const ssiAdv=ssi>1.5?'⚠️ <b>Severe scaling risk.</b> Scale inhibitor mandatory before any water injection. Minimum dose: '+dose+' ppm continuous injection.':
+                 ssi>0.5?'⚠️ <b>Scale risk present.</b> Scale inhibitor recommended at '+dose+' ppm. Monitor calcium carbonate deposition monthly.':
+                 '✅ <b>Clean water.</b> No scale inhibitor required under current ion concentrations.';
+    const wfarAdv=wfar>0.6?'⚠️ <b>High waterflood adversity.</b> Pre-treatment essential. Consider freshwater dilution to reduce TDS before polymer injection.':
+                  wfar>0.35?'⚡ <b>Moderate adversity.</b> Waterflood viable with chemical pre-treatment. Use HPAM high-molecular-weight grade polymer.':
+                  '✅ <b>Low adversity.</b> Favourable waterflood conditions. Standard polymer grade acceptable.';
+    recEl.style.background=ssi>1.5||wfar>0.6?'rgba(226,75,74,.08)':ssi>0.5||wfar>0.35?'rgba(239,159,39,.08)':'rgba(29,158,117,.08)';
+    recEl.style.border='0.5px solid '+(ssi>1.5||wfar>0.6?'rgba(226,75,74,.3)':ssi>0.5||wfar>0.35?'rgba(239,159,39,.3)':'rgba(29,158,117,.3)');
+    recEl.style.borderRadius='6px';
+    recEl.innerHTML='<div style="font-weight:600;color:#EF9F27;margin-bottom:6px;">HyperSenseIQ Chemistry Recommendation</div>'+
+      '<div style="color:#B8860B;margin-bottom:4px;">'+ssiAdv+'</div>'+
+      '<div style="color:#B8860B;">'+wfarAdv+'</div>';
+  }
+}
+
+function chemCalcReset(){
+  const defaults={mh:{ca:450,mg:95,hco3:180,cl:11000,so4:85,na:6500,temp:80,ph:7.2},
+    cb:{ca:1600,mg:320,hco3:420,cl:38000,so4:580,na:22000,temp:95,ph:6.7},
+    ahm:{ca:1050,mg:210,hco3:350,cl:22000,so4:360,na:13000,temp:85,ph:6.9},
+    assam:{ca:280,mg:75,hco3:240,cl:8000,so4:120,na:4800,temp:72,ph:7.1}};
+  const d=defaults[typeof DATASET!=='undefined'?DATASET:'ahm']||defaults.ahm;
+  document.getElementById('cc-ca').value=d.ca;
+  document.getElementById('cc-mg').value=d.mg;
+  document.getElementById('cc-hco3').value=d.hco3;
+  document.getElementById('cc-cl').value=d.cl;
+  document.getElementById('cc-so4').value=d.so4;
+  document.getElementById('cc-na').value=d.na;
+  document.getElementById('cc-temp').value=d.temp;
+  document.getElementById('cc-ph').value=d.ph;
+  chemCalcRun();
+}
+
+// Auto-run on load
+setTimeout(chemCalcRun, 200);
+</script>
+
 <!-- ═══ DRILLING PHYSICS PANEL (stub — already in workbook) ═══ -->
 <div class="panel" id="p-drill">
   <div style="background:linear-gradient(135deg,#0c0c1a,#141428);border-radius:8px;padding:10px 16px;margin-bottom:14px;">
