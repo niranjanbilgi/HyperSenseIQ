@@ -908,6 +908,66 @@ setTimeout(chemCalcRun, 200);
       <div style="font-size:9px;color:#888;margin-bottom:8px;">2-7/8" tubing (2.441" ID) selected. Turner critical velocity check. Vogel IPR × Hagedorn-Brown TPR nodal analysis.</div>
       <table class="dt" id="tub-table"></table>
     </div>
+
+    <!-- LIVE IPR/VLP NODAL ANALYSIS -->
+    <div class="card" style="margin-bottom:12px;border-top:2px solid #1D9E75;">
+      <div class="ct" style="color:#1D9E75;">Nodal Analysis — IPR / VLP Intersection</div>
+      <div style="font-size:9px;color:#6A8FAD;margin-bottom:10px;">
+        Vogel (1968) IPR · Hagedorn-Brown TPR · Operating point = well deliverability · Updates per well
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 280px;gap:14px;align-items:start;">
+        <div>
+          <canvas id="nodal-canvas" width="620" height="360"
+            style="width:100%;border-radius:6px;background:#060e18;"></canvas>
+          <div id="nodal-interp" style="margin-top:8px;font-size:10px;color:#9FE1CB;line-height:1.7;"></div>
+        </div>
+        <div>
+          <div style="background:#060e18;border-radius:6px;padding:12px;border:0.5px solid #1a3a2a;margin-bottom:10px;">
+            <div style="font-size:9px;color:#5DCAA5;font-weight:600;margin-bottom:8px;">IPR Parameters (Vogel)</div>
+            <div style="display:grid;gap:6px;">
+              <div><div style="font-size:8px;color:#5A7A6A;">Reservoir Pressure Pr (psi)</div>
+                <input id="nodal-pr" type="number" value="2800" oninput="drawNodalPlot()"
+                  style="width:100%;background:#0a1510;border:0.5px solid #1a3a2a;border-radius:3px;padding:4px 6px;color:#5DCAA5;font-size:11px;font-weight:600;box-sizing:border-box;"></div>
+              <div><div style="font-size:8px;color:#5A7A6A;">Max Flow Rate AOF (bbl/d)</div>
+                <input id="nodal-aof" type="number" value="850" oninput="drawNodalPlot()"
+                  style="width:100%;background:#0a1510;border:0.5px solid #1a3a2a;border-radius:3px;padding:4px 6px;color:#5DCAA5;font-size:11px;font-weight:600;box-sizing:border-box;"></div>
+            </div>
+          </div>
+          <div style="background:#060e18;border-radius:6px;padding:12px;border:0.5px solid #1a2a3a;margin-bottom:10px;">
+            <div style="font-size:9px;color:#EF9F27;font-weight:600;margin-bottom:8px;">VLP Parameters (Hagedorn-Brown)</div>
+            <div style="display:grid;gap:6px;">
+              <div><div style="font-size:8px;color:#5A6A7A;">Wellhead Pressure (psi)</div>
+                <input id="nodal-wh" type="number" value="150" oninput="drawNodalPlot()"
+                  style="width:100%;background:#0a1015;border:0.5px solid #1a2a3a;border-radius:3px;padding:4px 6px;color:#EF9F27;font-size:11px;font-weight:600;box-sizing:border-box;"></div>
+              <div><div style="font-size:8px;color:#5A6A7A;">Tubing Depth (ft)</div>
+                <input id="nodal-depth" type="number" value="4800" oninput="drawNodalPlot()"
+                  style="width:100%;background:#0a1015;border:0.5px solid #1a2a3a;border-radius:3px;padding:4px 6px;color:#EF9F27;font-size:11px;font-weight:600;box-sizing:border-box;"></div>
+              <div><div style="font-size:8px;color:#5A6A7A;">GOR (scf/bbl)</div>
+                <input id="nodal-gor" type="number" value="320" oninput="drawNodalPlot()"
+                  style="width:100%;background:#0a1015;border:0.5px solid #1a2a3a;border-radius:3px;padding:4px 6px;color:#EF9F27;font-size:11px;font-weight:600;box-sizing:border-box;"></div>
+              <div><div style="font-size:8px;color:#5A6A7A;">Water Cut (%)</div>
+                <input id="nodal-wc" type="number" value="20" oninput="drawNodalPlot()"
+                  style="width:100%;background:#0a1015;border:0.5px solid #1a2a3a;border-radius:3px;padding:4px 6px;color:#EF9F27;font-size:11px;font-weight:600;box-sizing:border-box;"></div>
+            </div>
+          </div>
+          <div id="nodal-kpis" style="display:grid;gap:6px;">
+            <div style="background:#0a1a0a;border-radius:5px;padding:8px;border:0.5px solid #1a3a1a;text-align:center;">
+              <div style="font-size:8px;color:#5DCAA5;">Operating Rate</div>
+              <div id="nkpi-rate" style="font-size:20px;font-weight:700;color:#1D9E75;">— bbl/d</div>
+            </div>
+            <div style="background:#0a1a0a;border-radius:5px;padding:8px;border:0.5px solid #1a3a1a;text-align:center;">
+              <div style="font-size:8px;color:#5DCAA5;">Operating FBHP</div>
+              <div id="nkpi-fbhp" style="font-size:20px;font-weight:700;color:#1D9E75;">— psi</div>
+            </div>
+            <div style="background:#0a1a0a;border-radius:5px;padding:8px;border:0.5px solid #1a3a1a;text-align:center;">
+              <div style="font-size:8px;color:#5DCAA5;">PI (bbl/d/psi)</div>
+              <div id="nkpi-pi" style="font-size:20px;font-weight:700;color:#5DCAA5;">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="card">
       <div class="ct">Sand control &amp; material selection (ALCF-driven)</div>
       <table class="dt" id="sand-table"></table>
@@ -2051,6 +2111,7 @@ function setMode(m){
 
 /* ── PE sub-tab ── */
 function peTab(t){
+  if(t==='tub'){setTimeout(()=>{nodalLoadWell();},150);}
   ['csg','tub','chk','srp'].forEach(x=>{
     const el=document.getElementById('pe-'+x);
     if(el)el.style.display=x===t?'block':'none';
@@ -2252,6 +2313,162 @@ function renderChem(){
 
 
 /* ── Production Engineering render ── */
+function drawNodalPlot(){
+  const Pr=parseFloat(document.getElementById('nodal-pr').value)||2800;
+  const AOF=parseFloat(document.getElementById('nodal-aof').value)||850;
+  const Pwh=parseFloat(document.getElementById('nodal-wh').value)||150;
+  const depth=parseFloat(document.getElementById('nodal-depth').value)||4800;
+  const GOR=parseFloat(document.getElementById('nodal-gor').value)||320;
+  const WC=parseFloat(document.getElementById('nodal-wc').value)||20;
+
+  // IPR — Vogel (1968): q/qmax = 1 - 0.2*(Pwf/Pr) - 0.8*(Pwf/Pr)^2
+  const ipr_q=[], ipr_p=[];
+  for(let i=0;i<=50;i++){
+    const Pwf=Pr*i/50;
+    const q=AOF*(1-0.2*(Pwf/Pr)-0.8*(Pwf/Pr)*(Pwf/Pr));
+    ipr_q.push(Math.max(0,q));
+    ipr_p.push(Pwf);
+  }
+
+  // VLP — Hagedorn-Brown simplified
+  // FBHP = Pwh + gradient*depth + friction losses
+  // gradient depends on GOR and WC
+  const oil_dens=0.85; // g/cc typical
+  const wat_dens=1.05;
+  const gas_dens=0.0012;
+  const liq_grad=((100-WC)*oil_dens+WC*wat_dens)/100*0.4335; // psi/ft
+  
+  const vlp_q=[], vlp_p=[];
+  for(let i=0;i<=50;i++){
+    const q=AOF*i/50;
+    // Simplified gradient with velocity term
+    const vel_factor=1+q/AOF*0.3;
+    const friction=(q/500)*(q/500)*depth*0.00015;
+    const Pwf=Pwh+liq_grad*depth*vel_factor+friction;
+    vlp_q.push(q);
+    vlp_p.push(Math.min(Pr*1.1, Pwf));
+  }
+
+  // Find intersection (operating point)
+  let op_q=0, op_p=0;
+  for(let i=0;i<49;i++){
+    const ipr_at_q = AOF*(1-0.2*(vlp_p[i]/Pr)-0.8*(vlp_p[i]/Pr)*(vlp_p[i]/Pr));
+    const ipr_next = AOF*(1-0.2*(vlp_p[i+1]/Pr)-0.8*(vlp_p[i+1]/Pr)*(vlp_p[i+1]/Pr));
+    if((vlp_q[i]-ipr_at_q)*(vlp_q[i+1]-ipr_next)<=0){
+      op_q=Math.round((vlp_q[i]+vlp_q[i+1])/2);
+      op_p=Math.round((vlp_p[i]+vlp_p[i+1])/2);
+      break;
+    }
+  }
+
+  // Draw
+  const canvas=document.getElementById('nodal-canvas');
+  if(!canvas) return;
+  const ctx=canvas.getContext('2d');
+  const W=canvas.width, H=canvas.height;
+  const pad={l:60,r:20,t:30,b:50};
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#060e18';ctx.fillRect(0,0,W,H);
+
+  const xmax=AOF*1.1, ymax=Pr*1.05;
+  function px(q){return pad.l+(q/xmax)*(W-pad.l-pad.r);}
+  function py(p){return H-pad.b-(p/ymax)*(H-pad.t-pad.b);}
+
+  // Grid
+  ctx.strokeStyle='#0f1f2f';ctx.lineWidth=1;
+  for(let i=0;i<=5;i++){
+    const y=ymax*i/5;ctx.beginPath();ctx.moveTo(pad.l,py(y));ctx.lineTo(W-pad.r,py(y));ctx.stroke();
+    const x=xmax*i/5;ctx.beginPath();ctx.moveTo(px(x),pad.t);ctx.lineTo(px(x),H-pad.b);ctx.stroke();
+  }
+
+  // IPR curve
+  ctx.strokeStyle='#5DCAA5';ctx.lineWidth=2.5;ctx.setLineDash([]);
+  ctx.beginPath();
+  for(let i=0;i<ipr_q.length;i++){
+    if(i===0) ctx.moveTo(px(ipr_q[i]),py(ipr_p[i]));
+    else ctx.lineTo(px(ipr_q[i]),py(ipr_p[i]));
+  }
+  ctx.stroke();
+
+  // VLP curve
+  ctx.strokeStyle='#EF9F27';ctx.lineWidth=2.5;ctx.setLineDash([6,4]);
+  ctx.beginPath();
+  for(let i=0;i<vlp_q.length;i++){
+    if(i===0) ctx.moveTo(px(vlp_q[i]),py(vlp_p[i]));
+    else ctx.lineTo(px(vlp_q[i]),py(vlp_p[i]));
+  }
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Operating point
+  if(op_q>0){
+    ctx.shadowColor='#1D9E75';ctx.shadowBlur=15;
+    ctx.fillStyle='#1D9E75';ctx.beginPath();ctx.arc(px(op_q),py(op_p),8,0,2*Math.PI);ctx.fill();
+    ctx.shadowBlur=0;
+    ctx.strokeStyle='#9FE1CB';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(px(op_q),py(op_p),8,0,2*Math.PI);ctx.stroke();
+    // Dotted lines to axes
+    ctx.strokeStyle='rgba(29,158,117,.3)';ctx.lineWidth=1;ctx.setLineDash([4,4]);
+    ctx.beginPath();ctx.moveTo(px(op_q),py(op_p));ctx.lineTo(px(op_q),H-pad.b);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(px(op_q),py(op_p));ctx.lineTo(pad.l,py(op_p));ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  // Axis labels
+  ctx.fillStyle='#5A7A8A';ctx.font='10px Arial';ctx.textAlign='center';
+  ctx.fillText('Flow Rate (bbl/d)',W/2,H-8);
+  ctx.save();ctx.translate(14,H/2);ctx.rotate(-Math.PI/2);
+  ctx.fillText('Flowing BHP (psi)',0,0);ctx.restore();
+
+  // Title
+  ctx.fillStyle='#9FE1CB';ctx.font='bold 11px Arial';ctx.textAlign='center';
+  ctx.fillText('Nodal Analysis — IPR (Vogel) vs VLP (Hagedorn-Brown)',W/2,18);
+
+  // Legend
+  ctx.strokeStyle='#5DCAA5';ctx.lineWidth=2;ctx.setLineDash([]);
+  ctx.beginPath();ctx.moveTo(W-200,25);ctx.lineTo(W-175,25);ctx.stroke();
+  ctx.fillStyle='#6A8FAD';ctx.font='9px Arial';ctx.textAlign='left';ctx.fillText('IPR (Vogel)',W-170,29);
+  ctx.strokeStyle='#EF9F27';ctx.setLineDash([5,3]);
+  ctx.beginPath();ctx.moveTo(W-110,25);ctx.lineTo(W-85,25);ctx.stroke();ctx.setLineDash([]);
+  ctx.fillText('VLP (H-B)',W-80,29);
+
+  // Axis ticks
+  ctx.fillStyle='#3a5a6a';ctx.font='9px Arial';ctx.textAlign='right';
+  for(let i=0;i<=5;i++){const p=ymax*i/5;ctx.fillText(Math.round(p),pad.l-4,py(p)+4);}
+  ctx.textAlign='center';
+  for(let i=0;i<=5;i++){const q=xmax*i/5;ctx.fillText(Math.round(q),px(q),H-pad.b+16);}
+
+  // Update KPIs
+  const PI_val=AOF/Pr;
+  document.getElementById('nkpi-rate').textContent=op_q>0?op_q+' bbl/d':'No flow';
+  document.getElementById('nkpi-fbhp').textContent=op_p>0?op_p+' psi':'—';
+  document.getElementById('nkpi-pi').textContent=(PI_val).toFixed(3);
+
+  // Interpretation
+  const iprEl=document.getElementById('nodal-interp');
+  if(iprEl){
+    const eff=op_q/AOF*100;
+    const msg=eff>70?'Well operating efficiently. Near AOF. No immediate lift required.':
+              eff>45?'Well operating at moderate efficiency. Consider artificial lift to improve rate.':
+              'Well operating below 45% of AOF. Artificial lift (SRP) strongly recommended.';
+    iprEl.innerHTML='<b>Operating point:</b> '+op_q+' bbl/d at FBHP '+op_p+' psi · '+
+      'Efficiency: '+(eff).toFixed(0)+'% of AOF · PI: '+PI_val.toFixed(3)+' bbl/d/psi<br>'+
+      '<span style="color:'+(eff>70?'#1D9E75':eff>45?'#EF9F27':'#E24B4A')+';">'+msg+'</span>';
+  }
+}
+
+function nodalLoadWell(){
+  const w=ACTIVE_WELLS[CW];
+  if(!w) return;
+  // Set parameters from well data
+  const pr_est=w.depth?Math.round(w.depth*0.43+500):2800;
+  const aof_est=w.qi?Math.round(w.qi*2.5):Math.round((w.perm||80)*w.h||60)*0.05;
+  document.getElementById('nodal-pr').value=pr_est;
+  document.getElementById('nodal-aof').value=Math.max(200,Math.min(2000,aof_est||600));
+  document.getElementById('nodal-wc').value=w.wc||20;
+  document.getElementById('nodal-gor').value=w.gor||320;
+  drawNodalPlot();
+}
+
 function renderProdEng(){
   const w=DATASET==='ahm'?AHM_WELLS[CW]:DATASET==='assam'?ASSAM_WELLS[CW]:ACTIVE_WELLS[CW];
   // ── Drilling Physics panel — fully dataset-aware ──
