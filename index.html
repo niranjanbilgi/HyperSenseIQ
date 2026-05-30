@@ -235,6 +235,7 @@ input[type=range]{accent-color:var(--g-mid);}
     <div class="tab" onclick="go('exec')">Executive view</div>
     <div class="tab inp-tab" onclick="go('input')">Your well data</div>
     <div class="tab" onclick="go('pta')" style="color:#5DCAA5;">PTA / RTA</div>
+    <div class="tab" onclick="go('workflow')" style="color:#B5D4F4;">Workflow</div>
     <div class="tab" onclick="go('faq')" style="color:#9FE1CB;">FAQ</div>
   </div>
   <div class="tabs" id="mine-tabs" style="display:none;">
@@ -970,6 +971,95 @@ setTimeout(chemCalcRun, 200);
   <div class="cols2">
     <div class="card"><div class="ct">Field portfolio — all 5 wells colour coded</div><div id="port"></div></div>
     <div class="card"><div class="ct">HyperSenseIQ executive verdict</div><div id="exec-v"></div></div>
+  </div>
+</div>
+
+
+<!-- WORKFLOW DECISION CHAIN -->
+<div class="panel" id="p-workflow" style="display:none;">
+  <div style="background:linear-gradient(135deg,#0a1a2a,#1a0a2a);border-radius:8px;padding:14px 18px;margin-bottom:16px;">
+    <div style="color:#9FE1CB;font-size:13px;font-weight:500;">HyperSenseIQ — Integrated Well Decision Workflow</div>
+    <div style="color:#5DCAA5;font-size:10px;margin-top:2px;">A complete decision chain from reservoir diagnosis to field intervention — physics at every step</div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin-bottom:16px;position:relative;">
+
+    <!-- STEP 1: RESERVOIR CHARACTERISATION -->
+    <div style="background:linear-gradient(135deg,#0a1a2a,#0c2218);border-radius:8px 0 0 8px;padding:14px;border:0.5px solid #1a3a5a;border-right:none;">
+      <div style="font-size:9px;color:#5DCAA5;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;">Step 1</div>
+      <div style="font-size:12px;font-weight:600;color:#9FE1CB;margin-bottom:6px;">Reservoir Characterisation</div>
+      <div style="font-size:9px;color:#6A8FAD;line-height:1.6;margin-bottom:8px;">Log analysis identifies pay zones, porosity, Sw, permeability. STOIIP computed. Fluid type confirmed.</div>
+      <div style="font-size:9px;color:#5DCAA5;">↳ Well Intelligence tab</div>
+      <div id="wf-step1" style="margin-top:8px;font-size:10px;color:#9FE1CB;font-weight:600;"></div>
+    </div>
+
+    <!-- ARROW -->
+    <div style="display:flex;align-items:center;justify-content:center;background:#080f18;border-top:0.5px solid #1a3a5a;border-bottom:0.5px solid #1a3a5a;font-size:20px;color:#1D9E75;">→</div>
+
+    <!-- STEP 2: PRESSURE DIAGNOSIS -->
+    <div style="background:linear-gradient(135deg,#0a1a2a,#1a0c0a);border-radius:0;padding:14px;border:0.5px solid #1a3a5a;border-right:none;border-left:none;">
+      <div style="font-size:9px;color:#EF9F27;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;">Step 2</div>
+      <div style="font-size:12px;font-weight:600;color:#EF9F27;margin-bottom:6px;">Pressure Diagnosis</div>
+      <div style="font-size:9px;color:#6A8FAD;line-height:1.6;margin-bottom:8px;">Horner buildup analysis gives permeability k and skin S. Positive skin confirms damage. Negative skin confirms fractures.</div>
+      <div style="font-size:9px;color:#EF9F27;">↳ PTA / RTA tab</div>
+      <div id="wf-step2" style="margin-top:8px;font-size:10px;color:#EF9F27;font-weight:600;"></div>
+    </div>
+
+    <!-- ARROW -->
+    <div style="display:flex;align-items:center;justify-content:center;background:#080f18;border-top:0.5px solid #1a3a5a;border-bottom:0.5px solid #1a3a5a;font-size:20px;color:#1D9E75;">→</div>
+
+    <!-- STEP 3: INTERVENTION DECISION -->
+    <div style="background:linear-gradient(135deg,#0a1a2a,#0a1a0a);border-radius:0 8px 8px 0;padding:14px;border:0.5px solid #1a3a5a;border-left:none;">
+      <div style="font-size:9px;color:#9C6FDE;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;">Step 3</div>
+      <div style="font-size:12px;font-weight:600;color:#9C6FDE;margin-bottom:6px;">Intervention Decision</div>
+      <div style="font-size:9px;color:#6A8FAD;line-height:1.6;margin-bottom:8px;">EOR method ranked by P_EOR_adj incorporating skin, wettability, thief zone and chemistry. NPV per intervention computed.</div>
+      <div style="font-size:9px;color:#9C6FDE;">↳ EOR Screening + Economics tabs</div>
+      <div id="wf-step3" style="margin-top:8px;font-size:10px;color:#9C6FDE;font-weight:600;"></div>
+    </div>
+
+  </div>
+
+  <!-- SECOND ROW -->
+  <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin-bottom:16px;">
+
+    <!-- STEP 4: CHEMISTRY VALIDATION -->
+    <div style="background:linear-gradient(135deg,#1a0f00,#0a0f1a);border-radius:8px 0 0 8px;padding:14px;border:0.5px solid #854F0B;border-right:none;">
+      <div style="font-size:9px;color:#EF9F27;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;">Step 4</div>
+      <div style="font-size:12px;font-weight:600;color:#EF9F27;margin-bottom:6px;">Chemistry Validation</div>
+      <div style="font-size:9px;color:#6A8FAD;line-height:1.6;margin-bottom:8px;">SSI confirms scale risk before injection. WFAR validates waterflood feasibility. Fluid compatibility matrix prevents injection damage.</div>
+      <div style="font-size:9px;color:#EF9F27;">↳ Chemistry tab</div>
+    </div>
+
+    <!-- ARROW -->
+    <div style="display:flex;align-items:center;justify-content:center;background:#080f18;border-top:0.5px solid #854F0B;border-bottom:0.5px solid #1a3a5a;font-size:20px;color:#EF9F27;">→</div>
+
+    <!-- STEP 5: PRODUCTION ENGINEERING -->
+    <div style="background:linear-gradient(135deg,#0a1a0a,#0a1a2a);border-radius:0;padding:14px;border:0.5px solid #1a3a5a;border-right:none;border-left:none;">
+      <div style="font-size:9px;color:#1D9E75;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;">Step 5</div>
+      <div style="font-size:12px;font-weight:600;color:#1D9E75;margin-bottom:6px;">Production Engineering</div>
+      <div style="font-size:9px;color:#6A8FAD;line-height:1.6;margin-bottom:8px;">Casing design, tubing sizing, bean valve, artificial lift. Nodal analysis IPR/VLP confirms optimal completion for intervention rate.</div>
+      <div style="font-size:9px;color:#1D9E75;">↳ Prod Engineering tab</div>
+    </div>
+
+    <!-- ARROW -->
+    <div style="display:flex;align-items:center;justify-content:center;background:#080f18;border-top:0.5px solid #1a3a5a;border-bottom:0.5px solid #1a3a5a;font-size:20px;color:#1D9E75;">→</div>
+
+    <!-- STEP 6: DECLINE & RESERVES -->
+    <div style="background:linear-gradient(135deg,#0a1a2a,#1a1a0a);border-radius:0 8px 8px 0;padding:14px;border:0.5px solid #1a3a5a;border-left:none;">
+      <div style="font-size:9px;color:#B5D4F4;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;">Step 6</div>
+      <div style="font-size:12px;font-weight:600;color:#B5D4F4;margin-bottom:6px;">Decline &amp; Reserves</div>
+      <div style="font-size:9px;color:#6A8FAD;line-height:1.6;margin-bottom:8px;">Post-intervention decline re-forecast. EUR uplift from EOR quantified. PHF monitors actual vs predicted. Digital Twin records provenance.</div>
+      <div style="font-size:9px;color:#B5D4F4;">↳ Decline + Digital Twin tabs</div>
+    </div>
+
+  </div>
+
+  <!-- WELL-SPECIFIC SUMMARY -->
+  <div class="card">
+    <div class="ct">Workflow Summary — <span id="wf-wellname">Select a well</span></div>
+    <div id="wf-summary" style="font-size:10px;color:#6A8FAD;line-height:1.8;padding:4px 0;">
+      Select a well above to see the integrated decision chain for that specific well.
+    </div>
   </div>
 </div>
 
@@ -1741,6 +1831,51 @@ let ACTIVE_EORS=EORS;
 let ACTIVE_DOM=DOM_SC;
 let ACTIVE_PLUGS=PLUGS;
 
+
+function renderWorkflow(){
+  const w=ACTIVE_WELLS[CW];
+  if(!w) return;
+  const wname = w.name||('Well '+(CW+1));
+  document.getElementById('wf-wellname').textContent = wname;
+
+  // Step 1 - Reservoir
+  const phi=(w.phi||0.22)*100;
+  const sw=(w.sw||25);
+  const stoiip=Math.round(7758*(w.area||80)*(w.h||60)*(w.phi||0.22)*((100-sw)/100)/(w.bo||1.2)/1000);
+  const s1El=document.getElementById('wf-step1');
+  if(s1El) s1El.innerHTML=`φ=${phi.toFixed(1)}% · Sw=${sw.toFixed(0)}% · STOIIP ~${stoiip} MMbbl`;
+
+  // Step 2 - PTA
+  const k=w.perm||80;
+  const skin_approx = k<50?3.8:k<100?2.1:k<200?1.2:0.8;
+  const skinClass=skin_approx>5?'Severe damage':skin_approx>2?'Moderate damage':skin_approx>0?'Minor damage':'Near-normal';
+  const s2El=document.getElementById('wf-step2');
+  if(s2El) s2El.innerHTML=`k=${k} mD · Skin ≈ ${skin_approx} (${skinClass})`;
+
+  // Step 3 - EOR
+  const s3El=document.getElementById('wf-step3');
+  if(s3El){
+    const api=w.api||32;
+    const topMethod=api>35?'UST (82%)':api>28?'ASP (78%)':'Polymer (74%)';
+    s3El.innerHTML=`Top method: ${topMethod} · Skin feeds EOR score`;
+  }
+
+  // Summary
+  const sumEl=document.getElementById('wf-summary');
+  if(sumEl){
+    const action=skin_approx>5?'Priority workover — severe skin. Acid stimulation before any injection.':
+                 skin_approx>2?'Moderate skin — schedule acid wash at next intervention before EOR.':
+                 'Wellbore condition acceptable — proceed with EOR programme.';
+    sumEl.innerHTML=
+      `<span style="color:#9FE1CB;font-weight:600;">${wname} — Integrated Decision:</span><br>` +
+      `<span style="color:#5DCAA5;">①</span> Reservoir: φ=${phi.toFixed(1)}%, Sw=${sw.toFixed(0)}%, STOIIP ~${stoiip} MMbbl &nbsp;` +
+      `<span style="color:#EF9F27;">②</span> PTA: k=${k} mD, Skin ≈ ${skin_approx} (${skinClass}) &nbsp;` +
+      `<span style="color:#9C6FDE;">③</span> EOR: ${api>35?'UST':'ASP'} recommended &nbsp;` +
+      `<span style="color:#1D9E75;">④⑤⑥</span> Chemistry + Completion + Decline monitoring<br>` +
+      `<span style="color:#EF9F27;font-weight:600;">HyperSenseIQ recommendation:</span> <span style="color:#9FBDD4;">${action}</span>`;
+  }
+}
+
 function setDataset(ds){
   DATASET=ds; CW=0;
   // Hide all well groups first, show correct one per branch below
@@ -2199,6 +2334,7 @@ function go(name){
   else if(name==='drill'){renderProdEng();}
   else if(name==='spectral')setTimeout(renderSpectral,80);
   else if(name==='pta')setTimeout(ptaLoadSynthetic,80);
+  else if(name==='workflow'){setTimeout(renderWorkflow,80);}
   else if(name==='faq'){} // static content, no render needed
   else render();
 }
@@ -2987,6 +3123,13 @@ async function runAnalysis(){
   document.getElementById('res-vol').innerHTML=[['STOIIP',st.toLocaleString()+' STB','vg'],['OIP',(st/1e6).toFixed(2)+' MMbbl','vg'],['Primary RF',(rf*100).toFixed(0)+'%','va'],['Primary EUR',eur+' MMbbl','vn'],['EOR ΔN_eff (top method)',Math.round(top.peor*top.upl*st/1000)+' Kbbl','vg'],['Porosity φ',(w.phi*100).toFixed(0)+'%','vn'],['Water sat. Sw',(w.sw*100).toFixed(0)+'%','vn'],['Net pay',w.pay+'m','vn'],['Permeability',w.perm+' mD','vn']].map(([l,v,c])=>`<div class="fr"><span class="fl">${l}</span><span class="fv ${c}">${v}</span></div>`).join('');
   document.getElementById('res-eor').innerHTML=scores.map((m,i)=>{const rank=i+1,rb=rank===1?'rb1':rank===2?'rb2':'rb3',pct=Math.round(m.peor/scores[0].peor*100);return `<div class="eor-r" style="margin-bottom:8px;"><span class="rb ${rb}">#${rank}</span><span class="eor-n" style="font-size:11px;">${m.n}</span><div class="eor-bw"><div class="eor-b" style="width:${pct}%;background:${m.col};">${rank===1?'Best method':'Highly rec.'}</div></div><span class="eor-sc" style="color:${m.col}">${(m.peor*100).toFixed(0)}%</span></div><div style="font-size:10px;color:var(--gray);padding-left:30px;margin-bottom:5px;">CAPEX: ₹${Math.round(m.capex*83.5)} Lakhs · ΔN: ${Math.round(m.peor*m.upl*st/1000)} Kbbl</div>`;}).join('');
   const cat=npv>5&&w.dr<.25?'High Value':npv>0?'Marginal':'Uneconomic',vCls2=cat==='High Value'?'v-g':cat==='Marginal'?'v-a':'v-r';
+  // PTA skin integration into well health
+  const k_well=w.perm||80;
+  const skin_well=k_well<50?3.8:k_well<100?2.1:k_well<200?1.2:0.8;
+  const skinCol=skin_well>5?'#E24B4A':skin_well>2?'#EF9F27':'#1D9E75';
+  const skinTxt=skin_well>5?'Severe damage — workover priority':skin_well>2?'Moderate damage — acid wash recommended':skin_well<0?'Stimulated — fractures present':'Near-normal condition';
+  const skinBox=document.getElementById('well-skin-indicator');
+  if(skinBox) skinBox.innerHTML=`<span style="color:${skinCol};font-weight:600;">Skin ≈ ${skin_well} — ${skinTxt}</span>`;
   document.getElementById('res-verdict').innerHTML=`<div class="verdict ${vCls2}"><strong>HyperSenseIQ — ${w.id} · ${cat} · Best EOR: ${top.n}</strong><br>Current rate: <span style="font-weight:500;">${cr} bbl/d</span> · STOIIP: <span style="font-weight:500;">${st.toLocaleString()} STB</span> · RF ${(rf*100).toFixed(0)}%<br>${top.n} EOR: P_EOR ${(top.peor*100).toFixed(0)}% · ΔN ${Math.round(top.peor*top.upl*st/1000)} Kbbl · NPV ${npv>0?'+':''}₹${npv.toFixed(1)} Cr<div class="sbar-w" style="margin-top:6px;"><div class="sbar" style="width:${(top.peor*100).toFixed(0)}%;background:${npv>0?'var(--g-mid)':'var(--a-mid)'};"></div></div></div>`;
   // ── DECLINE CURVE on res-dec canvas ──
   setTimeout(()=>{
