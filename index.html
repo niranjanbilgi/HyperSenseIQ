@@ -1960,7 +1960,7 @@ function renderWorkflow(){
     const hsiq_rate = HSIQ.op_rate!==null ? HSIQ.op_rate+' bbl/d (nodal)' : k+' mD estimate';
     const hsiq_lift = HSIQ.needs_lift ? '<br><span style="color:#E24B4A;">⚠️ Artificial lift required — confirmed by Nodal Analysis</span>' : '';
     const hsiq_scale = HSIQ.scale_risk&&HSIQ.scale_risk!=='none' ? '<br><span style="color:#EF9F27;">⚠️ Scale risk: '+HSIQ.scale_risk+' (SSI='+HSIQ.ssi_live?.toFixed(2)+')</span>' : '';
-    sumEl.innerHTML='<b style="color:#9FE1CB;">'+wname+' — Integrated Decision:</b><br>'
+    sumEl.innerHTML='<b style="color:#9FE1CB;">'+wname+' — Integrated Decision:</b><br>'+
       '<span style="color:#5DCAA5;">Step 1 Reservoir:</span> phi='+phi.toFixed(1)+'% · Sw='+sw.toFixed(0)+'% · STOIIP ~'+stoiip+' MMbbl<br>'+
       '<span style="color:#EF9F27;">Step 2 PTA:</span> k='+k+' mD · Skin='+skin_approx+' ('+skinClass+')<br>'+
       '<span style="color:#9C6FDE;">Step 3 EOR:</span> '+eorRec+' recommended · Skin feeds EOR score<br>'+
