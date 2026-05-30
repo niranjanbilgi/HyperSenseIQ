@@ -1647,6 +1647,16 @@ function faqToggle(el){
 </div>
 
 <div class="faq-item">
+<button class="faq-q" onclick="faqToggle(this)">How do all the modules share data with each other?<span class="faq-arrow">&#8964;</span></button>
+<div class="faq-a"><p>HyperSenseIQ uses a shared integration state that all modules write to and read from in real time. When you run PTA/RTA, the skin and permeability are stored and the EOR module immediately applies a damage penalty to injection methods — visible as a "-skin" tag on the score bars. When you run Nodal Analysis, the operating rate and lift requirement are stored and appear in the Workflow summary. When you use the Live Chemistry Calculator, the SSI and scale risk appear as warnings in the Workflow chain. The platform does not just run modules in isolation — it connects them into one continuous intelligence loop.</p></div>
+</div>
+
+<div class="faq-item">
+<button class="faq-q" onclick="faqToggle(this)">If I run PTA and find high skin, does the EOR recommendation change?<span class="faq-arrow">&#8964;</span></button>
+<div class="faq-a"><p>Yes, directly and automatically. Skin above 5 applies a 20% penalty to injection EOR methods — polymer, ASP, surfactant and waterflood. Skin between 2 and 5 applies a 10% penalty. The penalised methods show a "-skin" tag next to their score. This is physically correct — injecting into a damaged wellbore wastes chemicals and capital. HyperSenseIQ recommends acid stimulation before EOR for any well with skin above 2, and the Workflow summary states this recommendation explicitly. Run PTA first, then EOR Screening — the platform will connect the two automatically.</p></div>
+</div>
+
+<div class="faq-item">
 <button class="faq-q" onclick="faqToggle(this)">How do I use the India fiscal model work?<span class="faq-arrow">&#8964;</span></button>
 <div class="faq-a"><p>The platform uses live Brent crude pricing converted to INR at real-time FX rates. It applies GoI royalty rates, OID cess, GST on services, and ONGC or OIL India equity percentages to compute field-specific NPV and IRR. Payback period and undiscounted cash flow are also shown. All fiscal parameters are editable in the Economics tab for sensitivity analysis.</p></div>
 </div>
