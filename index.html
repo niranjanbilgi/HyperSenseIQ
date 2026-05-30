@@ -621,85 +621,6 @@ input[type=range]{accent-color:var(--g-mid);}
       <div id="eccs-bar"></div>
             <div style="font-size:9px;color:#888;margin-top:8px;" id="eccs-note">0 = incompatible · 1 = perfect.</div>
     </div>
-  </div>
-</div>
-
-<!-- ═══ PRODUCTION ENGINEERING PANEL ═══ -->
-<div class="panel" id="p-prodeng">
-  <div style="background:linear-gradient(135deg,#001a10,#002a18);border-radius:8px;padding:10px 16px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
-    <div>
-      <div style="color:#5DCAA5;font-size:13px;font-weight:500;">Production Engineering</div>
-      <div style="color:#3D8A6A;font-size:10px;margin-top:2px;">Casing Design · Production String · Bean Valve / Choke · SRP Artificial Lift · Ankleshwar Hazad Member</div>
-    </div>
-    <span style="font-size:9px;padding:3px 8px;border-radius:4px;background:rgba(29,158,117,.15);color:#5DCAA5;border:0.5px solid rgba(29,158,117,.3);">API 5CT · API RP 11L · Gilbert 1954 · Vogel 1968</span>
-  </div>
-
-  <!-- Sub-tab selector -->
-  <div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;">
-    <button class="pe-tab on" id="pe-t-csg" onclick="peTab('csg')">🔩 Casing Design</button>
-    <button class="pe-tab" id="pe-t-tub" onclick="peTab('tub')">🛢 Production String</button>
-    <button class="pe-tab" id="pe-t-chk" onclick="peTab('chk')">⚙️ Bean Valve / Choke</button>
-    <button class="pe-tab" id="pe-t-srp" onclick="peTab('srp')">⛽ SRP Artificial Lift</button>
-  </div>
-
-  <!-- Casing sub-panel -->
-  <div id="pe-csg">
-    <div class="card" style="margin-bottom:12px;">
-      <div class="ct">Three casing strings — AHM Hazad Member wells</div>
-      <div style="font-size:9px;color:#888;margin-bottom:8px;">Design factors: Burst DF=1.1 · Collapse DF=0.85 · Tension DF=1.8 · API 5CT / ISO 11960. H₂S present → N-80/L-80 grade (NACE MR0175).</div>
-      <table class="dt" id="csg-table"></table>
-    </div>
-    <div class="cols2">
-      <div class="card">
-        <div class="ct">Cement top strategy</div>
-        <table class="dt" id="cem-table"></table>
-      </div>
-      <div class="card">
-        <div class="ct">Design rationale — AHM conditions</div>
-        <div id="csg-rationale"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Tubing sub-panel -->
-  <div id="pe-tub" style="display:none;">
-    <div class="card" style="margin-bottom:12px;">
-      <div class="ct">Tubing selection — critical velocity &amp; nodal analysis</div>
-      <div style="font-size:9px;color:#888;margin-bottom:8px;">2-7/8" tubing (2.441" ID) selected. Turner critical velocity check. Vogel IPR × Hagedorn-Brown TPR nodal analysis.</div>
-      <table class="dt" id="tub-table"></table>
-    </div>
-    <div class="card">
-      <div class="ct">Sand control &amp; material selection (ALCF-driven)</div>
-      <table class="dt" id="sand-table"></table>
-    </div>
-  </div>
-
-  <!-- Choke sub-panel -->
-  <div id="pe-chk" style="display:none;">
-    <div class="card" style="margin-bottom:12px;">
-      <div class="ct">Bean valve sizing — Gilbert (1954) correlation</div>
-      <div style="font-size:9px;color:#888;margin-bottom:8px;">Gilbert: q = C × d<sup>n</sup> / GOR<sup>m</sup> · C=0.00504, n=0.546, m=0.546 · Tungsten carbide bean — sour/sandy service (H₂S + fine sand).</div>
-      <table class="dt" id="chk-table"></table>
-    </div>
-    <div class="cols2">
-      <div class="card"><div class="ct">Flow regime check</div><div id="flow-regime"></div></div>
-      <div class="card"><div class="ct">Back-pressure strategy</div><div id="bp-strategy"></div></div>
-    </div>
-  </div>
-
-  <!-- SRP sub-panel -->
-  <div id="pe-srp" style="display:none;">
-    <div class="card" style="margin-bottom:12px;">
-      <div class="ct">SRP need assessment &amp; equipment sizing — API RP 11L</div>
-      <div style="font-size:9px;color:#888;margin-bottom:8px;">Sucker Rod Pump — dominant artificial lift for onshore mature wells (ONGC Ankleshwar). Pump bore 2.75", stroke 64", tapered rod string D-K-C. ALCF drives maintenance schedule.</div>
-      <table class="dt" id="srp-table"></table>
-    </div>
-    <div class="card">
-      <div class="ct">ALCF-driven maintenance flags</div>
-      <table class="dt" id="alcf-maint-table"></table>
-    </div>
-  </div>
-</div>
 
   <!-- ══ LIVE WATER CHEMISTRY CALCULATOR ══ -->
   <div style="margin-top:14px;background:linear-gradient(135deg,#1a0f00,#2a1800);border-radius:8px;border:0.5px solid #854F0B;overflow:hidden;">
@@ -940,6 +861,86 @@ function chemCalcReset(){
 // Auto-run on load
 setTimeout(chemCalcRun, 200);
 </script>
+  </div>
+</div>
+
+<!-- ═══ PRODUCTION ENGINEERING PANEL ═══ -->
+<div class="panel" id="p-prodeng">
+  <div style="background:linear-gradient(135deg,#001a10,#002a18);border-radius:8px;padding:10px 16px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+    <div>
+      <div style="color:#5DCAA5;font-size:13px;font-weight:500;">Production Engineering</div>
+      <div style="color:#3D8A6A;font-size:10px;margin-top:2px;">Casing Design · Production String · Bean Valve / Choke · SRP Artificial Lift · Ankleshwar Hazad Member</div>
+    </div>
+    <span style="font-size:9px;padding:3px 8px;border-radius:4px;background:rgba(29,158,117,.15);color:#5DCAA5;border:0.5px solid rgba(29,158,117,.3);">API 5CT · API RP 11L · Gilbert 1954 · Vogel 1968</span>
+  </div>
+
+  <!-- Sub-tab selector -->
+  <div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;">
+    <button class="pe-tab on" id="pe-t-csg" onclick="peTab('csg')">🔩 Casing Design</button>
+    <button class="pe-tab" id="pe-t-tub" onclick="peTab('tub')">🛢 Production String</button>
+    <button class="pe-tab" id="pe-t-chk" onclick="peTab('chk')">⚙️ Bean Valve / Choke</button>
+    <button class="pe-tab" id="pe-t-srp" onclick="peTab('srp')">⛽ SRP Artificial Lift</button>
+  </div>
+
+  <!-- Casing sub-panel -->
+  <div id="pe-csg">
+    <div class="card" style="margin-bottom:12px;">
+      <div class="ct">Three casing strings — AHM Hazad Member wells</div>
+      <div style="font-size:9px;color:#888;margin-bottom:8px;">Design factors: Burst DF=1.1 · Collapse DF=0.85 · Tension DF=1.8 · API 5CT / ISO 11960. H₂S present → N-80/L-80 grade (NACE MR0175).</div>
+      <table class="dt" id="csg-table"></table>
+    </div>
+    <div class="cols2">
+      <div class="card">
+        <div class="ct">Cement top strategy</div>
+        <table class="dt" id="cem-table"></table>
+      </div>
+      <div class="card">
+        <div class="ct">Design rationale — AHM conditions</div>
+        <div id="csg-rationale"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tubing sub-panel -->
+  <div id="pe-tub" style="display:none;">
+    <div class="card" style="margin-bottom:12px;">
+      <div class="ct">Tubing selection — critical velocity &amp; nodal analysis</div>
+      <div style="font-size:9px;color:#888;margin-bottom:8px;">2-7/8" tubing (2.441" ID) selected. Turner critical velocity check. Vogel IPR × Hagedorn-Brown TPR nodal analysis.</div>
+      <table class="dt" id="tub-table"></table>
+    </div>
+    <div class="card">
+      <div class="ct">Sand control &amp; material selection (ALCF-driven)</div>
+      <table class="dt" id="sand-table"></table>
+    </div>
+  </div>
+
+  <!-- Choke sub-panel -->
+  <div id="pe-chk" style="display:none;">
+    <div class="card" style="margin-bottom:12px;">
+      <div class="ct">Bean valve sizing — Gilbert (1954) correlation</div>
+      <div style="font-size:9px;color:#888;margin-bottom:8px;">Gilbert: q = C × d<sup>n</sup> / GOR<sup>m</sup> · C=0.00504, n=0.546, m=0.546 · Tungsten carbide bean — sour/sandy service (H₂S + fine sand).</div>
+      <table class="dt" id="chk-table"></table>
+    </div>
+    <div class="cols2">
+      <div class="card"><div class="ct">Flow regime check</div><div id="flow-regime"></div></div>
+      <div class="card"><div class="ct">Back-pressure strategy</div><div id="bp-strategy"></div></div>
+    </div>
+  </div>
+
+  <!-- SRP sub-panel -->
+  <div id="pe-srp" style="display:none;">
+    <div class="card" style="margin-bottom:12px;">
+      <div class="ct">SRP need assessment &amp; equipment sizing — API RP 11L</div>
+      <div style="font-size:9px;color:#888;margin-bottom:8px;">Sucker Rod Pump — dominant artificial lift for onshore mature wells (ONGC Ankleshwar). Pump bore 2.75", stroke 64", tapered rod string D-K-C. ALCF drives maintenance schedule.</div>
+      <table class="dt" id="srp-table"></table>
+    </div>
+    <div class="card">
+      <div class="ct">ALCF-driven maintenance flags</div>
+      <table class="dt" id="alcf-maint-table"></table>
+    </div>
+  </div>
+</div>
+
 
 <!-- ═══ DRILLING PHYSICS PANEL (stub — already in workbook) ═══ -->
 <div class="panel" id="p-drill">
