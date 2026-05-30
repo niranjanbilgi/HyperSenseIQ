@@ -2457,15 +2457,40 @@ function drawNodalPlot(){
 }
 
 function nodalLoadWell(){
-  const w=ACTIVE_WELLS[CW];
-  if(!w) return;
-  // Set parameters from well data
-  const pr_est=w.depth?Math.round(w.depth*0.43+500):2800;
-  const aof_est=w.qi?Math.round(w.qi*2.5):Math.round((w.perm||80)*w.h||60)*0.05;
-  document.getElementById('nodal-pr').value=pr_est;
-  document.getElementById('nodal-aof').value=Math.max(200,Math.min(2000,aof_est||600));
-  document.getElementById('nodal-wc').value=w.wc||20;
-  document.getElementById('nodal-gor').value=w.gor||320;
+  // Get well from correct dataset
+  const w = typeof DATASET!=='undefined' && DATASET==='assam' ? (typeof ASSAM_WELLS!=='undefined'?ASSAM_WELLS[CW]:ACTIVE_WELLS[CW])
+           : typeof DATASET!=='undefined' && DATASET==='ahm' ? (typeof AHM_WELLS!=='undefined'?AHM_WELLS[CW]:ACTIVE_WELLS[CW])
+           : ACTIVE_WELLS[CW];
+  if(!w){setTimeout(nodalLoadWell,200);return;}
+
+  // Estimate reservoir pressure from depth and formation
+  const depth_ft = (w.depth||1500)*3.281; // convert m to ft if needed
+  const pr_est = Math.round(depth_ft * 0.43 + 200);
+
+  // Estimate AOF from permeability, pay and pressure
+  const k = w.perm||80;
+  const h = w.h||60;
+  const aof_est = Math.round(k * h * pr_est / 50000 * (1 + (w.phi||0.2)*2));
+
+  // Get WC and GOR from well data
+  const wc_val = w.wc||w.watercut||20;
+  const gor_val = w.gor||320;
+
+  // Populate fields
+  const prEl = document.getElementById('nodal-pr');
+  const aofEl = document.getElementById('nodal-aof');
+  const whEl = document.getElementById('nodal-wh');
+  const depEl = document.getElementById('nodal-depth');
+  const gorEl = document.getElementById('nodal-gor');
+  const wcEl = document.getElementById('nodal-wc');
+
+  if(prEl) prEl.value = Math.max(800, Math.min(5000, pr_est));
+  if(aofEl) aofEl.value = Math.max(100, Math.min(3000, aof_est));
+  if(whEl) whEl.value = 150;
+  if(depEl) depEl.value = Math.round(depth_ft);
+  if(gorEl) gorEl.value = gor_val;
+  if(wcEl) wcEl.value = wc_val;
+
   drawNodalPlot();
 }
 
@@ -2591,6 +2616,8 @@ function sw(i){
   if(document.getElementById('p-drill').classList.contains('on')) renderProdEng();
   if(document.getElementById('p-pta').classList.contains('on')) setTimeout(ptaLoadSynthetic,80);
   if(document.getElementById('p-workflow').classList.contains('on')) setTimeout(renderWorkflow,80);
+  // If on prod engineering and tubing tab, refresh nodal
+  if(document.getElementById('p-prodeng').classList.contains('on') && document.getElementById('pe-tub') && document.getElementById('pe-tub').style.display!=='none') setTimeout(nodalLoadWell,150);
   // If user is on input tab, auto-fill the selected well
   if(document.getElementById('p-input').classList.contains('on')){
     const w=DATASET==='ahm'?AHM_WELLS[i]:DATASET==='assam'?ASSAM_WELLS[i]:ACTIVE_WELLS[i];
