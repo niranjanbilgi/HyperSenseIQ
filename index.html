@@ -2330,35 +2330,41 @@ function drawNodalPlot(){
     ipr_p.push(Pwf);
   }
 
-  // VLP — Hagedorn-Brown simplified
-  // FBHP = Pwh + gradient*depth + friction losses
-  // gradient depends on GOR and WC
-  const oil_dens=0.85; // g/cc typical
+  // VLP — Hagedorn-Brown simplified with GOR correction
+  // Higher GOR = lower effective gradient (gas lightens the column)
+  const oil_dens=0.85;
   const wat_dens=1.05;
-  const gas_dens=0.0012;
-  const liq_grad=((100-WC)*oil_dens+WC*wat_dens)/100*0.4335; // psi/ft
-  
+  const liq_frac=1/(1+GOR*0.000178); // volume fraction of liquid vs gas+liquid
+  const liq_grad=((100-WC)*oil_dens+WC*wat_dens)/100*0.4335*liq_frac + (1-liq_frac)*0.030;
+
   const vlp_q=[], vlp_p=[];
   for(let i=0;i<=50;i++){
     const q=AOF*i/50;
-    // Simplified gradient with velocity term
-    const vel_factor=1+q/AOF*0.3;
-    const friction=(q/500)*(q/500)*depth*0.00015;
-    const Pwf=Pwh+liq_grad*depth*vel_factor+friction;
+    // At low rates gas segregates, at high rates mixture flows — velocity correction
+    const slip_factor = q<AOF*0.1 ? 0.85 : 1.0 + (q/AOF)*0.15;
+    const friction=(q/800)*(q/800)*depth*0.00012;
+    const Pwf=Pwh+liq_grad*depth*slip_factor+friction;
     vlp_q.push(q);
-    vlp_p.push(Math.min(Pr*1.1, Pwf));
+    vlp_p.push(Math.min(Pr*1.05, Pwf));
   }
 
   // Find intersection (operating point)
   let op_q=0, op_p=0;
-  for(let i=0;i<49;i++){
-    const ipr_at_q = AOF*(1-0.2*(vlp_p[i]/Pr)-0.8*(vlp_p[i]/Pr)*(vlp_p[i]/Pr));
-    const ipr_next = AOF*(1-0.2*(vlp_p[i+1]/Pr)-0.8*(vlp_p[i+1]/Pr)*(vlp_p[i+1]/Pr));
-    if((vlp_q[i]-ipr_at_q)*(vlp_q[i+1]-ipr_next)<=0){
-      op_q=Math.round((vlp_q[i]+vlp_q[i+1])/2);
-      op_p=Math.round((vlp_p[i]+vlp_p[i+1])/2);
-      break;
+  let needsLift=false;
+  // Check if VLP at q=0 already exceeds Pr (artificial lift needed)
+  const ipr_at_0=AOF*(1-0.2*(vlp_p[0]/Pr)-0.8*(vlp_p[0]/Pr)*(vlp_p[0]/Pr));
+  if(vlp_p[0]>=Pr){needsLift=true;}
+  else {
+    for(let i=0;i<49;i++){
+      const ipr_at_q = AOF*(1-0.2*(vlp_p[i]/Pr)-0.8*(vlp_p[i]/Pr)*(vlp_p[i]/Pr));
+      const ipr_next = AOF*(1-0.2*(vlp_p[i+1]/Pr)-0.8*(vlp_p[i+1]/Pr)*(vlp_p[i+1]/Pr));
+      if((vlp_q[i]-ipr_at_q)*(vlp_q[i+1]-ipr_next)<=0){
+        op_q=Math.round((vlp_q[i]+vlp_q[i+1])/2);
+        op_p=Math.round((vlp_p[i]+vlp_p[i+1])/2);
+        break;
+      }
     }
+    if(op_q===0) needsLift=true;
   }
 
   // Draw
@@ -2439,20 +2445,31 @@ function drawNodalPlot(){
 
   // Update KPIs
   const PI_val=AOF/Pr;
-  document.getElementById('nkpi-rate').textContent=op_q>0?op_q+' bbl/d':'No flow';
-  document.getElementById('nkpi-fbhp').textContent=op_p>0?op_p+' psi':'—';
-  document.getElementById('nkpi-pi').textContent=(PI_val).toFixed(3);
+  const rateEl=document.getElementById('nkpi-rate');
+  const fbhpEl=document.getElementById('nkpi-fbhp');
+  const piEl=document.getElementById('nkpi-pi');
+  if(rateEl){rateEl.textContent=needsLift?'Lift needed':op_q>0?op_q+' bbl/d':'No flow';
+    rateEl.style.color=needsLift?'#E24B4A':op_q>0?'#1D9E75':'#EF9F27';}
+  if(fbhpEl){fbhpEl.textContent=op_p>0?op_p+' psi':'—';}
+  if(piEl){piEl.textContent=PI_val.toFixed(3);}
 
   // Interpretation
   const iprEl=document.getElementById('nodal-interp');
   if(iprEl){
-    const eff=op_q/AOF*100;
-    const msg=eff>70?'Well operating efficiently. Near AOF. No immediate lift required.':
-              eff>45?'Well operating at moderate efficiency. Consider artificial lift to improve rate.':
-              'Well operating below 45% of AOF. Artificial lift (SRP) strongly recommended.';
-    iprEl.innerHTML='<b>Operating point:</b> '+op_q+' bbl/d at FBHP '+op_p+' psi · '+
-      'Efficiency: '+(eff).toFixed(0)+'% of AOF · PI: '+PI_val.toFixed(3)+' bbl/d/psi<br>'+
-      '<span style="color:'+(eff>70?'#1D9E75':eff>45?'#EF9F27':'#E24B4A')+';">'+msg+'</span>';
+    if(needsLift){
+      iprEl.innerHTML='<b style="color:#E24B4A;">Artificial lift required.</b> '+
+        'The hydrostatic head in the tubing ('+Math.round(vlp_p[0])+' psi) exceeds reservoir pressure ('+Pr+' psi). '+
+        'The well cannot flow naturally. SRP artificial lift is the correct intervention — see the SRP tab for sizing. '+
+        '<br><span style="color:#EF9F27;">⚠️ High water cut ('+WC+'%) is the primary driver of the heavy fluid gradient.</span>';
+    } else {
+      const eff=op_q/AOF*100;
+      const msg=eff>70?'Well operating efficiently. Near AOF. No immediate lift required.':
+                eff>45?'Well operating at moderate efficiency. Consider artificial lift to improve rate.':
+                'Well operating below 45% of AOF. Artificial lift (SRP) strongly recommended.';
+      iprEl.innerHTML='<b>Operating point:</b> '+op_q+' bbl/d at FBHP '+op_p+' psi · '+
+        'Efficiency: '+(eff).toFixed(0)+'% of AOF · PI: '+PI_val.toFixed(3)+' bbl/d/psi<br>'+
+        '<span style="color:'+(eff>70?'#1D9E75':eff>45?'#EF9F27':'#E24B4A')+';">'+msg+'</span>';
+    }
   }
 }
 
@@ -2500,7 +2517,10 @@ function nodalLoadWell(){
   const set = (id,val) => { const el=document.getElementById(id); if(el) el.value=val; };
   set('nodal-pr', Math.max(500, Math.min(6000, pr_final)));
   set('nodal-aof', Math.max(50, Math.min(3000, aof_est)));
-  set('nodal-wh', 150);
+  // Onshore wells have lower wellhead pressure than offshore
+  const isOffshore = (typeof DATASET!=='undefined' && DATASET==='mh');
+  const wh_psi = isOffshore ? 150 : 50;
+  set('nodal-wh', wh_psi);
   set('nodal-depth', depth_ft);
   set('nodal-gor', gor_val);
   set('nodal-wc', wc_val);
