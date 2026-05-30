@@ -1052,7 +1052,7 @@ setTimeout(chemCalcRun, 200);
   <div class="card">
     <div class="ct">Workflow Summary — <span id="wf-wellname">Select a well</span></div>
     <div id="wf-summary" style="font-size:10px;color:#6A8FAD;line-height:1.8;padding:4px 0;">
-      Select a well above to see the integrated decision chain for that specific well.
+      Loading well data...
     </div>
   </div>
 </div>
@@ -2344,6 +2344,7 @@ function sw(i){
   if(document.getElementById('p-prodeng').classList.contains('on')) renderProdEng();
   if(document.getElementById('p-drill').classList.contains('on')) renderProdEng();
   if(document.getElementById('p-pta').classList.contains('on')) setTimeout(ptaLoadSynthetic,80);
+  if(document.getElementById('p-workflow').classList.contains('on')) setTimeout(renderWorkflow,80);
   // If user is on input tab, auto-fill the selected well
   if(document.getElementById('p-input').classList.contains('on')){
     const w=DATASET==='ahm'?AHM_WELLS[i]:DATASET==='assam'?ASSAM_WELLS[i]:ACTIVE_WELLS[i];
