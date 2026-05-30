@@ -342,6 +342,13 @@ canvas#pc{position:absolute;inset:0;width:100%;height:100%;}
     <span class="hl">UST has CF_mod = 1.00 always</span> — no chemicals, no chemistry penalty.
     Adverse formation conditions actually <em>widen</em> UST's advantage.
   </div>
+  <div class="scene-body">
+    Now the engineer does not just read a static index. Enter real formation water ions into the
+    <strong>Live Water Chemistry Calculator</strong> — Ca²⁺, HCO₃⁻, SO₄²⁻, TDS, pH, temperature.
+    SSI (Stiff-Davis 1952), WFAR and scale inhibitor dose compute instantly.
+    The fluid compatibility matrix updates live.
+    <span class="hl">Dead numbers become a living diagnostic.</span>
+  </div>
 </div>
 
 <!-- ═══ SCENE 6 ═══ -->
@@ -542,6 +549,28 @@ canvas#pc{position:absolute;inset:0;width:100%;height:100%;}
 
 <!-- ═══ SCENE 11 ═══ -->
 <div class="scene" id="s14">
+  <div class="scene-num">Integrated Workflow · Six Steps, One Decision</div>
+  <div class="scene-title">Six steps.<br><em>One decision.</em></div>
+  <div class="scene-body">
+    Every module in HyperSenseIQ exists to answer one question: what should we do with this well, right now,
+    to get the most from it safely and economically? The Workflow tab chains every module into a single
+    integrated decision — from reservoir to surface, from diagnosis to intervention.
+  </div>
+  <div class="cards">
+    <div class="card"><div class="card-val">Step 1</div><div class="card-lbl">Reservoir<br>Characterisation</div></div>
+    <div class="card am"><div class="card-val">Step 2</div><div class="card-lbl">Pressure<br>Diagnosis (PTA)</div></div>
+    <div class="card pu"><div class="card-val">Step 3</div><div class="card-lbl">Intervention<br>Decision (EOR)</div></div>
+    <div class="card am"><div class="card-val">Step 4–6</div><div class="card-lbl">Chemistry · Completion<br>Decline monitoring</div></div>
+  </div>
+  <div class="scene-body">
+    A well with Skin = 3.8 and k = 110 mD is not just a number. It is a story.
+    Formation damage confirmed by PTA. Chemical EOR penalised by chemistry. Acid stimulation
+    recommended before injection. Decline monitored post-intervention.
+    <span class="hl">HyperSenseIQ tells the whole story — not just one chapter.</span>
+  </div>
+</div>
+
+<div class="scene" id="s15">
   <div class="scene-num">The Invitation · What Comes Next</div>
   <div class="scene-title">The work<br><em>continues.</em></div>
   <div class="scene-body" style="max-width:660px;margin-bottom:28px;">
@@ -570,12 +599,12 @@ canvas#pc{position:absolute;inset:0;width:100%;height:100%;}
 
 <div id="nav">
   <button onclick="prev()">← Prev</button>
-  <span id="scene-counter">1 / 14</span>
+  <span id="scene-counter">1 / 15</span>
   <button class="primary" onclick="next()">Next →</button>
 </div>
 
 <script>
-const TOTAL = 14;
+const TOTAL = 15;
 let cur = 0;
 
 /* ── PARTICLE BACKGROUND ── */

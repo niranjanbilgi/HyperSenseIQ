@@ -1552,8 +1552,37 @@ function faqToggle(el){
 
 <div class="faq-section-title">Economics, Decline &amp; Commercial</div>
 
+<div class="faq-section-title">Live Water Chemistry Calculator</div>
+
 <div class="faq-item">
-<button class="faq-q" onclick="faqToggle(this)">How does the India fiscal model work?<span class="faq-arrow">&#8964;</span></button>
+<button class="faq-q" onclick="faqToggle(this)">How do I use the Live Water Chemistry Calculator?<span class="faq-arrow">&#8964;</span></button>
+<div class="faq-a"><p>Go to the Chemistry tab and scroll to the bottom. Enter your real formation water ion concentrations — calcium, magnesium, bicarbonate, chloride, sulphate and sodium in mg/L, plus reservoir temperature and field pH. The Saturation Scaling Index (SSI), total dissolved solids, Waterflood Adversity Rating (WFAR) and recommended scale inhibitor dose all compute instantly as you type. Click Reset to dataset defaults to load the pre-calibrated ion profile for whichever formation is selected.</p></div>
+</div>
+
+<div class="faq-item">
+<button class="faq-q" onclick="faqToggle(this)">What is the Stiff-Davis method and why does HyperSenseIQ use it?<span class="faq-arrow">&#8964;</span></button>
+<div class="faq-a"><p>The Stiff-Davis method (1952) is the industry standard for calculating the Saturation Scaling Index in oilfield produced water. It improves on the earlier Langelier index by accounting for ionic strength effects in high-salinity brines — which is essential for Indian formation waters, particularly in Ankleshwar and Cambay where TDS routinely exceeds 30,000 mg/L. A positive SSI means the water is supersaturated with calcium carbonate and will deposit scale. The higher the SSI, the more aggressive the scale treatment required before injection.</p></div>
+</div>
+
+<div class="faq-item">
+<button class="faq-q" onclick="faqToggle(this)">What is WFAR and how is it calculated?<span class="faq-arrow">&#8964;</span></button>
+<div class="faq-a"><p>WFAR is the Waterflood Adversity Rating — a composite index that reflects how hostile the formation water chemistry is to a waterflood or chemical EOR programme. It is computed from TDS, calcium concentration, sulphate concentration and reservoir temperature, each weighted by their relative impact on polymer and surfactant degradation. A WFAR above 0.6 means waterflood is high-risk without pre-treatment. Values below 0.35 indicate favourable chemistry for injection. The Mumbai High carbonate typically shows WFAR below 0.25 — one reason it is the benchmark field for chemical EOR in India.</p></div>
+</div>
+
+<div class="faq-section-title">Integrated Workflow</div>
+
+<div class="faq-item">
+<button class="faq-q" onclick="faqToggle(this)">What is the Workflow tab and how do I use it?<span class="faq-arrow">&#8964;</span></button>
+<div class="faq-a"><p>The Workflow tab chains all six analytical modules into a single integrated decision for the selected well. Step 1 shows reservoir characterisation from Well Intelligence. Step 2 shows pressure diagnosis from PTA/RTA — permeability and skin. Step 3 shows the EOR intervention decision incorporating skin, wettability and chemistry. Steps 4 to 6 cover chemistry validation, production engineering and decline monitoring. The summary at the bottom gives a plain-language recommendation — whether to acid stimulate, proceed with EOR, or simply monitor. Switch wells and the entire chain updates instantly.</p></div>
+</div>
+
+<div class="faq-item">
+<button class="faq-q" onclick="faqToggle(this)">How does the Workflow tab connect PTA to EOR?<span class="faq-arrow">&#8964;</span></button>
+<div class="faq-a"><p>Skin factor from pressure transient analysis is one of the most important inputs to EOR decision-making. A well with skin above 5 should not receive a chemical EOR programme until the damage is removed — the injected chemicals will simply bypass the damaged zone near the wellbore. HyperSenseIQ feeds the PTA-derived skin directly into the EOR score modifier, penalising injection methods for damaged wells and flagging acid stimulation as the correct first intervention. This is the integration that most standalone EOR screening tools miss entirely.</p></div>
+</div>
+
+<div class="faq-item">
+<button class="faq-q" onclick="faqToggle(this)">How do I use the India fiscal model work?<span class="faq-arrow">&#8964;</span></button>
 <div class="faq-a"><p>The platform uses live Brent crude pricing converted to INR at real-time FX rates. It applies GoI royalty rates, OID cess, GST on services, and ONGC or OIL India equity percentages to compute field-specific NPV and IRR. Payback period and undiscounted cash flow are also shown. All fiscal parameters are editable in the Economics tab for sensitivity analysis.</p></div>
 </div>
 
