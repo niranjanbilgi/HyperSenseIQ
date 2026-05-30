@@ -2458,38 +2458,52 @@ function drawNodalPlot(){
 
 function nodalLoadWell(){
   // Get well from correct dataset
-  const w = typeof DATASET!=='undefined' && DATASET==='assam' ? (typeof ASSAM_WELLS!=='undefined'?ASSAM_WELLS[CW]:ACTIVE_WELLS[CW])
-           : typeof DATASET!=='undefined' && DATASET==='ahm' ? (typeof AHM_WELLS!=='undefined'?AHM_WELLS[CW]:ACTIVE_WELLS[CW])
-           : ACTIVE_WELLS[CW];
-  if(!w){setTimeout(nodalLoadWell,200);return;}
+  let w = ACTIVE_WELLS[CW];
+  if(typeof DATASET!=='undefined'){
+    if(DATASET==='assam' && typeof ASSAM_WELLS!=='undefined') w=ASSAM_WELLS[CW];
+    else if(DATASET==='ahm' && typeof AHM_WELLS!=='undefined') w=AHM_WELLS[CW];
+  }
+  if(!w){setTimeout(nodalLoadWell,300);return;}
 
-  // Estimate reservoir pressure from depth and formation
-  const depth_ft = (w.depth||1500)*3.281; // convert m to ft if needed
-  const pr_est = Math.round(depth_ft * 0.43 + 200);
+  // Reservoir pressure: use P field (MPa) convert to psi, or estimate
+  // P is in MPa in Assam wells (e.g. 8.2 MPa = 1189 psi)
+  const pr_mpa = w.P||w.pres||0;
+  const pr_psi = pr_mpa>0 ? Math.round(pr_mpa*145.04) : 0;
 
-  // Estimate AOF from permeability, pay and pressure
+  // Depth: parse from string like "820-845m" or use numeric
+  let depth_m = 0;
+  if(typeof w.depth==='string'){
+    const m = w.depth.match(/(\d+)/);
+    if(m) depth_m = parseInt(m[1]);
+  } else if(typeof w.depth==='number'){
+    depth_m = w.depth;
+  }
+  // Fallback: if no depth, use zones first depth
+  if(!depth_m && w.zones && w.zones[0]) depth_m = w.zones[0].d||1500;
+  if(!depth_m) depth_m = 1500;
+  const depth_ft = Math.round(depth_m * 3.281);
+
+  // Final reservoir pressure
+  const pr_final = pr_psi>0 ? pr_psi : Math.round(depth_ft*0.43+200);
+
+  // AOF from qi (current rate) * 2.5, or from perm
+  const qi = w.qi||w.rate||0;
   const k = w.perm||80;
-  const h = w.h||60;
-  const aof_est = Math.round(k * h * pr_est / 50000 * (1 + (w.phi||0.2)*2));
+  const pay = w.pay||w.h||60;
+  const aof_est = qi>0 ? Math.round(qi*2.5) : Math.round(k*pay*pr_final/80000);
 
-  // Get WC and GOR from well data
+  // WC and GOR
   const wc_val = w.wc||w.watercut||20;
-  const gor_val = w.gor||320;
+  const gor_val = w.gor||w.GOR||320;
 
-  // Populate fields
-  const prEl = document.getElementById('nodal-pr');
-  const aofEl = document.getElementById('nodal-aof');
-  const whEl = document.getElementById('nodal-wh');
-  const depEl = document.getElementById('nodal-depth');
-  const gorEl = document.getElementById('nodal-gor');
-  const wcEl = document.getElementById('nodal-wc');
-
-  if(prEl) prEl.value = Math.max(800, Math.min(5000, pr_est));
-  if(aofEl) aofEl.value = Math.max(100, Math.min(3000, aof_est));
-  if(whEl) whEl.value = 150;
-  if(depEl) depEl.value = Math.round(depth_ft);
-  if(gorEl) gorEl.value = gor_val;
-  if(wcEl) wcEl.value = wc_val;
+  // Set fields
+  const set = (id,val) => { const el=document.getElementById(id); if(el) el.value=val; };
+  set('nodal-pr', Math.max(500, Math.min(6000, pr_final)));
+  set('nodal-aof', Math.max(50, Math.min(3000, aof_est)));
+  set('nodal-wh', 150);
+  set('nodal-depth', depth_ft);
+  set('nodal-gor', gor_val);
+  set('nodal-wc', wc_val);
 
   drawNodalPlot();
 }
