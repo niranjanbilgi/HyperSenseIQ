@@ -1857,16 +1857,16 @@ function renderWorkflow(){
   // Summary
   const sumEl=document.getElementById('wf-summary');
   if(sumEl){
-    const action=skin_approx>5?'Priority workover — severe skin. Acid stimulation before any injection.':
-                 skin_approx>2?'Moderate skin — schedule acid wash at next intervention before EOR.':
-                 'Wellbore condition acceptable — proceed with EOR programme.';
-    sumEl.innerHTML=
-      `<span style="color:#9FE1CB;font-weight:600;">${wname} — Integrated Decision:</span><br>` +
-      `<span style="color:#5DCAA5;">①</span> Reservoir: φ=${phi.toFixed(1)}%, Sw=${sw.toFixed(0)}%, STOIIP ~${stoiip} MMbbl &nbsp;` +
-      `<span style="color:#EF9F27;">②</span> PTA: k=${k} mD, Skin ≈ ${skin_approx} (${skinClass}) &nbsp;` +
-      `<span style="color:#9C6FDE;">③</span> EOR: ${api>35?'UST':'ASP'} recommended &nbsp;` +
-      `<span style="color:#1D9E75;">④⑤⑥</span> Chemistry + Completion + Decline monitoring<br>` +
-      `<span style="color:#EF9F27;font-weight:600;">HyperSenseIQ recommendation:</span> <span style="color:#9FBDD4;">${action}</span>`;
+    const action=skin_approx>5?'Priority workover. Acid stimulation before any injection.':
+                 skin_approx>2?'Moderate skin. Schedule acid wash at next intervention.':
+                 'Wellbore condition acceptable. Proceed with EOR programme.';
+    const eorRec=w.api>35?'UST':'ASP';
+    sumEl.innerHTML='<b style="color:#9FE1CB;">'+wname+' — Integrated Decision:</b><br>'+
+      '<span style="color:#5DCAA5;">Step 1 Reservoir:</span> phi='+phi.toFixed(1)+'% · Sw='+sw.toFixed(0)+'% · STOIIP ~'+stoiip+' MMbbl<br>'+
+      '<span style="color:#EF9F27;">Step 2 PTA:</span> k='+k+' mD · Skin='+skin_approx+' ('+skinClass+')<br>'+
+      '<span style="color:#9C6FDE;">Step 3 EOR:</span> '+eorRec+' recommended · Skin feeds EOR score<br>'+
+      '<span style="color:#1D9E75;">Steps 4-6:</span> Chemistry validation + Completion engineering + Decline monitoring<br>'+
+      '<b style="color:#EF9F27;">Recommendation:</b> <span style="color:#9FBDD4;">'+action+'</span>';
   }
 }
 
